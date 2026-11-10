@@ -13,6 +13,11 @@ git switch -c feat/<short-name>
 
 ## ۲. قواعد معماری (غیرقابل مذاکره)
 
+> سند کامل: [`docs/engineering/architecture-governance.md`](docs/engineering/architecture-governance.md)
+> قالب ماژول: [`docs/engineering/module-template.md`](docs/engineering/module-template.md)
+> تست‌های معماری: [`docs/engineering/architecture-tests.md`](docs/engineering/architecture-tests.md)
+
+- هر ماژول جدید فقط از قالب `dotnet new travelcore-module` ساخته می‌شود.
 - هر ماژول فقط ۴ پروژه دارد: `Domain`, `Application`, `Infrastructure`, `Presentation`.
 - ماژول A به `Domain` یا `Application` ماژول B ارجاع نمی‌دهد؛ فقط `Contracts`.
 - `Domain` هیچ وابستگی خارجی ندارد (نه EF، نه ASP.NET، نه Redis).

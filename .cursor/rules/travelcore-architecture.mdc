@@ -94,8 +94,19 @@ Every module has exactly four projects:
 - LocalizedText for content fields.
 - Per-locale slug, canonical, hreflang, sitemap.
 
+## Governance (enforced)
+- Follow `docs/engineering/architecture-governance.md`.
+- Every new module comes from `dotnet new travelcore-module` (or the documented template). Do not invent structure.
+- Run `scripts/verify.ps1` before every commit: build, format, unit, architecture, contract.
+- Architecture tests are build-breaking. Never bypass a failing rule silently.
+- If a rule blocks work: stop, propose an ADR or a time-boxed `ARCH-WAIVER`, ask for approval.
+- CI gates are mandatory; no direct push to main.
+- Add a test for every architecture bug found in review.
+- Keep PRs small (<= 400 changed lines) and within one module.
+
 ## Workflow
 - Small tasks only (<= 1 day).
 - Update `PLAN.md` / ADR before architectural changes.
 - Run architecture tests before commit.
 - Commit format: `feat(module): ...`.
+- Pull/rebase before work; commit and push after each task.

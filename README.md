@@ -45,6 +45,9 @@
 
 - [برنامه اصلی](PLAN.md)
 - [تصمیم‌های معماری (ADR)](docs/adr/)
+- [حاکمیت معماری](docs/engineering/architecture-governance.md)
+- [قالب ماژول](docs/engineering/module-template.md)
+- [تست‌های معماری](docs/engineering/architecture-tests.md)
 - [قرارداد Channel API](docs/api/channel-api-v1.openapi.yaml)
 - [قرارداد Supplier API](docs/api/supplier-api-v1.openapi.yaml)
 - [تحلیل سایت مرجع](docs/research/lastsecond-architecture-report.md)

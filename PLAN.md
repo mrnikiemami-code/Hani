@@ -1,4 +1,4 @@
-# TravelCore — برنامه معماری و پیاده‌سازی (نسخه ۱.۱)
+# TravelCore — برنامه معماری و پیاده‌سازی (نسخه ۱.۲)
 
 > **وضعیت:** قفل‌شده برای شروع پیاده‌سازی
 > **مخزن:** https://github.com/mrnikiemami-code/Hani
@@ -17,6 +17,7 @@
    - **Professional:** وایت‌لیبل کامل + اشتراک بالاتر + بدون برند TravelCore.
 4. **رزرو بلیط هواپیما** به‌عنوان ماژول مستقل `Flights` اضافه شد. جزئیات: بخش ۲۹.
 5. **SEO به یک Workstream مستقل و از فاز ۰** ارتقا یافت؛ نه فاز آخر. جزئیات: بخش ۱۶ و ۳۱.
+6. **حاکمیت اجرایی معماری** اضافه شد: قالب واحد ماژول، تست‌های معماری، Analyzer، CI Gate، ADR/Waiver و Drift Report. جزئیات: بخش ۳۳ و `docs/engineering/architecture-governance.md`.
 
 ---
 
@@ -54,6 +55,7 @@
 30. مدل درآمد، پلن‌ها و وایت‌لیبل
 31. استراتژی و مهندسی SEO (تفصیلی)
 32. جریان پول با مرچنت آژانس
+33. حاکمیت معماری و یکدستی پروژه
 
 ---
 
@@ -1715,6 +1717,7 @@ git push
 | ADR-0012 | پلن‌های Standard/Professional و وایت‌لیبل |
 | ADR-0013 | ماژول Flights و چرخه PNR/Ticketing |
 | ADR-0014 | استراتژی SEO و سیاست canonical کانال |
+| ADR-0015 | حاکمیت اجرایی معماری و یکدستی ماژول‌ها |
 
 مسیر: `docs/adr/`
 
@@ -2295,4 +2298,95 @@ Created → Pending → Succeeded | Failed | Expired
 
 ---
 
-**پایان سند — TravelCore PLAN v1.1**
+## ۳۳. حاکمیت معماری و یکدستی پروژه
+
+> **اصل:** «قول نمی‌دهم تخطی نکنم؛ کاری می‌کنم تخطی **قابل کامپایل/تست/ادغام** نباشد.»
+> سند کامل: [`docs/engineering/architecture-governance.md`](docs/engineering/architecture-governance.md)
+
+### ۳۳.۱. مدل شش‌لایه
+
+| لایه | ابزار | چه چیزی را تضمین می‌کند |
+|---|---|---|
+| ۰. سند | ADR + PLAN + Module Template | تصمیم و مسیر واحد |
+| ۱. کامپایلر | Project References + Central Packages + global.json | مرز پروژه و نسخه |
+| ۲. تحلیل ایستا | NetAnalyzers + BannedSymbols + `dotnet format` | API ممنوع، سبک یکدست |
+| ۳. تست معماری | NetArchTest | مرز ماژول/لایه/CQRS/نام‌گذاری |
+| ۴. قرارداد | OpenAPI Diff + Event Schema + Migration Check | API/داده سازگار |
+| ۵. زمان اجرا | Health + Metrics + SLO + Drift Report | انحراف واقعی |
+| ۶. انسان | CODEOWNERS + PR Template + ARB + Waiver | استثنا و تصمیم |
+
+### ۳۳.۲. قواعد اجرایی
+
+- هر ماژول فقط از `module-template.md` ساخته می‌شود.
+- ماژول → ماژول reference ممنوع.
+- `Domain` بدون EF/ASP.NET/MassTransit/Redis/HttpClient.
+- `Application` بدون DbContext/Infrastructure/HttpClient.
+- `Presentation` بدون DbContext/Repository.
+- هر Command/Query: یک Handler + یک Validator.
+- Handlerها `internal sealed`.
+- Endpoint فقط `ISender.Send`.
+- Banned: `DateTime.Now`, `Guid.NewGuid`, `Console.WriteLine`, `Task.Run` در request، `HttpClient` در Application.
+- هر POST مالی: `Idempotency-Key`.
+- هر تغییر داده: Migration + Integration Test.
+- هر تغییر API: OpenAPI Diff.
+- هر تغییر معماری: ADR Accepted.
+
+### ۳۳.۳. CI Gateها (همه اجباری)
+
+| Gate | ابزار |
+|---|---|
+| Restore قفل‌شده | `dotnet restore --locked-mode` |
+| Build بدون warning | `dotnet build -warnaserror` |
+| Format | `dotnet format --verify-no-changes` |
+| Unit + Architecture | `dotnet test` |
+| Integration | Testcontainers |
+| Migration | `dotnet ef migrations has-pending-model-changes` |
+| OpenAPI | Spectral + oasdiff |
+| Frontend | ESLint + tsc + boundaries + size-limit |
+| SEO/Perf | Lighthouse CI |
+| Security/License | vulnerable + audit + Trivy + allowlist |
+
+### ۳۳.۴. یکدستی
+
+- `dotnet new travelcore-module` (یا `scripts/new-module.ps1`) تنها راه ساخت ماژول.
+- `Directory.Packages.props` + `packages.lock.json` نسخه‌ها را قفل می‌کند.
+- `Directory.Build.props` + `.editorconfig` سبک را یکدست می‌کند.
+- `BuildingBlocks` تنها محل کد مشترک است.
+- `Contracts` تنها محل Integration Event است.
+- `CODEOWNERS` مالک هر ماژول را مشخص می‌کند.
+- Drift Report ماهانه: نقض‌ها، وابستگی‌ها، پوشش، waiverها.
+
+### ۳۳.۵. استثنا
+
+- فقط با `ARCH-WAIVER-{id}`: دلیل، مالک، تاریخ انقضا، تسک رفع.
+- حداکثر ۲ waiver فعال در هر ماژول.
+- پس از انقضا: build fail.
+
+### ۳۳.۶. من (AI Agent) چطور کار می‌کنم
+
+1. PLAN + ADR + Module Template را می‌خوانم.
+2. فقط در مرز ماژول مربوطه تغییر می‌دهم.
+3. از قالب استفاده می‌کنم؛ ساختار جدید اختراع نمی‌کنم.
+4. `scripts/verify.ps1` را اجرا می‌کنم.
+5. اگر قاعده‌ای مانع شد: **متوقف می‌شوم**، ADR/Waiver پیشنهاد می‌دهم، بدون تأیید bypass نمی‌کنم.
+6. پکیج جدید بدون بررسی لایسنس اضافه نمی‌کنم.
+7. PR کوچک + Conventional Commit + به‌روزرسانی مستندات.
+8. بعد از هر تسک commit/push می‌کنم.
+
+### ۳۳.۷. اولین تسک
+
+**TC-001A — Architecture Governance Bootstrap** قبل از هر کد دامنه‌ای:
+
+- `Directory.Packages.props` + `packages.lock.json`
+- `BannedSymbols.txt`
+- پروژه `TravelCore.ArchitectureTests`
+- `scripts/verify.ps1`
+- `CODEOWNERS` + PR Template
+- `dotnet new travelcore-module`
+- Drift Report اولیه
+
+> تا این زیرساخت آماده نشود، هیچ ماژول دامنه‌ای ساخته نمی‌شود.
+
+---
+
+**پایان سند — TravelCore PLAN v1.2**

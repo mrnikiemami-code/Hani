@@ -16,6 +16,7 @@
 | [0012](0012-plans-and-white-label.md) | پلن‌های Standard/Professional و وایت‌لیبل | Accepted (Locked) |
 | [0013](0013-flights-module.md) | ماژول Flights و PNR/Ticketing | Accepted |
 | [0014](0014-seo-strategy.md) | استراتژی SEO و Canonical کانال | Accepted |
+| [0015](0015-architecture-governance.md) | حاکمیت اجرایی معماری و یکدستی | Accepted (Proposed for approval) |
 
 ## قالب ADR جدید
 
