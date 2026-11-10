@@ -2431,19 +2431,20 @@ Created → Pending → Succeeded | Failed | Expired
 7. PR کوچک + Conventional Commit + به‌روزرسانی مستندات.
 8. بعد از هر تسک commit/push می‌کنم.
 
-### ۳۳.۷. اولین تسک
+### ۳۳.۷. وضعیت Bootstrap
 
-**TC-001A — Architecture Governance Bootstrap** قبل از هر کد دامنه‌ای:
+**TC-001A — Architecture Governance Bootstrap ✅ انجام شد**
 
-- `Directory.Packages.props` + `packages.lock.json`
-- `BannedSymbols.txt`
-- پروژه `Hani.ArchitectureTests`
-- `scripts/verify.ps1`
-- `CODEOWNERS` + PR Template
-- `dotnet new hani-module`
-- Drift Report اولیه
+- [x] `Hani.slnx` + `BuildingBlocks` + ماژول نمونه `Supply`
+- [x] `Directory.Packages.props` + `packages.lock.json` (restore قفل‌شده)
+- [x] `BannedSymbols.txt` (RS0030 تأیید شد)
+- [x] پروژه `Hani.ArchitectureTests` (۷ تست سبز)
+- [x] `scripts/verify.ps1`
+- [x] `.github/CODEOWNERS` + PR Template + CI
+- [x] Drift Report اولیه
+- [ ] `dotnet new hani-module` — به `TC-001B` موکول شد؛ فعلاً `scripts/new-module.ps1`
 
-> تا این زیرساخت آماده نشود، هیچ ماژول دامنه‌ای ساخته نمی‌شود.
+> زیرساخت آماده است. از این به بعد هیچ ماژول جدیدی خارج از قالب ساخته نمی‌شود.
 
 ---
 

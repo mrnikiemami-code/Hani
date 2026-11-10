@@ -14,9 +14,20 @@
 
 ## وضعیت
 
-🚧 **فاز برنامه‌ریزی — معماری قفل‌شده**
+🚧 **فاز ۰ — Governance Bootstrap انجام شد**
 
-این مخزن در حال حاضر شامل برنامه معماری، تصمیم‌ها (ADR)، قراردادهای API و تحلیل سایت مرجع است. پیاده‌سازی از فاز ۰ (Bootstrap) آغاز می‌شود.
+- Solution + `BuildingBlocks` + ماژول نمونه `Supply`
+- ArchitectureTests (۷ تست)، UnitTests (۶ تست)
+- BannedSymbols، Central Package Management، lock files
+- `scripts/verify.ps1` + CI + CODEOWNERS + PR Template
+- گزارش Drift: [`docs/reports/architecture-drift-2026-11.md`](docs/reports/architecture-drift-2026-11.md)
+
+```powershell
+dotnet restore Hani.slnx --locked-mode
+dotnet build Hani.slnx -warnaserror
+dotnet test Hani.slnx
+.\scripts\verify.ps1
+```
 
 ## سند اصلی
 

@@ -1,0 +1,11 @@
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @mrnikiemami-code
+
+/src/Hani.BuildingBlocks/ @mrnikiemami-code
+/src/Modules/Supply/ @mrnikiemami-code
+/src/Hani.Api/ @mrnikiemami-code
+/tests/Hani.ArchitectureTests/ @mrnikiemami-code
+/docs/adr/ @mrnikiemami-code
+/Directory.Packages.props @mrnikiemami-code
+/Directory.Build.props @mrnikiemami-code

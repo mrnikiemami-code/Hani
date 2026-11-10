@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Hani.Api/Hani.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Hani.BuildingBlocks/">
+    <Project Path="src/Hani.BuildingBlocks/Hani.BuildingBlocks.Application/Hani.BuildingBlocks.Application.csproj" />
+    <Project Path="src/Hani.BuildingBlocks/Hani.BuildingBlocks.AspNetCore/Hani.BuildingBlocks.AspNetCore.csproj" />
+    <Project Path="src/Hani.BuildingBlocks/Hani.BuildingBlocks.Domain/Hani.BuildingBlocks.Domain.csproj" />
+    <Project Path="src/Hani.BuildingBlocks/Hani.BuildingBlocks.Infrastructure/Hani.BuildingBlocks.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Supply/">
+    <Project Path="src/Modules/Supply/Hani.Modules.Supply.Application/Hani.Modules.Supply.Application.csproj" />
+    <Project Path="src/Modules/Supply/Hani.Modules.Supply.Domain/Hani.Modules.Supply.Domain.csproj" />
+    <Project Path="src/Modules/Supply/Hani.Modules.Supply.Infrastructure/Hani.Modules.Supply.Infrastructure.csproj" />
+    <Project Path="src/Modules/Supply/Hani.Modules.Supply.Presentation/Hani.Modules.Supply.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Hani.ArchitectureTests/Hani.ArchitectureTests.csproj" />
+    <Project Path="tests/Hani.UnitTests/Hani.UnitTests.csproj" />
+  </Folder>
+</Solution>

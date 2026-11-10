@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore (locked)
+        run: dotnet restore Hani.slnx --locked-mode
+
+      - name: Build (warnings as errors)
+        run: dotnet build Hani.slnx -warnaserror --no-restore
+
+      - name: Test (unit + architecture)
+        run: dotnet test Hani.slnx --no-build --verbosity normal
+
+      - name: Format
+        run: dotnet format Hani.slnx --verify-no-changes --no-restore
+
+      - name: Vulnerable packages
+        run: dotnet list Hani.slnx package --vulnerable --include-transitive
