@@ -9,6 +9,7 @@
 | [`ROADMAP.md`](ROADMAP.md) | فازها، تحویل‌دادنی‌ها، معیار پذیرش و Phase Gate |
 | [`STATUS.md`](STATUS.md) | وضعیت زنده: انجام‌شده / در حال انجام / بعدی |
 | [`TASKS.md`](TASKS.md) | بک‌لاگ تسک‌ها با ID، وابستگی، DoD و commit |
+| [`DONE.md`](DONE.md) | دفتر کارهای تحویل‌شده (Done Ledger) |
 | [`../../PLAN.md`](../../PLAN.md) | معماری، تصمیم‌ها، جزئیات فنی |
 
 ## چرخه کار

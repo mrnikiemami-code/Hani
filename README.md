@@ -66,6 +66,7 @@ dotnet test Hani.slnx
 | [ROADMAP](docs/plan/ROADMAP.md) | فازها، تحویل‌دادنی‌ها و Phase Gate |
 | [STATUS](docs/plan/STATUS.md) | انجام‌شده / در حال انجام / بعدی |
 | [TASKS](docs/plan/TASKS.md) | بک‌لاگ با ID و DoD |
+| [DONE](docs/plan/DONE.md) | دفتر کارهای تحویل‌شده |
 
 **فاز فعال:** Phase 1 — Core Domain
 **تسک بعدی:** `TC-021 — Departure + Price + Capacity`
