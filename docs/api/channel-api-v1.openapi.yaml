@@ -224,6 +224,82 @@ paths:
               schema: { $ref: '#/components/schemas/Booking' }
         '409': { $ref: '#/components/responses/Conflict' }
 
+  /me/entitlements:
+    get:
+      tags: [Catalog]
+      summary: پلن، وایت‌لیبل، سهمیه و نرخ کمیسیون
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Entitlements' }
+
+  /flights/search:
+    post:
+      tags: [Inventory]
+      summary: جستجوی بلیط (فاز ۴)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [origin, destination, departureDate, adults]
+              properties:
+                origin: { type: string, description: IATA }
+                destination: { type: string, description: IATA }
+                departureDate: { type: string, format: date }
+                returnDate: { type: [string, 'null'], format: date }
+                adults: { type: integer, minimum: 1 }
+                children: { type: integer, minimum: 0, default: 0 }
+                infants: { type: integer, minimum: 0, default: 0 }
+                cabin: { type: string, enum: [ECONOMY, BUSINESS, FIRST], default: ECONOMY }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { type: object, additionalProperties: true }
+                  partialResults: { type: boolean }
+
+  /flights/bookings:
+    post:
+      tags: [Booking]
+      summary: رزرو بلیط (فاز ۴)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [quoteId, contact, travelers]
+              properties:
+                quoteId: { type: string }
+                contact: { type: object, additionalProperties: true }
+                travelers: { type: array, items: { type: object, additionalProperties: true } }
+      responses:
+        '201':
+          description: PNR ایجاد شد
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bookingId: { type: string }
+                  pnr: { type: string }
+                  status: { type: string }
+                  ticketingDeadline: { type: [string, 'null'], format: date-time }
+
   /settlements:
     get:
       tags: [Finance]
@@ -469,3 +545,17 @@ components:
         currency: { type: string }
         status: { type: string, enum: [OPEN, APPROVED, PAID] }
         invoiceUrl: { type: [string, 'null'], format: uri }
+
+    Entitlements:
+      type: object
+      required: [plan, whiteLabel, attributionRequired]
+      properties:
+        plan: { type: string, enum: [STANDARD, PROFESSIONAL] }
+        whiteLabel: { type: boolean }
+        attributionRequired: { type: boolean }
+        customDomain: { type: boolean }
+        maxOffers: { type: integer }
+        apiRateLimitPerMinute: { type: integer }
+        commissionRate: { type: number }
+        seoCanonicalMode: { type: string, enum: [PLATFORM, AGENCY, SELF] }
+        supportSla: { type: string, enum: [STANDARD, PRIORITY] }

@@ -1,10 +1,22 @@
-# TravelCore — برنامه معماری و پیاده‌سازی (نسخه ۱.۰)
+# TravelCore — برنامه معماری و پیاده‌سازی (نسخه ۱.۱)
 
 > **وضعیت:** قفل‌شده برای شروع پیاده‌سازی
 > **مخزن:** https://github.com/mrnikiemami-code/Hani
 > **تاریخ:** ۱۹ آبان ۱۴۰۵ / ۱۰ نوامبر ۲۰۲۶
 > **مالک سند:** تیم معماری TravelCore
 > **قاعده:** تصمیم‌های این سند تا زمانی که ADR جدیدی تصویب نشود تغییر نمی‌کنند.
+
+---
+
+## تغییرات نسخه ۱.۱ (تصمیم‌های جدید)
+
+1. **پول به حساب آژانس می‌رود** → آژانس Merchant of Record است؛ TravelCore پول مشتری را نگه نمی‌دارد. کمیسیون با فاکتور دوره‌ای از آژانس دریافت می‌شود.
+2. **مدل درآمد هر سه‌گانه** → Supplier (اشتراک) + Channel (اشتراک/کمیسیون) + Marketplace (کمیسیون/تبلیغات). جزئیات: بخش ۳۰.
+3. **دو پلن تجاری Channel**:
+   - **Standard:** «Powered by TravelCore» اجباری.
+   - **Professional:** وایت‌لیبل کامل + اشتراک بالاتر + بدون برند TravelCore.
+4. **رزرو بلیط هواپیما** به‌عنوان ماژول مستقل `Flights` اضافه شد. جزئیات: بخش ۲۹.
+5. **SEO به یک Workstream مستقل و از فاز ۰** ارتقا یافت؛ نه فاز آخر. جزئیات: بخش ۱۶ و ۳۱.
 
 ---
 
@@ -38,6 +50,10 @@
 26. نسخه‌های پکیج و لایسنس
 27. تأیید درک: فولدر بندی و لاگینگ
 28. پیوست: درس‌های تحلیل لست‌سکند
+29. طراحی تفصیلی رزرو بلیط هواپیما (Flights)
+30. مدل درآمد، پلن‌ها و وایت‌لیبل
+31. استراتژی و مهندسی SEO (تفصیلی)
+32. جریان پول با مرچنت آژانس
 
 ---
 
@@ -50,6 +66,10 @@ TravelCore یک **مارکت‌پلیس چندآژانسه سفر** است با 
 3. **Marketplace** — مشتری مستقیم وارد TravelCore می‌شود، پیشنهاد چند آژانس را مقایسه و رزرو می‌کند.
 
 هسته مشترک همه این‌ها یکی است: **کاتالوگ تور مشترک (`TourProduct`) + پیشنهاد مستقل هر آژانس (`AgencyOffer`) + سانس/ظرفیت/قیمت (`TourDeparture`) + رزرو/قرارداد/پرداخت/تسویه**.
+
+علاوه بر تور، **بلیط هواپیما** یک ماژول مستقل با چرخه عمر متفاوت (جستجو، PNR، Ticketing، Refund) دارد و از همان هسته رزرو/پرداخت/کمیسیون استفاده می‌کند.
+
+**مدل پول:** آژانس Merchant of Record است. مشتری به آژانس پرداخت می‌کند؛ TravelCore فقط کمیسیون/اشتراک را با فاکتور از آژانس دریافت می‌کند. این تصمیم، ریسک و مجوز واسطه‌گری پرداخت را حذف می‌کند.
 
 این سند علاوه بر معماری، **برنامه اجرایی** است: ساختار پوشه‌ها، قواعد وابستگی، الگوی CQRS، BuildingBlocks، لاگینگ، تلمتری، idempotency، messaging، کش، دیتابیس، i18n، SEO، تست، CI/CD، نقشه راه و بک‌لاگ.
 
@@ -72,6 +92,11 @@ TravelCore یک **مارکت‌پلیس چندآژانسه سفر** است با 
 | MediatR | 12.5.0 — آخرین نسخه Apache-2.0 | 🔒 قفل |
 | MassTransit | 8.5.12 — آخرین نسخه Apache-2.0 | 🔒 قفل |
 | Transport | RabbitMQ یا PostgreSQL SQL Transport — قابل سوییچ | 🔒 قفل |
+| Merchant of Record | **آژانس** — TravelCore پول مشتری را نگه نمی‌دارد | 🔒 قفل |
+| مدل درآمد | هر سه: Supplier + Channel + Marketplace | 🔒 قفل |
+| پلن‌های Channel | Standard (Powered by) / Professional (White-label) | 🔒 قفل |
+| بلیط هواپیما | ماژول مستقل `Flights` — فاز ۴ | 🔒 قفل |
+| SEO | Workstream مستقل از فاز ۰ + ماژول `Seo` | 🔒 قفل |
 | روش توسعه | Cursor + تسک‌های کوچک + معماری قفل‌شده | 🔒 قفل |
 
 **قاعده تغییر:** هیچ پیشنهاد جدیدی (حتی اگر در گزارش تحلیل لست‌سکند آمده باشد) بدون ADR مصوب، این جدول را تغییر نمی‌دهد.
@@ -185,6 +210,9 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 | `GET` | `/channel/v1/bookings/{id}` | وضعیت |
 | `POST` | `/channel/v1/bookings/{id}/cancel` | لغو |
 | `GET` | `/channel/v1/settlements` | تسویه |
+| `GET` | `/channel/v1/me/entitlements` | پلن، وایت‌لیبل، سهمیه، نرخ کمیسیون |
+| `POST` | `/channel/v1/flights/search` | جستجوی بلیط (فاز ۴) |
+| `POST` | `/channel/v1/flights/bookings` | رزرو بلیط (فاز ۴) |
 
 **قواعد:**
 - توکن فقط به `AgencyId` خودش دسترسی دارد.
@@ -192,6 +220,9 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 - `Idempotency-Key` اجباری برای همه POSTها.
 - Webhook با HMAC و retry.
 - محدودیت IP پیش‌فرض فعال.
+- **پلن Standard:** نمایش «Powered by TravelCore» اجباری است.
+- **پلن Professional:** وایت‌لیبل کامل؛ نام/لوگوی TravelCore در UI، ایمیل، فاکتور و checkout نمایش داده نمی‌شود.
+- جزئیات پلن‌ها و اجبار برند: بخش ۳۰.
 
 ### ۴.۵. Marketplace
 
@@ -212,6 +243,43 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 - قرارداد با اسنپ‌شات کامل Offer/Departure.
 - در صورت نبود ظرفیت، پیشنهاد جایگزین (همان Product از آژانس دیگر).
 
+### ۴.۶. مدل درآمد سه‌گانه
+
+| مدل | درآمد | مبنا |
+|---|---|---|
+| Supplier | اشتراک پلن تأمین‌کننده | تعداد Offer، سهمیه API، اولویت moderation |
+| Channel | اشتراک پلن + کمیسیون هر رزرو | Standard/Professional + نرخ کمیسیون |
+| Marketplace | کمیسیون هر رزرو + تبلیغات | نرخ بر اساس ProductType و پلن آژانس |
+
+**قاعده:** هیچ درآمدی بر پایه «نگه‌داشتن پول مشتری» نیست. همه جریان‌ها با فاکتور و دفتر کل قابل ردیابی‌اند. جزئیات: بخش ۳۰.
+
+### ۴.۷. مرچنت آژانس و جریان پول
+
+- **مشتری → آژانس** پرداخت می‌کند (درگاه آژانس یا درگاه مشترک با حساب آژانس).
+- **TravelCore → آژانس** فاکتور کمیسیون/اشتراک می‌فرستد.
+- TravelCore هیچ‌گاه پول مشتری را در حساب خود نگه نمی‌دارد.
+- در Marketplace، TravelCore فقط orchestration می‌کند: سفارش، قرارداد، وضعیت پرداخت، بلیط/واچر.
+- در Channel، پرداخت کاملاً سمت آژانس است.
+- گزینه Split Payment فقط اگر PSP داخلی از sub-merchant پشتیبانی کند؛ در غیر این صورت فاکتور دوره‌ای.
+
+جزئیات و ماشین وضعیت: بخش ۳۲.
+
+### ۴.۸. پلن‌ها و وایت‌لیبل
+
+| ویژگی | Standard | Professional |
+|---|---|---|
+| Channel API | ✓ | ✓ |
+| «Powered by TravelCore» | اجباری | حذف |
+| وایت‌لیبل کامل | ✗ | ✓ |
+| دامنه اختصاصی | ✗ | ✓ |
+| سهمیه API | پایه | بالا |
+| نرخ کمیسیون | بالاتر | پایین‌تر |
+| SEO canonical | به TravelCore | قابل تنظیم (با قواعد محتوا) |
+| پشتیبانی | استاندارد | اولویت‌دار |
+| اشتراک | پایه | بالاتر |
+
+**اجرای برند:** قرارداد + `GET /channel/v1/me/entitlements` + نمایش اجباری در checkout میزبانی‌شده. جزئیات: بخش ۳۰.
+
 ---
 
 ## ۵. قابلیت‌های محصول
@@ -220,16 +288,18 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 |---|---|
 | مارکت‌پلیس | مقایسه چند آژانس، رتبه‌بندی، پیشنهاد جایگزین، جستجوی چندزبانه |
 | تور | محصول مشترک، برنامه سفر، تاریخ حرکت، ظرفیت، قیمت‌گذاری چندنوعی (دو/یک تخته/کودک/نوزاد) |
+| بلیط هواپیما | جستجوی پرواز، Fare Family، PNR، Ticketing، Refund، چند ایرلاین |
 | رزرو | Quote، Hold، Order، Contract، Ticket/Voucher، Amendment، Cancellation |
-| پرداخت | درگاه داخلی، Idempotency، Webhook، Refund، Reconciliation |
-| تسویه | کمیسیون، دفتر کل دوطرفه، دوره تسویه، فاکتور، پرداخت به آژانس |
+| پرداخت | درگاه آژانس، Idempotency، Webhook، Refund، Reconciliation |
+| تسویه | کمیسیون، دفتر کل دوطرفه، فاکتور آژانس، Credit Limit، Dunning |
+| پلن‌ها | Standard/Professional، Entitlements، White-label، Usage Metering |
 | هتل/مقصد/جاذبه | کاتالوگ محتوایی، نقشه، امکانات، رتبه، نقد |
 | ویزا | سرویس، قیمت، مدارک، مراحل، درخواست |
 | محتوا | سفرنامه، خاطرات سفر، بلاگ، ویدیو، نویسنده، دسته‌بندی |
 | نظرات | نقد چندمعیاره، تایید، پاسخ، گزارش |
 | پنل‌ها | پنل مدیریت، پنل آژانس، داشبورد مسافر |
 | چندزبانه | FA/EN/AR در UI، محتوا، خطاها، SEO |
-| SEO | Slug، متا، Sitemap، JSON-LD، Redirect، hreflang |
+| SEO | Slug، متا، Sitemap، JSON-LD، Redirect، hreflang، Route Landing |
 
 ---
 
@@ -260,8 +330,10 @@ flowchart TB
   subgraph Modules["Modular Monolith"]
     CAT[Catalog]
     SUPPLY[Supply]
+    FLIGHT[Flights]
     BOOK[Booking]
     PAY[Payments]
+    BILL[Billing]
     SET[Settlement]
     IDN[Identity]
     REV[Reviews]
@@ -300,9 +372,11 @@ flowchart TB
 | Supply | AgencyOffer، Departure، ظرفیت، قیمت، moderation | `supply` |
 | Marketplace | Read model مقایسه، رتبه‌بندی، BFF مصرف‌کننده | `marketplace` |
 | Search | ایندکس و کوئری جستجو | `search` (OpenSearch) |
-| Booking | Quote، Hold، Order، Contract، Ticket، Cancel | `booking` |
-| Payments | PaymentIntent، Gateway، Webhook، Refund | `payment` |
-| Settlement | Ledger، Commission، Payout، Invoice | `settlement` |
+| Booking | Quote، Hold، Order، Contract، Ticket، Cancel (چند ProductType) | `booking` |
+| Flights | Airline/Airport، Schedule، Fare، PNR، Ticketing، Refund | `flight` |
+| Payments | PaymentIntent، Gateway آژانس، Webhook، Refund | `payment` |
+| Billing | Plan، Subscription، Entitlement، CommissionRule، Invoice | `billing` |
+| Settlement | Ledger، CommissionEntry، Invoice، Dunning | `settlement` |
 | Reviews | نقد، امتیاز، پاسخ، گزارش | `review` |
 | Content | سفرنامه، خاطرات، بلاگ، ویدیو | `content` |
 | Seo | Slug، Meta، Redirect، Sitemap | `seo` |
@@ -386,10 +460,13 @@ src/TravelCore.Api/
 │  ├─ Marketplace/
 │  │  ├─ ProductsEndpoints.cs
 │  │  ├─ CompareEndpoints.cs
-│  │  └─ BookingEndpoints.cs
+│  │  ├─ BookingEndpoints.cs
+│  │  └─ FlightSearchEndpoints.cs
 │  ├─ Channel/
 │  │  ├─ ChannelCatalogEndpoints.cs
 │  │  ├─ ChannelBookingEndpoints.cs
+│  │  ├─ ChannelFlightEndpoints.cs
+│  │  ├─ ChannelEntitlementsEndpoints.cs
 │  │  └─ ChannelSettlementEndpoints.cs
 │  ├─ Supplier/
 │  │  ├─ SupplierOfferEndpoints.cs
@@ -518,8 +595,17 @@ src/TravelCore.Contracts/
 │  ├─ PaymentSucceededIntegrationEvent.cs
 │  ├─ PaymentFailedIntegrationEvent.cs
 │  └─ RefundIssuedIntegrationEvent.cs
+├─ TravelCore.Contracts.Flights/
+│  ├─ FlightBookingConfirmedIntegrationEvent.cs
+│  ├─ FlightTicketedIntegrationEvent.cs
+│  └─ FlightRefundedIntegrationEvent.cs
+├─ TravelCore.Contracts.Billing/
+│  ├─ SubscriptionRenewedIntegrationEvent.cs
+│  ├─ CommissionChargedIntegrationEvent.cs
+│  └─ InvoiceOverdueIntegrationEvent.cs
 └─ TravelCore.Contracts.Settlement/
-   └─ SettlementPaidIntegrationEvent.cs
+   ├─ SettlementPaidIntegrationEvent.cs
+   └─ CommissionInvoicedIntegrationEvent.cs
 ```
 
 ### ۷.۵. قالب هر ماژول (مثال: Supply)
@@ -963,7 +1049,8 @@ CREATE INDEX ix_idempotency_expires
 
 ```
 PaymentIntent:
-  Id, OrderId, Amount, Currency, Status,
+  Id, OrderId, AgencyId, Amount, Currency, Status,
+  MerchantScope = Agency, PspAccountRef,
   Provider, ProviderRef, IdempotencyKey,
   CreatedAt, UpdatedAt, Version
 
@@ -977,6 +1064,22 @@ Status: Created → Pending → Succeeded | Failed | Expired
 - اثر هر رویداد یک بار: Outbox + Inbox + وضعیت ماشین.
 - تطبیق روزانه (Reconciliation) بین درگاه و دفتر کل.
 - Refund هم idempotent است (`refund:{paymentId}:{requestId}`).
+- **پول در حساب TravelCore نگه داشته نمی‌شود؛ `PspAccountRef` به حساب آژانس اشاره می‌کند.**
+
+### ۱۱.۵.۱. Idempotency بلیط هواپیما
+
+| عملیات | کلید |
+|---|---|
+| Search | بدون کلید (کش کوتاه) |
+| Quote/Hold | `flight-quote:{supplierId}:{itineraryHash}` |
+| Create PNR | `flight-pnr:{quoteId}` |
+| Issue Ticket | `flight-ticket:{pnrId}:{passengerHash}` |
+| Cancel PNR | `flight-cancel:{pnrId}` |
+| Refund | `flight-refund:{ticketId}:{requestId}` |
+
+- PNR و Ticket در جدول‌های جدا با `supplier_ref` یکتا ذخیره می‌شوند.
+- اگر پاسخ Supplier گم شد، قبل از retry وضعیت PNR را query کن.
+- Ticketing deadline با Job پایش می‌شود؛ اگر پرداخت نرسید → Cancel PNR.
 
 ### ۱۱.۶. پاکسازی
 
@@ -1135,8 +1238,8 @@ public interface ICacheService
 ### ۱۴.۲. Schemaها
 
 ```
-identity, catalog, supply, marketplace, booking, payment,
-settlement, review, content, seo, notification, platform, transport
+identity, catalog, supply, flight, marketplace, booking, payment,
+billing, settlement, review, content, seo, notification, platform, transport
 ```
 
 ### ۱۴.۳. انواع داده
@@ -1159,9 +1262,11 @@ settlement, review, content, seo, notification, platform, transport
 | catalog | `tour_products`, `tour_product_translations`, `destinations`, `hotels`, `hotel_translations`, `attractions`, `visa_services`, `media_assets` |
 | supply | `agency_offers`, `departures`, `departure_prices`, `departure_capacity`, `offer_hotels`, `offer_rules`, `moderation_queue` |
 | marketplace | `product_read_models`, `offer_compare_views`, `ranking_scores` |
+| flight | `airlines`, `airports`, `routes`, `schedules`, `instances`, `fare_offers`, `fare_rules`, `flight_orders`, `pnrs`, `tickets`, `refunds`, `supplier_configs` |
 | booking | `quotes`, `quote_lines`, `holds`, `orders`, `order_items`, `travelers`, `contracts`, `tickets`, `cancellations` |
 | payment | `payment_intents`, `payment_transactions`, `payment_webhook_events`, `refunds` |
-| settlement | `ledger_accounts`, `ledger_entries`, `settlements`, `settlement_lines`, `invoices`, `payouts` |
+| billing | `plans`, `subscriptions`, `entitlements`, `usage_meters`, `commission_rules`, `commission_entries`, `invoices`, `dunning` |
+| settlement | `ledger_accounts`, `ledger_entries`, `settlements`, `settlement_lines`, `payouts` |
 | review | `reviews`, `review_scores`, `review_replies`, `review_reports` |
 | content | `posts`, `post_translations`, `stories`, `memories`, `videos`, `authors`, `categories` |
 | seo | `slugs`, `redirects`, `meta_templates`, `sitemap_entries` |
@@ -1230,19 +1335,152 @@ public sealed record LocalizedText(
 
 ## ۱۶. موتور SEO
 
-- Next.js Server Components + `generateMetadata` + ISR.
-- ماژول مستقل `Seo`:
-  - `slugs` (EntityType, EntityId, Locale, Slug, IsCanonical)
-  - `redirects` (From, To, StatusCode)
-  - `meta_templates` (EntityType, Locale, TitleTemplate, DescriptionTemplate)
-  - `sitemap_entries`
-- Sitemap index: `/sitemap.xml` → `/fa/sitemap.xml`, `/en/sitemap.xml`, `/ar/sitemap.xml`.
-- JSON-LD: `TouristTrip`, `Offer`, `Product`, `Hotel`, `Article`, `FAQPage`, `BreadcrumbList`.
-- Canonical برای صفحات فیلترشده و صفحه محصول (نه هر Offer).
-- Facet pages: `noindex` در صورت ارزش محتوایی پایین.
-- Core Web Vitals: تصاویر بهینه، فونت subset، JS کم.
-- Redirect 301 برای Slugهای قدیمی.
-- Revalidation on-demand از بک‌اند با Webhook.
+> SEO برای TravelCore یک **Workstream مستقل** است، نه یک فاز پایانی. از فاز ۰ شروع می‌شود و در هر فاز گسترش می‌یابد. جزئیات مهندسی: بخش ۳۱.
+
+### ۱۶.۱. اصول
+
+1. **SSR/ISR واقعی:** محتوای اصلی در HTML اولیه؛ کلاینت فقط برای تعامل.
+2. **یک URL canonical برای هر موجودیت:** Product/Route/Hotel/Article، نه هر Offer.
+3. **کیفیت بر کمیت:** صفحه برنامه‌ای فقط با محتوای یکتا و ارزش جستجو.
+4. **کنترل خزش:** faceted navigation، پارامترها، صفحه‌بندی و صفحات خالی.
+5. **چندزبانه از روز اول:** FA/EN/AR با hreflang و Slug مستقل.
+6. **پایداری URL:** Slug registry + redirect 301.
+7. **سنجش:** GSC/GA4/CI؛ بدون داده، تصمیم SEO ممنوع.
+
+### ۱۶.۲. ماتریس رندر و کش
+
+| نوع صفحه | رندر | کش | ایندکس |
+|---|---|---|---|
+| خانه | ISR | CDN 60s | ✓ |
+| Product تور | ISR + on-demand | CDN 60s | ✓ |
+| مقصد/شهر | ISR | CDN 5m | ✓ |
+| هتل/جاذبه/رستوران | ISR | CDN 5m | ✓ |
+| ویزا | ISR | CDN 10m | ✓ |
+| مسیر پرواز | ISR (قیمت از) + fetch قیمت | CDN 30–60s | ✓ |
+| نتایج جستجو | SSR | no-store | `noindex,follow` |
+| فیلتر/تاریخ/قیمت | SSR/Client | no-store | `noindex` |
+| مقاله/سفرنامه | ISR | CDN 10m | ✓ |
+| پنل/سبد/پرداخت | CSR/SSR | no-store | `noindex` |
+
+### ۱۶.۳. URL و Slug
+
+```
+/fa/tours/{slug}
+/en/tours/{slug}
+/ar/tours/{slug}
+
+/fa/flights/{origin}-{destination}
+/fa/hotels/{city}/{slug}
+/fa/visa/{country}
+/fa/blog/{slug}
+```
+
+- Slug در جدول `seo.slugs` با `(EntityType, EntityId, Locale)` یکتا.
+- تغییر Slug → رکورد `redirects` با 301.
+- Slug تکراری/خالی ممنوع.
+- حداکثر طول ۷۵ کاراکتر؛ فقط حروف، عدد و خط تیره.
+- برای FA از حروف فارسی در Slug استفاده نکنید (URL encode و اشتراک‌گذاری سخت)؛ از ترانویسی لاتین یا Slug انگلیسی پایدار.
+
+### ۱۶.۴. Metadata
+
+- `generateMetadata` در Server Component.
+- Template: `{Title} | TravelCore` (در پلن Standard) / `{Title} | {AgencyBrand}` (در Professional).
+- Description یکتا ۱۲۰–۱۶۰ کاراکتر؛ بدون تکرار.
+- OG image داینامیک (Next.js `ImageResponse`).
+- `alternates.languages` برای FA/EN/AR + `x-default`.
+- `robots` بر اساس نوع صفحه و پلن.
+- Canonical:
+  - Product/Route/Hotel/Article → self.
+  - Offer → Product.
+  - Facet/Date → Product/Route.
+  - Channel Standard → TravelCore.
+  - Channel Professional → قابل تنظیم (بخش ۱۶.۸).
+
+### ۱۶.۵. Structured Data
+
+| موجودیت | Schema |
+|---|---|
+| تور | `TouristTrip` + `Offer` + `Product` + `AggregateOffer` |
+| مسیر پرواز | `Product` + `Offer` + `FAQPage` (اگر FAQ دارد) |
+| هتل | `Hotel` + `AggregateRating` |
+| جاذبه/رستوران | `TouristAttraction` / `Restaurant` |
+| مقاله/سفرنامه | `Article` / `BlogPosting` |
+| ویزا | `Service` + `FAQPage` |
+| عمومی | `Organization`, `WebSite` + `SearchAction`, `BreadcrumbList` |
+
+- `Offer` باید `price`, `priceCurrency`, `availability`, `validFrom` داشته باشد.
+- `AggregateRating` فقط با نظرات واقعی.
+- JSON-LD در Server Component تزریق شود؛ نه با JS کلاینت.
+- اعتبارسنجی در CI با Schema Validator.
+
+### ۱۶.۶. Sitemap و Robots
+
+- `sitemap.xml` (index) → `sitemap-tours-{locale}.xml`, `sitemap-flights-{locale}.xml`, `sitemap-hotels-{locale}.xml`, `sitemap-content-{locale}.xml`.
+- حداکثر ۵۰٬۰۰۰ URL و ۵۰MB per file.
+- فقط صفحات `indexable` و 200.
+- `lastmod` واقعی از `updated_at`.
+- robots.txt:
+  - Allow عمومی.
+  - Disallow `/api`, `/panel`, `/admin`, `/checkout`, `/booking`, پارامترهای حساس.
+  - Sitemap declaration.
+- صفحات facet: لینک داخلی کنترل‌شده + `noindex` برای ترکیب‌های بی‌ارزش.
+- صفحه‌بندی: `?page=2` با canonical به صفحه اصلی یا self با `noindex` بسته به استراتژی؛ برای لیست تور، self canonical + محتوای یکتا.
+
+### ۱۶.۷. تولید محتوا و SEO برنامه‌ای
+
+- **Hub:** مقصد → تورها، هتل‌ها، جاذبه‌ها، ویزا، سفرنامه.
+- **Route pages پرواز:** هر مسیر پرتقاضا با محتوای یکتا (فرودگاه، ایرلاین‌ها، زمان، بار، ویزا، بهترین زمان).
+- **Tour product:** توضیح یکتا، برنامه روزبه‌روز، FAQ، مدارک، کنسلی.
+- **Hotel/Attraction:** توضیح، امکانات، دسترسی، اطراف.
+- **Content:** سفرنامه/راهنما با نویسنده واقعی و تاریخ به‌روزرسانی.
+- **ممنوع:** صفحه نازک، ترجمه ماشینی بدون ویرایش، تکرار توضیح آژانس، صفحات تاریخ بی‌نهایت.
+- **قاعده کیفیت:** حداقل ۳۰۰ کلمه محتوای یکتا برای صفحات برنامه‌ای؛ در غیر این صورت `noindex`.
+
+### ۱۶.۸. SEO و پلن‌های Channel
+
+| موضوع | Standard | Professional |
+|---|---|---|
+| Canonical | TravelCore | قابل تنظیم (Agency/Self) |
+| برند | Powered by TravelCore | White-label |
+| محتوا | Syndicated | License + Unique Content |
+| Sitemap | فقط TravelCore | Agency مسئول است |
+| hreflang | TravelCore | Agency مسئول است |
+
+**سیاست پیشنهادی:**
+- Standard: محتوای محصول با canonical به TravelCore؛ آژانس می‌تواند index کند ولی اعتبار به TravelCore می‌رسد.
+- Professional: آژانس می‌تواند self-canonical کند **فقط اگر** محتوای یکتا اضافه کند (حداقل آستانه). در غیر این صورت `noindex` روی نسخه آژانس.
+- دو دامنه با محتوای یکسان = رقابت داخلی؛ با محتوای یکتا + لینک داخلی مدیریت می‌شود.
+- `SeoPolicy` در `GET /channel/v1/me/entitlements` برگردانده می‌شود.
+
+### ۱۶.۹. Core Web Vitals
+
+| شاخص | بودجه |
+|---|---|
+| LCP | < 2.5s (p75 موبایل) |
+| INP | < 200ms |
+| CLS | < 0.1 |
+| JS اولیه | < 200KB gzip |
+| تصویر | AVIF/WebP + srcset |
+| فونت | subset + `font-display: swap` |
+
+- Server Components پیش‌فرض؛ `use client` فقط برای تعامل.
+- تصاویر `next/image` + CDN.
+- کش CDN + `stale-while-revalidate`.
+- حذف کتابخانه‌های سنگین از مسیر بحرانی.
+
+### ۱۶.۱۰. سنجش و CI
+
+- Google Search Console + Bing Webmaster.
+- GA4 + رویدادهای سرور-side.
+- گزارش ماهانه: Impressions, CTR, Position, Indexed, Crawl errors.
+- CI:
+  - Lighthouse (SEO/Performance/A11y) با آستانه.
+  - Schema validation.
+  - Broken link check.
+  - Sitemap validation.
+  - Canonical/hreflang check.
+  - Duplicate title/description check.
+- هشدار افت ترافیک/خطای خزش.
 
 ---
 
@@ -1332,12 +1570,15 @@ git push
 
 | فاز | مدت | خروجی | معیار خروج |
 |---|---|---|---|
-| ۰. Bootstrap | ۲ هفته | Solution، BuildingBlocks، Docker، CI، Observability، Idempotency، Cache، Messaging، i18n پایه | تست‌ها سبز؛ یک endpoint نمونه end-to-end |
+| ۰. Bootstrap | ۲ هفته | Solution، BuildingBlocks، Docker، CI، Observability، Idempotency، Cache، Messaging، i18n پایه، **SEO foundation** | تست‌ها سبز؛ endpoint نمونه + sitemap/meta پایه |
 | ۱. Core Supply | ۴ هفته | Identity، Catalog، Supply، Supplier API، moderation | آژانس بتواند Offer/Departure ثبت کند |
-| ۲. Marketplace | ۵ هفته | Search، Compare، Quote/Hold، Booking، Contract، Payment | یک رزرو کامل با پرداخت |
-| ۳. Channel + Settlement | ۴ هفته | Channel API، Webhook، Ledger، Settlement، پنل آژانس | یک کانال تستی end-to-end + اولین تسویه |
-| ۴. Content + SEO + i18n | ۳ هفته | محتوا، نظرات، Seo، Sitemap، FA/EN/AR | ایندکس شدن صفحات سه‌زبانه |
-| ۵. Hardening | مستمر | Load test، DR، Security، استخراج میکروسرویس | SLO و آمادگی مقیاس |
+| ۲. Marketplace | ۵ هفته | Search، Compare، Quote/Hold، Booking، Contract، Payment (مرچنت آژانس) | یک رزرو کامل با پرداخت آژانس |
+| ۳. Channel + Billing | ۴ هفته | Channel API، Webhook، Plans/Entitlements، White-label، Commission Ledger، پنل آژانس | یک کانال Standard و یک Professional + اولین فاکتور کمیسیون |
+| ۴. Flights | ۵ هفته | جستجو، PNR، Ticketing، Refund، یک Supplier پایلوت، صفحه مسیرها | یک بلیط داخلی end-to-end + صفحه SEO مسیر |
+| ۵. Content + SEO Scale + i18n | ۳ هفته | محتوا، نظرات، Sitemap کامل، JSON-LD، FA/EN/AR | ایندکس شدن صفحات سه‌زبانه |
+| ۶. Hardening | مستمر | Load test، DR، Security، استخراج میکروسرویس | SLO و آمادگی مقیاس |
+
+> **SEO یک Workstream است، نه فاز:** از فاز ۰ شروع می‌شود، در فاز ۲ (صفحات محصول/مقایسه)، فاز ۴ (مسیر پرواز) و فاز ۵ (محتوا) عمیق‌تر می‌شود.
 
 **تیم حداقلی:** ۱ معمار، ۴–۶ بک‌اند، ۲–۳ فرانت، ۱ DevOps، ۱ QA، ۱ طراح، ۱ محصول/عملیات سفر، ۱ سئو/محتوا.
 
@@ -1395,6 +1636,20 @@ git push
 | TC-046 | Ops | Backup/DR drill | S | RTO/RPO |
 | TC-047 | Sec | Security review | M | رفع Highها |
 | TC-048 | Arch | نقشه استخراج میکروسرویس | S | ADR |
+| TC-049 | Billing | Plan/Subscription/Entitlement | L | دو پلن قابل تخصیص |
+| TC-050 | Billing | White-label + Attribution | L | نمایش/عدم نمایش برند |
+| TC-051 | Billing | CommissionRule + CommissionEntry | L | محاسبه بر اساس ProductType/Plan |
+| TC-052 | Billing | فاکتور آژانس + Dunning | M | فاکتور دوره‌ای و یادآوری |
+| TC-053 | Flights | Airline/Airport/Route/Schedule | M | CRUD + seed |
+| TC-054 | Flights | FlightSupplier adapter + Mock | L | جستجو/Quote/Pnr |
+| TC-055 | Flights | Search fan-out + cache | L | چند Supplier + timeout |
+| TC-056 | Flights | Booking Saga + PNR + Ticketing | L | end-to-end + deadline |
+| TC-057 | Flights | Refund/Cancel | M | refund quote |
+| TC-058 | Seo | Route pages + JSON-LD پرواز | L | صفحه مسیر ایندکس‌شدنی |
+| TC-059 | Seo | Slug/Meta/Sitemap/Redirect | L | سه‌زبانه + CI |
+| TC-060 | Seo | CI Lighthouse/Schema/Link | M | آستانه‌ها |
+| TC-061 | Channel | SEO Payload + SeoPolicy | M | Standard/Professional |
+| TC-062 | Checkout | Attribution badge در checkout میزبانی‌شده | S | enforceable |
 
 > هر تسک باید حداکثر ۱ روز کاری باشد؛ اگر بزرگ‌تر شد، به زیرتسک شکسته شود. هیچ تسکی نباید مرز ماژول را بشکند.
 
@@ -1410,23 +1665,35 @@ git push
 | حجم ترجمه EN/AR | تأخیر محتوا | fallback + workflow ترجمه |
 | وابستگی به پکیج‌های رایگان | ریسک امنیتی/ارتقا | قفل نسخه + بازبینی دوره‌ای + بودجه لایسنس |
 | .NET 10 / Next 16 جدید | ناسازگاری اکوسیستم | تست سازگاری در فاز ۰ |
-| گسترش دامنه | تأخیر | MVP باریک؛ بلیط هواپیما فاز بعد |
+| گسترش دامنه | تأخیر | MVP باریک؛ Flights در فاز ۴ با یک Supplier |
 | تمرکز روی UI | غفلت از موجودی/تسویه | Definition of Done دامنه‌محور |
+| **پیچیدگی GDS/Consolidator** | تأخیر و ناپایداری جستجو | Adapter + Mock + یک Supplier پایلوت + circuit breaker |
+| **Ticketing Deadline** | از دست رفتن PNR | Job پایش + هشدار + cancel خودکار |
+| **وصول کمیسیون از آژانس** | ریسک نقدینگی | Prepaid wallet + Credit Limit + تعلیق API |
+| **Duplicate Content وایت‌لیبل** | افت SEO | سیاست canonical + محتوای یکتا + پایش GSC |
+| **اجرای Attribution** | نقض قرارداد | checkout میزبانی‌شده + entitlements + بازبینی دوره‌ای |
 
 ---
 
-## ۲۴. سؤالات باز
+## ۲۴. سؤالات و تصمیم‌ها
 
-1. Merchant of Record کیست؟ پول به حساب پلتفرم یا آژانس؟
-2. مدل درآمد: کمیسیون، اشتراک، فی بهازای رزرو؟
-3. آیا Channel API وایت‌لیبل کامل است؟
+1. Merchant of Record کیست؟ پول به حساب پلتفرم یا آژانس؟ ✅ حل شد: آژانس.
+2. مدل درآمد: کمیسیون، اشتراک، فی به‌ازای رزرو؟ ✅ حل شد: هر سه مدل.
+3. آیا Channel API وایت‌لیبل کامل است؟ ✅ حل شد: Standard (Powered by) / Professional (White-label).
+3.1. بلیط هواپیما در دامنه است؟ ✅ حل شد: بله، ماژول `Flights` — فاز ۴.
 4. حداقل قیمت/قیمت‌گذاری کانال توسط آژانس آزاد است؟
 5. کدام درگاه‌های پرداخت؟ (زرین‌پال، آیدی‌پی، سداد، ...)
 6. مالکیت محتوا و ترجمه EN/AR با کیست؟
 7. SLA و جریمه عدم‌موجودی؟
 8. مقاصد و آژانس‌های پایلوت؟
 9. نیاز به اپ موبایل در فاز اول؟
-10. الزامات مالیاتی/فاکتور رسمی؟
+10. الزامات مالیاتی/فاکتور رسمی و مسئول صدور فاکتور مشتری؟
+11. کدام PSPها پرداخت به حساب آژانس + callback به TravelCore را پشتیبانی می‌کنند؟ آیا Split Payment ممکن است؟
+12. نرخ کمیسیون هر پلن و هر ProductType چقدر است؟
+13. مکان و متن «Powered by TravelCore» در پلن Standard کجاست؟ (فوتر، checkout، هر دو)
+14. سیاست canonical در پلن Professional: آژانس یا TravelCore؟ آستانه محتوای یکتا؟
+15. Flights: داخلی یا بین‌المللی؟ GDS/NDC یا Consolidator ایرانی؟ Ticketing توسط کی؟
+16. SLA و جریمه عدم‌موجودی/تأخیر Ticketing؟
 
 ---
 
@@ -1444,6 +1711,10 @@ git push
 | ADR-0008 | Idempotency در پرداخت |
 | ADR-0009 | PostgreSQL Schema per Module |
 | ADR-0010 | i18n سه‌زبانه و SEO |
+| ADR-0011 | مرچنت آژانس و کمیسیون با فاکتور |
+| ADR-0012 | پلن‌های Standard/Professional و وایت‌لیبل |
+| ADR-0013 | ماژول Flights و چرخه PNR/Ticketing |
+| ADR-0014 | استراتژی SEO و سیاست canonical کانال |
 
 مسیر: `docs/adr/`
 
@@ -1498,6 +1769,22 @@ git push
 - خروجی: Console/Seq در توسعه، OTLP → Grafana/Tempo/Loki در تولید.
 - هشدارها: 5xx، p95، Outbox lag، DLQ، Payment failure.
 
+### پول و پلن‌ها — بله، دقیقاً این‌طور:
+
+- آژانس Merchant of Record است؛ TravelCore پول مشتری را نگه نمی‌دارد.
+- کمیسیون/اشتراک با فاکتور دوره‌ای از آژانس دریافت می‌شود.
+- هر سه مدل درآمد فعال است: Supplier، Channel، Marketplace.
+- Standard = «Powered by TravelCore» اجباری؛ Professional = وایت‌لیبل کامل.
+- `Entitlements` منبع حقیقت برای برند، سهمیه، canonical و نرخ کمیسیون است.
+
+### بلیط هواپیما — بله:
+
+- ماژول مستقل `Flights` با دامنه جدا (`flight` schema).
+- چرخه: Search → Quote/Hold → PNR → Payment → Ticketing → Refund.
+- Supplier Adapter + Mock + circuit breaker + ticketing deadline job.
+- SEO مسیرها: `/flights/{origin}-{destination}` با محتوای یکتا.
+- فاز ۴ با یک Supplier پایلوت.
+
 ---
 
 ## ۲۸. پیوست: درس‌های تحلیل لست‌سکند
@@ -1519,4 +1806,493 @@ git push
 
 ---
 
-**پایان سند — TravelCore PLAN v1.0**
+## ۲۹. طراحی تفصیلی رزرو بلیط هواپیما (Flights)
+
+### ۲۹.۱. دامنه و فرض‌ها
+
+- **در دامنه محصول است**، اما فاز ۴ (بعد از Marketplace و Channel).
+- شروع با **پرواز داخلی + چند مسیر بین‌المللی** از طریق **یک Consolidator پایلوت**.
+- یک‌طرفه و رفت‌وبرگشت در MVP؛ چندمسیره (Multi-city) فاز بعد.
+- انتخاب صندلی/بار اضافه/Ancillary در فاز بعد.
+- PNR و Ticketing توسط Supplier انجام می‌شود؛ TravelCore orchestrator است.
+- پول به آژانس می‌رود؛ TravelCore کمیسیون می‌گیرد.
+
+### ۲۹.۲. مدل دامنه
+
+| موجودیت | فیلدهای کلیدی |
+|---|---|
+| `Airline` | IATA, ICAO, Name, Logo, Active |
+| `Airport` | IATA, Name, City, Country, Timezone, Coordinates |
+| `Route` | OriginAirportId, DestinationAirportId, Slug |
+| `FlightSchedule` | AirlineId, FlightNo, RouteId, DepartureTime, ArrivalTime, Duration, Aircraft, DaysOfWeek, ValidFrom, ValidTo |
+| `FlightInstance` | ScheduleId, Date, Status, DepartedAt, ArrivedAt |
+| `FareFamily` | Code, Cabin, Baggage, ChangeRule, RefundRule, SeatSelection |
+| `FareOffer` | InstanceId, SupplierId, FareFamilyId, BaseFare, Taxes, Currency, SeatsLeft, ExpiresAt, FareBasis |
+| `Itinerary` | Segments[], Direction, TotalDuration, Stops |
+| `Passenger` | Type (ADT/CHD/INF), FirstName, LastName, NationalId, PassportNo, DOB |
+| `Pnr` | SupplierRef, OrderId, Status, TimeLimit, Segments[], Passengers[] |
+| `Ticket` | PnrId, TicketNumber, PassengerId, Coupons[], Status, IssuedAt |
+| `RefundQuote` | TicketId, Penalty, TaxRefund, NetRefund, ExpiresAt |
+| `FlightOrder` | OrderId, ItinerarySnapshot, FareSnapshot, PnrId, TicketingDeadline |
+
+**قاعده:** موجودی پرواز در Supplier است؛ دیتابیس محلی فقط cache/نمایش است و منبع حقیقت نیست.
+
+### ۲۹.۳. جستجو
+
+```
+Client → FlightSearchService
+          ├─ Supplier A (parallel, timeout 3s)
+          ├─ Supplier B (parallel, timeout 3s)
+          └─ Supplier C (parallel, timeout 3s)
+                ↓
+        Normalize → Dedupe → Rank → Cache 30–60s
+```
+
+- Fan-out موازی با `Task.WhenAll` + timeout + `CancellationToken`.
+- Circuit Breaker و Bulkhead برای هر Supplier.
+- نتیجه ناقص بهتر از خطای کامل: `partialResults: true`.
+- نرمال‌سازی: ارز، بار، قوانین تغییر/استرداد، تعداد توقف.
+- رتبه‌بندی: قیمت، مدت، توقف، بار، امتیاز ایرلاین.
+- کش: جستجو ۳۰–۶۰ ثانیه، Schedule ۱ ساعت، Airport/Airline ۲۴ ساعت.
+- قیمت تا لحظه PNR/Hold تضمینی نیست؛ در UI شفاف باشد.
+
+### ۲۹.۴. چرخه رزرو (Saga)
+
+```mermaid
+stateDiagram-v2
+  [*] --> Quoted
+  Quoted --> PnrCreated: CreatePnr
+  PnrCreated --> PaymentPending: init payment
+  PaymentPending --> Paid: payment.succeeded
+  PaymentPending --> Expired: timeout
+  Paid --> Ticketing: issue ticket
+  Ticketing --> Ticketed: supplier ok
+  Ticketing --> TicketingFailed: supplier error
+  TicketingFailed --> Paid: retry / manual
+  PnrCreated --> Cancelled: payment failed
+  Ticketed --> Refunded: refund
+  Expired --> [*]
+  Cancelled --> [*]
+  Ticketed --> [*]
+```
+
+- `TicketingDeadline` از Supplier گرفته می‌شود و Job آن را پایش می‌کند.
+- اگر پرداخت نرسید → `CancelPnr`.
+- اگر Ticketing شکست خورد → retry + هشدار + بازپرداخت.
+- Idempotency: `flight-pnr:{quoteId}`, `flight-ticket:{pnrId}:{passengerHash}`.
+- قبل از retry، وضعیت PNR را از Supplier query کن.
+
+### ۲۹.۵. Adapterهای Supplier
+
+```csharp
+public interface IFlightSupplier
+{
+    Task<FlightSearchResult> SearchAsync(FlightSearchRequest request, CancellationToken ct);
+    Task<FareQuote> QuoteAsync(FareOfferRef offer, CancellationToken ct);
+    Task<PnrResult> CreatePnrAsync(PnrRequest request, CancellationToken ct);
+    Task<TicketResult> IssueTicketAsync(TicketRequest request, CancellationToken ct);
+    Task CancelPnrAsync(PnrRef pnr, CancellationToken ct);
+    Task<RefundQuote> GetRefundQuoteAsync(TicketRef ticket, CancellationToken ct);
+    Task<RefundResult> RefundAsync(RefundRequest request, CancellationToken ct);
+    Task<PnrStatus> GetPnrStatusAsync(PnrRef pnr, CancellationToken ct);
+}
+```
+
+- Adapterها: `MockFlightSupplier`, `ConsolidatorAFlightSupplier`, `GdsFlightSupplier`.
+- Credential در Vault؛ هر Supplier rate limit و timeout جدا.
+- Sandbox با داده ثابت برای تست.
+
+### ۲۹.۶. API
+
+| مدل | مسیر | کار |
+|---|---|---|
+| Marketplace | `POST /market/v1/flights/search` | جستجو |
+| Marketplace | `POST /market/v1/flights/quotes` | قیمت/Hold |
+| Marketplace | `POST /market/v1/flights/bookings` | PNR + پرداخت |
+| Channel | `POST /channel/v1/flights/search` | جستجو برای آژانس |
+| Channel | `POST /channel/v1/flights/bookings` | رزرو |
+| Internal | `GET /internal/flights/suppliers/health` | سلامت |
+
+### ۲۹.۷. جدول‌ها
+
+`flight.airlines`, `flight.airports`, `flight.routes`, `flight.schedules`, `flight.instances`, `flight.fare_offers`, `flight.fare_rules`, `flight.orders`, `flight.pnrs`, `flight.tickets`, `flight.refunds`, `flight.supplier_configs`.
+
+### ۲۹.۸. کمیسیون و تسویه
+
+- کمیسیون پرواز بر اساس `CommissionRule` (ProductType=FLIGHT, Plan, Airline/Route).
+- آژانس Merchant است؛ پرداخت مشتری به آژانس.
+- تسویه آژانس با ایرلاین/Consolidator مسئولیت آژانس است؛ TravelCore فقط commission invoice می‌فرستد.
+- گزارش Reconciliation اختیاری از فایل Supplier.
+
+### ۲۹.۹. SEO پرواز
+
+- `/fa/flights/{origin}-{destination}` با محتوای یکتا.
+- `/fa/flights/airlines/{iata}` و `/fa/flights/airports/{iata}`.
+- قیمت «از» با کش ۳۰–۶۰ ثانیه؛ تاریخ/فیلتر `noindex`.
+- JSON-LD: `Product` + `Offer` + `FAQPage` + `BreadcrumbList`.
+- محتوا: بار مجاز، زمان پرواز، فرودگاه، ویزا، بهترین زمان، ایرلاین‌ها.
+- لینک داخلی: مسیر ↔ مقصد ↔ هتل ↔ تور.
+
+### ۲۹.۱۰. فازبندی Flights
+
+| مرحله | خروجی |
+|---|---|
+| F1 | دامنه + Mock Supplier + Search/Quote |
+| F2 | PNR + Ticketing + Payment Saga |
+| F3 | Refund/Cancel + Reconciliation |
+| F4 | Supplier دوم + Multi-city + Ancillary |
+
+---
+
+## ۳۰. مدل درآمد، پلن‌ها و وایت‌لیبل
+
+### ۳۰.۱. اصل
+
+TravelCore یک **پلتفرم نرم‌افزاری/شبکه‌ای** است، نه PSP. درآمد از اشتراک و کمیسیون است؛ پول مشتری نزد آژانس می‌ماند.
+
+### ۳۰.۲. جریان‌های درآمد
+
+| # | جریان | پرداخت‌کننده | مبنا | زمان |
+|---|---|---|---|---|
+| ۱ | اشتراک Supplier | آژانس | پلن/تعداد Offer/سهمیه API | ماهانه |
+| ۲ | اشتراک Channel | آژانس | Standard/Professional | ماهانه |
+| ۳ | کمیسیون Channel | آژانس | هر رزرو (ProductType/Plan) | ماهانه/فاکتور |
+| ۴ | کمیسیون Marketplace | آژانس | هر رزرو | ماهانه/فاکتور |
+| ۵ | کمیسیون Flights | آژانس | هر بلیط | ماهانه/فاکتور |
+| ۶ | تبلیغات/جایگاه | آژانس/برند | کمپین | پیش‌پرداخت |
+| ۷ | راه‌اندازی/یکپارچه‌سازی | آژانس | پروژه | یک‌بار |
+
+### ۳۰.۳. ماتریس پلن
+
+| ویژگی | Standard | Professional |
+|---|---|---|
+| Channel API | ✓ | ✓ |
+| Marketplace presence | ✓ | ✓ |
+| «Powered by TravelCore» | اجباری | حذف |
+| وایت‌لیبل | ✗ | ✓ |
+| دامنه اختصاصی | ✗ | ✓ |
+| برند در ایمیل/فاکتور | TravelCore | آژانس |
+| سهمیه API | ۶۰ RPM | ۳۰۰ RPM |
+| حداکثر Offer فعال | ۵۰۰ | ۱۰٬۰۰۰ |
+| نرخ کمیسیون | بالاتر | پایین‌تر |
+| SEO canonical | TravelCore | Agency/Self (با قواعد) |
+| پشتیبانی | استاندارد | اولویت‌دار |
+| SLA | ۹۹.۹٪ | ۹۹.۹۵٪ |
+| اشتراک ماهانه | پایه | بالاتر |
+
+> اعداد قابل تنظیم‌اند؛ ساختار ثابت است.
+
+### ۳۰.۴. Entitlements
+
+منبع حقیقت قابلیت‌های هر آژانس:
+
+```json
+{
+  "plan": "PROFESSIONAL",
+  "whiteLabel": true,
+  "attributionRequired": false,
+  "customDomain": true,
+  "maxOffers": 10000,
+  "apiRateLimitPerMinute": 300,
+  "commissionRate": 0.08,
+  "seoCanonicalMode": "AGENCY",
+  "supportSla": "PRIORITY"
+}
+```
+
+- در `GET /channel/v1/me/entitlements`.
+- در توکن/کش با TTL کوتاه.
+- تغییر پلن → invalidate entitlement cache.
+
+### ۳۰.۵. اجرای Attribution
+
+- **قرارداد:** در پلن Standard نمایش «Powered by TravelCore» با لینک اجباری است.
+- **فنی:** 
+  - checkout میزبانی‌شده TravelCore → badge خودکار.
+  - سایت آژانس → snippet آماده + بازبینی دوره‌ای.
+  - `attributionRequired=true` در entitlements.
+- **نقض:** هشدار → تعلیق ویژگی‌های حرفه‌ای → بررسی قراردادی.
+- **Professional:** هیچ نام/لوگوی TravelCore در UI، ایمیل، فاکتور، متادیتا و checkout نمایش داده نمی‌شود.
+
+### ۳۰.۶. وایت‌لیبل فنی
+
+- دامنه اختصاصی: CNAME + تایید مالکیت + SSL خودکار (ACME).
+- برند: لوگو، رنگ، فونت، ایمیل sender، فوتر، صفحات حقوقی.
+- کوکی/consent مستقل.
+- احتمالاً **Hosted Storefront** اختیاری: Next.js multi-tenant با domain routing.
+- جداسازی کامل داده و کش بر اساس `AgencyId`.
+
+### ۳۰.۷. ماژول Billing
+
+| موجودیت | فیلد |
+|---|---|
+| `Plan` | Code, Name, MonthlyFee, CommissionRate, Limits, Features |
+| `Subscription` | AgencyId, PlanId, PeriodStart, PeriodEnd, Status, TrialEndsAt |
+| `Entitlement` | AgencyId, Key, Value, SourcePlan |
+| `UsageMeter` | AgencyId, Metric, Period, Value |
+| `CommissionRule` | ProductType, PlanId, Rate, Min, Max, EffectiveFrom/To |
+| `CommissionEntry` | OrderId, AgencyId, Gross, Rate, Amount, Status, Snapshot |
+| `Invoice` | AgencyId, Period, SubscriptionFee, CommissionTotal, Tax, Total, Status |
+| `Payment` | InvoiceId, Amount, Method, RefId, PaidAt |
+| `CreditLimit` | AgencyId, Limit, Used, GraceDays |
+| `DunningAction` | InvoiceId, Step, SentAt |
+
+**وضعیت‌ها:**
+- Subscription: `Trialing → Active → PastDue → Suspended → Cancelled`
+- Invoice: `Draft → Issued → Paid → Overdue → Void`
+- CommissionEntry: `Accrued → Invoiced → Paid → Reversed`
+
+### ۳۰.۸. محاسبه کمیسیون
+
+```
+gross = sum(order items eligible)  // بدون مالیات/هزینه پاس‌ترو
+rate = CommissionRule(ProductType, Plan, date)
+commission = clamp(gross * rate, min, max)
+```
+
+- Rule در زمان رزرو **snapshot** می‌شود.
+- لغو/بازپرداخت → `CommissionEntry.Reversed`.
+- گزارش: per agency, per product, per plan, per period.
+
+### ۳۰.۹. وصول و ریسک
+
+- فاکتور ماهانه + مهلت پرداخت (مثلاً ۷ روز).
+- یادآوری‌ها: ۳ روز قبل، روز سررسید، ۳ روز بعد.
+- `PastDue` → محدودیت موقت؛ `Suspended` → توقف API/انتشار Offer.
+- Prepaid Wallet اختیاری برای آژانس‌های کوچک.
+- Credit Limit برای آژانس‌های بزرگ.
+
+### ۳۰.۱۰. Upgrade/Downgrade
+
+- Upgrade فوری + proration.
+- Downgrade در پایان دوره.
+- تغییر entitlements و rate limit در همان لحظه.
+- تاریخچه تغییر پلن برای audit.
+
+### ۳۰.۱۱. گزارش درآمد
+
+- MRR/ARR، Churn، ARPU، Commission Revenue.
+- درآمد به تفکیک مدل (Supplier/Channel/Marketplace/Flights).
+- Cohort آژانس‌ها.
+- Aging گزارش کمیسیون.
+
+---
+
+## ۳۱. استراتژی و مهندسی SEO (تفصیلی)
+
+### ۳۱.۱. معماری فنی
+
+- Next.js App Router + Server Components.
+- `generateMetadata` برای هر صفحه.
+- ISR با `revalidate` + On-demand Revalidation از بک‌اند.
+- BFF نازک؛ محتوای اولیه در HTML.
+- Edge CDN + `stale-while-revalidate`.
+- تصاویر `next/image` + AVIF/WebP + CDN.
+- فونت subset + preload.
+
+### ۳۱.۲. نقشه URL
+
+```
+/fa/                          /en/                          /ar/
+/fa/tours                     /en/tours                     /ar/tours
+/fa/tours/{slug}              /en/tours/{slug}              /ar/tours/{slug}
+/fa/tours/{dest}/{slug}       ...
+/fa/flights/{origin}-{dest}   ...
+/fa/hotels/{city}/{slug}      ...
+/fa/attractions/{slug}        ...
+/fa/visa/{country}            ...
+/fa/blog/{slug}               ...
+```
+
+- Slugها در `seo.slugs` با locale.
+- 301 برای تغییر.
+- حذف Slugهای یتیم با `410` یا redirect.
+
+### ۳۱.۳. قواعد Canonical و Index
+
+| صفحه | Canonical | Robots |
+|---|---|---|
+| Product | self | index |
+| Offer | Product | noindex |
+| Facet | Product/Route | noindex |
+| Date/Price filter | Product/Route | noindex |
+| Search | self | noindex,follow |
+| Page 2+ | self | index,follow (اگر محتوای یکتا) |
+| Empty result | self | noindex |
+| Checkout | self | noindex,nofollow |
+| Channel Standard | TravelCore | index |
+| Channel Pro | Agency/Self | بر اساس SeoPolicy |
+
+### ۳۱.۴. Metadata Service
+
+- `SeoMeta` از ماژول `Seo`:
+  - `TitleTemplate`, `DescriptionTemplate`, `OgImageTemplate`.
+- متغیرها: `{product}`, `{destination}`, `{duration}`, `{priceFrom}`, `{agency}`.
+- طول‌ها: Title ≤ ۶۰ کاراکتر (نمایشی)، Description ۱۲۰–۱۶۰.
+- جلوگیری از تکرار: hash عنوان/توضیح در Job.
+
+### ۳۱.۵. Structured Data Builder
+
+- `TouristTripJsonLd`, `OfferJsonLd`, `HotelJsonLd`, `FlightRouteJsonLd`, `ArticleJsonLd`, `FaqJsonLd`, `BreadcrumbJsonLd`.
+- تست snapshot برای هر builder.
+- اعتبارسنجی با Schema.org validator در CI.
+
+### ۳۱.۶. Sitemap Generator
+
+- Job روزانه + on-demand برای تغییرات مهم.
+- Split per type/locale.
+- فقط `indexable` و `200`.
+- `lastmod` از `updated_at`.
+- حذف خودکار URLهای 404/410.
+- Ping به GSC/Bing (اختیاری).
+
+### ۳۱.۷. کنترل Facet و Crawl Budget
+
+- پارامترهای مجاز برای خزش: فقط canonical/facetهای ارزشمند.
+- `robots.txt` برای پارامترهای بی‌ارزش.
+- لینک داخلی facetها محدود و معنادار.
+- صفحه‌بندی با محتوای یکتا و لینک قبلی/بعدی.
+- پایش Crawl Stats در GSC.
+
+### ۳۱.۸. محتوای برنامه‌ای (Programmatic SEO)
+
+**شرط انتشار:** داده یکتا + محتوای یکتا + تقاضای جستجو.
+
+| نوع | داده یکتا | محتوای یکتا |
+|---|---|---|
+| مسیر پرواز | فرودگاه، ایرلاین، زمان، بار | راهنما، ویزا، بهترین زمان |
+| شهر مقصد | هتل، جاذبه، رستوران | راهنمای سفر |
+| ویزا | مدارک، قیمت، زمان | مراحل و FAQ |
+| تور | برنامه سفر، هتل، پرواز | توضیح و FAQ |
+
+- تولید انبوه بدون محتوا = `noindex`.
+- بازبینی انسانی برای صفحات پرترافیک.
+- تاریخ به‌روزرسانی واقعی.
+
+### ۳۱.۹. SEO بین‌المللی
+
+- FA پیش‌فرض؛ EN/AR زیرمسیر.
+- `hreflang` کامل + `x-default`.
+- ترجمه انسانی/ویرایش‌شده.
+- Slug بومی‌سازی‌شده.
+- ارز/تاریخ/واحد محلی.
+- لینک داخلی بین زبان‌ها فقط از طریق hreflang و switcher.
+
+### ۳۱.۱۰. SEO پلن‌های Channel
+
+- `SeoPolicy` در entitlements:
+  ```json
+  {
+    "canonicalMode": "PLATFORM|AGENCY|SELF",
+    "allowIndexing": true,
+    "attributionRequired": true
+  }
+  ```
+- Standard: canonical به TravelCore.
+- Professional: canonical به آژانس فقط با محتوای یکتا؛ در غیر این صورت `noindex`.
+- پایش GSC برای duplicate و cannibalization.
+- قرارداد اجازه استفاده از محتوا.
+
+### ۳۱.۱۱. سنجش و CI
+
+- Lighthouse CI: SEO ≥ 95، Performance ≥ 85، A11y ≥ 90.
+- Schema validation.
+- Broken links.
+- Duplicate titles/descriptions.
+- Canonical/hreflang checks.
+- Sitemap validation.
+- RUM برای CWV.
+- گزارش ماهانه GSC.
+
+### ۳۱.۱۲. ۹۰ روز اول SEO
+
+| هفته | کار |
+|---|---|
+| ۱–۲ | ساختار URL، Slug registry، Metadata service |
+| ۳–۴ | Sitemap/robots، JSON-LD پایه، canonical |
+| ۵–۶ | صفحات Product/Destination با محتوای یکتا |
+| ۷–۸ | صفحات مسیر پرواز + FAQ |
+| ۹–۱۰ | hreflang EN/AR، بازبینی ترجمه |
+| ۱۱–۱۲ | CI، GSC، رفع خطاهای خزش |
+
+---
+
+## ۳۲. جریان پول با مرچنت آژانس
+
+### ۳۲.۱. گزینه‌ها
+
+| گزینه | توضیح | ریسک | تصمیم |
+|---|---|---|---|
+| A. درگاه آژانس | مشتری به حساب آژانس پرداخت می‌کند؛ TravelCore فقط وضعیت را می‌داند | نیاز به callback/Reconciliation | ✅ پیش‌فرض |
+| B. جمع‌آوری توسط TravelCore | TravelCore پول را می‌گیرد و به آژانس می‌دهد | مجوز PSP/واسطه‌گری، ریسک نقدینگی | ❌ رد |
+| C. Split Payment | PSP مبلغ را بین آژانس و TravelCore تقسیم می‌کند | وابستگی به PSP | ✅ اگر موجود باشد |
+
+### ۳۲.۲. Marketplace
+
+```mermaid
+sequenceDiagram
+  participant C as مشتری
+  participant T as TravelCore
+  participant A as آژانس
+  participant P as PSP آژانس
+  C->>T: انتخاب Offer
+  T->>T: Order + CommissionEntry (Accrued)
+  T-->>C: redirect به PSP آژانس
+  C->>P: پرداخت
+  P-->>T: callback (اختیاری/Webhook)
+  P-->>A: تسویه
+  T->>A: فاکتور ماهانه کمیسیون
+  A->>T: پرداخت کمیسیون
+```
+
+- اگر callback به TravelCore نرسد، آژانس وضعیت را تایید می‌کند (پنل/API).
+- سفارش تا تایید پرداخت `PENDING_PAYMENT` می‌ماند.
+- بلیط/واچر فقط پس از تایید صادر می‌شود.
+
+### ۳۲.۳. Channel
+
+- پرداخت کاملاً سمت آژانس؛ TravelCore فقط `bookingId` و وضعیت را ثبت می‌کند.
+- کمیسیون در همان لحظه `Accrued` می‌شود.
+- آژانس می‌تواند وضعیت پرداخت را با `POST /channel/v1/bookings/{id}/payment-status` اعلام کند.
+
+### ۳۲.۴. PaymentIntent
+
+```
+Created → Pending → Succeeded | Failed | Expired
+                        ↘ Refunded
+```
+
+- `MerchantScope=Agency`, `PspAccountRef=Agency PSP`.
+- هیچ‌گاه `FundsHeldBy=TravelCore` وجود ندارد.
+- Refund با idempotency و تایید آژانس.
+
+### ۳۲.۵. کمیسیون و فاکتور
+
+1. رزرو Confirmed → `CommissionEntry(Accrued)`.
+2. پایان ماه → تجمیع → `Invoice(Issued)`.
+3. پرداخت آژانس → `Paid`.
+4. لغو/بازپرداخت → `Reversed`.
+
+- مالیات بر ارزش افزوده روی فاکتور کمیسیون.
+- فاکتور مشتری توسط آژانس صادر می‌شود.
+
+### ۳۲.۶. Reconciliation
+
+- فایل روزانه PSP/آژانس.
+- تطبیق `PaymentRef` با `Order`.
+- مغایرت → صف بررسی + هشدار.
+- گزارش ماهانه بسته‌شده (Closing).
+
+### ۳۲.۷. شکست‌ها
+
+| سناریو | اقدام |
+|---|---|
+| پرداخت موفق، callback گم | Query وضعیت از PSP + تایید دستی |
+| پرداخت دوبار | Idempotency + Refund |
+|لغو پس از پرداخت | RefundQuote + Commission Reversal |
+| فاکتور معوق | Dunning + محدودیت تدریجی |
+| اختلاف مبلغ | صف Reconciliation |
+
+---
+
+**پایان سند — TravelCore PLAN v1.1**

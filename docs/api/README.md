@@ -22,6 +22,8 @@
 - OAuth2 Client Credentials.
 - اسکوپ‌ها: `channel.catalog.read`, `channel.inventory.read`, `channel.booking.read`, `channel.booking.write`, `channel.finance.read`.
 - فقط Offerهای مجاز همان آژانس.
+- `GET /me/entitlements` → پلن، `whiteLabel`، `attributionRequired`، سهمیه، نرخ کمیسیون، `seoCanonicalMode`.
+- `/flights/*` → جستجو و رزرو بلیط (فاز ۴).
 
 ## Supplier
 

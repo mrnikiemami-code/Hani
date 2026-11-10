@@ -43,6 +43,32 @@ Every module has exactly four projects:
 - `/channel/v1` — agency sells authorized offers.
 - `/market/v1` — consumer marketplace; plus Next.js BFF.
 
+## Money (locked)
+- Agency is Merchant of Record. TravelCore never holds customer funds.
+- Payments go to the agency PSP account (`MerchantScope = Agency`).
+- Commission/subscription is invoiced to the agency (monthly, dunning, credit limit).
+- No PSP/intermediary logic in TravelCore.
+
+## Plans (locked)
+- Standard: `Powered by TravelCore` required, no white-label.
+- Professional: full white-label, higher subscription.
+- Entitlements are the source of truth (`whiteLabel`, `attributionRequired`, limits, commissionRate, seoCanonicalMode).
+- Never enable Professional features without an active entitlement.
+
+## Flights (locked)
+- Separate `Flights` module/schema.
+- Supplier adapter pattern + Mock; inventory is supplier-owned.
+- Flow: Search → Quote → PNR → Payment → Ticketing → Refund.
+- PNR/Ticket/Refund idempotent; ticketing deadline job mandatory.
+- Never issue ticket without confirmed payment.
+
+## SEO (locked)
+- SEO is a workstream from phase 0, not a final phase.
+- Server Components + ISR; one canonical per product/route.
+- Offer/facet/date pages: noindex or canonical to product/route.
+- Channel Standard canonical → TravelCore; Professional → agency/self only with unique content.
+- Slug changes require 301; per-locale sitemap and hreflang.
+
 ## Tour model (locked)
 - `TourProduct` is shared and platform-owned.
 - `AgencyOffer` is tenant-owned and references `TourProduct`.

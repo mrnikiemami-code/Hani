@@ -6,6 +6,12 @@
 2. **Channel API** — فروش تورهای مجاز از سایت/اپ خود آژانس
 3. **Marketplace** — مقایسه و رزرو مستقیم مشتری در TravelCore
 
+علاوه بر تور: **بلیط هواپیما**، هتل، ویزا، جاذبه‌ها، محتوا و نظرات.
+
+**مدل پول:** آژانس Merchant of Record است؛ TravelCore پول مشتری را نگه نمی‌دارد و کمیسیون/اشتراک را با فاکتور دریافت می‌کند.
+
+**پلن‌های Channel:** Standard (Powered by TravelCore) / Professional (وایت‌لیبل کامل).
+
 ## وضعیت
 
 🚧 **فاز برنامه‌ریزی — معماری قفل‌شده**
@@ -29,6 +35,11 @@
 | MediatR | 12.5.0 (آخرین Apache-2.0) |
 | MassTransit | 8.5.12 (آخرین Apache-2.0) |
 | Transport | RabbitMQ یا PostgreSQL SQL Transport |
+| Merchant | آژانس (پول مشتری نزد TravelCore نمی‌ماند) |
+| درآمد | Supplier + Channel + Marketplace |
+| پلن‌ها | Standard (Powered by) / Professional (White-label) |
+| Flights | ماژول مستقل — فاز ۴ |
+| SEO | Workstream از فاز ۰ + ماژول Seo |
 
 ## مستندات
 
