@@ -16,6 +16,9 @@ indent_size = 2
 [*.md]
 trim_trailing_whitespace = false
 
+[**/Migrations/*.cs]
+generated_code = true
+
 [*.{csproj,props,targets,sln}]
 indent_size = 2
 

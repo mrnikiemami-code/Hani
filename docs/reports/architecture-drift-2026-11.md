@@ -27,6 +27,8 @@
 | Cache | ✅ | Memory / Redis / None + `ICacheService` |
 | Tenant | ✅ | `ICurrentTenant` + `X-Agency-Id` middleware |
 | Idempotency | ✅ | `IIdempotencyStore` + InMemory + Behavior |
+| Messaging | ✅ | MassTransit 8.5.12 + InMemory/RabbitMQ/Postgres + Outbox |
+| Migrations | ✅ | `InitialSupply` + Outbox/Inbox tables |
 | Error codes | ✅ | `HANI-*` در Validation و ProblemDetails |
 | Banned APIs | ✅ | RS0030 تأییدشده |
 
@@ -49,7 +51,7 @@
 ## ریسک‌ها / اقدام بعدی
 
 1. `IIdempotencyStore` فعلی InMemory است؛ برای پرداخت باید Postgres/Redis پایدار اضافه شود.
-2. MassTransit + Outbox هنوز به API متصل نشده؛ فقط نسخه‌ها قفل شده‌اند.
+2. `Outbox.Enabled` پیش‌فرض `false` است؛ برای تولید باید همراه با RabbitMQ/Postgres فعال شود.
 3. `dotnet new hani-module` هنوز ساخته نشده؛ `scripts/new-module.ps1` جایگزین است.
 4. Frontend scaffold نشده؛ ESLint boundaries در فاز فرانت.
 5. Integration tests (Testcontainers) هنوز فعال نیستند.

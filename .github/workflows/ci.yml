@@ -18,6 +18,9 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Tool restore
+        run: dotnet tool restore
+
       - name: Restore (locked)
         run: dotnet restore Hani.slnx --locked-mode
 
@@ -26,6 +29,13 @@ jobs:
 
       - name: Test (unit + architecture)
         run: dotnet test Hani.slnx --no-build --verbosity normal
+
+      - name: Migrations
+        run: >
+          dotnet ef migrations has-pending-model-changes
+          --project src/Modules/Supply/Hani.Modules.Supply.Infrastructure
+          --startup-project src/Hani.Api
+          --context SupplyDbContext --no-build
 
       - name: Format
         run: dotnet format Hani.slnx --verify-no-changes --no-restore

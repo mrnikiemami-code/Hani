@@ -1,4 +1,5 @@
 using Hani.Modules.Supply.Domain.AgencyOffers;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Supply.Infrastructure.Persistence;
@@ -11,5 +12,9 @@ public sealed class SupplyDbContext(DbContextOptions<SupplyDbContext> options) :
     {
         modelBuilder.HasDefaultSchema("supply");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SupplyDbContext).Assembly);
+
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();
     }
 }

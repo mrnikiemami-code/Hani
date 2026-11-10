@@ -4,6 +4,7 @@ using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.BuildingBlocks.Infrastructure.Caching;
 using Hani.BuildingBlocks.Infrastructure.Idempotency;
+using Hani.BuildingBlocks.Infrastructure.Messaging;
 using Hani.BuildingBlocks.Infrastructure.Observability;
 using Hani.BuildingBlocks.Infrastructure.Tenancy;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
@@ -62,6 +63,7 @@ builder.Services.AddSupplyInfrastructure();
 
 builder.Services.AddHaniCache(builder.Configuration);
 builder.Services.AddHaniObservability(builder.Configuration);
+builder.Services.AddHaniMessaging<SupplyDbContext>(builder.Configuration);
 builder.Services.AddSingleton<ICurrentTenant, CurrentTenant>();
 builder.Services.AddSingleton<IIdempotencyStore, InMemoryIdempotencyStore>();
 

@@ -20,6 +20,7 @@
 - ArchitectureTests (۷ تست)، UnitTests (۱۴ تست)
 - Serilog + OpenTelemetry با Toggle
 - Cache (Memory/Redis/None) + TenantContext + Idempotency
+- MassTransit 8.5.12 + Outbox/Inbox + Migration
 - Docker Compose (Postgres/Redis/RabbitMQ/Seq/OTel)
 - BannedSymbols، Central Package Management، lock files
 - `scripts/verify.ps1` + CI + CODEOWNERS + PR Template
