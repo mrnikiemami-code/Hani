@@ -2,6 +2,7 @@ using System.Reflection;
 using FluentValidation;
 using Hani.BuildingBlocks.Application;
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
+using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Shouldly;
 
@@ -12,7 +13,8 @@ public sealed class CqrsConventionTests
     private static readonly Assembly[] ApplicationAssemblies =
     [
         typeof(CreateAgencyOfferCommand).Assembly,
-        typeof(CreateTourProductCommand).Assembly
+        typeof(CreateTourProductCommand).Assembly,
+        typeof(CreateAgencyCommand).Assembly
     ];
 
     [Fact]

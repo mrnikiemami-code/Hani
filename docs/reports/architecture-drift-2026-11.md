@@ -12,8 +12,8 @@
 | Banned API usages | 0 | 0 | ✅ |
 | Active waivers | 0 | ≤ 2/ماژول | ✅ |
 | License violations | 0 | 0 | ✅ |
-| Unit tests | 18 passed | — | ✅ |
-| Architecture tests | 10 passed | — | ✅ |
+| Unit tests | 22 passed | — | ✅ |
+| Architecture tests | 13 passed | — | ✅ |
 | Locked restore | ✅ | ✅ | ✅ |
 | Format check | ✅ | ✅ | ✅ |
 
@@ -30,6 +30,7 @@
 | Messaging | ✅ | MassTransit 8.5.12 + InMemory/RabbitMQ/Postgres + Outbox |
 | Migrations | ✅ | `InitialSupply` + Outbox/Inbox + `InitialCatalog` |
 | Catalog | ✅ | TourProduct + Translation + Destination |
+| Identity | ✅ | Agency + ApiClient + Secret Hashing |
 | Error codes | ✅ | `HANI-*` در Validation و ProblemDetails |
 | Banned APIs | ✅ | RS0030 تأییدشده |
 
@@ -39,6 +40,7 @@
 |---|---|---|---|
 | Supply | ✅ | ✅ | نمونه پایلوت |
 | Catalog | ✅ | ✅ | TourProduct + Destination |
+| Identity | ✅ | ✅ | Agency + ApiClient |
 
 ## گیت‌های فعال
 

@@ -1,6 +1,9 @@
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Catalog.Domain.TourProducts;
 using Hani.Modules.Catalog.Presentation;
+using Hani.Modules.Identity.Application.Commands.CreateAgency;
+using Hani.Modules.Identity.Domain.Agencies;
+using Hani.Modules.Identity.Presentation;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 using Hani.Modules.Supply.Presentation;
@@ -96,6 +99,52 @@ public sealed class LayerDependencyTests
     {
         var result = Types.InAssembly(typeof(CatalogEndpoints).Assembly)
             .That().ResideInNamespace("Hani.Modules.Catalog.Presentation")
+            .ShouldNot().HaveDependencyOn("Microsoft.EntityFrameworkCore")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Identity_Domain_Should_Not_Depend_On_Infrastructure()
+    {
+        var result = Types.InAssembly(typeof(Agency).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Identity.Domain")
+            .ShouldNot().HaveDependencyOnAny(
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore",
+                "MassTransit",
+                "StackExchange.Redis",
+                "System.Net.Http")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Identity_Application_Should_Not_Depend_On_Infrastructure()
+    {
+        var result = Types.InAssembly(typeof(CreateAgencyCommand).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Identity.Application")
+            .ShouldNot().HaveDependencyOnAny(
+                "Hani.Modules.Identity.Infrastructure",
+                "Microsoft.EntityFrameworkCore",
+                "MassTransit",
+                "StackExchange.Redis",
+                "System.Net.Http")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Identity_Presentation_Should_Not_Use_DbContext()
+    {
+        var result = Types.InAssembly(typeof(IdentityEndpoints).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Identity.Presentation")
             .ShouldNot().HaveDependencyOn("Microsoft.EntityFrameworkCore")
             .GetResult();
 

@@ -7,6 +7,8 @@
     <ProjectReference Include="..\..\src\Hani.BuildingBlocks\Hani.BuildingBlocks.Infrastructure\Hani.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Modules\Catalog\Hani.Modules.Catalog.Domain\Hani.Modules.Catalog.Domain.csproj" />
     <ProjectReference Include="..\..\src\Modules\Catalog\Hani.Modules.Catalog.Application\Hani.Modules.Catalog.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Domain\Hani.Modules.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Application\Hani.Modules.Identity.Application.csproj" />
     <ProjectReference Include="..\..\src\Modules\Supply\Hani.Modules.Supply.Domain\Hani.Modules.Supply.Domain.csproj" />
     <ProjectReference Include="..\..\src\Modules\Supply\Hani.Modules.Supply.Application\Hani.Modules.Supply.Application.csproj" />
   </ItemGroup>

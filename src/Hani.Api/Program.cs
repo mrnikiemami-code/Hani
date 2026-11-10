@@ -13,6 +13,12 @@ using Hani.Modules.Catalog.Application.Queries.GetTourProductById;
 using Hani.Modules.Catalog.Infrastructure;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
 using Hani.Modules.Catalog.Presentation;
+using Hani.Modules.Identity.Application.Commands.CreateAgency;
+using Hani.Modules.Identity.Application.Commands.CreateApiClient;
+using Hani.Modules.Identity.Application.Queries.GetAgencyById;
+using Hani.Modules.Identity.Infrastructure;
+using Hani.Modules.Identity.Infrastructure.Persistence;
+using Hani.Modules.Identity.Presentation;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Hani.Modules.Supply.Application.Queries.GetAgencyOfferById;
 using Hani.Modules.Supply.Infrastructure;
@@ -66,8 +72,10 @@ var connectionString = builder.Configuration.GetConnectionString("Default")
 
 builder.Services.AddDbContext<SupplyDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<CatalogDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<IdentityDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddSupplyInfrastructure();
 builder.Services.AddCatalogInfrastructure();
+builder.Services.AddIdentityInfrastructure();
 
 builder.Services.AddHaniCache(builder.Configuration);
 builder.Services.AddHaniObservability(builder.Configuration);
@@ -78,7 +86,8 @@ builder.Services.AddSingleton<IIdempotencyStore, InMemoryIdempotencyStore>();
 builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssemblies(
         typeof(CreateAgencyOfferCommand).Assembly,
-        typeof(CreateTourProductCommand).Assembly));
+        typeof(CreateTourProductCommand).Assembly,
+        typeof(CreateAgencyCommand).Assembly));
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -89,6 +98,9 @@ builder.Services.AddScoped<IValidator<GetAgencyOfferByIdQuery>, GetAgencyOfferBy
 builder.Services.AddScoped<IValidator<CreateTourProductCommand>, CreateTourProductCommandValidator>();
 builder.Services.AddScoped<IValidator<PublishTourProductCommand>, PublishTourProductCommandValidator>();
 builder.Services.AddScoped<IValidator<GetTourProductByIdQuery>, GetTourProductByIdQueryValidator>();
+builder.Services.AddScoped<IValidator<CreateAgencyCommand>, CreateAgencyCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateApiClientCommand>, CreateApiClientCommandValidator>();
+builder.Services.AddScoped<IValidator<GetAgencyByIdQuery>, GetAgencyByIdQueryValidator>();
 
 builder.Services.AddHealthChecks();
 
@@ -98,6 +110,7 @@ app.UseMiddleware<TenantMiddleware>();
 app.MapHealthChecks("/health");
 app.MapSupplyEndpoints();
 app.MapCatalogEndpoints();
+app.MapIdentityEndpoints();
 
 app.Run();
 

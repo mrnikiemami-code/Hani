@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Hani.Modules.Identity.Application</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hani.Modules.Identity.Domain\Hani.Modules.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Application\Hani.BuildingBlocks.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+  </ItemGroup>
+</Project>

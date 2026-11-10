@@ -42,6 +42,11 @@ jobs:
             --startup-project src/Hani.Api \
             --context CatalogDbContext --no-build
 
+          dotnet ef migrations has-pending-model-changes \
+            --project src/Modules/Identity/Hani.Modules.Identity.Infrastructure \
+            --startup-project src/Hani.Api \
+            --context IdentityDbContext --no-build
+
       - name: Format
         run: dotnet format Hani.slnx --verify-no-changes --no-restore
 
