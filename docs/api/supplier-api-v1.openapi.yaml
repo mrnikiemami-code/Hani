@@ -1,0 +1,278 @@
+openapi: 3.1.0
+info:
+  title: Supplier API — Draft v1
+  version: 1.0.0
+  description: |
+    ورود موجودی، ظرفیت و قیمت توسط آژانس به TravelCore.
+    احراز هویت: API Key + HMAC (یا OAuth2 Client Credentials با اسکوپ supplier.*).
+    همه PUT/PATCHها idempotent هستند؛ externalId کلید یکتای آژانس است.
+servers:
+  - url: https://api.example.com/supplier/v1
+    description: Production
+  - url: https://sandbox-api.example.com/supplier/v1
+    description: Sandbox
+
+security:
+  - supplierKey: []
+
+tags:
+  - name: Offers
+  - name: Departures
+  - name: Availability
+  - name: Moderation
+
+paths:
+  /offers:
+    get:
+      tags: [Offers]
+      summary: لیست پیشنهادهای آژانس
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [DRAFT, PENDING, APPROVED, REJECTED, ARCHIVED] } }
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Offer' }
+                  nextCursor: { type: [string, 'null'] }
+
+  /offers/{externalId}:
+    put:
+      tags: [Offers]
+      summary: Upsert پیشنهاد
+      parameters:
+        - { name: externalId, in: path, required: true, schema: { type: string, maxLength: 100 } }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OfferUpsert' }
+      responses:
+        '200':
+          description: به‌روزرسانی شد
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Offer' }
+        '201':
+          description: ایجاد شد
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Offer' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  /offers/{offerId}/submit:
+    post:
+      tags: [Moderation]
+      summary: ارسال برای تایید
+      parameters:
+        - { name: offerId, in: path, required: true, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: در صف بررسی
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ModerationStatus' }
+
+  /offers/{offerId}/status:
+    get:
+      tags: [Moderation]
+      summary: وضعیت تایید
+      parameters:
+        - { name: offerId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ModerationStatus' }
+
+  /offers/{offerId}/departures/{externalId}:
+    put:
+      tags: [Departures]
+      summary: Upsert سانس (تاریخ حرکت، ظرفیت، قیمت)
+      parameters:
+        - { name: offerId, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: externalId, in: path, required: true, schema: { type: string, maxLength: 100 } }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DepartureUpsert' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Departure' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  /offers/{offerId}/departures:
+    get:
+      tags: [Departures]
+      summary: لیست سانس‌ها
+      parameters:
+        - { name: offerId, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Departure' }
+
+  /departures/{departureId}/availability:
+    patch:
+      tags: [Availability]
+      summary: به‌روزرسانی ظرفیت
+      parameters:
+        - { name: departureId, in: path, required: true, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [seatsLeft, version]
+              properties:
+                seatsLeft: { type: integer, minimum: 0 }
+                version: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Departure' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+components:
+  securitySchemes:
+    supplierKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: به‌همراه هدر X-Signature (HMAC-SHA256) برای عملیات نوشتن.
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, maxLength: 100 }
+
+  responses:
+    Conflict:
+      description: تضاد نسخه/ایدپوتنسی
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unprocessable:
+      description: داده نامعتبر
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, code, traceId]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        code: { type: string }
+        detail: { type: string }
+        traceId: { type: string }
+        meta: { type: object, additionalProperties: true }
+
+    OfferUpsert:
+      type: object
+      required: [tourProductId, title, currency, cancellationPolicy]
+      properties:
+        tourProductId: { type: string, format: uuid }
+        title: { type: object, additionalProperties: { type: string } }
+        description: { type: object, additionalProperties: { type: string } }
+        currency: { type: string, enum: [IRR, USD, EUR, AED, GBP] }
+        basePrice: { type: number, minimum: 0 }
+        includes: { type: array, items: { type: string } }
+        excludes: { type: array, items: { type: string } }
+        cancellationPolicy: { type: string }
+        hotelIds:
+          type: array
+          items: { type: string, format: uuid }
+        mediaUrls:
+          type: array
+          items: { type: string, format: uri }
+        externalUpdatedAt: { type: string, format: date-time }
+
+    Offer:
+      allOf:
+        - $ref: '#/components/schemas/OfferUpsert'
+        - type: object
+          required: [id, agencyId, status, version]
+          properties:
+            id: { type: string, format: uuid }
+            agencyId: { type: string, format: uuid }
+            status: { type: string, enum: [DRAFT, PENDING, APPROVED, REJECTED, ARCHIVED] }
+            version: { type: integer }
+            createdAt: { type: string, format: date-time }
+            updatedAt: { type: string, format: date-time }
+
+    DepartureUpsert:
+      type: object
+      required: [startDate, endDate, capacity, prices]
+      properties:
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        capacity: { type: integer, minimum: 1 }
+        prices:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [roomType, amount]
+            properties:
+              roomType: { type: string, enum: [DOUBLE, SINGLE, CHILD_BED, CHILD_NO_BED, INFANT] }
+              amount: { type: number, minimum: 0 }
+        flightLegs:
+          type: array
+          items: { type: object, additionalProperties: true }
+        status: { type: string, enum: [OPEN, CLOSED, CANCELLED], default: OPEN }
+
+    Departure:
+      allOf:
+        - $ref: '#/components/schemas/DepartureUpsert'
+        - type: object
+          required: [id, offerId, seatsLeft, version]
+          properties:
+            id: { type: string, format: uuid }
+            offerId: { type: string, format: uuid }
+            seatsLeft: { type: integer }
+            version: { type: integer }
+            updatedAt: { type: string, format: date-time }
+
+    ModerationStatus:
+      type: object
+      properties:
+        offerId: { type: string, format: uuid }
+        status: { type: string, enum: [DRAFT, PENDING, APPROVED, REJECTED] }
+        reason: { type: [string, 'null'] }
+        reviewedAt: { type: [string, 'null'], format: date-time }

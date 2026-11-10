@@ -1,0 +1,471 @@
+﻿openapi: 3.1.0
+info:
+  title: Channel API (Agency Sales) — Draft v1
+  version: 1.0.0
+  description: |
+    فروش تورهای مجاز توسط آژانس از سایت/اپ خودش.
+    احراز هویت: OAuth2 Client Credentials + اسکوپ.
+    همه POSTهای رزرو و پرداخت باید هدر Idempotency-Key داشته باشند.
+servers:
+  - url: https://api.example.com/channel/v1
+    description: Production
+  - url: https://sandbox-api.example.com/channel/v1
+    description: Sandbox
+
+security:
+  - oauth2: []
+
+tags:
+  - name: Catalog
+  - name: Inventory
+  - name: Booking
+  - name: Finance
+
+paths:
+  /catalog/products:
+    get:
+      tags: [Catalog]
+      summary: لیست محصولات مجاز برای این آژانس
+      parameters:
+        - { name: destination, in: query, schema: { type: string } }
+        - { name: origin, in: query, schema: { type: string } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/TourSummary' }
+                  nextCursor: { type: [string, 'null'] }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /catalog/products/{productId}:
+    get:
+      tags: [Catalog]
+      summary: جزئیات محصول
+      parameters:
+        - { name: productId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tour' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /offers:
+    get:
+      tags: [Catalog]
+      summary: پیشنهادهای مجاز این آژانس
+      parameters:
+        - { name: productId, in: query, schema: { type: string } }
+        - { name: cursor, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Offer' }
+                  nextCursor: { type: [string, 'null'] }
+
+  /offers/{offerId}/departures:
+    get:
+      tags: [Catalog]
+      summary: سانس‌های یک پیشنهاد
+      parameters:
+        - { name: offerId, in: path, required: true, schema: { type: string } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Departure' }
+
+  /inventory/departures/{departureId}:
+    get:
+      tags: [Inventory]
+      summary: ظرفیت و قیمت لحظه‌ای
+      parameters:
+        - { name: departureId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Departure' }
+
+  /quotes:
+    post:
+      tags: [Booking]
+      summary: استعلام قیمت و ایجاد قفل موقت ظرفیت
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/QuoteRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Quote' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  /quotes/{quoteId}:
+    get:
+      tags: [Booking]
+      summary: وضعیت quote
+      parameters:
+        - { name: quoteId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Quote' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /bookings:
+    post:
+      tags: [Booking]
+      summary: ثبت سفارش
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BookingRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Booking' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    get:
+      tags: [Booking]
+      summary: لیست سفارش‌ها
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [PENDING_PAYMENT, CONFIRMED, CANCELLED, EXPIRED] } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: cursor, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Booking' }
+                  nextCursor: { type: [string, 'null'] }
+
+  /bookings/{bookingId}:
+    get:
+      tags: [Booking]
+      summary: جزئیات سفارش
+      parameters:
+        - { name: bookingId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Booking' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /bookings/{bookingId}/cancel:
+    post:
+      tags: [Booking]
+      summary: لغو سفارش
+      parameters:
+        - { name: bookingId, in: path, required: true, schema: { type: string } }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, maxLength: 500 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Booking' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /settlements:
+    get:
+      tags: [Finance]
+      summary: صورت‌حساب‌های دوره‌ای
+      parameters:
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Settlement' }
+
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.example.com/oauth/token
+          scopes:
+            channel.catalog.read: خواندن کاتالوگ
+            channel.inventory.read: خواندن موجودی
+            channel.booking.read: خواندن سفارش
+            channel.booking.write: ایجاد/لغو سفارش
+            channel.finance.read: صورت‌حساب
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, maxLength: 100 }
+      description: کلید یکتا برای جلوگیری از ثبت تکراری؛ ۲۴ ساعت نگهداری می‌شود.
+
+  responses:
+    Unauthorized:
+      description: توکن نامعتبر یا منقضی
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    NotFound:
+      description: یافت نشد
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Conflict:
+      description: تضاد موجودی/ایدپوتنسی
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unprocessable:
+      description: تغییر قیمت یا داده نامعتبر
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    RateLimited:
+      description: عبور از سهمیه
+      headers:
+        Retry-After: { schema: { type: integer } }
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, code, traceId]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        code: { type: string }
+        detail: { type: string }
+        traceId: { type: string }
+        meta: { type: object, additionalProperties: true }
+
+    TourSummary:
+      type: object
+      required: [id, title, durationDays, destinations, minPrice]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        agencyId: { type: string }
+        durationDays: { type: integer }
+        destinations: { type: array, items: { type: string } }
+        origin: { type: string }
+        minPrice: { type: number }
+        currency: { type: string, enum: [IRR, USD, EUR, AED, GBP] }
+        imageUrl: { type: string, format: uri }
+        nextDepartureAt: { type: [string, 'null'], format: date-time }
+
+    Tour:
+      allOf:
+        - $ref: '#/components/schemas/TourSummary'
+        - type: object
+          properties:
+            description: { type: string }
+            itinerary:
+              type: array
+              items:
+                type: object
+                properties:
+                  day: { type: integer }
+                  title: { type: string }
+                  description: { type: string }
+            includes: { type: array, items: { type: string } }
+            excludes: { type: array, items: { type: string } }
+            cancellationPolicy: { type: string }
+            media: { type: array, items: { type: string, format: uri } }
+
+    Offer:
+      type: object
+      required: [id, productId, agencyId, status]
+      properties:
+        id: { type: string }
+        productId: { type: string }
+        agencyId: { type: string }
+        title: { type: string }
+        status: { type: string, enum: [APPROVED, ARCHIVED] }
+        priceFrom: { type: number }
+        currency: { type: string }
+        cancellationPolicy: { type: string }
+
+    Departure:
+      type: object
+      required: [id, offerId, startDate, endDate, seatsLeft, prices, status]
+      properties:
+        id: { type: string }
+        offerId: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        seatsLeft: { type: integer }
+        status: { type: string, enum: [OPEN, SOLD_OUT, CLOSED, CANCELLED] }
+        version: { type: integer }
+        prices:
+          type: array
+          items:
+            type: object
+            required: [roomType, amount, currency]
+            properties:
+              roomType: { type: string, enum: [DOUBLE, SINGLE, CHILD_BED, CHILD_NO_BED, INFANT] }
+              amount: { type: number }
+              currency: { type: string }
+
+    QuoteRequest:
+      type: object
+      required: [departureId, pax, roomType]
+      properties:
+        departureId: { type: string }
+        pax:
+          type: object
+          required: [adults]
+          properties:
+            adults: { type: integer, minimum: 1, maximum: 20 }
+            children: { type: integer, minimum: 0, maximum: 20, default: 0 }
+            infants: { type: integer, minimum: 0, maximum: 10, default: 0 }
+        roomType: { type: string, enum: [DOUBLE, SINGLE, CHILD_BED, CHILD_NO_BED, INFANT] }
+        addons:
+          type: array
+          items: { type: string, enum: [VISA, INSURANCE, TRANSFER, EXTRA_NIGHT] }
+
+    Quote:
+      type: object
+      required: [quoteId, departureId, currency, lines, total, expiresAt]
+      properties:
+        quoteId: { type: string }
+        departureId: { type: string }
+        currency: { type: string }
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              code: { type: string }
+              qty: { type: integer }
+              unit: { type: number }
+              total: { type: number }
+        subtotal: { type: number }
+        tax: { type: number }
+        total: { type: number }
+        expiresAt: { type: string, format: date-time }
+        holdAvailable: { type: boolean }
+
+    BookingRequest:
+      type: object
+      required: [quoteId, contact, travelers]
+      properties:
+        quoteId: { type: string }
+        contact:
+          type: object
+          required: [name, mobile]
+          properties:
+            name: { type: string }
+            mobile: { type: string }
+            email: { type: string, format: email }
+        travelers:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [type, firstName, lastName]
+            properties:
+              type: { type: string, enum: [ADULT, CHILD, INFANT] }
+              firstName: { type: string }
+              lastName: { type: string }
+              nationalId: { type: string }
+              passportNo: { type: string }
+              birthDate: { type: string, format: date }
+        notes: { type: string, maxLength: 1000 }
+
+    Booking:
+      type: object
+      required: [bookingId, status, total, currency, createdAt]
+      properties:
+        bookingId: { type: string }
+        status: { type: string, enum: [PENDING_PAYMENT, CONFIRMED, CANCELLED, EXPIRED] }
+        departureId: { type: string }
+        total: { type: number }
+        currency: { type: string }
+        paymentUrl: { type: [string, 'null'], format: uri }
+        expiresAt: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        travelers:
+          type: array
+          items: { type: object, additionalProperties: true }
+
+    Settlement:
+      type: object
+      properties:
+        id: { type: string }
+        periodStart: { type: string, format: date }
+        periodEnd: { type: string, format: date }
+        gross: { type: number }
+        commission: { type: number }
+        net: { type: number }
+        currency: { type: string }
+        status: { type: string, enum: [OPEN, APPROVED, PAID] }
+        invoiceUrl: { type: [string, 'null'], format: uri }

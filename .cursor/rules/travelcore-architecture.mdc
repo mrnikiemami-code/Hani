@@ -1,0 +1,75 @@
+---
+description: TravelCore locked architecture rules
+globs: ["src/**/*.cs", "frontend/**/*.{ts,tsx}", "tests/**/*.cs"]
+alwaysApply: true
+---
+
+# TravelCore — Architecture Rules (Locked)
+
+## Stack (do not change)
+- .NET 10, ASP.NET Core Minimal API
+- Next.js 16, React 19
+- PostgreSQL, Redis
+- Modular Monolith + Clean Architecture
+- MediatR **12.5.0** (do not upgrade to 13+; commercial)
+- MassTransit **8.5.12** (do not upgrade to 9+; commercial)
+- Languages: FA (default), EN, AR
+
+## Module layout (mandatory)
+Every module has exactly four projects:
+`Domain`, `Application`, `Infrastructure`, `Presentation`.
+
+- Domain: entities, value objects, domain events, invariants. No external dependencies.
+- Application: Commands/, Queries/, Validators, Ports, DTOs. No EF/HTTP.
+- Infrastructure: EF Core, migrations, repositories, adapters.
+- Presentation: Minimal API endpoints, contracts, filters.
+
+## Hard rules
+- No project reference between modules. Use `TravelCore.Contracts.*` only.
+- No cross-schema SQL joins.
+- One Command/Query per folder with Handler + Validator.
+- Commands mutate; Queries use read models.
+- All money as minor units + currency.
+- All POST payment/booking endpoints require `Idempotency-Key`.
+- Publish integration events through Outbox only.
+- Cache access only via `ICacheService`.
+- Messaging only via `IIntegrationEventPublisher` (or MassTransit contracts in Infrastructure).
+- No `Helper`, `Manager`, `Utils`, generic `Service` classes.
+- No secrets in code or appsettings committed.
+- No PII in logs; use redaction.
+
+## Three API surfaces (never mix DTOs)
+- `/supplier/v1` — agency ingests offers/departures/availability.
+- `/channel/v1` — agency sells authorized offers.
+- `/market/v1` — consumer marketplace; plus Next.js BFF.
+
+## Tour model (locked)
+- `TourProduct` is shared and platform-owned.
+- `AgencyOffer` is tenant-owned and references `TourProduct`.
+- `TourDeparture` belongs to `AgencyOffer`.
+- Price/capacity/cancellation live on Offer/Departure.
+- Snapshot Offer + Departure at booking time.
+
+## Observability
+- Serilog + OpenTelemetry.
+- Toggles: `Observability:Logging/Tracing/Metrics:Enabled` and per-module overrides.
+- Enrich: TraceId, SpanId, TenantId, AgencyId, UserId, Module.
+- Audit log is separate and always on.
+
+## Database
+- Schema per module.
+- `uuid` (UUIDv7) ids, `timestamptz`, `jsonb` for localized text.
+- Each module owns its `DbContext` and migrations.
+- `tenant_id` on agency-owned tables; enforce via `TenantContext`.
+
+## i18n / SEO
+- Locales: fa, en, ar with `[locale]` route segment.
+- `dir` switches rtl/ltr.
+- LocalizedText for content fields.
+- Per-locale slug, canonical, hreflang, sitemap.
+
+## Workflow
+- Small tasks only (<= 1 day).
+- Update `PLAN.md` / ADR before architectural changes.
+- Run architecture tests before commit.
+- Commit format: `feat(module): ...`.
