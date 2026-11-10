@@ -9,11 +9,11 @@ public interface IResult
 
 public readonly record struct Result<T> : IResult
 {
-    public bool IsSuccess { get; private init; }
+    public bool IsSuccess { get; init; }
 
-    public T? Value { get; private init; }
+    public T? Value { get; init; }
 
-    public Error? Error { get; private init; }
+    public Error? Error { get; init; }
 
     public static Result<T> Success(T value) => new()
     {

@@ -17,7 +17,10 @@
 🚧 **فاز ۰ — Governance Bootstrap انجام شد**
 
 - Solution + `BuildingBlocks` + ماژول نمونه `Supply`
-- ArchitectureTests (۷ تست)، UnitTests (۶ تست)
+- ArchitectureTests (۷ تست)، UnitTests (۱۴ تست)
+- Serilog + OpenTelemetry با Toggle
+- Cache (Memory/Redis/None) + TenantContext + Idempotency
+- Docker Compose (Postgres/Redis/RabbitMQ/Seq/OTel)
 - BannedSymbols، Central Package Management، lock files
 - `scripts/verify.ps1` + CI + CODEOWNERS + PR Template
 - گزارش Drift: [`docs/reports/architecture-drift-2026-11.md`](docs/reports/architecture-drift-2026-11.md)
