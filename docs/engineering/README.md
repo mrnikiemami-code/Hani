@@ -7,6 +7,7 @@
 | [`architecture-governance.md`](architecture-governance.md) | حاکمیت شش‌لایه، ADR/Waiver، CI Gate، Drift Report |
 | [`module-template.md`](module-template.md) | قالب اجباری ماژول و نام‌گذاری |
 | [`architecture-tests.md`](architecture-tests.md) | تست‌های NetArchTest و قواعد اجرایی |
+| [`error-catalog.md`](error-catalog.md) | کدهای خطا، ترجمه و سیاست زبان لاگ |
 
 | موضوع | بخش در PLAN.md |
 |---|---|
@@ -28,3 +29,5 @@
 | SEO تفصیلی | بخش ۳۱ |
 | جریان پول با مرچنت آژانس | بخش ۳۲ |
 | حاکمیت معماری و یکدستی | بخش ۳۳ |
+| Blueprint صفحه جزئیات تور | بخش ۳۴ + `docs/product/tour-detail-page.md` |
+| استاندارد خطا و لاگینگ | بخش ۳۵ + `error-catalog.md` |

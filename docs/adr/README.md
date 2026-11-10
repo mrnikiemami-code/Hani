@@ -12,11 +12,13 @@
 | [0008](0008-payment-idempotency.md) | Idempotency در پرداخت | Accepted |
 | [0009](0009-postgres-schema-per-module.md) | Schema per Module | Accepted |
 | [0010](0010-i18n-and-seo.md) | i18n سه‌زبانه و SEO | Accepted |
-| [0011](0011-agency-merchant-of-record.md) | مرچنت آژانس و کمیسیون با فاکتور | Accepted (Locked) |
+| [0011](0011-hani-merchant-and-settlement.md) | مرچنت Hani، تسویه و کمیسیون داینامیک | Accepted (Locked) |
 | [0012](0012-plans-and-white-label.md) | پلن‌های Standard/Professional و وایت‌لیبل | Accepted (Locked) |
 | [0013](0013-flights-module.md) | ماژول Flights و PNR/Ticketing | Accepted |
 | [0014](0014-seo-strategy.md) | استراتژی SEO و Canonical کانال | Accepted |
 | [0015](0015-architecture-governance.md) | حاکمیت اجرایی معماری و یکدستی | Accepted (Proposed for approval) |
+| [0016](0016-error-catalog.md) | استاندارد خطای کددار و ترجمه‌شده | Accepted |
+| [0017](0017-logging-language-policy.md) | سیاست زبان لاگ: انگلیسی ثابت | Accepted (Locked) |
 
 ## قالب ADR جدید
 

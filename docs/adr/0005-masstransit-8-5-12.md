@@ -28,5 +28,5 @@ MassTransit از نسخه ۹ لایسنس تجاری دارد. همچنین تی
 ## قواعد
 
 - هیچ Consumer مستقیماً `IBus` را در Domain/Application استفاده نمی‌کند.
-- نام پیام نسخه‌دار: `travelcore.{module}.{event}.v1`.
+- نام پیام نسخه‌دار: `hani.{module}.{event}.v1`.
 - Retry نمایی + DLQ + داشبورد.

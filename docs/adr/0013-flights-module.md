@@ -15,7 +15,8 @@
 - Saga با حالت‌های Quoted/PnrCreated/PaymentPending/Paid/Ticketed/Expired/Cancelled.
 - Ticketing Deadline Job.
 - Idempotency برای PNR/Ticket/Refund.
-- فاز ۴ با یک Supplier پایلوت (داخلی + چند مسیر بین‌المللی).
+- **پرواز داخلی + بین‌المللی** هر دو در دامنه.
+- فاز ۴ با یک Supplier پایلوت داخلی + یک Supplier پایلوت بین‌المللی (Consolidator/GDS).
 
 ## پیامدها
 

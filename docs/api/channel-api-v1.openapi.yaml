@@ -556,6 +556,6 @@ components:
         customDomain: { type: boolean }
         maxOffers: { type: integer }
         apiRateLimitPerMinute: { type: integer }
-        commissionRate: { type: number }
+        commissionProfileId: { type: string }
         seoCanonicalMode: { type: string, enum: [PLATFORM, AGENCY, SELF] }
         supportSla: { type: string, enum: [STANDARD, PRIORITY] }

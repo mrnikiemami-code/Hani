@@ -1,10 +1,10 @@
 ---
-description: TravelCore locked architecture rules
+description: Hani locked architecture rules
 globs: ["src/**/*.cs", "frontend/**/*.{ts,tsx}", "tests/**/*.cs"]
 alwaysApply: true
 ---
 
-# TravelCore — Architecture Rules (Locked)
+# Hani — Architecture Rules (Locked)
 
 ## Stack (do not change)
 - .NET 10, ASP.NET Core Minimal API
@@ -25,7 +25,7 @@ Every module has exactly four projects:
 - Presentation: Minimal API endpoints, contracts, filters.
 
 ## Hard rules
-- No project reference between modules. Use `TravelCore.Contracts.*` only.
+- No project reference between modules. Use `Hani.Contracts.*` only.
 - No cross-schema SQL joins.
 - One Command/Query per folder with Handler + Validator.
 - Commands mutate; Queries use read models.
@@ -44,29 +44,40 @@ Every module has exactly four projects:
 - `/market/v1` — consumer marketplace; plus Next.js BFF.
 
 ## Money (locked)
-- Agency is Merchant of Record. TravelCore never holds customer funds.
-- Payments go to the agency PSP account (`MerchantScope = Agency`).
-- Commission/subscription is invoiced to the agency (monthly, dunning, credit limit).
-- No PSP/intermediary logic in TravelCore.
+- **Hani is Merchant of Record.** Customer funds go to Hani's PSP account (`MerchantScope = Hani`).
+- Hani issues customer invoice and commission/settlement invoice.
+- Hani settles the agency per `SettlementTerms` (prepaid/postpaid, per-booking/periodic, after-trip, gross/net, holdback, credit limit).
+- Commission is dynamic per agency + ProductType, snapshotted at booking.
+- No agency-as-merchant flow by default.
 
 ## Plans (locked)
-- Standard: `Powered by TravelCore` required, no white-label.
+- Standard: `Powered by Hani` required, no white-label.
 - Professional: full white-label, higher subscription.
-- Entitlements are the source of truth (`whiteLabel`, `attributionRequired`, limits, commissionRate, seoCanonicalMode).
+- Entitlements are the source of truth (`whiteLabel`, `attributionRequired`, limits, seoCanonicalMode).
+- Commission rate is NOT in entitlements; it lives in `AgencyCommissionRule`.
 - Never enable Professional features without an active entitlement.
 
 ## Flights (locked)
 - Separate `Flights` module/schema.
+- **Domestic + international** are both in scope.
 - Supplier adapter pattern + Mock; inventory is supplier-owned.
 - Flow: Search → Quote → PNR → Payment → Ticketing → Refund.
 - PNR/Ticket/Refund idempotent; ticketing deadline job mandatory.
 - Never issue ticket without confirmed payment.
 
+## Errors & logging (locked)
+- Code and technical logs are **English only**.
+- Errors have stable codes `HANI-{AREA}-{4 digits}`.
+- User-facing messages are localized FA/EN/AR; fallback `ar → en → fa → code`.
+- Log `ErrorCode` + `MessageKey` + `Locale`; never log translated text.
+- `traceId` is returned to the user; no stack traces.
+- Audit stores code + locale + actor, not localized text in technical logs.
+
 ## SEO (locked)
 - SEO is a workstream from phase 0, not a final phase.
 - Server Components + ISR; one canonical per product/route.
 - Offer/facet/date pages: noindex or canonical to product/route.
-- Channel Standard canonical → TravelCore; Professional → agency/self only with unique content.
+- Channel Standard canonical → Hani; Professional → agency/self only with unique content.
 - Slug changes require 301; per-locale sitemap and hreflang.
 
 ## Tour model (locked)
@@ -96,7 +107,7 @@ Every module has exactly four projects:
 
 ## Governance (enforced)
 - Follow `docs/engineering/architecture-governance.md`.
-- Every new module comes from `dotnet new travelcore-module` (or the documented template). Do not invent structure.
+- Every new module comes from `dotnet new hani-module` (or the documented template). Do not invent structure.
 - Run `scripts/verify.ps1` before every commit: build, format, unit, architecture, contract.
 - Architecture tests are build-breaking. Never bypass a failing rule silently.
 - If a rule blocks work: stop, propose an ADR or a time-boxed `ARCH-WAIVER`, ask for approval.

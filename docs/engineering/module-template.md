@@ -8,8 +8,8 @@
 
 ```
 src/Modules/{Module}/
-├─ TravelCore.Modules.{Module}.Domain/
-│  ├─ TravelCore.Modules.{Module}.Domain.csproj
+├─ Hani.Modules.{Module}.Domain/
+│  ├─ Hani.Modules.{Module}.Domain.csproj
 │  ├─ {Aggregate}/
 │  │  ├─ {Aggregate}.cs
 │  │  ├─ {Aggregate}Id.cs
@@ -19,8 +19,8 @@ src/Modules/{Module}/
 │  ├─ ValueObjects/
 │  └─ Abstractions/
 │
-├─ TravelCore.Modules.{Module}.Application/
-│  ├─ TravelCore.Modules.{Module}.Application.csproj
+├─ Hani.Modules.{Module}.Application/
+│  ├─ Hani.Modules.{Module}.Application.csproj
 │  ├─ Abstractions/
 │  │  └─ I{Aggregate}Repository.cs
 │  ├─ Commands/
@@ -40,8 +40,8 @@ src/Modules/{Module}/
 │  │  └─ Mappings/
 │  └─ DependencyInjection.cs
 │
-├─ TravelCore.Modules.{Module}.Infrastructure/
-│  ├─ TravelCore.Modules.{Module}.Infrastructure.csproj
+├─ Hani.Modules.{Module}.Infrastructure/
+│  ├─ Hani.Modules.{Module}.Infrastructure.csproj
 │  ├─ Persistence/
 │  │  ├─ {Module}DbContext.cs
 │  │  ├─ Configurations/
@@ -53,8 +53,8 @@ src/Modules/{Module}/
 │  │  └─ {UseCase}ReadService.cs
 │  └─ DependencyInjection.cs
 │
-└─ TravelCore.Modules.{Module}.Presentation/
-   ├─ TravelCore.Modules.{Module}.Presentation.csproj
+└─ Hani.Modules.{Module}.Presentation/
+   ├─ Hani.Modules.{Module}.Presentation.csproj
    ├─ Supplier/
    │  ├─ {UseCase}Endpoint.cs
    │  └─ Contracts/
@@ -74,10 +74,10 @@ src/Modules/{Module}/
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>TravelCore.Modules.{Module}.Domain</RootNamespace>
+    <RootNamespace>Hani.Modules.{Module}.Domain</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TravelCore.BuildingBlocks\TravelCore.BuildingBlocks.Domain\TravelCore.BuildingBlocks.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Domain\Hani.BuildingBlocks.Domain.csproj" />
   </ItemGroup>
 </Project>
 ```
@@ -87,12 +87,12 @@ src/Modules/{Module}/
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>TravelCore.Modules.{Module}.Application</RootNamespace>
+    <RootNamespace>Hani.Modules.{Module}.Application</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TravelCore.Modules.{Module}.Domain\TravelCore.Modules.{Module}.Domain.csproj" />
-    <ProjectReference Include="..\..\..\TravelCore.BuildingBlocks\TravelCore.BuildingBlocks.Application\TravelCore.BuildingBlocks.Application.csproj" />
-    <ProjectReference Include="..\..\..\TravelCore.Contracts\TravelCore.Contracts.{Module}\TravelCore.Contracts.{Module}.csproj" />
+    <ProjectReference Include="..\Hani.Modules.{Module}.Domain\Hani.Modules.{Module}.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Application\Hani.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.{Module}\Hani.Contracts.{Module}.csproj" />
   </ItemGroup>
 </Project>
 ```
@@ -102,11 +102,11 @@ src/Modules/{Module}/
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>TravelCore.Modules.{Module}.Infrastructure</RootNamespace>
+    <RootNamespace>Hani.Modules.{Module}.Infrastructure</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TravelCore.Modules.{Module}.Application\TravelCore.Modules.{Module}.Application.csproj" />
-    <ProjectReference Include="..\..\..\TravelCore.BuildingBlocks\TravelCore.BuildingBlocks.Infrastructure\TravelCore.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\Hani.Modules.{Module}.Application\Hani.Modules.{Module}.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Infrastructure\Hani.BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
 ```
@@ -116,11 +116,11 @@ src/Modules/{Module}/
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>TravelCore.Modules.{Module}.Presentation</RootNamespace>
+    <RootNamespace>Hani.Modules.{Module}.Presentation</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TravelCore.Modules.{Module}.Application\TravelCore.Modules.{Module}.Application.csproj" />
-    <ProjectReference Include="..\..\..\TravelCore.BuildingBlocks\TravelCore.BuildingBlocks.AspNetCore\TravelCore.BuildingBlocks.AspNetCore.csproj" />
+    <ProjectReference Include="..\Hani.Modules.{Module}.Application\Hani.Modules.{Module}.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.AspNetCore\Hani.BuildingBlocks.AspNetCore.csproj" />
   </ItemGroup>
 </Project>
 ```
@@ -233,7 +233,7 @@ internal static class PublishAgencyOfferEndpoint
 ## ۸. تولید خودکار
 
 ```powershell
-dotnet new travelcore-module -n Supply -s supply
+dotnet new hani-module -n Supply -s supply
 ```
 
 یا موقتاً:

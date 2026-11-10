@@ -3,7 +3,7 @@ info:
   title: Supplier API — Draft v1
   version: 1.0.0
   description: |
-    ورود موجودی، ظرفیت و قیمت توسط آژانس به TravelCore.
+    ورود موجودی، ظرفیت و قیمت توسط آژانس به Hani.
     احراز هویت: API Key + HMAC (یا OAuth2 Client Credentials با اسکوپ supplier.*).
     همه PUT/PATCHها idempotent هستند؛ externalId کلید یکتای آژانس است.
 servers:

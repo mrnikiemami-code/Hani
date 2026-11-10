@@ -7,8 +7,8 @@
 ## ۱. پروژه
 
 ```
-tests/TravelCore.ArchitectureTests/
-├─ TravelCore.ArchitectureTests.csproj
+tests/Hani.ArchitectureTests/
+├─ Hani.ArchitectureTests.csproj
 ├─ ModuleBoundaryTests.cs
 ├─ LayerDependencyTests.cs
 ├─ CqrsConventionTests.cs
@@ -35,12 +35,12 @@ public sealed class ModuleBoundaryTests
 {
     private static readonly Assembly[] ModuleAssemblies =
     {
-        typeof(TravelCore.Modules.Catalog.Domain.TourProduct).Assembly,
-        typeof(TravelCore.Modules.Supply.Domain.AgencyOffer).Assembly,
-        typeof(TravelCore.Modules.Booking.Domain.Order).Assembly,
-        typeof(TravelCore.Modules.Payments.Domain.PaymentIntent).Assembly,
-        typeof(TravelCore.Modules.Flights.Domain.Pnr).Assembly,
-        typeof(TravelCore.Modules.Billing.Domain.Subscription).Assembly
+        typeof(Hani.Modules.Catalog.Domain.TourProduct).Assembly,
+        typeof(Hani.Modules.Supply.Domain.AgencyOffer).Assembly,
+        typeof(Hani.Modules.Booking.Domain.Order).Assembly,
+        typeof(Hani.Modules.Payments.Domain.PaymentIntent).Assembly,
+        typeof(Hani.Modules.Flights.Domain.Pnr).Assembly,
+        typeof(Hani.Modules.Billing.Domain.Subscription).Assembly
     };
 
     [Fact]
@@ -51,7 +51,7 @@ public sealed class ModuleBoundaryTests
             var moduleName = assembly.GetName().Name!;
             var references = assembly.GetReferencedAssemblies()
                 .Select(a => a.Name!)
-                .Where(n => n.StartsWith("TravelCore.Modules."))
+                .Where(n => n.StartsWith("Hani.Modules."))
                 .Where(n => !n.StartsWith(moduleName))
                 .ToArray();
 
@@ -74,8 +74,8 @@ public sealed class LayerDependencyTests
     public void Domain_Should_Not_Depend_On_Infrastructure()
     {
         var result = Types.InAssembly(
-                typeof(TravelCore.Modules.Supply.Domain.AgencyOffer).Assembly)
-            .That().ResideInNamespace("TravelCore.Modules.Supply.Domain")
+                typeof(Hani.Modules.Supply.Domain.AgencyOffer).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Supply.Domain")
             .ShouldNot().HaveDependencyOnAny(
                 "Microsoft.EntityFrameworkCore",
                 "Microsoft.AspNetCore",
@@ -92,10 +92,10 @@ public sealed class LayerDependencyTests
     public void Application_Should_Not_Depend_On_Infrastructure()
     {
         var result = Types.InAssembly(
-                typeof(TravelCore.Modules.Supply.Application.CreateAgencyOfferCommand).Assembly)
-            .That().ResideInNamespace("TravelCore.Modules.Supply.Application")
+                typeof(Hani.Modules.Supply.Application.CreateAgencyOfferCommand).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Supply.Application")
             .ShouldNot().HaveDependencyOnAny(
-                "TravelCore.Modules.Supply.Infrastructure",
+                "Hani.Modules.Supply.Infrastructure",
                 "Microsoft.EntityFrameworkCore",
                 "MassTransit",
                 "StackExchange.Redis",
@@ -109,8 +109,8 @@ public sealed class LayerDependencyTests
     public void Presentation_Should_Not_Use_DbContext()
     {
         var result = Types.InAssembly(
-                typeof(TravelCore.Modules.Supply.Presentation.UpsertOfferEndpoint).Assembly)
-            .That().ResideInNamespace("TravelCore.Modules.Supply.Presentation")
+                typeof(Hani.Modules.Supply.Presentation.UpsertOfferEndpoint).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Supply.Presentation")
             .ShouldNot().HaveDependencyOn("Microsoft.EntityFrameworkCore")
             .GetResult();
 
@@ -129,7 +129,7 @@ public sealed class LayerDependencyTests
 public sealed class CqrsConventionTests
 {
     private static readonly Assembly ApplicationAssembly =
-        typeof(TravelCore.Modules.Supply.Application.CreateAgencyOfferCommand).Assembly;
+        typeof(Hani.Modules.Supply.Application.CreateAgencyOfferCommand).Assembly;
 
     [Fact]
     public void Every_Command_Should_Have_Exactly_One_Handler()
@@ -214,7 +214,7 @@ public sealed class NamingConventionTests
     [InlineData("Endpoint")]
     public void Types_Should_Follow_Suffix(string suffix)
     {
-        var types = typeof(TravelCore.Modules.Supply.Application.CreateAgencyOfferCommand)
+        var types = typeof(Hani.Modules.Supply.Application.CreateAgencyOfferCommand)
             .Assembly.GetTypes()
             .Where(t => t.Name.EndsWith(suffix, StringComparison.Ordinal))
             .ToArray();
@@ -243,14 +243,14 @@ public sealed class NamingConventionTests
 ## ۷. اجرا
 
 ```powershell
-dotnet test tests/TravelCore.ArchitectureTests/TravelCore.ArchitectureTests.csproj
+dotnet test tests/Hani.ArchitectureTests/Hani.ArchitectureTests.csproj
 ```
 
 در CI:
 
 ```yaml
 - name: Architecture tests
-  run: dotnet test tests/TravelCore.ArchitectureTests --no-build --verbosity normal
+  run: dotnet test tests/Hani.ArchitectureTests --no-build --verbosity normal
 ```
 
 ---

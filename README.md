@@ -1,16 +1,16 @@
-# TravelCore
+# Hani
 
 مارکت‌پلیس چندآژانسه سفر با سه مدل مستقل:
 
 1. **Supplier API** — ورود موجودی، ظرفیت و قیمت توسط آژانس
 2. **Channel API** — فروش تورهای مجاز از سایت/اپ خود آژانس
-3. **Marketplace** — مقایسه و رزرو مستقیم مشتری در TravelCore
+3. **Marketplace** — مقایسه و رزرو مستقیم مشتری در Hani
 
 علاوه بر تور: **بلیط هواپیما**، هتل، ویزا، جاذبه‌ها، محتوا و نظرات.
 
-**مدل پول:** آژانس Merchant of Record است؛ TravelCore پول مشتری را نگه نمی‌دارد و کمیسیون/اشتراک را با فاکتور دریافت می‌کند.
+**مدل پول:** **Hani Merchant of Record است**؛ پول مشتری به حساب Hani می‌رسد، Hani فاکتور صادر می‌کند و سهم آژانس را بر اساس `SettlementTerms` تسویه می‌کند.
 
-**پلن‌های Channel:** Standard (Powered by TravelCore) / Professional (وایت‌لیبل کامل).
+**پلن‌های Channel:** Standard (Powered by Hani) / Professional (وایت‌لیبل کامل).
 
 ## وضعیت
 
@@ -35,11 +35,14 @@
 | MediatR | 12.5.0 (آخرین Apache-2.0) |
 | MassTransit | 8.5.12 (آخرین Apache-2.0) |
 | Transport | RabbitMQ یا PostgreSQL SQL Transport |
-| Merchant | آژانس (پول مشتری نزد TravelCore نمی‌ماند) |
+| Merchant | **Hani** (پول مشتری به حساب Hani؛ تسویه با آژانس) |
+| کمیسیون | داینامیک per agency + per ProductType |
+| تسویه | `SettlementTerms` قابل تنظیم per contract |
 | درآمد | Supplier + Channel + Marketplace |
 | پلن‌ها | Standard (Powered by) / Professional (White-label) |
-| Flights | ماژول مستقل — فاز ۴ |
+| Flights | ماژول مستقل — داخلی + بین‌المللی |
 | SEO | Workstream از فاز ۰ + ماژول Seo |
+| خطا/لاگ | کد `HANI-...`؛ لاگ انگلیسی؛ پیام کاربر FA/EN/AR |
 
 ## مستندات
 
@@ -48,6 +51,8 @@
 - [حاکمیت معماری](docs/engineering/architecture-governance.md)
 - [قالب ماژول](docs/engineering/module-template.md)
 - [تست‌های معماری](docs/engineering/architecture-tests.md)
+- [استاندارد خطا و لاگ](docs/engineering/error-catalog.md)
+- [Blueprint صفحه تور](docs/product/tour-detail-page.md)
 - [قرارداد Channel API](docs/api/channel-api-v1.openapi.yaml)
 - [قرارداد Supplier API](docs/api/supplier-api-v1.openapi.yaml)
 - [تحلیل سایت مرجع](docs/research/lastsecond-architecture-report.md)

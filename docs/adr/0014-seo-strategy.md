@@ -5,7 +5,7 @@
 
 ## زمینه
 
-SEO برای TravelCore حیاتی است. سه مدل (Marketplace/Channel/Supplier) و وایت‌لیبل می‌توانند باعث محتوای تکراری و رقابت داخلی شوند.
+SEO برای Hani حیاتی است. سه مدل (Marketplace/Channel/Supplier) و وایت‌لیبل می‌توانند باعث محتوای تکراری و رقابت داخلی شوند.
 
 ## تصمیم
 
@@ -15,7 +15,7 @@ SEO برای TravelCore حیاتی است. سه مدل (Marketplace/Channel/Supp
 - Canonical:
   - Product/Route/Hotel/Article → self.
   - Offer/Facet/Date → Product/Route.
-  - Channel Standard → TravelCore.
+  - Channel Standard → Hani.
   - Channel Professional → Agency/Self فقط با محتوای یکتا.
 - `SeoPolicy` در Entitlements.
 - Sitemap per type/locale؛ فقط indexable.

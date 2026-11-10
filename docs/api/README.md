@@ -22,7 +22,9 @@
 - OAuth2 Client Credentials.
 - اسکوپ‌ها: `channel.catalog.read`, `channel.inventory.read`, `channel.booking.read`, `channel.booking.write`, `channel.finance.read`.
 - فقط Offerهای مجاز همان آژانس.
-- `GET /me/entitlements` → پلن، `whiteLabel`، `attributionRequired`، سهمیه، نرخ کمیسیون، `seoCanonicalMode`.
+- `GET /me/entitlements` → پلن، `whiteLabel`، `attributionRequired`، سهمیه، `commissionProfileId`، `seoCanonicalMode`.
+- نرخ کمیسیون در `AgencyCommissionRule` (per agency + per ProductType) است؛ در Entitlements نیست.
+- `SettlementTerms` per contract؛ حالت تسویه ثابت نیست.
 - `/flights/*` → جستجو و رزرو بلیط (فاز ۴).
 
 ## Supplier

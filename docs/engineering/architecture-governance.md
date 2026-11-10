@@ -1,4 +1,4 @@
-# حاکمیت معماری TravelCore (Architecture Governance)
+# حاکمیت معماری Hani (Architecture Governance)
 
 > **هدف:** تضمین این‌که همه ماژول‌ها یکدست بمانند و هیچ تغییر یا تسکی — توسط انسان یا AI — از معماری قفل‌شده تخطی نکند.
 >
@@ -48,9 +48,11 @@ Layer 6 — انسان              CODEOWNERS، PR Template، ARB، Waiver
 - MediatR **12.5.0**
 - MassTransit **8.5.12**
 - FA/EN/AR
-- Merchant = آژانس
+- Merchant = **Hani** (جمع‌آوری و تسویه)
+- کمیسیون داینامیک per agency + per ProductType
 - Standard / Professional
-- Flights ماژول مستقل
+- Flights داخلی + بین‌المللی
+- لاگ فنی انگلیسی؛ پیام کاربر FA/EN/AR
 
 ### ۳.۲. تغییر
 
@@ -68,7 +70,7 @@ Proposal → ADR (Proposed) → ARB Approval → ADR (Accepted) → Implementati
 
 ```markdown
 # ARCH-WAIVER-0007
-- Scope: TravelCore.Modules.Supply.Application
+- Scope: Hani.Modules.Supply.Application
 - Rule: No DbContext in Application
 - Reason: مهاجرت موقت برای گزارش قدیمی
 - Owner: @supply-lead
@@ -148,12 +150,12 @@ Tests           → هر پروژه‌ای که تست می‌کند
 
 ```
 Modules/{Module}/
-├─ TravelCore.Modules.{Module}.Domain/
+├─ Hani.Modules.{Module}.Domain/
 │  ├─ {Aggregate}/
 │  ├─ Events/
 │  ├─ ValueObjects/
 │  └─ Abstractions/
-├─ TravelCore.Modules.{Module}.Application/
+├─ Hani.Modules.{Module}.Application/
 │  ├─ Abstractions/
 │  ├─ Commands/{UseCase}/
 │  │  ├─ {UseCase}Command.cs
@@ -167,7 +169,7 @@ Modules/{Module}/
 │  │  └─ {UseCase}Dto.cs
 │  ├─ Common/
 │  └─ DependencyInjection.cs
-├─ TravelCore.Modules.{Module}.Infrastructure/
+├─ Hani.Modules.{Module}.Infrastructure/
 │  ├─ Persistence/
 │  │  ├─ {Module}DbContext.cs
 │  │  ├─ Configurations/
@@ -175,7 +177,7 @@ Modules/{Module}/
 │  ├─ Repositories/
 │  ├─ ReadServices/
 │  └─ DependencyInjection.cs
-└─ TravelCore.Modules.{Module}.Presentation/
+└─ Hani.Modules.{Module}.Presentation/
    ├─ Supplier/
    ├─ Channel/
    ├─ Marketplace/
@@ -192,7 +194,7 @@ Modules/{Module}/
 
 ### ۶.۳. قالب‌ساز
 
-- `dotnet new travelcore-module -n {Module}` (در فاز ۰ ساخته می‌شود).
+- `dotnet new hani-module -n {Module}` (در فاز ۰ ساخته می‌شود).
 - اسکریپت `scripts/new-module.ps1` همان ساختار را می‌سازد.
 - ماژول جدید بدون template پذیرفته نمی‌شود.
 - تست `ModuleTemplateTests` بررسی می‌کند همه ماژول‌ها ساختار یکسان دارند.
@@ -308,7 +310,7 @@ T:System.Console;Use ILogger
 
 ### Event
 - فقط در `Contracts`.
-- `record` immutable + نسخه در نام: `travelcore.{module}.{event}.v1`.
+- `record` immutable + نسخه در نام: `hani.{module}.{event}.v1`.
 - انتشار فقط با Outbox.
 - Consumerها Inbox + idempotent.
 - Schema event در تست contract بررسی می‌شود.
@@ -401,7 +403,7 @@ T:System.Console;Use ILogger
 2. **Waiver:** حداکثر ۲ waiver فعال و تاریخ‌دار کافی است؟ (پیشنهاد: بله)
 3. **CODEOWNERS:** تیم‌ها/افراد مالک هر ماژول را می‌دهی؟
 4. **ARB:** تصمیم‌گیر نهایی ADR چه کسی است؟ (پیشنهاد: تو + معمار)
-5. **قالب‌ساز:** `dotnet new travelcore-module` ساخته شود؟ (پیشنهاد: بله)
+5. **قالب‌ساز:** `dotnet new hani-module` ساخته شود؟ (پیشنهاد: بله)
 6. **پوشش تست:** حداقل ۸۰٪ برای Domain/Application کافی است؟ (پیشنهاد: بله)
 7. **Frontend boundaries:** ESLint boundaries + dependency-cruiser هر دو؟ (پیشنهاد: بله)
 8. **License allowlist:** فقط Apache/MIT/BSD/PostgreSQL؟ (پیشنهاد: بله)
@@ -416,6 +418,6 @@ T:System.Console;Use ILogger
 
 اگر این مدل تأیید شود، اولین تسک فاز ۰ این است:
 
-> **TC-001A — Architecture Governance Bootstrap:** ساخت `Directory.Packages.props`، `BannedSymbols`، `ArchitectureTests`، `scripts/verify.ps1`، `CODEOWNERS`، `PR Template` و `dotnet new travelcore-module`.
+> **TC-001A — Architecture Governance Bootstrap:** ساخت `Directory.Packages.props`، `BannedSymbols`، `ArchitectureTests`، `scripts/verify.ps1`، `CODEOWNERS`، `PR Template` و `dotnet new hani-module`.
 
 تا این زیرساخت آماده نشود، هیچ کد دامنه‌ای نوشته نمی‌شود.

@@ -1,23 +1,26 @@
-# TravelCore — برنامه معماری و پیاده‌سازی (نسخه ۱.۲)
+# Hani — برنامه معماری و پیاده‌سازی (نسخه ۱.۳)
 
 > **وضعیت:** قفل‌شده برای شروع پیاده‌سازی
 > **مخزن:** https://github.com/mrnikiemami-code/Hani
 > **تاریخ:** ۱۹ آبان ۱۴۰۵ / ۱۰ نوامبر ۲۰۲۶
-> **مالک سند:** تیم معماری TravelCore
+> **مالک سند:** تیم معماری Hani
 > **قاعده:** تصمیم‌های این سند تا زمانی که ADR جدیدی تصویب نشود تغییر نمی‌کنند.
 
 ---
 
-## تغییرات نسخه ۱.۱ (تصمیم‌های جدید)
+## تغییرات کلیدی نسخه ۱.۳
 
-1. **پول به حساب آژانس می‌رود** → آژانس Merchant of Record است؛ TravelCore پول مشتری را نگه نمی‌دارد. کمیسیون با فاکتور دوره‌ای از آژانس دریافت می‌شود.
+1. **پول به حساب Hani می‌رود** → Hani Merchant of Record است؛ مشتری به حساب Hani پرداخت می‌کند و Hani سهم آژانس را بر اساس `SettlementTerms` قرارداد تسویه می‌کند. فاکتور مشتری و فاکتور کمیسیون/تسویه را Hani صادر می‌کند.
 2. **مدل درآمد هر سه‌گانه** → Supplier (اشتراک) + Channel (اشتراک/کمیسیون) + Marketplace (کمیسیون/تبلیغات). جزئیات: بخش ۳۰.
 3. **دو پلن تجاری Channel**:
-   - **Standard:** «Powered by TravelCore» اجباری.
-   - **Professional:** وایت‌لیبل کامل + اشتراک بالاتر + بدون برند TravelCore.
+   - **Standard:** «Powered by Hani» اجباری.
+   - **Professional:** وایت‌لیبل کامل + اشتراک بالاتر + بدون برند Hani.
 4. **رزرو بلیط هواپیما** به‌عنوان ماژول مستقل `Flights` اضافه شد. جزئیات: بخش ۲۹.
 5. **SEO به یک Workstream مستقل و از فاز ۰** ارتقا یافت؛ نه فاز آخر. جزئیات: بخش ۱۶ و ۳۱.
 6. **حاکمیت اجرایی معماری** اضافه شد: قالب واحد ماژول، تست‌های معماری، Analyzer، CI Gate، ADR/Waiver و Drift Report. جزئیات: بخش ۳۳ و `docs/engineering/architecture-governance.md`.
+7. **Blueprint صفحه جزئیات تور** بر اساس بررسی واقعی صفحه `g2739` لست‌سکند اضافه شد: آناتومی، داده‌ها، جریان رزرو، نقاط ضعف و نقشه به دامنه Hani. جزئیات: بخش ۳۴ و `docs/product/tour-detail-page.md`.
+8. **کمیسیون داینامیک per agency + per ProductType** و **SettlementTerms قابل تنظیم per contract** قفل شد. جزئیات: بخش ۳۰.۸ و ۳۲.
+9. **کد و لاگ فنی انگلیسی؛ پیام کاربر چندزبانه** قفل شد. خطاها کد `HANI-...` دارند و در FA/EN/AR ترجمه می‌شوند. جزئیات: بخش ۳۵.
 
 ---
 
@@ -54,28 +57,30 @@
 29. طراحی تفصیلی رزرو بلیط هواپیما (Flights)
 30. مدل درآمد، پلن‌ها و وایت‌لیبل
 31. استراتژی و مهندسی SEO (تفصیلی)
-32. جریان پول با مرچنت آژانس
+32. جریان پول با مرچنت Hani
 33. حاکمیت معماری و یکدستی پروژه
+34. Blueprint صفحه جزئیات تور (مدل لست‌سکند، بهتر)
+35. استاندارد خطا و سیاست لاگینگ (چندزبانه)
 
 ---
 
 ## ۱. خلاصه اجرایی
 
-TravelCore یک **مارکت‌پلیس چندآژانسه سفر** است با سه کانال درآمدی/تعامل مستقل:
+Hani یک **مارکت‌پلیس چندآژانسه سفر** است با سه کانال درآمدی/تعامل مستقل:
 
-1. **Supplier API** — آژانس موجودی، ظرفیت و قیمت را وارد TravelCore می‌کند.
+1. **Supplier API** — آژانس موجودی، ظرفیت و قیمت را وارد Hani می‌کند.
 2. **Channel API** — آژانس از سایت/اپ خودش، تورهای مجاز را با API می‌فروشد.
-3. **Marketplace** — مشتری مستقیم وارد TravelCore می‌شود، پیشنهاد چند آژانس را مقایسه و رزرو می‌کند.
+3. **Marketplace** — مشتری مستقیم وارد Hani می‌شود، پیشنهاد چند آژانس را مقایسه و رزرو می‌کند.
 
 هسته مشترک همه این‌ها یکی است: **کاتالوگ تور مشترک (`TourProduct`) + پیشنهاد مستقل هر آژانس (`AgencyOffer`) + سانس/ظرفیت/قیمت (`TourDeparture`) + رزرو/قرارداد/پرداخت/تسویه**.
 
 علاوه بر تور، **بلیط هواپیما** یک ماژول مستقل با چرخه عمر متفاوت (جستجو، PNR، Ticketing، Refund) دارد و از همان هسته رزرو/پرداخت/کمیسیون استفاده می‌کند.
 
-**مدل پول:** آژانس Merchant of Record است. مشتری به آژانس پرداخت می‌کند؛ TravelCore فقط کمیسیون/اشتراک را با فاکتور از آژانس دریافت می‌کند. این تصمیم، ریسک و مجوز واسطه‌گری پرداخت را حذف می‌کند.
+**مدل پول:** **Hani Merchant of Record است.** مشتری به حساب Hani پرداخت می‌کند؛ Hani پس از کسر کمیسیون، سهم آژانس را بر اساس `SettlementTerms` قرارداد تسویه می‌کند. فاکتور مشتری و فاکتور کمیسیون/تسویه توسط Hani صادر می‌شود.
 
 این سند علاوه بر معماری، **برنامه اجرایی** است: ساختار پوشه‌ها، قواعد وابستگی، الگوی CQRS، BuildingBlocks، لاگینگ، تلمتری، idempotency، messaging، کش، دیتابیس، i18n، SEO، تست، CI/CD، نقشه راه و بک‌لاگ.
 
-**تفاوت کلیدی با لست‌سکند:** لست‌سکند عمدتاً سرنخ (Lead) تولید می‌کند و کاربر را به تماس با آژانس می‌فرستد؛ TravelCore **رزرو آنلاین واقعی** با قرارداد، پرداخت و تسویه دارد.
+**تفاوت کلیدی با لست‌سکند:** لست‌سکند عمدتاً سرنخ (Lead) تولید می‌کند و کاربر را به تماس با آژانس می‌فرستد؛ Hani **رزرو آنلاین واقعی** با قرارداد، پرداخت و تسویه دارد.
 
 ---
 
@@ -94,7 +99,9 @@ TravelCore یک **مارکت‌پلیس چندآژانسه سفر** است با 
 | MediatR | 12.5.0 — آخرین نسخه Apache-2.0 | 🔒 قفل |
 | MassTransit | 8.5.12 — آخرین نسخه Apache-2.0 | 🔒 قفل |
 | Transport | RabbitMQ یا PostgreSQL SQL Transport — قابل سوییچ | 🔒 قفل |
-| Merchant of Record | **آژانس** — TravelCore پول مشتری را نگه نمی‌دارد | 🔒 قفل |
+| Merchant of Record | **Hani** — پول مشتری به حساب Hani می‌رسد | 🔒 قفل |
+| تسویه با آژانس | `SettlementTerms` قابل تنظیم per contract (پیش/پس‌پرداخت، دوره‌ای/per booking، پس از سفر، ناخالص/خالص، Credit Limit) | 🔒 قفل |
+| کمیسیون | داینامیک per agency + per ProductType + بازه اعتبار، snapshot در رزرو | 🔒 قفل |
 | مدل درآمد | هر سه: Supplier + Channel + Marketplace | 🔒 قفل |
 | پلن‌های Channel | Standard (Powered by) / Professional (White-label) | 🔒 قفل |
 | بلیط هواپیما | ماژول مستقل `Flights` — فاز ۴ | 🔒 قفل |
@@ -107,7 +114,9 @@ TravelCore یک **مارکت‌پلیس چندآژانسه سفر** است با 
 
 ## ۳. اصلاح مهم: `TourProduct` مشترک + `AgencyOffer` مستقل
 
-گزارش تحلیل لست‌سکند مدلی پیشنهاد داده بود که در آن `TourProduct` مالک آژانس دارد. **این مدل برای TravelCore پذیرفته نیست.** مدل قفل‌شده:
+**«مدل لست‌سکند» = گزینه ۱:** یعنی مدل محصول/تجربه/کسب‌وکار لست‌سکند (مارکت‌پلیس، محتوا، سئو، پنل آژانس، صفحه تور غنی) — نه مدل داده per-agency.
+
+گزارش تحلیل لست‌سکند مدلی پیشنهاد داده بود که در آن `TourProduct` مالک آژانس دارد. **این مدل برای Hani پذیرفته نیست.** مدل قفل‌شده:
 
 ```
 TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
@@ -158,7 +167,7 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 | محور | Supplier API | Channel API | Marketplace |
 |---|---|---|---|
 | بازیگر | آژانس (تأمین‌کننده) | آژانس (کانال فروش) | مشتری نهایی |
-| جهت داده | آژانس → TravelCore | TravelCore → سایت/اپ آژانس | دوطرفه (خرید) |
+| جهت داده | آژانس → Hani | Hani → سایت/اپ آژانس | دوطرفه (خرید) |
 | احراز هویت | API Key + HMAC یا OAuth2 CC | OAuth2 Client Credentials | JWT کاربر / مهمان |
 | اسکوپ | `supplier.write`, `supplier.read` | `channel.catalog.read`, `channel.booking.write` | `market.*` (داخلی) |
 | مالکیت داده | Offer/Departure آژانس | فقط خواندن Offerهای مجاز | سفارش مشتری |
@@ -222,13 +231,13 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 - `Idempotency-Key` اجباری برای همه POSTها.
 - Webhook با HMAC و retry.
 - محدودیت IP پیش‌فرض فعال.
-- **پلن Standard:** نمایش «Powered by TravelCore» اجباری است.
-- **پلن Professional:** وایت‌لیبل کامل؛ نام/لوگوی TravelCore در UI، ایمیل، فاکتور و checkout نمایش داده نمی‌شود.
+- **پلن Standard:** نمایش «Powered by Hani» اجباری است.
+- **پلن Professional:** وایت‌لیبل کامل؛ نام/لوگوی Hani در UI، ایمیل، فاکتور و checkout نمایش داده نمی‌شود.
 - جزئیات پلن‌ها و اجبار برند: بخش ۳۰.
 
 ### ۴.۵. Marketplace
 
-**هدف:** مشتری نهایی وارد TravelCore می‌شود و مقایسه/رزرو می‌کند.
+**هدف:** مشتری نهایی وارد Hani می‌شود و مقایسه/رزرو می‌کند.
 
 | صفحه/API | کار |
 |---|---|
@@ -253,16 +262,17 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 | Channel | اشتراک پلن + کمیسیون هر رزرو | Standard/Professional + نرخ کمیسیون |
 | Marketplace | کمیسیون هر رزرو + تبلیغات | نرخ بر اساس ProductType و پلن آژانس |
 
-**قاعده:** هیچ درآمدی بر پایه «نگه‌داشتن پول مشتری» نیست. همه جریان‌ها با فاکتور و دفتر کل قابل ردیابی‌اند. جزئیات: بخش ۳۰.
+**قاعده:** درآمد از اشتراک و کمیسیون است؛ نگهداری و تسویه پول مشتری بخشی از `Settlement` است و با دفتر کل دوطرفه ردیابی می‌شود. جزئیات: بخش ۳۰.
 
-### ۴.۷. مرچنت آژانس و جریان پول
+### ۴.۷. مرچنت Hani و جریان پول
 
-- **مشتری → آژانس** پرداخت می‌کند (درگاه آژانس یا درگاه مشترک با حساب آژانس).
-- **TravelCore → آژانس** فاکتور کمیسیون/اشتراک می‌فرستد.
-- TravelCore هیچ‌گاه پول مشتری را در حساب خود نگه نمی‌دارد.
-- در Marketplace، TravelCore فقط orchestration می‌کند: سفارش، قرارداد، وضعیت پرداخت، بلیط/واچر.
-- در Channel، پرداخت کاملاً سمت آژانس است.
-- گزینه Split Payment فقط اگر PSP داخلی از sub-merchant پشتیبانی کند؛ در غیر این صورت فاکتور دوره‌ای.
+- **مشتری → Hani** پرداخت می‌کند (درگاه Hani).
+- **Hani → آژانس** سهم آژانس را بر اساس `SettlementTerms` قرارداد تسویه می‌کند.
+- **Hani → مشتری** فاکتور فروش صادر می‌کند.
+- **Hani → آژانس** فاکتور کمیسیون/اشتراک (و در صورت نیاز صورت‌حساب تسویه) صادر می‌کند.
+- Hani پول را تا زمان تسویه نگه می‌دارد؛ دفتر کل، تعهد به آژانس را ثبت می‌کند.
+- در Channel، پرداخت نیز به حساب Hani است؛ مگر قرارداد خاصی ترتیب دیگری تعیین کند.
+- Split Payment در صورت پشتیبانی PSP؛ در غیر این صورت مدل حساب واحد Hani + تسویه.
 
 جزئیات و ماشین وضعیت: بخش ۳۲.
 
@@ -271,12 +281,12 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 | ویژگی | Standard | Professional |
 |---|---|---|
 | Channel API | ✓ | ✓ |
-| «Powered by TravelCore» | اجباری | حذف |
+| «Powered by Hani» | اجباری | حذف |
 | وایت‌لیبل کامل | ✗ | ✓ |
 | دامنه اختصاصی | ✗ | ✓ |
 | سهمیه API | پایه | بالا |
-| نرخ کمیسیون | بالاتر | پایین‌تر |
-| SEO canonical | به TravelCore | قابل تنظیم (با قواعد محتوا) |
+| نرخ کمیسیون | نرخ پایه (قابل override با قرارداد) | نرخ پایه پایین‌تر (قابل override) |
+| SEO canonical | به Hani | قابل تنظیم (با قواعد محتوا) |
 | پشتیبانی | استاندارد | اولویت‌دار |
 | اشتراک | پایه | بالاتر |
 
@@ -322,7 +332,7 @@ flowchart TB
     GW[API Gateway<br/>Auth / Rate limit / Routing]
   end
 
-  subgraph App["TravelCore.Api (Minimal API Host)"]
+  subgraph App["Hani.Api (Minimal API Host)"]
     M1[Marketplace API]
     M2[Channel API]
     M3[Supplier API]
@@ -417,7 +427,7 @@ Api Host        → Presentation + Infrastructure همه ماژول‌ها (Comp
 - هر ماژول DbContext و Migration مستقل دارد.
 - هیچ Join بین Schemaها در کد وجود ندارد.
 - تراکنش بین ماژول‌ها با Outbox/Saga، نه Distributed Transaction.
-- Integration Eventها در `TravelCore.Contracts.*` نسخه‌بندی می‌شوند.
+- Integration Eventها در `Hani.Contracts.*` نسخه‌بندی می‌شوند.
 - استخراج هر ماژول = جدا کردن Host + DbContext + Consumers؛ دامنه دست نمی‌خورد.
 - ترتیب پیشنهادی استخراج: Notifications → Search → Content → Reviews → Settlement → Payments → Booking → Supply → Catalog.
 
@@ -431,7 +441,7 @@ Api Host        → Presentation + Infrastructure همه ماژول‌ها (Comp
 D:\Hani\
 ├─ .cursor\
 │  └─ rules\
-│     └─ travelcore-architecture.mdc
+│     └─ hani-architecture.mdc
 ├─ .editorconfig
 ├─ .gitignore
 ├─ Directory.Build.props
@@ -439,11 +449,11 @@ D:\Hani\
 ├─ global.json
 ├─ README.md
 ├─ PLAN.md
-├─ TravelCore.sln
+├─ Hani.sln
 ├─ src\
-│  ├─ TravelCore.Api\
-│  ├─ TravelCore.BuildingBlocks\
-│  ├─ TravelCore.Contracts\
+│  ├─ Hani.Api\
+│  ├─ Hani.BuildingBlocks\
+│  ├─ Hani.Contracts\
 │  └─ Modules\
 ├─ tests\
 ├─ frontend\
@@ -455,7 +465,7 @@ D:\Hani\
 ### ۷.۲. Host
 
 ```
-src/TravelCore.Api/
+src/Hani.Api/
 ├─ Program.cs
 ├─ DependencyInjection.cs
 ├─ Endpoints/
@@ -495,8 +505,8 @@ src/TravelCore.Api/
 ### ۷.۳. BuildingBlocks
 
 ```
-src/TravelCore.BuildingBlocks/
-├─ TravelCore.BuildingBlocks.Domain/
+src/Hani.BuildingBlocks/
+├─ Hani.BuildingBlocks.Domain/
 │  ├─ Entity.cs
 │  ├─ AggregateRoot.cs
 │  ├─ ValueObject.cs
@@ -507,7 +517,7 @@ src/TravelCore.BuildingBlocks/
 │  ├─ LocalizedText.cs
 │  ├─ DateRange.cs
 │  └─ Guard.cs
-├─ TravelCore.BuildingBlocks.Application/
+├─ Hani.BuildingBlocks.Application/
 │  ├─ Cqrs/
 │  │  ├─ ICommand.cs
 │  │  ├─ IQuery.cs
@@ -537,7 +547,7 @@ src/TravelCore.BuildingBlocks/
 │  └─ Pagination/
 │     ├─ PagedResult.cs
 │     └─ Cursor.cs
-├─ TravelCore.BuildingBlocks.Infrastructure/
+├─ Hani.BuildingBlocks.Infrastructure/
 │  ├─ Persistence/
 │  │  ├─ BaseDbContext.cs
 │  │  ├─ Outbox/
@@ -563,7 +573,7 @@ src/TravelCore.BuildingBlocks/
 │     ├─ Hashing.cs
 │     ├─ HmacSignature.cs
 │     └─ TenantContext.cs
-├─ TravelCore.BuildingBlocks.AspNetCore/
+├─ Hani.BuildingBlocks.AspNetCore/
 │  ├─ ProblemDetails/
 │  ├─ ExceptionHandling/
 │  ├─ Localization/
@@ -571,7 +581,7 @@ src/TravelCore.BuildingBlocks/
 │  ├─ RateLimiting/
 │  └─ EndpointFilters/
 │     └─ IdempotencyEndpointFilter.cs
-└─ TravelCore.BuildingBlocks.Testing/
+└─ Hani.BuildingBlocks.Testing/
    ├─ Testcontainers/
    ├─ Fakes/
    └─ Assertions/
@@ -580,32 +590,32 @@ src/TravelCore.BuildingBlocks/
 ### ۷.۴. قراردادهای بین ماژول‌ها
 
 ```
-src/TravelCore.Contracts/
-├─ TravelCore.Contracts.Catalog/
+src/Hani.Contracts/
+├─ Hani.Contracts.Catalog/
 │  ├─ TourProductCreatedIntegrationEvent.cs
 │  ├─ TourProductUpdatedIntegrationEvent.cs
 │  └─ CatalogReadDtos.cs
-├─ TravelCore.Contracts.Supply/
+├─ Hani.Contracts.Supply/
 │  ├─ OfferPublishedIntegrationEvent.cs
 │  ├─ DepartureChangedIntegrationEvent.cs
 │  └─ AvailabilityChangedIntegrationEvent.cs
-├─ TravelCore.Contracts.Booking/
+├─ Hani.Contracts.Booking/
 │  ├─ BookingCreatedIntegrationEvent.cs
 │  ├─ BookingConfirmedIntegrationEvent.cs
 │  └─ BookingCancelledIntegrationEvent.cs
-├─ TravelCore.Contracts.Payments/
+├─ Hani.Contracts.Payments/
 │  ├─ PaymentSucceededIntegrationEvent.cs
 │  ├─ PaymentFailedIntegrationEvent.cs
 │  └─ RefundIssuedIntegrationEvent.cs
-├─ TravelCore.Contracts.Flights/
+├─ Hani.Contracts.Flights/
 │  ├─ FlightBookingConfirmedIntegrationEvent.cs
 │  ├─ FlightTicketedIntegrationEvent.cs
 │  └─ FlightRefundedIntegrationEvent.cs
-├─ TravelCore.Contracts.Billing/
+├─ Hani.Contracts.Billing/
 │  ├─ SubscriptionRenewedIntegrationEvent.cs
 │  ├─ CommissionChargedIntegrationEvent.cs
 │  └─ InvoiceOverdueIntegrationEvent.cs
-└─ TravelCore.Contracts.Settlement/
+└─ Hani.Contracts.Settlement/
    ├─ SettlementPaidIntegrationEvent.cs
    └─ CommissionInvoicedIntegrationEvent.cs
 ```
@@ -614,7 +624,7 @@ src/TravelCore.Contracts/
 
 ```
 src/Modules/Supply/
-├─ TravelCore.Modules.Supply.Domain/
+├─ Hani.Modules.Supply.Domain/
 │  ├─ AgencyOffers/
 │  │  ├─ AgencyOffer.cs
 │  │  ├─ AgencyOfferId.cs
@@ -631,7 +641,7 @@ src/Modules/Supply/
 │  └─ ValueObjects/
 │     ├─ PriceRule.cs
 │     └─ CancellationPolicy.cs
-├─ TravelCore.Modules.Supply.Application/
+├─ Hani.Modules.Supply.Application/
 │  ├─ Abstractions/
 │  │  ├─ IAgencyOfferRepository.cs
 │  │  ├─ IDepartureRepository.cs
@@ -656,7 +666,7 @@ src/Modules/Supply/
 │  │  ├─ Dtos/
 │  │  └─ Mappings/
 │  └─ DependencyInjection.cs
-├─ TravelCore.Modules.Supply.Infrastructure/
+├─ Hani.Modules.Supply.Infrastructure/
 │  ├─ Persistence/
 │  │  ├─ SupplyDbContext.cs
 │  │  ├─ Configurations/
@@ -669,7 +679,7 @@ src/Modules/Supply/
 │  ├─ ReadServices/
 │  │  └─ OfferReadService.cs
 │  └─ DependencyInjection.cs
-└─ TravelCore.Modules.Supply.Presentation/
+└─ Hani.Modules.Supply.Presentation/
    ├─ Supplier/
    │  ├─ UpsertOfferEndpoint.cs
    │  ├─ SetAvailabilityEndpoint.cs
@@ -831,7 +841,7 @@ internal sealed class GetAgencyOffersQueryHandler
 
 ## ۹. BuildingBlocks
 
-BuildingBlocks باید **مستقل از دامنه TravelCore** و قابل استفاده در پروژه‌های دیگر باشد.
+BuildingBlocks باید **مستقل از دامنه Hani** و قابل استفاده در پروژه‌های دیگر باشد.
 
 | پروژه | مسئولیت | وابستگی مجاز |
 |---|---|---|
@@ -858,14 +868,17 @@ BuildingBlocks باید **مستقل از دامنه TravelCore** و قابل ا
 - **Audit Log** جدا از لاگ تشخیصی؛ غیرقابل خاموش‌شدن در محیط تولید.
 - **PII Redaction** اجباری: موبایل، ایمیل، کد ملی، پاسپورت، شماره کارت.
 - **Correlation** با `X-Correlation-Id` + W3C `traceparent`.
-- هر لاگ باید `TraceId`, `SpanId`, `TenantId`, `AgencyId`, `UserId`, `Module` داشته باشد.
+- **زبان لاگ: انگلیسی ثابت.** پیام‌های لاگ هرگز ترجمه نمی‌شوند.
+- هر لاگ باید `TraceId`, `SpanId`, `TenantId`, `AgencyId`, `UserId`, `Module`, `Locale` داشته باشد.
+- خطاها با `ErrorCode` + `MessageKey` لاگ می‌شوند؛ متن ترجمه‌شده فقط در پاسخ کاربر/Notification است.
+- **Audit Log** کد + locale + actor را ثبت می‌کند، نه متن ترجمه‌شده در لاگ فنی.
 
 ### ۱۰.۲. تنظیمات با Toggle
 
 ```json
 {
   "Observability": {
-    "ServiceName": "TravelCore.Api",
+    "ServiceName": "Hani.Api",
     "Environment": "Production",
     "Logging": {
       "Enabled": true,
@@ -945,7 +958,7 @@ builder.Services.AddOpenTelemetry()
             .AddHttpClientInstrumentation()
             .AddEntityFrameworkCoreInstrumentation()
             .AddRedisInstrumentation()
-            .AddSource("TravelCore.*")
+            .AddSource("Hani.*")
             .SetSampler(new ParentBasedSampler(
                 new TraceIdRatioBasedSampler(options.Tracing.SamplingRatio)))
             .AddOtlpExporter(o => o.Endpoint = new Uri(options.Tracing.Endpoint));
@@ -958,7 +971,7 @@ builder.Services.AddOpenTelemetry()
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
             .AddRuntimeInstrumentation()
-            .AddMeter("TravelCore.*")
+            .AddMeter("Hani.*")
             .AddOtlpExporter(o => o.Endpoint = new Uri(options.Metrics.Endpoint));
     });
 ```
@@ -968,8 +981,8 @@ builder.Services.AddOpenTelemetry()
 ```csharp
 public static class SupplyTelemetry
 {
-    public static readonly ActivitySource ActivitySource = new("TravelCore.Supply");
-    public static readonly Meter Meter = new("TravelCore.Supply");
+    public static readonly ActivitySource ActivitySource = new("Hani.Supply");
+    public static readonly Meter Meter = new("Hani.Supply");
 
     public static readonly Counter<long> OffersCreated =
         Meter.CreateCounter<long>("supply.offers.created");
@@ -1066,7 +1079,7 @@ Status: Created → Pending → Succeeded | Failed | Expired
 - اثر هر رویداد یک بار: Outbox + Inbox + وضعیت ماشین.
 - تطبیق روزانه (Reconciliation) بین درگاه و دفتر کل.
 - Refund هم idempotent است (`refund:{paymentId}:{requestId}`).
-- **پول در حساب TravelCore نگه داشته نمی‌شود؛ `PspAccountRef` به حساب آژانس اشاره می‌کند.**
+- **پول در حساب Hani نگه داشته نمی‌شود؛ `PspAccountRef` به حساب آژانس اشاره می‌کند.**
 
 ### ۱۱.۵.۱. Idempotency بلیط هواپیما
 
@@ -1122,7 +1135,7 @@ public interface IIntegrationEventPublisher
       "Password": "guest"
     },
     "Postgres": {
-      "ConnectionString": "Host=localhost;Database=travelcore;Username=postgres;Password=..."
+      "ConnectionString": "Host=localhost;Database=hani;Username=postgres;Password=..."
     },
     "Outbox": { "Enabled": true },
     "Retry": { "Limit": 5, "IntervalSeconds": 2, "UseExponentialBackoff": true }
@@ -1169,7 +1182,7 @@ services.AddMassTransit(x =>
 - **Inbox** برای Consumerها (EF Inbox) برای حذف تکرار.
 - Retry نمایی + DLQ + داشبورد.
 - پیام‌ها immutable و نسخه‌دار.
-- نام‌گذاری: `travelcore.{module}.{event}.v1`.
+- نام‌گذاری: `hani.{module}.{event}.v1`.
 - Saga برای `Booking → Payment → Settlement` (در صورت نیاز).
 - Transport Postgres برای شروع ساده‌تر؛ RabbitMQ وقتی حجم/تیم افزایش یافت.
 - تفاوت: Postgres = بدون زیرساخت اضافه، throughput کمتر؛ RabbitMQ = throughput و ابزار بهتر.
@@ -1290,7 +1303,7 @@ billing, settlement, review, content, seo, notification, platform, transport
 
 - Cultureهای پشتیبانی‌شده: `fa-IR` (پیش‌فرض)، `en-US`، `ar-SA`.
 - `RequestLocalization` بر اساس `Accept-Language` + `?locale=` + مسیر.
-- خطاها با کد (`OFFER_NOT_FOUND`) و ترجمه در Resource.
+- خطاها با کد استاندارد (`HANI-SUPPLY-1001`) و ترجمه در Resource.
 - `LocalizedText` برای فیلدهای محتوایی:
 
 ```csharp
@@ -1322,7 +1335,21 @@ public sealed record LocalizedText(
 - Slugهای ترجمه‌شده در جدول `seo.slugs`.
 - `hreflang` و canonical برای هر زبان.
 
-### ۱۵.۳. چک‌لیست QA چندزبانه
+### ۱۵.۳. زبان لاگ در برابر زبان پیام
+
+| لایه | زبان |
+|---|---|
+| کد | انگلیسی |
+| لاگ فنی | **انگلیسی ثابت** |
+| کد خطا | انگلیسی (`HANI-...`) |
+| پیام کاربر | FA/EN/AR |
+| Audit | کد + locale + actor (بدون متن ترجمه‌شده در لاگ فنی) |
+
+- لاگ‌ها هرگز چندزبانه نمی‌شوند.
+- ترجمه فقط در لایه Presentation/UI انجام می‌شود.
+- جزئیات: بخش ۳۵ و `ADR-0017`.
+
+### ۱۵.۴. چک‌لیست QA چندزبانه
 
 - [ ] جهت و چیدمان RTL/LTR
 - [ ] فونت و line-height
@@ -1337,7 +1364,7 @@ public sealed record LocalizedText(
 
 ## ۱۶. موتور SEO
 
-> SEO برای TravelCore یک **Workstream مستقل** است، نه یک فاز پایانی. از فاز ۰ شروع می‌شود و در هر فاز گسترش می‌یابد. جزئیات مهندسی: بخش ۳۱.
+> SEO برای Hani یک **Workstream مستقل** است، نه یک فاز پایانی. از فاز ۰ شروع می‌شود و در هر فاز گسترش می‌یابد. جزئیات مهندسی: بخش ۳۱.
 
 ### ۱۶.۱. اصول
 
@@ -1386,7 +1413,7 @@ public sealed record LocalizedText(
 ### ۱۶.۴. Metadata
 
 - `generateMetadata` در Server Component.
-- Template: `{Title} | TravelCore` (در پلن Standard) / `{Title} | {AgencyBrand}` (در Professional).
+- Template: `{Title} | Hani` (در پلن Standard) / `{Title} | {AgencyBrand}` (در Professional).
 - Description یکتا ۱۲۰–۱۶۰ کاراکتر؛ بدون تکرار.
 - OG image داینامیک (Next.js `ImageResponse`).
 - `alternates.languages` برای FA/EN/AR + `x-default`.
@@ -1395,7 +1422,7 @@ public sealed record LocalizedText(
   - Product/Route/Hotel/Article → self.
   - Offer → Product.
   - Facet/Date → Product/Route.
-  - Channel Standard → TravelCore.
+  - Channel Standard → Hani.
   - Channel Professional → قابل تنظیم (بخش ۱۶.۸).
 
 ### ۱۶.۵. Structured Data
@@ -1442,14 +1469,14 @@ public sealed record LocalizedText(
 
 | موضوع | Standard | Professional |
 |---|---|---|
-| Canonical | TravelCore | قابل تنظیم (Agency/Self) |
-| برند | Powered by TravelCore | White-label |
+| Canonical | Hani | قابل تنظیم (Agency/Self) |
+| برند | Powered by Hani | White-label |
 | محتوا | Syndicated | License + Unique Content |
-| Sitemap | فقط TravelCore | Agency مسئول است |
-| hreflang | TravelCore | Agency مسئول است |
+| Sitemap | فقط Hani | Agency مسئول است |
+| hreflang | Hani | Agency مسئول است |
 
 **سیاست پیشنهادی:**
-- Standard: محتوای محصول با canonical به TravelCore؛ آژانس می‌تواند index کند ولی اعتبار به TravelCore می‌رسد.
+- Standard: محتوای محصول با canonical به Hani؛ آژانس می‌تواند index کند ولی اعتبار به Hani می‌رسد.
 - Professional: آژانس می‌تواند self-canonical کند **فقط اگر** محتوای یکتا اضافه کند (حداقل آستانه). در غیر این صورت `noindex` روی نسخه آژانس.
 - دو دامنه با محتوای یکسان = رقابت داخلی؛ با محتوای یکتا + لینک داخلی مدیریت می‌شود.
 - `SeoPolicy` در `GET /channel/v1/me/entitlements` برگردانده می‌شود.
@@ -1574,7 +1601,7 @@ git push
 |---|---|---|---|
 | ۰. Bootstrap | ۲ هفته | Solution، BuildingBlocks، Docker، CI، Observability، Idempotency، Cache، Messaging، i18n پایه، **SEO foundation** | تست‌ها سبز؛ endpoint نمونه + sitemap/meta پایه |
 | ۱. Core Supply | ۴ هفته | Identity، Catalog، Supply، Supplier API، moderation | آژانس بتواند Offer/Departure ثبت کند |
-| ۲. Marketplace | ۵ هفته | Search، Compare، Quote/Hold، Booking، Contract، Payment (مرچنت آژانس) | یک رزرو کامل با پرداخت آژانس |
+| ۲. Marketplace | ۵ هفته | Search، Compare، Quote/Hold، Booking، Contract، Payment (مرچنت Hani) | یک رزرو کامل با پرداخت Hani |
 | ۳. Channel + Billing | ۴ هفته | Channel API، Webhook، Plans/Entitlements، White-label، Commission Ledger، پنل آژانس | یک کانال Standard و یک Professional + اولین فاکتور کمیسیون |
 | ۴. Flights | ۵ هفته | جستجو، PNR، Ticketing، Refund، یک Supplier پایلوت، صفحه مسیرها | یک بلیط داخلی end-to-end + صفحه SEO مسیر |
 | ۵. Content + SEO Scale + i18n | ۳ هفته | محتوا، نظرات، Sitemap کامل، JSON-LD، FA/EN/AR | ایندکس شدن صفحات سه‌زبانه |
@@ -1679,7 +1706,7 @@ git push
 
 ## ۲۴. سؤالات و تصمیم‌ها
 
-1. Merchant of Record کیست؟ پول به حساب پلتفرم یا آژانس؟ ✅ حل شد: آژانس.
+1. Merchant of Record کیست؟ پول به حساب پلتفرم یا آژانس؟ ✅ حل شد: **Hani**.
 2. مدل درآمد: کمیسیون، اشتراک، فی به‌ازای رزرو؟ ✅ حل شد: هر سه مدل.
 3. آیا Channel API وایت‌لیبل کامل است؟ ✅ حل شد: Standard (Powered by) / Professional (White-label).
 3.1. بلیط هواپیما در دامنه است؟ ✅ حل شد: بله، ماژول `Flights` — فاز ۴.
@@ -1690,11 +1717,12 @@ git push
 8. مقاصد و آژانس‌های پایلوت؟
 9. نیاز به اپ موبایل در فاز اول؟
 10. الزامات مالیاتی/فاکتور رسمی و مسئول صدور فاکتور مشتری؟
-11. کدام PSPها پرداخت به حساب آژانس + callback به TravelCore را پشتیبانی می‌کنند؟ آیا Split Payment ممکن است؟
-12. نرخ کمیسیون هر پلن و هر ProductType چقدر است؟
-13. مکان و متن «Powered by TravelCore» در پلن Standard کجاست؟ (فوتر، checkout، هر دو)
-14. سیاست canonical در پلن Professional: آژانس یا TravelCore؟ آستانه محتوای یکتا؟
-15. Flights: داخلی یا بین‌المللی؟ GDS/NDC یا Consolidator ایرانی؟ Ticketing توسط کی؟
+11. کدام PSP برای جمع‌آوری به حساب Hani + تسویه به آژانس مناسب است؟ آیا Split Payment پشتیبانی می‌شود؟
+12. نرخ کمیسیون هر آژانس و هر ProductType چقدر است؟ (داینامیک، per contract)
+12.1. حالت تسویه پیش‌فرض هر آژانس چیست؟ (پیش/پس‌پرداخت، دوره‌ای/per booking، پس از سفر، ناخالص/خالص، Credit Limit)
+13. مکان و متن «Powered by Hani» در پلن Standard کجاست؟ (فوتر، checkout، هر دو)
+14. سیاست canonical در پلن Professional: آژانس یا Hani؟ آستانه محتوای یکتا؟
+15. Flights: ✅ داخلی + بین‌المللی. باقی: GDS/NDC یا Consolidator ایرانی؟ Ticketing توسط کی؟
 16. SLA و جریمه عدم‌موجودی/تأخیر Ticketing؟
 
 ---
@@ -1713,11 +1741,13 @@ git push
 | ADR-0008 | Idempotency در پرداخت |
 | ADR-0009 | PostgreSQL Schema per Module |
 | ADR-0010 | i18n سه‌زبانه و SEO |
-| ADR-0011 | مرچنت آژانس و کمیسیون با فاکتور |
+| ADR-0011 | مرچنت Hani، تسویه و کمیسیون داینامیک |
 | ADR-0012 | پلن‌های Standard/Professional و وایت‌لیبل |
 | ADR-0013 | ماژول Flights و چرخه PNR/Ticketing |
 | ADR-0014 | استراتژی SEO و سیاست canonical کانال |
 | ADR-0015 | حاکمیت اجرایی معماری و یکدستی ماژول‌ها |
+| ADR-0016 | استاندارد خطای کددار و ترجمه‌شده |
+| ADR-0017 | سیاست زبان لاگ: انگلیسی ثابت |
 
 مسیر: `docs/adr/`
 
@@ -1774,11 +1804,12 @@ git push
 
 ### پول و پلن‌ها — بله، دقیقاً این‌طور:
 
-- آژانس Merchant of Record است؛ TravelCore پول مشتری را نگه نمی‌دارد.
-- کمیسیون/اشتراک با فاکتور دوره‌ای از آژانس دریافت می‌شود.
+- **Hani Merchant of Record است؛** پول مشتری به حساب Hani می‌رسد و Hani به آژانس تسویه می‌کند.
+- فاکتور مشتری و فاکتور کمیسیون/تسویه توسط Hani صادر می‌شود.
+- `SettlementTerms` هر قرارداد تعیین می‌کند چه زمانی و چگونه تسویه شود.
 - هر سه مدل درآمد فعال است: Supplier، Channel، Marketplace.
-- Standard = «Powered by TravelCore» اجباری؛ Professional = وایت‌لیبل کامل.
-- `Entitlements` منبع حقیقت برای برند، سهمیه، canonical و نرخ کمیسیون است.
+- Standard = «Powered by Hani» اجباری؛ Professional = وایت‌لیبل کامل.
+- `Entitlements` منبع حقیقت برای برند، سهمیه و canonical است؛ **نرخ کمیسیون در `AgencyCommissionRule` (per agency + per ProductType) است.**
 
 ### بلیط هواپیما — بله:
 
@@ -1813,12 +1844,14 @@ git push
 
 ### ۲۹.۱. دامنه و فرض‌ها
 
-- **در دامنه محصول است**، اما فاز ۴ (بعد از Marketplace و Channel).
-- شروع با **پرواز داخلی + چند مسیر بین‌المللی** از طریق **یک Consolidator پایلوت**.
+- **در دامنه محصول است**؛ فاز ۴.
+- **پرواز داخلی + بین‌المللی** هر دو در دامنه.
+- داخلی: ایرلاین/Consolidator داخلی؛ بین‌المللی: GDS/NDC یا Consolidator بین‌المللی.
+- شروع با **یک Supplier پایلوت برای داخلی + یک Supplier پایلوت برای بین‌المللی**.
 - یک‌طرفه و رفت‌وبرگشت در MVP؛ چندمسیره (Multi-city) فاز بعد.
 - انتخاب صندلی/بار اضافه/Ancillary در فاز بعد.
-- PNR و Ticketing توسط Supplier انجام می‌شود؛ TravelCore orchestrator است.
-- پول به آژانس می‌رود؛ TravelCore کمیسیون می‌گیرد.
+- PNR و Ticketing توسط Supplier انجام می‌شود؛ Hani orchestrator است.
+- **پول به حساب Hani می‌رسد؛** Hani سهم آژانس/Supplier را تسویه و کمیسیون را کسر می‌کند.
 
 ### ۲۹.۲. مدل دامنه
 
@@ -1922,10 +1955,11 @@ public interface IFlightSupplier
 
 ### ۲۹.۸. کمیسیون و تسویه
 
-- کمیسیون پرواز بر اساس `CommissionRule` (ProductType=FLIGHT, Plan, Airline/Route).
-- آژانس Merchant است؛ پرداخت مشتری به آژانس.
-- تسویه آژانس با ایرلاین/Consolidator مسئولیت آژانس است؛ TravelCore فقط commission invoice می‌فرستد.
-- گزارش Reconciliation اختیاری از فایل Supplier.
+- کمیسیون پرواز بر اساس `AgencyCommissionRule` (AgencyId + ProductType=FLIGHT_DOMESTIC/FLIGHT_INTERNATIONAL + Airline/Route + EffectiveFrom/To).
+- پرداخت مشتری به **Hani**؛ Hani پس از کسر کمیسیون، سهم آژانس را تسویه می‌کند.
+- تسویه با ایرلاین/Consolidator بر اساس قرارداد Hani یا آژانس (بسته به مدل) انجام می‌شود.
+- کمیسیون در لحظه رزرو snapshot می‌شود.
+- گزارش Reconciliation از فایل Supplier + دفتر کل.
 
 ### ۲۹.۹. SEO پرواز
 
@@ -1951,19 +1985,20 @@ public interface IFlightSupplier
 
 ### ۳۰.۱. اصل
 
-TravelCore یک **پلتفرم نرم‌افزاری/شبکه‌ای** است، نه PSP. درآمد از اشتراک و کمیسیون است؛ پول مشتری نزد آژانس می‌ماند.
+Hani **Merchant of Record** است: پول مشتری را جمع می‌کند، فاکتور صادر می‌کند و بر اساس قرارداد به آژانس تسویه می‌کند. درآمد از اشتراک، کمیسیون و تبلیغات است. این مدل نیازمند PSP مناسب (و در صورت لزوم مجوز/ساختار حقوقی) است.
 
 ### ۳۰.۲. جریان‌های درآمد
 
 | # | جریان | پرداخت‌کننده | مبنا | زمان |
 |---|---|---|---|---|
-| ۱ | اشتراک Supplier | آژانس | پلن/تعداد Offer/سهمیه API | ماهانه |
-| ۲ | اشتراک Channel | آژانس | Standard/Professional | ماهانه |
-| ۳ | کمیسیون Channel | آژانس | هر رزرو (ProductType/Plan) | ماهانه/فاکتور |
-| ۴ | کمیسیون Marketplace | آژانس | هر رزرو | ماهانه/فاکتور |
-| ۵ | کمیسیون Flights | آژانس | هر بلیط | ماهانه/فاکتور |
-| ۶ | تبلیغات/جایگاه | آژانس/برند | کمپین | پیش‌پرداخت |
-| ۷ | راه‌اندازی/یکپارچه‌سازی | آژانس | پروژه | یک‌بار |
+| ۱ | اشتراک Supplier | آژانس → Hani | پلن/تعداد Offer/سهمیه API | ماهانه |
+| ۲ | اشتراک Channel | آژانس → Hani | Standard/Professional | ماهانه |
+| ۳ | کمیسیون Channel | کسر از سهم آژانس | هر رزرو (Agency + ProductType) | در تسویه |
+| ۴ | کمیسیون Marketplace | کسر از سهم آژانس | هر رزرو | در تسویه |
+| ۵ | کمیسیون Flights | کسر از سهم آژانس | هر بلیط (داخلی/خارجی) | در تسویه |
+| ۶ | تبلیغات/جایگاه | آژانس/برند → Hani | کمپین | پیش‌پرداخت |
+| ۷ | راه‌اندازی/یکپارچه‌سازی | آژانس → Hani | پروژه | یک‌بار |
+| ۸ | کارمزد تسویه/درگاه | کسر از سهم آژانس | قرارداد/PSP | در تسویه |
 
 ### ۳۰.۳. ماتریس پلن
 
@@ -1971,14 +2006,15 @@ TravelCore یک **پلتفرم نرم‌افزاری/شبکه‌ای** است، 
 |---|---|---|
 | Channel API | ✓ | ✓ |
 | Marketplace presence | ✓ | ✓ |
-| «Powered by TravelCore» | اجباری | حذف |
+| «Powered by Hani» | اجباری | حذف |
 | وایت‌لیبل | ✗ | ✓ |
 | دامنه اختصاصی | ✗ | ✓ |
-| برند در ایمیل/فاکتور | TravelCore | آژانس |
+| برند در ایمیل/UI | Hani | آژانس |
+| فاکتور رسمی | Hani | Hani (نام حقوقی) + برند آژانس در حد مجاز قانونی |
 | سهمیه API | ۶۰ RPM | ۳۰۰ RPM |
 | حداکثر Offer فعال | ۵۰۰ | ۱۰٬۰۰۰ |
-| نرخ کمیسیون | بالاتر | پایین‌تر |
-| SEO canonical | TravelCore | Agency/Self (با قواعد) |
+| نرخ کمیسیون | نرخ پایه (قابل override با قرارداد آژانس) | نرخ پایه پایین‌تر (قابل override) |
+| SEO canonical | Hani | Agency/Self (با قواعد) |
 | پشتیبانی | استاندارد | اولویت‌دار |
 | SLA | ۹۹.۹٪ | ۹۹.۹۵٪ |
 | اشتراک ماهانه | پایه | بالاتر |
@@ -1997,11 +2033,13 @@ TravelCore یک **پلتفرم نرم‌افزاری/شبکه‌ای** است، 
   "customDomain": true,
   "maxOffers": 10000,
   "apiRateLimitPerMinute": 300,
-  "commissionRate": 0.08,
+  "commissionProfileId": "cmp_2265",
   "seoCanonicalMode": "AGENCY",
   "supportSla": "PRIORITY"
 }
 ```
+
+> نرخ کمیسیون در Entitlements نیست؛ در `AgencyCommissionRule` (per agency + per ProductType) است و در پاسخ سفارش snapshot می‌شود.
 
 - در `GET /channel/v1/me/entitlements`.
 - در توکن/کش با TTL کوتاه.
@@ -2009,13 +2047,13 @@ TravelCore یک **پلتفرم نرم‌افزاری/شبکه‌ای** است، 
 
 ### ۳۰.۵. اجرای Attribution
 
-- **قرارداد:** در پلن Standard نمایش «Powered by TravelCore» با لینک اجباری است.
+- **قرارداد:** در پلن Standard نمایش «Powered by Hani» با لینک اجباری است.
 - **فنی:** 
-  - checkout میزبانی‌شده TravelCore → badge خودکار.
+  - checkout میزبانی‌شده Hani → badge خودکار.
   - سایت آژانس → snippet آماده + بازبینی دوره‌ای.
   - `attributionRequired=true` در entitlements.
 - **نقض:** هشدار → تعلیق ویژگی‌های حرفه‌ای → بررسی قراردادی.
-- **Professional:** هیچ نام/لوگوی TravelCore در UI، ایمیل، فاکتور، متادیتا و checkout نمایش داده نمی‌شود.
+- **Professional:** هیچ نام/لوگوی Hani در UI، ایمیل، فاکتور، متادیتا و checkout نمایش داده نمی‌شود.
 
 ### ۳۰.۶. وایت‌لیبل فنی
 
@@ -2033,9 +2071,11 @@ TravelCore یک **پلتفرم نرم‌افزاری/شبکه‌ای** است، 
 | `Subscription` | AgencyId, PlanId, PeriodStart, PeriodEnd, Status, TrialEndsAt |
 | `Entitlement` | AgencyId, Key, Value, SourcePlan |
 | `UsageMeter` | AgencyId, Metric, Period, Value |
-| `CommissionRule` | ProductType, PlanId, Rate, Min, Max, EffectiveFrom/To |
-| `CommissionEntry` | OrderId, AgencyId, Gross, Rate, Amount, Status, Snapshot |
-| `Invoice` | AgencyId, Period, SubscriptionFee, CommissionTotal, Tax, Total, Status |
+| `AgencyCommissionRule` | AgencyId, ProductType, Rate, Min, Max, EffectiveFrom/To, Source (Contract/PlanDefault) |
+| `CommissionEntry` | OrderId, AgencyId, ProductType, Gross, Rate, Amount, Status, Snapshot |
+| `SettlementTerms` | AgencyId, Mode, Cycle, Timing, GrossOrNet, HoldbackPercent, HoldbackDays, MinAmount, CreditLimit |
+| `Settlement` | AgencyId, PeriodStart, PeriodEnd, Gross, Commission, Fees, Net, Status, PaidAt |
+| `Invoice` | AgencyId, Type (Customer/Commission/Subscription), Period, Amount, Tax, Total, Status |
 | `Payment` | InvoiceId, Amount, Method, RefId, PaidAt |
 | `CreditLimit` | AgencyId, Limit, Used, GraceDays |
 | `DunningAction` | InvoiceId, Step, SentAt |
@@ -2043,27 +2083,39 @@ TravelCore یک **پلتفرم نرم‌افزاری/شبکه‌ای** است، 
 **وضعیت‌ها:**
 - Subscription: `Trialing → Active → PastDue → Suspended → Cancelled`
 - Invoice: `Draft → Issued → Paid → Overdue → Void`
-- CommissionEntry: `Accrued → Invoiced → Paid → Reversed`
+- CommissionEntry: `Accrued → AppliedToSettlement → Reversed`
+- Settlement: `Open → Calculated → Approved → Paid → Closed`
 
-### ۳۰.۸. محاسبه کمیسیون
+### ۳۰.۸. محاسبه کمیسیون (داینامیک)
 
 ```
 gross = sum(order items eligible)  // بدون مالیات/هزینه پاس‌ترو
-rate = CommissionRule(ProductType, Plan, date)
-commission = clamp(gross * rate, min, max)
+rule = AgencyCommissionRule(AgencyId, ProductType, bookingDate)
+       ?? PlanDefaultCommissionRule(PlanId, ProductType, bookingDate)
+commission = clamp(gross * rule.Rate, rule.Min, rule.Max)
 ```
 
+- **هر آژانس نرخ خودش را دارد؛ هر ProductType نرخ جدا.**
+- `ProductType`: `TOUR`, `FLIGHT_DOMESTIC`, `FLIGHT_INTERNATIONAL`, `HOTEL`, `VISA`.
 - Rule در زمان رزرو **snapshot** می‌شود.
 - لغو/بازپرداخت → `CommissionEntry.Reversed`.
-- گزارش: per agency, per product, per plan, per period.
+- گزارش: per agency, per product type, per contract, per period.
 
-### ۳۰.۹. وصول و ریسک
+### ۳۰.۹. تسویه و ریسک
 
-- فاکتور ماهانه + مهلت پرداخت (مثلاً ۷ روز).
-- یادآوری‌ها: ۳ روز قبل، روز سررسید، ۳ روز بعد.
-- `PastDue` → محدودیت موقت؛ `Suspended` → توقف API/انتشار Offer.
-- Prepaid Wallet اختیاری برای آژانس‌های کوچک.
-- Credit Limit برای آژانس‌های بزرگ.
+- **Hani پول را نگه می‌دارد؛** سهم آژانس بر اساس `SettlementTerms` پرداخت می‌شود.
+- حالت‌های تسویه (قابل ترکیب per contract):
+  - پیش‌پرداخت / پس‌پرداخت
+  - per booking / دوره‌ای (هفتگی، دوهفته‌ای، ماهانه)
+  - پس از رزرو / پس از اتمام سفر
+  - ناخالص / پس از کسر کمیسیون
+  - با Holdback (نگه‌داشتن درصدی برای refund/chargeback)
+  - با Credit Limit / بدون آن
+- فاکتور اشتراک/کمیسیون توسط Hani صادر می‌شود.
+- `PastDue` برای فاکتور اشتراک → محدودیت تدریجی.
+- Prepaid Wallet برای اشتراک آژانس‌های کوچک.
+- Credit Limit برای پوشش بازپرداخت/بدهی منفی.
+- گزارش Aging تسویه و بدهی.
 
 ### ۳۰.۱۰. Upgrade/Downgrade
 
@@ -2123,7 +2175,7 @@ commission = clamp(gross * rate, min, max)
 | Page 2+ | self | index,follow (اگر محتوای یکتا) |
 | Empty result | self | noindex |
 | Checkout | self | noindex,nofollow |
-| Channel Standard | TravelCore | index |
+| Channel Standard | Hani | index |
 | Channel Pro | Agency/Self | بر اساس SeoPolicy |
 
 ### ۳۱.۴. Metadata Service
@@ -2191,7 +2243,7 @@ commission = clamp(gross * rate, min, max)
     "attributionRequired": true
   }
   ```
-- Standard: canonical به TravelCore.
+- Standard: canonical به Hani.
 - Professional: canonical به آژانس فقط با محتوای یکتا؛ در غیر این صورت `noindex`.
 - پایش GSC برای duplicate و cannibalization.
 - قرارداد اجازه استفاده از محتوا.
@@ -2220,43 +2272,45 @@ commission = clamp(gross * rate, min, max)
 
 ---
 
-## ۳۲. جریان پول با مرچنت آژانس
+## ۳۲. جریان پول با مرچنت Hani
 
 ### ۳۲.۱. گزینه‌ها
 
 | گزینه | توضیح | ریسک | تصمیم |
 |---|---|---|---|
-| A. درگاه آژانس | مشتری به حساب آژانس پرداخت می‌کند؛ TravelCore فقط وضعیت را می‌داند | نیاز به callback/Reconciliation | ✅ پیش‌فرض |
-| B. جمع‌آوری توسط TravelCore | TravelCore پول را می‌گیرد و به آژانس می‌دهد | مجوز PSP/واسطه‌گری، ریسک نقدینگی | ❌ رد |
-| C. Split Payment | PSP مبلغ را بین آژانس و TravelCore تقسیم می‌کند | وابستگی به PSP | ✅ اگر موجود باشد |
+| A. درگاه آژانس | مشتری به حساب آژانس پرداخت می‌کند؛ Hani فقط وضعیت را می‌داند | کنترل کمتر، تسویه سخت | ❌ رد |
+| B. جمع‌آوری توسط Hani | مشتری به حساب Hani پرداخت می‌کند؛ Hani به آژانس تسویه می‌کند | نیاز به PSP مناسب/ساختار حقوقی، ریسک نقدینگی | ✅ **پیش‌فرض** |
+| C. Split Payment | PSP مبلغ را بین Hani و آژانس تقسیم می‌کند | وابستگی به PSP | ✅ اگر موجود باشد |
 
 ### ۳۲.۲. Marketplace
 
 ```mermaid
 sequenceDiagram
   participant C as مشتری
-  participant T as TravelCore
+  participant H as Hani
+  participant P as PSP Hani
   participant A as آژانس
-  participant P as PSP آژانس
-  C->>T: انتخاب Offer
-  T->>T: Order + CommissionEntry (Accrued)
-  T-->>C: redirect به PSP آژانس
+  C->>H: انتخاب Offer
+  H->>H: Order + CommissionEntry (Accrued)
+  H-->>C: Checkout (درگاه Hani)
   C->>P: پرداخت
-  P-->>T: callback (اختیاری/Webhook)
-  P-->>A: تسویه
-  T->>A: فاکتور ماهانه کمیسیون
-  A->>T: پرداخت کمیسیون
+  P-->>H: callback موفق
+  H->>H: تایید سفارش + صدور بلیط/واچر
+  H->>H: Settlement (کسر کمیسیون)
+  H->>A: پرداخت سهم آژانس
+  H->>C: فاکتور فروش
 ```
 
-- اگر callback به TravelCore نرسد، آژانس وضعیت را تایید می‌کند (پنل/API).
+- Hani پول را تا زمان تسویه نگه می‌دارد.
 - سفارش تا تایید پرداخت `PENDING_PAYMENT` می‌ماند.
-- بلیط/واچر فقط پس از تایید صادر می‌شود.
+- بلیط/واچر فقط پس از تایید پرداخت صادر می‌شود.
 
 ### ۳۲.۳. Channel
 
-- پرداخت کاملاً سمت آژانس؛ TravelCore فقط `bookingId` و وضعیت را ثبت می‌کند.
+- پرداخت از طریق Checkout Hani (یا PSP مشترک با حساب Hani) انجام می‌شود.
+- آژانس فقط سفارش را ثبت می‌کند؛ Hani پول را جمع و تسویه می‌کند.
 - کمیسیون در همان لحظه `Accrued` می‌شود.
-- آژانس می‌تواند وضعیت پرداخت را با `POST /channel/v1/bookings/{id}/payment-status` اعلام کند.
+- در صورت قرارداد خاص، امکان پرداخت مستقیم به آژانس با تایید مالی وجود دارد (استثنا، نه پیش‌فرض).
 
 ### ۳۲.۴. PaymentIntent
 
@@ -2265,24 +2319,27 @@ Created → Pending → Succeeded | Failed | Expired
                         ↘ Refunded
 ```
 
-- `MerchantScope=Agency`, `PspAccountRef=Agency PSP`.
-- هیچ‌گاه `FundsHeldBy=TravelCore` وجود ندارد.
-- Refund با idempotency و تایید آژانس.
+- `MerchantScope=Hani`, `PspAccountRef=Hani PSP`, `FundsHeldBy=Hani`.
+- Refund با idempotency و مجوز مالی.
+- Chargeback از حساب Hani مدیریت و با تسویه آژانس Offset می‌شود.
 
-### ۳۲.۵. کمیسیون و فاکتور
+### ۳۲.۵. کمیسیون، تسویه و فاکتور
 
 1. رزرو Confirmed → `CommissionEntry(Accrued)`.
-2. پایان ماه → تجمیع → `Invoice(Issued)`.
-3. پرداخت آژانس → `Paid`.
-4. لغو/بازپرداخت → `Reversed`.
+2. در `Settlement` (per booking/دوره‌ای) → محاسبه `Net = Gross - Commission - Fees`.
+3. `Settlement(Approved)` → پرداخت به آژانس → `Paid`.
+4. لغو/بازپرداخت → `CommissionEntry(Reversed)` + اصلاح Settlement.
 
-- مالیات بر ارزش افزوده روی فاکتور کمیسیون.
-- فاکتور مشتری توسط آژانس صادر می‌شود.
+- فاکتور مشتری توسط **Hani** صادر می‌شود.
+- فاکتور/صورت‌حساب کمیسیون و تسویه توسط **Hani** صادر می‌شود.
+- مالیات بر ارزش افزوده روی فاکتور فروش و کمیسیون طبق قوانین.
+- `SettlementTerms` تعیین می‌کند چه زمانی و چطور پرداخت شود.
 
 ### ۳۲.۶. Reconciliation
 
-- فایل روزانه PSP/آژانس.
+- فایل روزانه PSP/Hani.
 - تطبیق `PaymentRef` با `Order`.
+- تطبیق `Settlement` با دفتر کل و فاکتور.
 - مغایرت → صف بررسی + هشدار.
 - گزارش ماهانه بسته‌شده (Closing).
 
@@ -2292,8 +2349,9 @@ Created → Pending → Succeeded | Failed | Expired
 |---|---|
 | پرداخت موفق، callback گم | Query وضعیت از PSP + تایید دستی |
 | پرداخت دوبار | Idempotency + Refund |
-|لغو پس از پرداخت | RefundQuote + Commission Reversal |
-| فاکتور معوق | Dunning + محدودیت تدریجی |
+| لغو پس از پرداخت | Refund + Commission Reversal + Settlement Adj |
+| Chargeback | Holdback + Offset در Settlement بعدی |
+| فاکتور اشتراک معوق | Dunning + محدودیت تدریجی |
 | اختلاف مبلغ | صف Reconciliation |
 
 ---
@@ -2348,7 +2406,7 @@ Created → Pending → Succeeded | Failed | Expired
 
 ### ۳۳.۴. یکدستی
 
-- `dotnet new travelcore-module` (یا `scripts/new-module.ps1`) تنها راه ساخت ماژول.
+- `dotnet new hani-module` (یا `scripts/new-module.ps1`) تنها راه ساخت ماژول.
 - `Directory.Packages.props` + `packages.lock.json` نسخه‌ها را قفل می‌کند.
 - `Directory.Build.props` + `.editorconfig` سبک را یکدست می‌کند.
 - `BuildingBlocks` تنها محل کد مشترک است.
@@ -2379,14 +2437,188 @@ Created → Pending → Succeeded | Failed | Expired
 
 - `Directory.Packages.props` + `packages.lock.json`
 - `BannedSymbols.txt`
-- پروژه `TravelCore.ArchitectureTests`
+- پروژه `Hani.ArchitectureTests`
 - `scripts/verify.ps1`
 - `CODEOWNERS` + PR Template
-- `dotnet new travelcore-module`
+- `dotnet new hani-module`
 - Drift Report اولیه
 
 > تا این زیرساخت آماده نشود، هیچ ماژول دامنه‌ای ساخته نمی‌شود.
 
 ---
 
-**پایان سند — TravelCore PLAN v1.2**
+## ۳۴. Blueprint صفحه جزئیات تور (مدل لست‌سکند، بهتر)
+
+> سند کامل: [`docs/product/tour-detail-page.md`](docs/product/tour-detail-page.md)
+> مرجع: صفحه `g2739` (تور دورهمی یزد) — بررسی مستقیم DOM و داده‌های Vuex
+
+### ۳۴.۱. آناتومی
+
+```
+Breadcrumb → Hero (عنوان/امتیاز/گالری)
+→ درباره تور
+→ Tabs: در یک نگاه | برنامه سفر | پذیرایی و اقامت | خدمات | اطلاعات تکمیلی | لوازم | قوانین
+→ Sidebar: تاریخ | کد آژانس/تور | الزامات | ظرفیت | مسافر | نوع اتاق | قیمت | CTA
+→ تورهای مرتبط → Footer
+```
+
+### ۳۴.۲. داده‌های واقعی صفحه
+
+| گروه | فیلدها |
+|---|---|
+| Trip | id, title, slug, duration, departurePlace/Time, returnTime, timespan, marriageEvidence, sharedAccommodation, minAge/maxAge, maximumPassengersCount, hardness, primary/secondaryVehicle, stays, meals, snacks, services, rules, refundPolicies, locations, groups, media, required/recommendedTools, spotCoordinates, agency, reactions |
+| Schedule | id, startDate, endDate, capacity, condition, price, allPrices[] (Double/Single/Triple + capacity + price) |
+| Day | dayNumber, label, itinerary, attractions, restaurants, tips |
+| DayPackage | breakfast/lunch/dinner provider/place, hotel |
+| Agency | id, titleFa, phones, reviewsCount, averageReviewScore |
+
+### ۳۴.۳. جریان رزرو
+
+```
+انتخاب تاریخ/اتاق/مسافر → check-capacity
+→ اگر لاگین نیست: مودال ۵ ثانیه → Login/Profile Mobile + nextUrl
+→ ایجاد TripRequest → /trip-wizard/{request}/passengers
+→ مسافران → قرارداد → پرداخت → بلیط/واچر
+```
+
+### ۳۴.۴. نقاط ضعف لست‌سکند که Hani بهتر می‌کند
+
+- JSON-LD فقط BreadcrumbList → Hani: `TouristTrip` + `Offer` + `AggregateOffer` + `AggregateRating` + `FAQPage`.
+- بدون hreflang → Hani: FA/EN/AR + `x-default`.
+- قیمت متا با قیمت صفحه ناسازگار → Hani: یک منبع قیمت + تست.
+- خطای خام بدون کد → Hani: `HANI-...` + ترجمه + traceId.
+- فقط مجموع قیمت → Hani: تفکیک هر نوع اتاق/مسافر.
+- داده ناقص آژانس/تایپو → Hani: moderation + اعتبارسنجی.
+
+### ۳۴.۵. نقشه به دامنه
+
+| UI | Hani |
+|---|---|
+| Trip | `TourProduct` |
+| Schedule | `TourDeparture` |
+| allPrices | `DeparturePrice` |
+| days | `TourItineraryDay` |
+| tripDayPackages | `TourDayMealPlan` |
+| services/tools/rules | `TourInclusion` / `TourRequirement` / `TourPolicy` |
+| agency | `Agency` |
+
+> **مهم:** در لست‌سکند `Trip` هم Product و هم Offer را قاطی کرده؛ در Hani این‌ها جدا هستند.
+
+---
+
+## ۳۵. استاندارد خطا و سیاست لاگینگ (چندزبانه)
+
+### ۳۵.۱. اصل
+
+| لایه | زبان | مثال |
+|---|---|---|
+| **کد** | انگلیسی | `Booking.DepartureSoldOut` |
+| **کد خطا** | انگلیسی | `HANI-BOOKING-1001` |
+| **لاگ فنی** | انگلیسی | `Booking failed {ErrorCode} {MessageKey} {Locale}` |
+| **پیام کاربر** | زبان مخاطب | `ظرفیت این سانس تکمیل شده است.` |
+| **Audit** | انگلیسی + کد + locale | `HANI-BOOKING-1001 / fa-IR / user:42` |
+
+**قاعده:** لاگ‌ها هرگز چندزبانه نیستند. فقط پیام کاربر ترجمه می‌شود.
+
+### ۳۵.۲. کد خطا
+
+```
+HANI-{AREA}-{4 digits}
+```
+
+| AREA | نمونه |
+|---|---|
+| AUTH | `HANI-AUTH-1001` |
+| CATALOG | `HANI-CATALOG-1001` |
+| SUPPLY | `HANI-SUPPLY-1001` |
+| BOOKING | `HANI-BOOKING-1001` |
+| PAYMENT | `HANI-PAYMENT-1001` |
+| SETTLEMENT | `HANI-SETTLEMENT-1001` |
+| FLIGHT | `HANI-FLIGHT-1001` |
+| SEO | `HANI-SEO-1001` |
+| COMMON | `HANI-COMMON-1001` |
+
+### ۳۵.۳. Error Definition
+
+```csharp
+public sealed record ErrorDefinition(
+    string Code,
+    HttpStatus Status,
+    LogLevel Severity,
+    bool IsRetryable,
+    string MessageKey,
+    string? DocsUrl = null);
+```
+
+- کاتالوگ واحد در `Hani.BuildingBlocks.AspNetCore/Errors/ErrorCatalog.cs`.
+- ترجمه‌ها: `Errors.fa.resx`, `Errors.en.resx`, `Errors.ar.resx`.
+- Fallback: `ar → en → fa`؛ اگر کلید نبود، خود `Code` نمایش داده می‌شود.
+- هیچ متن خطای hard-code شده در کد نیست.
+- Stack trace هرگز به کاربر برنمی‌گردد.
+
+### ۳۵.۴. پاسخ خطا (RFC 7807)
+
+```json
+{
+  "type": "https://api.hani.ir/errors/HANI-BOOKING-1001",
+  "title": "ظرفیت این سانس تکمیل شده است.",
+  "status": 409,
+  "code": "HANI-BOOKING-1001",
+  "messageKey": "booking.departure.sold_out",
+  "traceId": "01J8Z...",
+  "locale": "fa-IR",
+  "errors": [
+    {
+      "field": "departureId",
+      "code": "HANI-BOOKING-1001",
+      "message": "ظرفیت این سانس تکمیل شده است."
+    }
+  ]
+}
+```
+
+### ۳۵.۵. Validation
+
+```csharp
+RuleFor(x => x.DepartureId)
+    .NotEmpty()
+    .WithErrorCode("HANI-BOOKING-1002")
+    .WithMessage("booking.departure.required");
+```
+
+- `ValidationBehavior` خطاها را به `Result.Failure` با کدها تبدیل می‌کند.
+- API آن‌ها را در `errors[]` برمی‌گرداند.
+- Frontend همان `code` را به پیام محلی map می‌کند.
+
+### ۳۵.۶. لاگینگ
+
+```csharp
+logger.LogWarning(
+    "Booking failed {ErrorCode} {MessageKey} {Locale} {TraceId}",
+    "HANI-BOOKING-1001",
+    "booking.departure.sold_out",
+    locale,
+    traceId);
+```
+
+- پیام‌های لاگ **انگلیسی ثابت**.
+- Enricherها: `TraceId`, `SpanId`, `TenantId`, `AgencyId`, `UserId`, `Module`, `ErrorCode`, `MessageKey`, `Locale`.
+- PII Redaction: موبایل، ایمیل، کد ملی، پاسپورت، کارت.
+- `traceId` به کاربر برگردانده می‌شود.
+- داشبورد: نرخ خطا per `ErrorCode` و per `Locale`.
+- Audit: کد + locale + actor؛ نه متن ترجمه‌شده در لاگ فنی.
+
+### ۳۵.۷. چک‌لیست
+
+- [ ] کد خطا در کاتالوگ ثبت شده
+- [ ] ترجمه FA/EN/AR موجود
+- [ ] HTTP status درست
+- [ ] `traceId` در پاسخ
+- [ ] لاگ انگلیسی با `ErrorCode`
+- [ ] تست ترجمه/fallback
+- [ ] بدون PII
+- [ ] Frontend mapping
+
+---
+
+**پایان سند — Hani PLAN v1.3**
