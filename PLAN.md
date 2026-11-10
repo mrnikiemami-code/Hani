@@ -1,4 +1,4 @@
-# Hani — برنامه معماری و پیاده‌سازی (نسخه ۱.۳)
+# Hani — برنامه معماری و پیاده‌سازی (نسخه ۱.۴)
 
 > **وضعیت:** قفل‌شده برای شروع پیاده‌سازی
 > **مخزن:** https://github.com/mrnikiemami-code/Hani
@@ -61,6 +61,7 @@
 33. حاکمیت معماری و یکدستی پروژه
 34. Blueprint صفحه جزئیات تور (مدل لست‌سکند، بهتر)
 35. استاندارد خطا و سیاست لاگینگ (چندزبانه)
+36. برنامه فازی، Phase Gate و وضعیت اجرایی
 
 ---
 
@@ -1597,6 +1598,13 @@ git push
 
 ## ۲۱. نقشه راه و فازها
 
+> **وضعیت زنده، تسک‌ها و Phase Gate در [`docs/plan/`](docs/plan/) نگهداری می‌شود:**
+> - [`ROADMAP.md`](docs/plan/ROADMAP.md) — فازها و معیار پذیرش
+> - [`STATUS.md`](docs/plan/STATUS.md) — انجام‌شده / در حال انجام / بعدی
+> - [`TASKS.md`](docs/plan/TASKS.md) — بک‌لاگ با ID و DoD
+>
+> این جدول برنامه اولیه است؛ منبع حقیقت وضعیت، `STATUS.md` است.
+
 | فاز | مدت | خروجی | معیار خروج |
 |---|---|---|---|
 | ۰. Bootstrap | ۲ هفته | Solution، BuildingBlocks، Docker، CI، Observability، Idempotency، Cache، Messaging، i18n پایه، **SEO foundation** | تست‌ها سبز؛ endpoint نمونه + sitemap/meta پایه |
@@ -1614,6 +1622,9 @@ git push
 ---
 
 ## ۲۲. بک‌لاگ تسک‌های کوچک (Cursor-friendly)
+
+> **منبع حقیقت وضعیت:** [`docs/plan/TASKS.md`](docs/plan/TASKS.md)
+> تسک‌های Done/Partial با commit در همان سند ثبت شده‌اند.
 
 | ID | ماژول | تسک | اندازه | DoD |
 |---|---|---|---|---|
@@ -2622,4 +2633,61 @@ logger.LogWarning(
 
 ---
 
-**پایان سند — Hani PLAN v1.3**
+## ۳۶. برنامه فازی، Phase Gate و وضعیت اجرایی
+
+### ۳۶.۱. قاعده
+
+- **فقط یک فاز فعال** در هر زمان.
+- فاز بعدی تا عبور از **Phase Gate** شروع نمی‌شود.
+- هر تسک: ID، وابستگی، DoD، commit.
+- وضعیت زنده در `STATUS.md`؛ بک‌لاگ در `TASKS.md`.
+- هیچ commit بدون به‌روزرسانی وضعیت ثبت نمی‌شود.
+
+### ۳۶.۲. فازها
+
+| فاز | عنوان | وضعیت |
+|---|---|---|
+| ۰ | Foundation & Governance | ✅ Done |
+| ۱ | Core Domain: Catalog + Identity + Supply | 🚧 In Progress |
+| ۲ | Marketplace Read + Booking | ⏳ Next |
+| ۳ | Channel + Billing + Settlement | ⏳ Planned |
+| ۴ | Flights | ⏳ Planned |
+| ۵ | Content + Hotels + Visa + SEO/i18n | ⏳ Planned |
+| ۶ | Hardening & Scale | ⏳ Planned |
+
+### ۳۶.۳. وضعیت فعلی (خلاصه)
+
+**انجام‌شده:**
+- Phase 0 کامل
+- Catalog (TourProduct/Translation/Destination/Publish)
+- Identity (Agency/ApiClient/Secret)
+- Supply (AgencyOffer Create/Get)
+- Messaging/Outbox/Cache/Tenant/Observability/Docker
+- ۲۲ Unit + ۱۳ Architecture Test
+
+**باقی‌مانده در Phase 1:**
+- Departure + Price + Capacity
+- Supplier upsert + idempotency
+- Moderation
+- API Key Auth + Tenant isolation
+- Error resources FA/EN/AR
+- Update/Delete Offer
+
+**تسک بعدی:** `TC-021 — Departure + Price + Capacity`
+
+### ۳۶.۴. Phase 1 Gate
+
+- [ ] دموی Agency → Client → Product → Offer → Publish → Query
+- [ ] API Key اجباری
+- [ ] Tenant isolation
+- [ ] Departure/Price/Capacity
+- [ ] Upsert idempotent
+- [ ] Moderation
+- [ ] Error resources
+- [ ] `verify.ps1` سبز
+
+> تا بسته‌شدن این Gate، هیچ تسکی از Phase 2 شروع نمی‌شود.
+
+---
+
+**پایان سند — Hani PLAN v1.4**

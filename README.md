@@ -59,6 +59,17 @@ dotnet test Hani.slnx
 | SEO | Workstream از فاز ۰ + ماژول Seo |
 | خطا/لاگ | کد `HANI-...`؛ لاگ انگلیسی؛ پیام کاربر FA/EN/AR |
 
+## برنامه و وضعیت
+
+| سند | نقش |
+|---|---|
+| [ROADMAP](docs/plan/ROADMAP.md) | فازها، تحویل‌دادنی‌ها و Phase Gate |
+| [STATUS](docs/plan/STATUS.md) | انجام‌شده / در حال انجام / بعدی |
+| [TASKS](docs/plan/TASKS.md) | بک‌لاگ با ID و DoD |
+
+**فاز فعال:** Phase 1 — Core Domain
+**تسک بعدی:** `TC-021 — Departure + Price + Capacity`
+
 ## مستندات
 
 - [برنامه اصلی](PLAN.md)
