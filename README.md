@@ -16,8 +16,8 @@
 
 🚧 **فاز ۰ — Governance Bootstrap انجام شد**
 
-- Solution + `BuildingBlocks` + ماژول نمونه `Supply`
-- ArchitectureTests (۷ تست)، UnitTests (۱۴ تست)
+- Solution + `BuildingBlocks` + ماژول‌های `Supply` و `Catalog`
+- ArchitectureTests (۱۰ تست)، UnitTests (۱۸ تست)
 - Serilog + OpenTelemetry با Toggle
 - Cache (Memory/Redis/None) + TenantContext + Idempotency
 - MassTransit 8.5.12 + Outbox/Inbox + Migration

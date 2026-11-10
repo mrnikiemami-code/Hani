@@ -424,6 +424,38 @@
           "Serilog.Sinks.Seq": "[9.1.0, )"
         }
       },
+      "hani.modules.catalog.application": {
+        "type": "Project",
+        "dependencies": {
+          "FluentValidation": "[12.2.0, )",
+          "Hani.BuildingBlocks.Application": "[1.0.0, )",
+          "Hani.Modules.Catalog.Domain": "[1.0.0, )"
+        }
+      },
+      "hani.modules.catalog.domain": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "hani.modules.catalog.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Catalog.Application": "[1.0.0, )",
+          "MassTransit.EntityFrameworkCore": "[8.5.12, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.15, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.15, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
+      "hani.modules.catalog.presentation": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.AspNetCore": "[1.0.0, )",
+          "Hani.Modules.Catalog.Application": "[1.0.0, )"
+        }
+      },
       "hani.modules.supply.application": {
         "type": "Project",
         "dependencies": {

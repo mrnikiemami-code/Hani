@@ -31,11 +31,16 @@ jobs:
         run: dotnet test Hani.slnx --no-build --verbosity normal
 
       - name: Migrations
-        run: >
-          dotnet ef migrations has-pending-model-changes
-          --project src/Modules/Supply/Hani.Modules.Supply.Infrastructure
-          --startup-project src/Hani.Api
-          --context SupplyDbContext --no-build
+        run: |
+          dotnet ef migrations has-pending-model-changes \
+            --project src/Modules/Supply/Hani.Modules.Supply.Infrastructure \
+            --startup-project src/Hani.Api \
+            --context SupplyDbContext --no-build
+
+          dotnet ef migrations has-pending-model-changes \
+            --project src/Modules/Catalog/Hani.Modules.Catalog.Infrastructure \
+            --startup-project src/Hani.Api \
+            --context CatalogDbContext --no-build
 
       - name: Format
         run: dotnet format Hani.slnx --verify-no-changes --no-restore

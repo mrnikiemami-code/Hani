@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation;
 using Hani.BuildingBlocks.Application;
+using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Shouldly;
 
@@ -8,63 +9,75 @@ namespace Hani.ArchitectureTests;
 
 public sealed class CqrsConventionTests
 {
-    private static readonly Assembly ApplicationAssembly =
-        typeof(CreateAgencyOfferCommand).Assembly;
+    private static readonly Assembly[] ApplicationAssemblies =
+    [
+        typeof(CreateAgencyOfferCommand).Assembly,
+        typeof(CreateTourProductCommand).Assembly
+    ];
 
     [Fact]
     public void Every_Command_Should_Have_Exactly_One_Handler()
     {
-        var commands = GetRequestTypes(typeof(ICommand<>));
-
-        foreach (var command in commands)
+        foreach (var assembly in ApplicationAssemblies)
         {
-            var handlers = ApplicationAssembly.GetTypes()
-                .Where(type => ImplementsHandler(type, typeof(ICommandHandler<,>), command))
-                .ToArray();
+            var commands = GetRequestTypes(assembly, typeof(ICommand<>));
 
-            handlers.Length.ShouldBe(1, $"{command.Name} must have exactly one command handler.");
+            foreach (var command in commands)
+            {
+                var handlers = assembly.GetTypes()
+                    .Where(type => ImplementsHandler(type, typeof(ICommandHandler<,>), command))
+                    .ToArray();
+
+                handlers.Length.ShouldBe(
+                    1,
+                    $"{command.FullName} must have exactly one command handler.");
+            }
         }
     }
 
     [Fact]
     public void Every_Command_And_Query_Should_Have_A_Validator()
     {
-        var requests = GetRequestTypes(typeof(ICommand<>))
-            .Concat(GetRequestTypes(typeof(IQuery<>)))
-            .ToArray();
-
-        var validators = ApplicationAssembly.GetTypes()
-            .Where(type => !type.IsAbstract && type.BaseType is { IsGenericType: true })
-            .Where(type => type.BaseType!.GetGenericTypeDefinition() == typeof(AbstractValidator<>))
-            .ToArray();
-
-        foreach (var request in requests)
+        foreach (var assembly in ApplicationAssemblies)
         {
-            var expectedValidator = typeof(AbstractValidator<>).MakeGenericType(request);
+            var requests = GetRequestTypes(assembly, typeof(ICommand<>))
+                .Concat(GetRequestTypes(assembly, typeof(IQuery<>)))
+                .ToArray();
 
-            validators.Any(validator => expectedValidator.IsAssignableFrom(validator))
-                .ShouldBeTrue($"{request.Name} must have a validator.");
+            var validators = assembly.GetTypes()
+                .Where(type => !type.IsAbstract && type.BaseType is { IsGenericType: true })
+                .Where(type => type.BaseType!.GetGenericTypeDefinition() == typeof(AbstractValidator<>))
+                .ToArray();
+
+            foreach (var request in requests)
+            {
+                var expectedValidator = typeof(AbstractValidator<>).MakeGenericType(request);
+
+                validators.Any(validator => expectedValidator.IsAssignableFrom(validator))
+                    .ShouldBeTrue($"{request.FullName} must have a validator.");
+            }
         }
     }
 
     [Fact]
     public void Handlers_Should_Be_Internal_And_Sealed()
     {
-        var handlers = ApplicationAssembly.GetTypes()
-            .Where(type => ImplementsAnyHandler(type))
+        var handlers = ApplicationAssemblies
+            .SelectMany(assembly => assembly.GetTypes())
+            .Where(ImplementsAnyHandler)
             .ToArray();
 
         handlers.ShouldNotBeEmpty();
 
         foreach (var handler in handlers)
         {
-            handler.IsSealed.ShouldBeTrue($"{handler.Name} must be sealed.");
-            handler.IsPublic.ShouldBeFalse($"{handler.Name} must be internal.");
+            handler.IsSealed.ShouldBeTrue($"{handler.FullName} must be sealed.");
+            handler.IsPublic.ShouldBeFalse($"{handler.FullName} must be internal.");
         }
     }
 
-    private static Type[] GetRequestTypes(Type openGenericInterface)
-        => ApplicationAssembly.GetTypes()
+    private static Type[] GetRequestTypes(Assembly assembly, Type openGenericInterface)
+        => assembly.GetTypes()
             .Where(type => !type.IsAbstract && !type.IsInterface)
             .Where(type => type.GetInterfaces().Any(@interface =>
                 @interface.IsGenericType &&

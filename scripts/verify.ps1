@@ -24,6 +24,11 @@ dotnet ef migrations has-pending-model-changes `
     --startup-project src/Hani.Api `
     --context SupplyDbContext --no-build
 
+dotnet ef migrations has-pending-model-changes `
+    --project src/Modules/Catalog/Hani.Modules.Catalog.Infrastructure `
+    --startup-project src/Hani.Api `
+    --context CatalogDbContext --no-build
+
 Write-Host "== Format =="
 dotnet format Hani.slnx --verify-no-changes --no-restore
 

@@ -3,6 +3,8 @@
     <RootNamespace>Hani.Api</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Modules\Catalog\Hani.Modules.Catalog.Infrastructure\Hani.Modules.Catalog.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Catalog\Hani.Modules.Catalog.Presentation\Hani.Modules.Catalog.Presentation.csproj" />
     <ProjectReference Include="..\Modules\Supply\Hani.Modules.Supply.Infrastructure\Hani.Modules.Supply.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Supply\Hani.Modules.Supply.Presentation\Hani.Modules.Supply.Presentation.csproj" />
     <ProjectReference Include="..\Hani.BuildingBlocks\Hani.BuildingBlocks.AspNetCore\Hani.BuildingBlocks.AspNetCore.csproj" />

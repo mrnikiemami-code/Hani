@@ -12,8 +12,8 @@
 | Banned API usages | 0 | 0 | ✅ |
 | Active waivers | 0 | ≤ 2/ماژول | ✅ |
 | License violations | 0 | 0 | ✅ |
-| Unit tests | 14 passed | — | ✅ |
-| Architecture tests | 7 passed | — | ✅ |
+| Unit tests | 18 passed | — | ✅ |
+| Architecture tests | 10 passed | — | ✅ |
 | Locked restore | ✅ | ✅ | ✅ |
 | Format check | ✅ | ✅ | ✅ |
 
@@ -28,7 +28,8 @@
 | Tenant | ✅ | `ICurrentTenant` + `X-Agency-Id` middleware |
 | Idempotency | ✅ | `IIdempotencyStore` + InMemory + Behavior |
 | Messaging | ✅ | MassTransit 8.5.12 + InMemory/RabbitMQ/Postgres + Outbox |
-| Migrations | ✅ | `InitialSupply` + Outbox/Inbox tables |
+| Migrations | ✅ | `InitialSupply` + Outbox/Inbox + `InitialCatalog` |
+| Catalog | ✅ | TourProduct + Translation + Destination |
 | Error codes | ✅ | `HANI-*` در Validation و ProblemDetails |
 | Banned APIs | ✅ | RS0030 تأییدشده |
 
@@ -37,6 +38,7 @@
 | ماژول | ساختار ۴ لایه | ArchitectureTests | وضعیت |
 |---|---|---|---|
 | Supply | ✅ | ✅ | نمونه پایلوت |
+| Catalog | ✅ | ✅ | TourProduct + Destination |
 
 ## گیت‌های فعال
 
