@@ -70,7 +70,8 @@ public sealed class DocumentationTests
             "src/Modules/Supply/README.md",
             "src/Modules/Catalog/README.md",
             "src/Modules/Identity/README.md",
-            "src/Modules/Marketplace/README.md"
+            "src/Modules/Marketplace/README.md",
+            "src/Modules/Booking/README.md"
         };
 
         var missing = required

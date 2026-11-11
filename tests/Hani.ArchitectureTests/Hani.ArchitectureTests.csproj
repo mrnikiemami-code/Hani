@@ -23,6 +23,10 @@
     <ProjectReference Include="..\..\src\Modules\Marketplace\Hani.Modules.Marketplace.Application\Hani.Modules.Marketplace.Application.csproj" />
     <ProjectReference Include="..\..\src\Modules\Marketplace\Hani.Modules.Marketplace.Infrastructure\Hani.Modules.Marketplace.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Modules\Marketplace\Hani.Modules.Marketplace.Presentation\Hani.Modules.Marketplace.Presentation.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Booking\Hani.Modules.Booking.Domain\Hani.Modules.Booking.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Booking\Hani.Modules.Booking.Application\Hani.Modules.Booking.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Booking\Hani.Modules.Booking.Infrastructure\Hani.Modules.Booking.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Booking\Hani.Modules.Booking.Presentation\Hani.Modules.Booking.Presentation.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />

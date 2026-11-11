@@ -9,6 +9,8 @@
     <ProjectReference Include="..\Modules\Identity\Hani.Modules.Identity.Presentation\Hani.Modules.Identity.Presentation.csproj" />
     <ProjectReference Include="..\Modules\Marketplace\Hani.Modules.Marketplace.Infrastructure\Hani.Modules.Marketplace.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Marketplace\Hani.Modules.Marketplace.Presentation\Hani.Modules.Marketplace.Presentation.csproj" />
+    <ProjectReference Include="..\Modules\Booking\Hani.Modules.Booking.Infrastructure\Hani.Modules.Booking.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Booking\Hani.Modules.Booking.Presentation\Hani.Modules.Booking.Presentation.csproj" />
     <ProjectReference Include="..\Modules\Supply\Hani.Modules.Supply.Infrastructure\Hani.Modules.Supply.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Supply\Hani.Modules.Supply.Presentation\Hani.Modules.Supply.Presentation.csproj" />
     <ProjectReference Include="..\Hani.BuildingBlocks\Hani.BuildingBlocks.AspNetCore\Hani.BuildingBlocks.AspNetCore.csproj" />

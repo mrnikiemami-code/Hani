@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation;
 using Hani.BuildingBlocks.Application;
+using Hani.Modules.Booking.Application.Commands.CreateQuote;
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
@@ -16,7 +17,8 @@ public sealed class CqrsConventionTests
         typeof(CreateAgencyOfferCommand).Assembly,
         typeof(CreateTourProductCommand).Assembly,
         typeof(CreateAgencyCommand).Assembly,
-        typeof(SearchProductsQuery).Assembly
+        typeof(SearchProductsQuery).Assembly,
+        typeof(CreateQuoteCommand).Assembly
     ];
 
     [Fact]

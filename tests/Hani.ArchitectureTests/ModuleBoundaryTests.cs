@@ -1,4 +1,8 @@
 using System.Reflection;
+using Hani.Modules.Booking.Application.Commands.CreateQuote;
+using Hani.Modules.Booking.Domain.Quotes;
+using Hani.Modules.Booking.Infrastructure.Persistence;
+using Hani.Modules.Booking.Presentation;
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Catalog.Domain.TourProducts;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
@@ -38,7 +42,11 @@ public sealed class ModuleBoundaryTests
         typeof(MarketplaceModule).Assembly,
         typeof(SearchProductsQuery).Assembly,
         typeof(DependencyInjection).Assembly,
-        typeof(MarketplaceEndpoints).Assembly
+        typeof(MarketplaceEndpoints).Assembly,
+        typeof(Quote).Assembly,
+        typeof(CreateQuoteCommand).Assembly,
+        typeof(BookingDbContext).Assembly,
+        typeof(BookingEndpoints).Assembly
     ];
 
     [Fact]

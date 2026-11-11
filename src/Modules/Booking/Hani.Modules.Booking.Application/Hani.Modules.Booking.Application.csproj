@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Hani.Modules.Booking.Application</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hani.Modules.Booking.Domain\Hani.Modules.Booking.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Application\Hani.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Supply\Hani.Contracts.Supply.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
+</Project>

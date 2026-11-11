@@ -12,6 +12,8 @@
     <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Application\Hani.Modules.Identity.Application.csproj" />
     <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Infrastructure\Hani.Modules.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Modules\Marketplace\Hani.Modules.Marketplace.Application\Hani.Modules.Marketplace.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Booking\Hani.Modules.Booking.Domain\Hani.Modules.Booking.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Booking\Hani.Modules.Booking.Application\Hani.Modules.Booking.Application.csproj" />
     <ProjectReference Include="..\..\src\Hani.Contracts\Hani.Contracts.Catalog\Hani.Contracts.Catalog.csproj" />
     <ProjectReference Include="..\..\src\Hani.Contracts\Hani.Contracts.Supply\Hani.Contracts.Supply.csproj" />
     <ProjectReference Include="..\..\src\Hani.Contracts\Hani.Contracts.Identity\Hani.Contracts.Identity.csproj" />

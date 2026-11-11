@@ -400,6 +400,38 @@
       "hani.contracts.supply": {
         "type": "Project"
       },
+      "hani.modules.booking.application": {
+        "type": "Project",
+        "dependencies": {
+          "FluentValidation": "[12.2.0, )",
+          "Hani.BuildingBlocks.Application": "[1.0.0, )",
+          "Hani.Contracts.Supply": "[1.0.0, )",
+          "Hani.Modules.Booking.Domain": "[1.0.0, )",
+          "MediatR": "[12.5.0, )"
+        }
+      },
+      "hani.modules.booking.domain": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "hani.modules.booking.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Booking.Application": "[1.0.0, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.15, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
+      "hani.modules.booking.presentation": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.AspNetCore": "[1.0.0, )",
+          "Hani.Modules.Booking.Application": "[1.0.0, )"
+        }
+      },
       "hani.modules.catalog.application": {
         "type": "Project",
         "dependencies": {

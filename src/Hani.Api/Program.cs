@@ -8,6 +8,13 @@ using Hani.BuildingBlocks.Infrastructure.Idempotency;
 using Hani.BuildingBlocks.Infrastructure.Messaging;
 using Hani.BuildingBlocks.Infrastructure.Observability;
 using Hani.BuildingBlocks.Infrastructure.Tenancy;
+using Hani.Modules.Booking.Application.Commands.CreateHold;
+using Hani.Modules.Booking.Application.Commands.CreateQuote;
+using Hani.Modules.Booking.Application.Commands.ReleaseHold;
+using Hani.Modules.Booking.Application.Queries.GetQuote;
+using Hani.Modules.Booking.Infrastructure;
+using Hani.Modules.Booking.Infrastructure.Persistence;
+using Hani.Modules.Booking.Presentation;
 using Hani.Modules.Catalog.Application.Commands.CreateDestination;
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Catalog.Application.Commands.PublishTourProduct;
@@ -96,10 +103,12 @@ var connectionString = builder.Configuration.GetConnectionString("Default")
 builder.Services.AddDbContext<SupplyDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<CatalogDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<IdentityDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<BookingDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddSupplyInfrastructure();
 builder.Services.AddCatalogInfrastructure();
 builder.Services.AddIdentityInfrastructure();
 builder.Services.AddMarketplaceInfrastructure();
+builder.Services.AddBookingInfrastructure();
 
 // ---------------------------------------------------------------------------
 // Cross-cutting infrastructure: cache, messaging, tenant, idempotency, telemetry
@@ -118,7 +127,8 @@ builder.Services.AddMediatR(configuration =>
         typeof(CreateAgencyOfferCommand).Assembly,
         typeof(CreateTourProductCommand).Assembly,
         typeof(CreateAgencyCommand).Assembly,
-        typeof(SearchProductsQuery).Assembly));
+        typeof(SearchProductsQuery).Assembly,
+        typeof(CreateQuoteCommand).Assembly));
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -147,6 +157,10 @@ builder.Services.AddScoped<IValidator<CreateApiClientCommand>, CreateApiClientCo
 builder.Services.AddScoped<IValidator<GetAgencyByIdQuery>, GetAgencyByIdQueryValidator>();
 builder.Services.AddScoped<IValidator<SearchProductsQuery>, SearchProductsQueryValidator>();
 builder.Services.AddScoped<IValidator<GetProductComparisonQuery>, GetProductComparisonQueryValidator>();
+builder.Services.AddScoped<IValidator<CreateQuoteCommand>, CreateQuoteCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateHoldCommand>, CreateHoldCommandValidator>();
+builder.Services.AddScoped<IValidator<ReleaseHoldCommand>, ReleaseHoldCommandValidator>();
+builder.Services.AddScoped<IValidator<GetQuoteQuery>, GetQuoteQueryValidator>();
 
 // ---------------------------------------------------------------------------
 // Authentication: API key scheme for Supplier API + authorization policies
@@ -192,6 +206,7 @@ app.MapSupplyEndpoints();
 app.MapCatalogEndpoints();
 app.MapIdentityEndpoints();
 app.MapMarketplaceEndpoints();
+app.MapBookingEndpoints();
 
 app.Run();
 

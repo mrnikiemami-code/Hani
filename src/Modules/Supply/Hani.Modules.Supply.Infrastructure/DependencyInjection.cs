@@ -16,6 +16,8 @@ public static class DependencyInjection
         services.AddScoped<IAgencyOfferRepository, AgencyOfferRepository>();
         services.AddScoped<IDepartureRepository, DepartureRepository>();
         services.AddScoped<IOfferReadService, OfferReadService>();
+        services.AddScoped<IDeparturePricingService, DeparturePricingService>();
+        services.AddScoped<IInventoryReservationService, InventoryReservationService>();
         return services;
     }
 }

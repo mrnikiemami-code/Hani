@@ -46,3 +46,49 @@ public interface IOfferReadService
         Guid tourProductId,
         CancellationToken cancellationToken);
 }
+
+/// <summary>
+/// Departure pricing snapshot used when creating a quote.
+/// </summary>
+public sealed record DeparturePricingSnapshot(
+    Guid DepartureId,
+    Guid AgencyOfferId,
+    Guid AgencyId,
+    int Capacity,
+    int SeatsLeft,
+    IReadOnlyList<DeparturePriceSnapshot> Prices);
+
+/// <summary>
+/// Read-side contract for departure pricing.
+/// </summary>
+public interface IDeparturePricingService
+{
+    /// <summary>
+    /// Returns pricing and capacity for a departure, or <c>null</c>.
+    /// </summary>
+    Task<DeparturePricingSnapshot?> GetAsync(
+        Guid departureId,
+        CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Write-side contract for reserving and releasing departure seats.
+/// </summary>
+public interface IInventoryReservationService
+{
+    /// <summary>
+    /// Atomically reserves seats; returns <c>false</c> when capacity is insufficient.
+    /// </summary>
+    Task<bool> TryReserveAsync(
+        Guid departureId,
+        int seats,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Releases previously reserved seats.
+    /// </summary>
+    Task ReleaseAsync(
+        Guid departureId,
+        int seats,
+        CancellationToken cancellationToken);
+}

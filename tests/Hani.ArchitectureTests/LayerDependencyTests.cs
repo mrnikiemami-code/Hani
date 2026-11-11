@@ -1,3 +1,6 @@
+using Hani.Modules.Booking.Application.Commands.CreateQuote;
+using Hani.Modules.Booking.Domain.Quotes;
+using Hani.Modules.Booking.Presentation;
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Catalog.Domain.TourProducts;
 using Hani.Modules.Catalog.Presentation;
@@ -141,6 +144,49 @@ public sealed class LayerDependencyTests
 
         result.IsSuccessful.ShouldBeTrue(
             string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Booking_Application_Should_Not_Depend_On_Infrastructure()
+    {
+        var result = Types.InAssembly(typeof(CreateQuoteCommand).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Booking.Application")
+            .ShouldNot().HaveDependencyOnAny(
+                "Hani.Modules.Booking.Infrastructure",
+                "Microsoft.EntityFrameworkCore",
+                "MassTransit",
+                "StackExchange.Redis",
+                "System.Net.Http")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Booking_Domain_Should_Not_Depend_On_Infrastructure()
+    {
+        var result = Types.InAssembly(typeof(Quote).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Booking.Domain")
+            .ShouldNot().HaveDependencyOnAny(
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore",
+                "MassTransit",
+                "StackExchange.Redis",
+                "System.Net.Http")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Booking_Presentation_Should_Not_Use_DbContext()
+    {
+        var result = Types.InAssembly(typeof(BookingEndpoints).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Booking.Presentation")
+            .ShouldNot().HaveDependencyOn("Microsoft.EntityFrameworkCore")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(string.Join(", ", result.FailingTypeNames ?? []));
     }
 
     [Fact]
