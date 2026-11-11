@@ -1,4 +1,3 @@
-using System.Globalization;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Supply.Application.Commands.ApproveAgencyOffer;
@@ -73,13 +72,14 @@ public static class SupplyEndpoints
 
     private static async Task<IResult> CreateOfferAsync(
         CreateAgencyOfferRequest request,
+        HttpContext context,
         ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var result = await sender.Send(
@@ -93,7 +93,7 @@ public static class SupplyEndpoints
 
         return result.IsSuccess
             ? Results.Created($"/supplier/v1/offers/{result.Value}", result.Value)
-            : ToProblem(result.Error!);
+            : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> UpsertOfferAsync(
@@ -106,7 +106,7 @@ public static class SupplyEndpoints
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var idempotencyKey = context.Request.Headers["Idempotency-Key"].FirstOrDefault()
@@ -127,18 +127,19 @@ public static class SupplyEndpoints
             ? result.Value!.Created
                 ? Results.Created($"/supplier/v1/offers/{result.Value.OfferId}", result.Value)
                 : Results.Ok(result.Value)
-            : ToProblem(result.Error!);
+            : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> GetOfferAsync(
         Guid offerId,
+        HttpContext context,
         ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var result = await sender.Send(
@@ -147,57 +148,61 @@ public static class SupplyEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : ToProblem(result.Error!);
+            : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> SubmitOfferAsync(
         Guid offerId,
+        HttpContext context,
         ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var result = await sender.Send(
             new SubmitAgencyOfferCommand(agencyId, offerId),
             cancellationToken);
 
-        return result.IsSuccess ? Results.Ok() : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> ArchiveOfferAsync(
         Guid offerId,
+        HttpContext context,
         ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var result = await sender.Send(
             new ArchiveAgencyOfferCommand(agencyId, offerId),
             cancellationToken);
 
-        return result.IsSuccess ? Results.Ok() : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> ApproveOfferAsync(
         Guid offerId,
+        HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new ApproveAgencyOfferCommand(offerId), cancellationToken);
-        return result.IsSuccess ? Results.Ok() : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> RejectOfferAsync(
         Guid offerId,
         RejectAgencyOfferRequest request,
+        HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
@@ -205,33 +210,9 @@ public static class SupplyEndpoints
             new RejectAgencyOfferCommand(offerId, request.Reason),
             cancellationToken);
 
-        return result.IsSuccess ? Results.Ok() : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
-    private static IResult ToProblem(Error error)
-    {
-        var statusCode = error.Type switch
-        {
-            ErrorType.Validation => StatusCodes.Status400BadRequest,
-            ErrorType.NotFound => StatusCodes.Status404NotFound,
-            ErrorType.Conflict => StatusCodes.Status409Conflict,
-            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
-            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
-            _ => StatusCodes.Status500InternalServerError
-        };
-
-        var locale = CultureInfo.CurrentUICulture.Name;
-
-        return Results.Problem(
-            title: ProblemDetailsLocalizer.Title(error.Type, locale),
-            detail: error.Message,
-            statusCode: statusCode,
-            extensions: new Dictionary<string, object?>
-            {
-                ["code"] = error.Code,
-                ["locale"] = locale
-            });
-    }
 }
 
 /// <summary>

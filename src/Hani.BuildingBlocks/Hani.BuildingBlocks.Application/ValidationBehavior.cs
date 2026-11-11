@@ -42,7 +42,14 @@ public sealed class ValidationBehavior<TRequest, TResponse>(
             ? "HANI-COMMON-1002"
             : first.ErrorCode;
 
-        var error = Error.Validation(code, first.ErrorMessage);
+        var errors = failures
+            .GroupBy(failure => failure.PropertyName, StringComparer.Ordinal)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Select(failure => failure.ErrorMessage).Distinct(StringComparer.Ordinal).ToArray(),
+                StringComparer.Ordinal);
+
+        var error = Error.Validation(code, first.ErrorMessage) with { Errors = errors };
 
         if (typeof(TResponse).IsGenericType &&
             typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>))

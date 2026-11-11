@@ -18,6 +18,11 @@ public enum ErrorType
 /// </summary>
 public sealed record Error(string Code, string Message, ErrorType Type = ErrorType.Failure)
 {
+    /// <summary>
+    /// Optional field-level validation errors keyed by property name.
+    /// </summary>
+    public IReadOnlyDictionary<string, string[]>? Errors { get; init; }
+
     public static Error Validation(string code, string message) => new(code, message, ErrorType.Validation);
 
     public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);

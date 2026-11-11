@@ -193,14 +193,22 @@ components:
   schemas:
     Problem:
       type: object
-      required: [type, title, status, code, traceId]
+      required: [type, title, status, code, correlationId, traceId]
       properties:
         type: { type: string, format: uri }
         title: { type: string }
         status: { type: integer }
         code: { type: string }
         detail: { type: string }
+        instance: { type: string }
+        correlationId: { type: string }
         traceId: { type: string }
+        locale: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
         meta: { type: object, additionalProperties: true }
 
     OfferUpsert:

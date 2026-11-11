@@ -77,6 +77,7 @@
 | Read Contracts | Catalog / Supply / Identity read services | `17b6415` |
 | Localization config | زبان‌ها و عنوان خطاها از `Localization` در appsettings؛ بدون hard-code؛ `LocalizationHardcodeTests` | `5b956d3` / `783cd59` |
 | ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | `5b956d3` |
+| ProblemDetails | خروجی خطای مرکزی RFC 7807 + `X-Correlation-Id` + `traceId` | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -124,9 +125,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۵۳ passed |
-| Architecture Tests | ۲۳ passed |
-| Total | **۷۶ passed** |
+| Unit Tests | ۶۲ passed |
+| Architecture Tests | ۲۵ passed |
+| Total | **۸۷ passed** |
 | Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۱) |
 | Format | clean |
 | Vulnerable Packages | none |

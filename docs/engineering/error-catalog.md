@@ -66,12 +66,19 @@ Resources/Errors.ar.resx
   "type": "https://api.hani.ir/errors/HANI-BOOKING-1001",
   "title": "ظرفیت این سانس تکمیل شده است.",
   "status": 409,
+  "detail": "Departure capacity is exhausted.",
+  "instance": "/market/v1/quotes",
   "code": "HANI-BOOKING-1001",
-  "messageKey": "booking.departure.sold_out",
-  "traceId": "01J8Z...",
-  "locale": "fa-IR"
+  "correlationId": "01J8Z...",
+  "traceId": "4bf92f3577b34da6a3ce929d0e0e4736",
+  "locale": "fa-IR",
+  "errors": {
+    "departureId": ["Departure is sold out."]
+  }
 }
 ```
+
+> خروجی خطا فقط از `HaniProblemDetails` ساخته می‌شود و همیشه `application/problem+json` است.
 
 ## ۵. لاگ
 

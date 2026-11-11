@@ -21,6 +21,7 @@
 | [0017](0017-logging-language-policy.md) | سیاست زبان لاگ: انگلیسی ثابت | Accepted (Locked) |
 | [0018](0018-config-driven-localization.md) | زبان‌های قابل تنظیم و حذف hard-code | Accepted |
 | [0019](0019-id-generator-uuid7.md) | تولید شناسه با IIdGenerator و UUIDv7 | Accepted |
+| [0020](0020-problem-details-and-correlation-id.md) | ProblemDetails مرکزی و Correlation ID | Accepted (Locked) |
 
 ## قالب ADR جدید
 

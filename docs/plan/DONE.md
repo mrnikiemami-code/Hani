@@ -93,6 +93,7 @@
 | D-76 | Config-driven localization | `LocalizationOptions` + `ILanguageCatalog` + `appsettings` | `5b956d3` |
 | D-77 | IIdGenerator + UUIDv7 | `IIdGenerator` + `Uuid7IdGenerator` + ArchitectureTest | `5b956d3` |
 | D-78 | Localization hard-code gate | `LocalizationHardcodeTests` + AGENTS checklist + verify | `783cd59` |
+| D-79 | Central ProblemDetails + Correlation ID | `HaniProblemDetails` + `CorrelationIdMiddleware` + OpenAPI | این تغییر |
 
 ## ۳. مستندات
 
@@ -112,9 +113,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۵۳ passed |
-| Architecture Tests | ۲۳ passed |
-| Total | **۷۶ passed** |
+| Unit Tests | ۶۲ passed |
+| Architecture Tests | ۲۵ passed |
+| Total | **۸۷ passed** |
 | Migrations | Supply + Catalog + Identity + Booking |
 | Format | clean |
 | Vulnerable Packages | none |

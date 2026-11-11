@@ -85,7 +85,9 @@ builder.Host.UseSerilog((context, services, configuration) =>
         .Enrich.FromLogContext()
         .Enrich.WithProperty("service", options.ServiceName)
         .Enrich.WithProperty("environment", options.Environment)
-        .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture);
+        .WriteTo.Console(
+            outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{CorrelationId}] {Message:lj}{NewLine}{Exception}",
+            formatProvider: CultureInfo.InvariantCulture);
 
     if (options.Logging.Sinks.Any(sink =>
             string.Equals(sink, "Seq", StringComparison.OrdinalIgnoreCase)) &&
@@ -212,13 +214,29 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 
 builder.Services.AddHealthChecks();
+builder.Services.AddExceptionHandler<HaniExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-// Request pipeline: localization -> authentication -> tenant -> authorization
+// Request pipeline: correlation -> exception -> localization -> auth -> tenant -> authorization
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseExceptionHandler();
 app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseMiddleware<TenantMiddleware>();
+app.UseStatusCodePages(async context =>
+{
+    var httpContext = context.HttpContext;
+
+    if (httpContext.Response.HasStarted)
+    {
+        return;
+    }
+
+    var problem = HaniProblemDetails.Create(httpContext, httpContext.Response.StatusCode);
+    await HaniProblemDetails.WriteAsync(httpContext, problem);
+});
 app.UseAuthorization();
 app.MapHealthChecks("/health");
 app.MapSupplyEndpoints();

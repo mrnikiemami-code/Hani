@@ -17,6 +17,7 @@
 - [ ] اگر قرارداد API تغییر کرد، `docs/api/*.openapi.yaml` به‌روز شود.
 - [ ] اگر تصمیم معماری تغییر کرد، ADR جدید ثبت شود.
 - [ ] هیچ کد زبان/کالچر در C# hard-code نشده باشد؛ `LocalizationHardcodeTests` باید سبز باشد.
+- [ ] همه خطاهای endpoint از `HttpContext.ToProblem(...)` / `HaniProblemDetails` استفاده کنند؛ `ProblemDetailsConventionTests` باید سبز باشد.
 - [ ] `docs/plan/STATUS.md` و `docs/plan/DONE.md` به‌روز شوند.
 - [ ] `scripts/verify.ps1` سبز باشد.
 - [ ] commit + push انجام شود.
@@ -45,6 +46,8 @@
 - تغییر معماری بدون ADR.
 - ساخت GUID با `Guid.NewGuid`/`Guid.CreateVersion7` خارج از Infrastructure؛ از `IIdGenerator` استفاده شود.
 - hard-code کردن فهرست زبان‌ها یا fallback زبانی؛ از `Localization` و `ILanguageCatalog` استفاده شود.
+- ساخت خروجی خطای دستی در endpoint (`Results.Problem`/`Results.BadRequest`/...)؛ فقط `HttpContext.ToProblem(...)` مجاز است.
+- حذف یا دور زدن `correlationId` در پاسخ‌های خطا.
 - رها کردن `STATUS.md` / `TASKS.md` / `DONE.md` به‌صورت کهنه.
 - commit بدون اجرای `scripts/verify.ps1`.
 

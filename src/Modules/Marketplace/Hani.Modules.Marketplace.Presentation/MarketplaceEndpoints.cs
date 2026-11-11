@@ -1,4 +1,3 @@
-using System.Globalization;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
@@ -41,6 +40,7 @@ public static class MarketplaceEndpoints
         string? destinationSlug,
         int page,
         int pageSize,
+        HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
@@ -52,12 +52,13 @@ public static class MarketplaceEndpoints
                 pageSize == 0 ? 20 : pageSize),
             cancellationToken);
 
-        return result.IsSuccess ? Results.Ok(result.Value) : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> CompareAsync(
         Guid productId,
         string? locale,
+        HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
@@ -65,31 +66,7 @@ public static class MarketplaceEndpoints
             new GetProductComparisonQuery(productId, locale),
             cancellationToken);
 
-        return result.IsSuccess ? Results.Ok(result.Value) : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
-    private static IResult ToProblem(Error error)
-    {
-        var statusCode = error.Type switch
-        {
-            ErrorType.Validation => StatusCodes.Status400BadRequest,
-            ErrorType.NotFound => StatusCodes.Status404NotFound,
-            ErrorType.Conflict => StatusCodes.Status409Conflict,
-            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
-            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
-            _ => StatusCodes.Status500InternalServerError
-        };
-
-        var locale = CultureInfo.CurrentUICulture.Name;
-
-        return Results.Problem(
-            title: ProblemDetailsLocalizer.Title(error.Type, locale),
-            detail: error.Message,
-            statusCode: statusCode,
-            extensions: new Dictionary<string, object?>
-            {
-                ["code"] = error.Code,
-                ["locale"] = locale
-            });
-    }
 }

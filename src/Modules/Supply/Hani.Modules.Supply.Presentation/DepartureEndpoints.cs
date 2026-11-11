@@ -1,4 +1,3 @@
-using System.Globalization;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Supply.Application.Commands.CreateTourDeparture;
@@ -53,13 +52,14 @@ public static class DepartureEndpoints
     private static async Task<IResult> CreateDepartureAsync(
         Guid offerId,
         CreateTourDepartureRequest request,
+        HttpContext context,
         ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var command = new CreateTourDepartureCommand(
@@ -79,37 +79,39 @@ public static class DepartureEndpoints
 
         return result.IsSuccess
             ? Results.Created($"/supplier/v1/departures/{result.Value}", result.Value)
-            : ToProblem(result.Error!);
+            : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> GetDeparturesAsync(
         Guid offerId,
+        HttpContext context,
         ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var result = await sender.Send(
             new GetDeparturesByOfferQuery(agencyId, offerId),
             cancellationToken);
 
-        return result.IsSuccess ? Results.Ok(result.Value) : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> UpdateAvailabilityAsync(
         Guid departureId,
         UpdateDepartureAvailabilityRequest request,
+        HttpContext context,
         ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var result = await sender.Send(
@@ -120,19 +122,20 @@ public static class DepartureEndpoints
                 request.Version),
             cancellationToken);
 
-        return result.IsSuccess ? Results.Ok() : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> UpdatePriceAsync(
         Guid departureId,
         UpdateDeparturePriceRequest request,
+        HttpContext context,
         ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
         if (currentTenant.TenantId is not { } agencyId)
         {
-            return Results.Unauthorized();
+            return context.TenantRequiredProblem();
         }
 
         var result = await sender.Send(
@@ -145,33 +148,9 @@ public static class DepartureEndpoints
                 request.Version),
             cancellationToken);
 
-        return result.IsSuccess ? Results.Ok() : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
-    private static IResult ToProblem(Error error)
-    {
-        var statusCode = error.Type switch
-        {
-            ErrorType.Validation => StatusCodes.Status400BadRequest,
-            ErrorType.NotFound => StatusCodes.Status404NotFound,
-            ErrorType.Conflict => StatusCodes.Status409Conflict,
-            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
-            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
-            _ => StatusCodes.Status500InternalServerError
-        };
-
-        var locale = CultureInfo.CurrentUICulture.Name;
-
-        return Results.Problem(
-            title: ProblemDetailsLocalizer.Title(error.Type, locale),
-            detail: error.Message,
-            statusCode: statusCode,
-            extensions: new Dictionary<string, object?>
-            {
-                ["code"] = error.Code,
-                ["locale"] = locale
-            });
-    }
 }
 
 /// <summary>

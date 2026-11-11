@@ -1,5 +1,3 @@
-using System.Globalization;
-using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Booking.Application.Commands.CreateHold;
 using Hani.Modules.Booking.Application.Commands.CreateQuote;
@@ -51,6 +49,7 @@ public static class BookingEndpoints
 
     private static async Task<IResult> CreateQuoteAsync(
         CreateQuoteRequest request,
+        HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
@@ -65,16 +64,17 @@ public static class BookingEndpoints
 
         return result.IsSuccess
             ? Results.Created($"/market/v1/quotes/{result.Value!.QuoteId}", result.Value)
-            : ToProblem(result.Error!);
+            : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> GetQuoteAsync(
         Guid quoteId,
+        HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetQuoteQuery(quoteId), cancellationToken);
-        return result.IsSuccess ? Results.Ok(result.Value) : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> CreateHoldAsync(
@@ -92,42 +92,19 @@ public static class BookingEndpoints
 
         return result.IsSuccess
             ? Results.Created($"/market/v1/holds/{result.Value!.HoldId}", result.Value)
-            : ToProblem(result.Error!);
+            : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> ReleaseHoldAsync(
         Guid holdId,
+        HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new ReleaseHoldCommand(holdId), cancellationToken);
-        return result.IsSuccess ? Results.Ok() : ToProblem(result.Error!);
+        return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
-    private static IResult ToProblem(Error error)
-    {
-        var statusCode = error.Type switch
-        {
-            ErrorType.Validation => StatusCodes.Status400BadRequest,
-            ErrorType.NotFound => StatusCodes.Status404NotFound,
-            ErrorType.Conflict => StatusCodes.Status409Conflict,
-            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
-            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
-            _ => StatusCodes.Status500InternalServerError
-        };
-
-        var locale = CultureInfo.CurrentUICulture.Name;
-
-        return Results.Problem(
-            title: ProblemDetailsLocalizer.Title(error.Type, locale),
-            detail: error.Message,
-            statusCode: statusCode,
-            extensions: new Dictionary<string, object?>
-            {
-                ["code"] = error.Code,
-                ["locale"] = locale
-            });
-    }
 }
 
 /// <summary>
