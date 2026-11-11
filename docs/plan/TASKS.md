@@ -36,9 +36,9 @@
 | TC-022 | Supplier upsert + idempotency | ? | TC-021 | upsert + Idempotency-Key | `d4b9465` |
 | TC-023 | Moderation | ? | TC-022 | Submit/Approve/Reject | `d4b9465` |
 | TC-079 | Documentation | ? | TC-001 | XML summaries + module READMEs + DocumentationTests | `8bc804c` |
-| TC-024 | Search projection | 🚧 | TC-018 | ایندکس جستجو | — |
-| TC-025 | Compare API | 🚧 | TC-024, TC-021 | مقایسه چند آژانس | — |
-| TC-026 | Quote + Hold | ❌ | TC-025 | TTL + release | — |
+| TC-024 | Search projection | ? | TC-018 | search + min price + offer count | `17b6415` |
+| TC-025 | Compare API | ? | TC-024, TC-021 | offer comparison + agency names | `17b6415` |
+| TC-026 | Quote + Hold | ? | TC-025 | TTL + release | ? |
 | TC-027 | Order + Contract | ❌ | TC-026 | snapshot immutable | — |
 | TC-028 | PaymentIntent + Gateway | ❌ | TC-027 | idempotent initiate | — |
 | TC-029 | Payment Webhook | ❌ | TC-028 | dedupe | — |

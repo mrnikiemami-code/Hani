@@ -17,7 +17,7 @@
 ✅ **Phase 1 Gate Passed — Phase 2 شروع نشده (در انتظار بازبینی)**
 
 - Solution + `BuildingBlocks` + ماژول‌های `Supply`، `Catalog` و `Identity`
-- ArchitectureTests (۱۳ تست)، UnitTests (۴۰ تست)
+- ArchitectureTests (?? ???)? UnitTests (?? ???)
 - Supplier API با API Key + Tenant Isolation
 - Upsert + Moderation + Departure/Price/Capacity
 - گزارش Gate: [`docs/reports/phase-1-gate.md`](docs/reports/phase-1-gate.md)
