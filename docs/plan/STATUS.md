@@ -1,9 +1,9 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۰ آبان ۱۴۰۵
-> **فاز فعال:** هیچ — Phase 1 بسته شد
+> **فاز فعال:** Phase 2 — Marketplace Read + Booking
 > **آخرین commit کد:** `d4b9465`
-> **وضعیت Gate:** ✅ PASSED
+> **وضعیت Gate:** Phase 2 — In Progress
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
@@ -15,7 +15,7 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | ⏳ Next (not started) | 0% |
+| 2 | Marketplace Read + Booking | 🚧 In Progress | ~10% |
 | 3 | Channel + Billing + Settlement | ⏳ Planned | 0% |
 | 4 | Flights | ⏳ Planned | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Planned | 0% |
@@ -128,8 +128,8 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** هیچ — **توقف برای بازبینی کاربر**
-**Phase 2:** شروع نشده
+**تسک فعال:** TC-024 — Search projection + TC-025 — Compare API
+**Phase 2:** در حال انجام
 
 ### ۵ تسک اول Phase 2 (پس از تأیید)
 

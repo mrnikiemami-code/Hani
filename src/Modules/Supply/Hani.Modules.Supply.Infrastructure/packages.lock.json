@@ -488,6 +488,9 @@
           "Serilog.Sinks.Seq": "[9.1.0, )"
         }
       },
+      "hani.contracts.supply": {
+        "type": "Project"
+      },
       "hani.modules.supply.application": {
         "type": "Project",
         "dependencies": {

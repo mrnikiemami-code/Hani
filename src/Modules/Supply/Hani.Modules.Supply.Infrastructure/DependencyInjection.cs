@@ -1,4 +1,6 @@
+using Hani.Contracts.Supply;
 using Hani.Modules.Supply.Application.Abstractions;
+using Hani.Modules.Supply.Infrastructure.ReadServices;
 using Hani.Modules.Supply.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IAgencyOfferRepository, AgencyOfferRepository>();
         services.AddScoped<IDepartureRepository, DepartureRepository>();
+        services.AddScoped<IOfferReadService, OfferReadService>();
         return services;
     }
 }

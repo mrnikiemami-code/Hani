@@ -1,4 +1,6 @@
+using Hani.Contracts.Identity;
 using Hani.Modules.Identity.Application.Abstractions;
+using Hani.Modules.Identity.Infrastructure.ReadServices;
 using Hani.Modules.Identity.Infrastructure.Repositories;
 using Hani.Modules.Identity.Infrastructure.Security;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,7 @@ public static class DependencyInjection
         services.AddSingleton<ISecretGenerator, SecretGenerator>();
         services.AddSingleton<ISecretHasher, SecretHasher>();
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
+        services.AddScoped<IAgencyReadService, AgencyReadService>();
         return services;
     }
 }

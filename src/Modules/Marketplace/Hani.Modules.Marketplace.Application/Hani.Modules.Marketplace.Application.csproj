@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Hani.Modules.Marketplace.Application</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hani.Modules.Marketplace.Domain\Hani.Modules.Marketplace.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Application\Hani.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Catalog\Hani.Contracts.Catalog.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Supply\Hani.Contracts.Supply.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Identity\Hani.Contracts.Identity.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
+</Project>

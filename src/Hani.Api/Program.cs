@@ -21,6 +21,10 @@ using Hani.Modules.Identity.Application.Queries.GetAgencyById;
 using Hani.Modules.Identity.Infrastructure;
 using Hani.Modules.Identity.Infrastructure.Persistence;
 using Hani.Modules.Identity.Presentation;
+using Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
+using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
+using Hani.Modules.Marketplace.Infrastructure;
+using Hani.Modules.Marketplace.Presentation;
 using Hani.Modules.Supply.Application.Commands.ApproveAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.ArchiveAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
@@ -95,6 +99,7 @@ builder.Services.AddDbContext<IdentityDbContext>(options => options.UseNpgsql(co
 builder.Services.AddSupplyInfrastructure();
 builder.Services.AddCatalogInfrastructure();
 builder.Services.AddIdentityInfrastructure();
+builder.Services.AddMarketplaceInfrastructure();
 
 // ---------------------------------------------------------------------------
 // Cross-cutting infrastructure: cache, messaging, tenant, idempotency, telemetry
@@ -112,7 +117,8 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssemblies(
         typeof(CreateAgencyOfferCommand).Assembly,
         typeof(CreateTourProductCommand).Assembly,
-        typeof(CreateAgencyCommand).Assembly));
+        typeof(CreateAgencyCommand).Assembly,
+        typeof(SearchProductsQuery).Assembly));
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -139,6 +145,8 @@ builder.Services.AddScoped<IValidator<GetTourProductByIdQuery>, GetTourProductBy
 builder.Services.AddScoped<IValidator<CreateAgencyCommand>, CreateAgencyCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateApiClientCommand>, CreateApiClientCommandValidator>();
 builder.Services.AddScoped<IValidator<GetAgencyByIdQuery>, GetAgencyByIdQueryValidator>();
+builder.Services.AddScoped<IValidator<SearchProductsQuery>, SearchProductsQueryValidator>();
+builder.Services.AddScoped<IValidator<GetProductComparisonQuery>, GetProductComparisonQueryValidator>();
 
 // ---------------------------------------------------------------------------
 // Authentication: API key scheme for Supplier API + authorization policies
@@ -183,6 +191,7 @@ app.MapHealthChecks("/health");
 app.MapSupplyEndpoints();
 app.MapCatalogEndpoints();
 app.MapIdentityEndpoints();
+app.MapMarketplaceEndpoints();
 
 app.Run();
 

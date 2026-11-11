@@ -19,6 +19,10 @@
     <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Application\Hani.Modules.Identity.Application.csproj" />
     <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Infrastructure\Hani.Modules.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Presentation\Hani.Modules.Identity.Presentation.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Marketplace\Hani.Modules.Marketplace.Domain\Hani.Modules.Marketplace.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Marketplace\Hani.Modules.Marketplace.Application\Hani.Modules.Marketplace.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Marketplace\Hani.Modules.Marketplace.Infrastructure\Hani.Modules.Marketplace.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Marketplace\Hani.Modules.Marketplace.Presentation\Hani.Modules.Marketplace.Presentation.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />

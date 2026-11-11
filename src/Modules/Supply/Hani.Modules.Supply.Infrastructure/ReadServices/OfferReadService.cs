@@ -1,0 +1,76 @@
+using Hani.Contracts.Supply;
+using Hani.Modules.Supply.Domain.AgencyOffers;
+using Hani.Modules.Supply.Domain.Departures;
+using Hani.Modules.Supply.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Hani.Modules.Supply.Infrastructure.ReadServices;
+
+internal sealed class OfferReadService(SupplyDbContext dbContext) : IOfferReadService
+{
+    public async Task<IReadOnlyList<OfferSnapshot>> GetApprovedOffersAsync(
+        Guid tourProductId,
+        CancellationToken cancellationToken)
+    {
+        var offers = (await dbContext.AgencyOffers
+                .AsNoTracking()
+                .Where(offer =>
+                    offer.TourProductId == tourProductId &&
+                    offer.Status == AgencyOfferStatus.Approved)
+                .ToArrayAsync(cancellationToken))
+            .OrderBy(offer => offer.BasePrice.Amount)
+            .ToArray();
+
+        if (offers.Length == 0)
+        {
+            return [];
+        }
+
+        var offerIds = offers.Select(offer => offer.Id).ToArray();
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var departures = await dbContext.TourDepartures
+            .AsNoTracking()
+            .Where(departure =>
+                offerIds.Contains(departure.AgencyOfferId) &&
+                departure.Status == DepartureStatus.Open &&
+                departure.EndDate >= today)
+            .OrderBy(departure => departure.StartDate)
+            .ToArrayAsync(cancellationToken);
+
+        var departuresByOffer = departures
+            .GroupBy(departure => departure.AgencyOfferId)
+            .ToDictionary(group => group.Key, group => group.ToArray());
+
+        return offers
+            .Select(offer => new OfferSnapshot(
+                offer.Id,
+                offer.AgencyId,
+                offer.TourProductId,
+                offer.ExternalId,
+                offer.Title,
+                offer.BasePrice.Amount,
+                offer.BasePrice.Currency,
+                offer.Status.ToString(),
+                departuresByOffer.TryGetValue(offer.Id, out var offerDepartures)
+                    ? offerDepartures.Select(MapDeparture).ToArray()
+                    : []))
+            .ToArray();
+    }
+
+    private static DepartureSnapshot MapDeparture(TourDeparture departure)
+        => new(
+            departure.Id,
+            departure.StartDate,
+            departure.EndDate,
+            departure.Capacity,
+            departure.SeatsLeft,
+            departure.Status.ToString(),
+            departure.Prices
+                .OrderBy(price => price.RoomType)
+                .Select(price => new DeparturePriceSnapshot(
+                    price.RoomType.ToString(),
+                    price.Amount,
+                    price.Currency))
+                .ToArray());
+}

@@ -477,6 +477,9 @@
           "Serilog.Sinks.Seq": "[9.1.0, )"
         }
       },
+      "hani.contracts.identity": {
+        "type": "Project"
+      },
       "hani.modules.identity.application": {
         "type": "Project",
         "dependencies": {

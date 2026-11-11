@@ -7,6 +7,10 @@ using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Identity.Domain.Agencies;
 using Hani.Modules.Identity.Infrastructure.Persistence;
 using Hani.Modules.Identity.Presentation;
+using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
+using Hani.Modules.Marketplace.Domain;
+using Hani.Modules.Marketplace.Infrastructure;
+using Hani.Modules.Marketplace.Presentation;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 using Hani.Modules.Supply.Infrastructure.Persistence;
@@ -30,7 +34,11 @@ public sealed class ModuleBoundaryTests
         typeof(Agency).Assembly,
         typeof(CreateAgencyCommand).Assembly,
         typeof(IdentityDbContext).Assembly,
-        typeof(IdentityEndpoints).Assembly
+        typeof(IdentityEndpoints).Assembly,
+        typeof(MarketplaceModule).Assembly,
+        typeof(SearchProductsQuery).Assembly,
+        typeof(DependencyInjection).Assembly,
+        typeof(MarketplaceEndpoints).Assembly
     ];
 
     [Fact]

@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Hani.Contracts.Catalog</RootNamespace>
+  </PropertyGroup>
+</Project>

@@ -424,6 +424,15 @@
           "Serilog.Sinks.Seq": "[9.1.0, )"
         }
       },
+      "hani.contracts.catalog": {
+        "type": "Project"
+      },
+      "hani.contracts.identity": {
+        "type": "Project"
+      },
+      "hani.contracts.supply": {
+        "type": "Project"
+      },
       "hani.modules.catalog.application": {
         "type": "Project",
         "dependencies": {
@@ -442,6 +451,7 @@
         "type": "Project",
         "dependencies": {
           "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Contracts.Catalog": "[1.0.0, )",
           "Hani.Modules.Catalog.Application": "[1.0.0, )",
           "MassTransit.EntityFrameworkCore": "[8.5.12, )",
           "Microsoft.EntityFrameworkCore": "[10.0.15, )",
@@ -474,6 +484,7 @@
         "type": "Project",
         "dependencies": {
           "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Contracts.Identity": "[1.0.0, )",
           "Hani.Modules.Identity.Application": "[1.0.0, )",
           "Microsoft.EntityFrameworkCore": "[10.0.15, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.15, )",
@@ -485,6 +496,38 @@
         "dependencies": {
           "Hani.BuildingBlocks.AspNetCore": "[1.0.0, )",
           "Hani.Modules.Identity.Application": "[1.0.0, )"
+        }
+      },
+      "hani.modules.marketplace.application": {
+        "type": "Project",
+        "dependencies": {
+          "FluentValidation": "[12.2.0, )",
+          "Hani.BuildingBlocks.Application": "[1.0.0, )",
+          "Hani.Contracts.Catalog": "[1.0.0, )",
+          "Hani.Contracts.Identity": "[1.0.0, )",
+          "Hani.Contracts.Supply": "[1.0.0, )",
+          "Hani.Modules.Marketplace.Domain": "[1.0.0, )",
+          "MediatR": "[12.5.0, )"
+        }
+      },
+      "hani.modules.marketplace.domain": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "hani.modules.marketplace.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.Modules.Marketplace.Application": "[1.0.0, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.15, )"
+        }
+      },
+      "hani.modules.marketplace.presentation": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.AspNetCore": "[1.0.0, )",
+          "Hani.Modules.Marketplace.Application": "[1.0.0, )"
         }
       },
       "hani.modules.supply.application": {
@@ -505,6 +548,7 @@
         "type": "Project",
         "dependencies": {
           "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Contracts.Supply": "[1.0.0, )",
           "Hani.Modules.Supply.Application": "[1.0.0, )",
           "MassTransit.EntityFrameworkCore": "[8.5.12, )",
           "Microsoft.EntityFrameworkCore": "[10.0.15, )",

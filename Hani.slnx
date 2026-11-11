@@ -8,6 +8,11 @@
     <Project Path="src/Hani.BuildingBlocks/Hani.BuildingBlocks.Domain/Hani.BuildingBlocks.Domain.csproj" />
     <Project Path="src/Hani.BuildingBlocks/Hani.BuildingBlocks.Infrastructure/Hani.BuildingBlocks.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/src/Hani.Contracts/">
+    <Project Path="src/Hani.Contracts/Hani.Contracts.Catalog/Hani.Contracts.Catalog.csproj" />
+    <Project Path="src/Hani.Contracts/Hani.Contracts.Identity/Hani.Contracts.Identity.csproj" />
+    <Project Path="src/Hani.Contracts/Hani.Contracts.Supply/Hani.Contracts.Supply.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/" />
   <Folder Name="/src/Modules/Catalog/">
     <Project Path="src/Modules/Catalog/Hani.Modules.Catalog.Application/Hani.Modules.Catalog.Application.csproj" />
@@ -20,6 +25,12 @@
     <Project Path="src/Modules/Identity/Hani.Modules.Identity.Domain/Hani.Modules.Identity.Domain.csproj" />
     <Project Path="src/Modules/Identity/Hani.Modules.Identity.Infrastructure/Hani.Modules.Identity.Infrastructure.csproj" />
     <Project Path="src/Modules/Identity/Hani.Modules.Identity.Presentation/Hani.Modules.Identity.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Marketplace/">
+    <Project Path="src/Modules/Marketplace/Hani.Modules.Marketplace.Application/Hani.Modules.Marketplace.Application.csproj" />
+    <Project Path="src/Modules/Marketplace/Hani.Modules.Marketplace.Domain/Hani.Modules.Marketplace.Domain.csproj" />
+    <Project Path="src/Modules/Marketplace/Hani.Modules.Marketplace.Infrastructure/Hani.Modules.Marketplace.Infrastructure.csproj" />
+    <Project Path="src/Modules/Marketplace/Hani.Modules.Marketplace.Presentation/Hani.Modules.Marketplace.Presentation.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Supply/">
     <Project Path="src/Modules/Supply/Hani.Modules.Supply.Application/Hani.Modules.Supply.Application.csproj" />

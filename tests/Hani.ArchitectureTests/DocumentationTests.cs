@@ -69,7 +69,8 @@ public sealed class DocumentationTests
             "src/Hani.BuildingBlocks/README.md",
             "src/Modules/Supply/README.md",
             "src/Modules/Catalog/README.md",
-            "src/Modules/Identity/README.md"
+            "src/Modules/Identity/README.md",
+            "src/Modules/Marketplace/README.md"
         };
 
         var missing = required

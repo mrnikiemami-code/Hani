@@ -1,4 +1,6 @@
+using Hani.Contracts.Catalog;
 using Hani.Modules.Catalog.Application.Abstractions;
+using Hani.Modules.Catalog.Infrastructure.ReadServices;
 using Hani.Modules.Catalog.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,7 @@ public static class DependencyInjection
     {
         services.AddScoped<ITourProductRepository, TourProductRepository>();
         services.AddScoped<IDestinationRepository, DestinationRepository>();
+        services.AddScoped<ICatalogReadService, CatalogReadService>();
         return services;
     }
 }

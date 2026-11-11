@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Hani.Contracts.Identity</RootNamespace>
+  </PropertyGroup>
+</Project>

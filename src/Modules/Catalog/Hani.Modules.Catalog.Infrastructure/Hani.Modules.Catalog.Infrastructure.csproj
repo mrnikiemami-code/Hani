@@ -5,6 +5,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Hani.Modules.Catalog.Application\Hani.Modules.Catalog.Application.csproj" />
     <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Infrastructure\Hani.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Catalog\Hani.Contracts.Catalog.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MassTransit.EntityFrameworkCore" />

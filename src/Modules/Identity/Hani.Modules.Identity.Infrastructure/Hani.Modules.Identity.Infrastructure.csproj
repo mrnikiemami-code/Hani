@@ -5,6 +5,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Hani.Modules.Identity.Application\Hani.Modules.Identity.Application.csproj" />
     <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Infrastructure\Hani.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Identity\Hani.Contracts.Identity.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
