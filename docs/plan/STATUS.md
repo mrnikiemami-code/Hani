@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۰ آبان ۱۴۰۵
 > **فاز فعال:** Phase 2 — Marketplace Read + Booking
-> **آخرین commit کد:** `f43339e`
+> **آخرین commit کد:** `dc76539`
 > **وضعیت Gate:** Phase 2 — In Progress
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -79,7 +79,7 @@
 | ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | `5b956d3` |
 | ProblemDetails | خروجی خطای مرکزی RFC 7807 + `X-Correlation-Id` + `traceId` | `3b4c68e` |
 | Order + Contract | تبدیل Hold به Order + Contract immutable + مسافران/خطوط | `f43339e` |
-| Payments | PaymentIntent + Gateway Adapter + MerchantScope=Hani | این تغییر |
+| Payments | PaymentIntent + Gateway Adapter + MerchantScope=Hani | `dc76539` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -194,3 +194,4 @@
 | `783cd59` | Localization hard-code CI gate |
 | `3b4c68e` | Central ProblemDetails + Correlation ID |
 | `f43339e` | Order + immutable Contract |
+| `dc76539` | PaymentIntent + Gateway adapter |

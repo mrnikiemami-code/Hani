@@ -42,7 +42,7 @@
 | TC-025 | Compare API | ? | TC-024, TC-021 | offer comparison + agency names | `17b6415` |
 | TC-026 | Quote + Hold | ? | TC-025 | TTL + release + atomic reserve | `422b06d` |
 | TC-027 | Order + Contract | ✅ | TC-026 | snapshot immutable + consume hold | `f43339e` |
-| TC-028 | PaymentIntent + Gateway | ✅ | TC-027 | idempotent initiate + Hani MoR | این تغییر |
+| TC-028 | PaymentIntent + Gateway | ✅ | TC-027 | idempotent initiate + Hani MoR | `dc76539` |
 | TC-029 | Payment Webhook | ❌ | TC-028 | dedupe | — |
 | TC-030 | Settlement Ledger | ❌ | TC-028 | double-entry | — |
 | TC-031 | Channel OAuth | ❌ | TC-017 | token + scope | — |

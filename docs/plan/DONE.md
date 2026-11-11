@@ -95,7 +95,7 @@
 | D-78 | Localization hard-code gate | `LocalizationHardcodeTests` + AGENTS checklist + verify | `783cd59` |
 | D-79 | Central ProblemDetails + Correlation ID | `HaniProblemDetails` + `CorrelationIdMiddleware` + OpenAPI | `3b4c68e` |
 | D-80 | Order + immutable Contract | Order/Contract aggregates + order endpoints + `AddOrdersAndContracts` | `f43339e` |
-| D-81 | PaymentIntent + Gateway | Payments module + `InitialPayments` + Mock gateway | این تغییر |
+| D-81 | PaymentIntent + Gateway | Payments module + `InitialPayments` + Mock gateway | `dc76539` |
 
 ## ۳. مستندات
 
@@ -156,4 +156,5 @@
 | `783cd59` | Localization hard-code CI gate |
 | `3b4c68e` | Central ProblemDetails + Correlation ID |
 | `f43339e` | Order + immutable Contract |
+| `dc76539` | PaymentIntent + Gateway adapter |
 | `7df2265` | Phase roadmap + status + tasks |
