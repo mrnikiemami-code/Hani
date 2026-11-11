@@ -13,6 +13,9 @@ using Hani.Modules.Marketplace.Presentation;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
 using Hani.Modules.Payments.Domain.PaymentIntents;
 using Hani.Modules.Payments.Presentation;
+using Hani.Modules.Settlement.Application.Commands.CreateCommissionRule;
+using Hani.Modules.Settlement.Domain.Commissions;
+using Hani.Modules.Settlement.Presentation;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 using Hani.Modules.Supply.Presentation;
@@ -290,6 +293,53 @@ public sealed class LayerDependencyTests
     {
         var result = Types.InAssembly(typeof(PaymentEndpoints).Assembly)
             .That().ResideInNamespace("Hani.Modules.Payments.Presentation")
+            .ShouldNot().HaveDependencyOn("Microsoft.EntityFrameworkCore")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Settlement_Domain_Should_Not_Depend_On_Infrastructure()
+    {
+        var result = Types.InAssembly(typeof(CommissionEntry).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Settlement.Domain")
+            .ShouldNot().HaveDependencyOnAny(
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore",
+                "MassTransit",
+                "StackExchange.Redis",
+                "System.Net.Http")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Settlement_Application_Should_Not_Depend_On_Infrastructure()
+    {
+        var result = Types.InAssembly(typeof(CreateCommissionRuleCommand).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Settlement.Application")
+            .ShouldNot().HaveDependencyOnAny(
+                "Hani.Modules.Settlement.Infrastructure",
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore",
+                "MassTransit",
+                "StackExchange.Redis",
+                "System.Net.Http")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Settlement_Presentation_Should_Not_Use_DbContext()
+    {
+        var result = Types.InAssembly(typeof(SettlementEndpoints).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Settlement.Presentation")
             .ShouldNot().HaveDependencyOn("Microsoft.EntityFrameworkCore")
             .GetResult();
 

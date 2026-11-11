@@ -6,6 +6,7 @@ using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
+using Hani.Modules.Settlement.Application.Commands.CreateCommissionRule;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Shouldly;
 
@@ -20,7 +21,8 @@ public sealed class CqrsConventionTests
         typeof(CreateAgencyCommand).Assembly,
         typeof(SearchProductsQuery).Assembly,
         typeof(CreateQuoteCommand).Assembly,
-        typeof(CreatePaymentIntentCommand).Assembly
+        typeof(CreatePaymentIntentCommand).Assembly,
+        typeof(CreateCommissionRuleCommand).Assembly
     ];
 
     [Fact]

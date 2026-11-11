@@ -1,6 +1,7 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.Domain;
 using Hani.Contracts.Booking;
+using Hani.Contracts.Settlement;
 using Hani.Modules.Payments.Application.Abstractions;
 using Hani.Modules.Payments.Domain.PaymentIntents;
 using Hani.Modules.Payments.Domain.PaymentWebhooks;
@@ -12,6 +13,7 @@ internal sealed class HandlePaymentWebhookCommandHandler(
     IPaymentIntentRepository intents,
     IPaymentWebhookEventRepository webhooks,
     IOrderPaymentWriteService orders,
+    ICommissionAccrualService commissions,
     IIdGenerator ids)
     : ICommandHandler<HandlePaymentWebhookCommand, PaymentWebhookResultDto>
 {
@@ -77,7 +79,7 @@ internal sealed class HandlePaymentWebhookCommandHandler(
             message.EventType,
             message.Payload);
 
-        await ApplyAsync(intent, webhookEvent, message, orders, cancellationToken);
+        await ApplyAsync(intent, webhookEvent, message, orders, commissions, cancellationToken);
         await webhooks.AddAsync(webhookEvent, cancellationToken);
 
         return Result<PaymentWebhookResultDto>.Success(Map(webhookEvent));
@@ -88,6 +90,7 @@ internal sealed class HandlePaymentWebhookCommandHandler(
         PaymentWebhookEvent webhookEvent,
         PaymentWebhookMessage message,
         IOrderPaymentWriteService orders,
+        ICommissionAccrualService commissions,
         CancellationToken cancellationToken)
     {
         if (string.Equals(message.EventType, "payment.succeeded", StringComparison.OrdinalIgnoreCase))
@@ -101,6 +104,16 @@ internal sealed class HandlePaymentWebhookCommandHandler(
                     webhookEvent.MarkFailed("Order could not be marked paid.", message.OccurredAt);
                     return;
                 }
+
+                await commissions.AccrueAsync(
+                    new CommissionAccrualRequest(
+                        intent.OrderId,
+                        intent.AgencyId,
+                        intent.Amount,
+                        intent.Currency,
+                        "TOUR",
+                        message.OccurredAt),
+                    cancellationToken);
 
                 intent.MarkSucceeded(message.OccurredAt);
                 webhookEvent.MarkProcessed(message.OccurredAt);

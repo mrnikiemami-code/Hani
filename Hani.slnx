@@ -12,6 +12,7 @@
     <Project Path="src/Hani.Contracts/Hani.Contracts.Booking/Hani.Contracts.Booking.csproj" />
     <Project Path="src/Hani.Contracts/Hani.Contracts.Catalog/Hani.Contracts.Catalog.csproj" />
     <Project Path="src/Hani.Contracts/Hani.Contracts.Identity/Hani.Contracts.Identity.csproj" />
+    <Project Path="src/Hani.Contracts/Hani.Contracts.Settlement/Hani.Contracts.Settlement.csproj" />
     <Project Path="src/Hani.Contracts/Hani.Contracts.Supply/Hani.Contracts.Supply.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
@@ -50,6 +51,12 @@
     <Project Path="src/Modules/Supply/Hani.Modules.Supply.Domain/Hani.Modules.Supply.Domain.csproj" />
     <Project Path="src/Modules/Supply/Hani.Modules.Supply.Infrastructure/Hani.Modules.Supply.Infrastructure.csproj" />
     <Project Path="src/Modules/Supply/Hani.Modules.Supply.Presentation/Hani.Modules.Supply.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Settlement/">
+    <Project Path="src/Modules/Settlement/Hani.Modules.Settlement.Application/Hani.Modules.Settlement.Application.csproj" />
+    <Project Path="src/Modules/Settlement/Hani.Modules.Settlement.Domain/Hani.Modules.Settlement.Domain.csproj" />
+    <Project Path="src/Modules/Settlement/Hani.Modules.Settlement.Infrastructure/Hani.Modules.Settlement.Infrastructure.csproj" />
+    <Project Path="src/Modules/Settlement/Hani.Modules.Settlement.Presentation/Hani.Modules.Settlement.Presentation.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Hani.ArchitectureTests/Hani.ArchitectureTests.csproj" />

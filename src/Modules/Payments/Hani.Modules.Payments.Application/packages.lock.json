@@ -59,6 +59,9 @@
       "hani.contracts.booking": {
         "type": "Project"
       },
+      "hani.contracts.settlement": {
+        "type": "Project"
+      },
       "hani.modules.payments.domain": {
         "type": "Project",
         "dependencies": {

@@ -45,6 +45,13 @@ using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
 using Hani.Modules.Payments.Infrastructure;
 using Hani.Modules.Payments.Infrastructure.Persistence;
 using Hani.Modules.Payments.Presentation;
+using Hani.Modules.Settlement.Application;
+using Hani.Modules.Settlement.Application.Commands.CreateCommissionRule;
+using Hani.Modules.Settlement.Application.Queries.GetCommission;
+using Hani.Modules.Settlement.Application.Queries.GetLedgerTransaction;
+using Hani.Modules.Settlement.Infrastructure;
+using Hani.Modules.Settlement.Infrastructure.Persistence;
+using Hani.Modules.Settlement.Presentation;
 using Hani.Modules.Supply.Application.Commands.ApproveAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.ArchiveAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
@@ -120,13 +127,16 @@ builder.Services.AddDbContext<CatalogDbContext>(options => options.UseNpgsql(con
 builder.Services.AddDbContext<IdentityDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<BookingDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<PaymentsDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<SettlementDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddSupplyInfrastructure();
 builder.Services.AddCatalogInfrastructure();
 builder.Services.AddIdentityInfrastructure();
 builder.Services.AddMarketplaceInfrastructure();
 builder.Services.AddBookingInfrastructure();
 builder.Services.AddPaymentsInfrastructure();
+builder.Services.AddSettlementInfrastructure();
 builder.Services.Configure<PaymentOptions>(builder.Configuration.GetSection("Payments"));
+builder.Services.Configure<CommissionOptions>(builder.Configuration.GetSection("Commissions"));
 
 // ---------------------------------------------------------------------------
 // Cross-cutting infrastructure: cache, messaging, tenant, idempotency, telemetry
@@ -148,7 +158,8 @@ builder.Services.AddMediatR(configuration =>
         typeof(CreateAgencyCommand).Assembly,
         typeof(SearchProductsQuery).Assembly,
         typeof(CreateQuoteCommand).Assembly,
-        typeof(CreatePaymentIntentCommand).Assembly));
+        typeof(CreatePaymentIntentCommand).Assembly,
+        typeof(CreateCommissionRuleCommand).Assembly));
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -187,6 +198,9 @@ builder.Services.AddScoped<IValidator<GetContractQuery>, GetContractQueryValidat
 builder.Services.AddScoped<IValidator<CreatePaymentIntentCommand>, CreatePaymentIntentCommandValidator>();
 builder.Services.AddScoped<IValidator<GetPaymentIntentQuery>, GetPaymentIntentQueryValidator>();
 builder.Services.AddScoped<IValidator<HandlePaymentWebhookCommand>, HandlePaymentWebhookCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateCommissionRuleCommand>, CreateCommissionRuleCommandValidator>();
+builder.Services.AddScoped<IValidator<GetCommissionQuery>, GetCommissionQueryValidator>();
+builder.Services.AddScoped<IValidator<GetLedgerTransactionQuery>, GetLedgerTransactionQueryValidator>();
 
 // ---------------------------------------------------------------------------
 // Authentication: API key scheme for Supplier API + authorization policies
@@ -265,6 +279,7 @@ app.MapIdentityEndpoints();
 app.MapMarketplaceEndpoints();
 app.MapBookingEndpoints();
 app.MapPaymentEndpoints();
+app.MapSettlementEndpoints();
 
 app.Run();
 

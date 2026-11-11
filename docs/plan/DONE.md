@@ -97,6 +97,7 @@
 | D-80 | Order + immutable Contract | Order/Contract aggregates + order endpoints + `AddOrdersAndContracts` | `f43339e` |
 | D-81 | PaymentIntent + Gateway | Payments module + `InitialPayments` + Mock gateway | `dc76539` |
 | D-82 | Payment webhook + verify | HMAC verify + `payment_webhook_events` + Order.Paid | `7b85652` |
+| D-83 | Settlement ledger + commission | Commission rules/entries + balanced double-entry ledger | این تغییر |
 
 ## ۳. مستندات
 
@@ -116,10 +117,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۷۸ passed |
-| Architecture Tests | ۲۸ passed |
-| Total | **۱۰۶ passed** |
-| Migrations | Supply + Catalog + Identity + Booking + Payments |
+| Unit Tests | ۸۵ passed |
+| Architecture Tests | ۳۱ passed |
+| Total | **۱۱۶ passed** |
+| Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
 | Format | clean |
 | Vulnerable Packages | none |
 | API `/health` | Healthy |

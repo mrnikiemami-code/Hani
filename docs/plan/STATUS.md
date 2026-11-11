@@ -15,7 +15,7 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | 🚧 In Progress | ~75% |
+| 2 | Marketplace Read + Booking | 🚧 In Progress | ~85% |
 | 3 | Channel + Billing + Settlement | ⏳ Planned | 0% |
 | 4 | Flights | ⏳ Planned | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Planned | 0% |
@@ -81,6 +81,7 @@
 | Order + Contract | تبدیل Hold به Order + Contract immutable + مسافران/خطوط | `f43339e` |
 | Payments | PaymentIntent + Gateway Adapter + MerchantScope=Hani | `dc76539` |
 | Payment Webhook | HMAC verify + dedupe + Order.Paid | `7b85652` |
+| Settlement | Commission Rule + CommissionEntry + Double-entry Ledger | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -123,6 +124,9 @@
 | POST | `/market/v1/payments/intents` | ✅ (Idempotent) |
 | GET | `/market/v1/payments/intents/{id}` | ✅ |
 | POST | `/market/v1/payments/webhook/{provider}` | ✅ (HMAC) |
+| POST | `/internal/v1/settlements/commission-rules` | ✅ |
+| GET | `/internal/v1/settlements/commissions/{orderId}` | ✅ |
+| GET | `/internal/v1/settlements/ledger/{transactionId}` | ✅ |
 | GET | `/health` | ✅ |
 
 > Supplier API با `X-Api-Key` + `X-Api-Secret` و scope `supplier.write` محافظت می‌شود.
@@ -134,10 +138,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۷۸ passed |
-| Architecture Tests | ۲۸ passed |
-| Total | **۱۰۶ passed** |
-| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۲) / Payments (۲) |
+| Unit Tests | ۸۵ passed |
+| Architecture Tests | ۳۱ passed |
+| Total | **۱۱۶ passed** |
+| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۲) / Payments (۲) / Settlement (۱) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -146,7 +150,7 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** TC-030 — Settlement Ledger + Commission
+**تسک فعال:** TC-031 — Channel OAuth + Scopes
 **Phase 2:** در حال انجام
 
 ### ۵ تسک اول Phase 2 (پس از تأیید)

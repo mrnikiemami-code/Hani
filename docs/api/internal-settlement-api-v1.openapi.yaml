@@ -1,0 +1,138 @@
+openapi: 3.1.0
+info:
+  title: Hani Internal Settlement API — Draft v1
+  version: 1.0.0
+  description: Internal commission-rule, commission, and double-entry ledger endpoints.
+servers:
+  - url: https://api.hani.ir/internal/v1
+    description: Production
+  - url: http://localhost:5094/internal/v1
+    description: Local
+
+tags:
+  - name: Settlement
+
+paths:
+  /settlements/commission-rules:
+    post:
+      tags: [Settlement]
+      summary: Create an agency/product commission rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateCommissionRuleRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { type: string, format: uuid }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /settlements/commissions/{orderId}:
+    get:
+      tags: [Settlement]
+      summary: Read the commission accrued for an order
+      parameters:
+        - { name: orderId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Commission' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /settlements/ledger/{transactionId}:
+    get:
+      tags: [Settlement]
+      summary: Read a double-entry ledger transaction
+      parameters:
+        - { name: transactionId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LedgerTransaction' }
+        default: { $ref: '#/components/responses/Problem' }
+
+components:
+  responses:
+    Problem:
+      description: RFC 7807 problem details
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, code, correlationId, traceId]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        code: { type: string }
+        detail: { type: string }
+        instance: { type: string }
+        correlationId: { type: string }
+        traceId: { type: string }
+        locale: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+
+    CreateCommissionRuleRequest:
+      type: object
+      required: [agencyId, productType, rate, effectiveFrom]
+      properties:
+        agencyId: { type: string, format: uuid }
+        productType: { type: string, enum: [Tour, FlightDomestic, FlightInternational, Hotel, Visa] }
+        rate: { type: number, minimum: 0, maximum: 1 }
+        minAmount: { type: [number, 'null'] }
+        maxAmount: { type: [number, 'null'] }
+        effectiveFrom: { type: string, format: date-time }
+        effectiveTo: { type: [string, 'null'], format: date-time }
+
+    Commission:
+      type: object
+      properties:
+        commissionEntryId: { type: string, format: uuid }
+        orderId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        productType: { type: string }
+        grossAmount: { type: number }
+        rate: { type: number }
+        commissionAmount: { type: number }
+        netAmount: { type: number }
+        currency: { type: string }
+        ruleId: { type: [string, 'null'], format: uuid }
+        ruleSource: { type: string, enum: [Rule, Default] }
+        ledgerTransactionId: { type: string, format: uuid }
+        status: { type: string, enum: [Accrued, AppliedToSettlement, Reversed] }
+        createdAt: { type: string, format: date-time }
+
+    LedgerLine:
+      type: object
+      properties:
+        entryId: { type: string, format: uuid }
+        accountCode: { type: string }
+        debit: { type: number }
+        credit: { type: number }
+        description: { type: string }
+
+    LedgerTransaction:
+      type: object
+      properties:
+        transactionId: { type: string, format: uuid }
+        referenceType: { type: string }
+        referenceId: { type: string, format: uuid }
+        currency: { type: string }
+        createdAt: { type: string, format: date-time }
+        entries:
+          type: array
+          items: { $ref: '#/components/schemas/LedgerLine' }

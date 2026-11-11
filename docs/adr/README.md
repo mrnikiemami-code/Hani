@@ -24,6 +24,7 @@
 | [0020](0020-problem-details-and-correlation-id.md) | ProblemDetails مرکزی و Correlation ID | Accepted (Locked) |
 | [0021](0021-order-and-immutable-contract.md) | Order و Contract غیرقابل‌تغییر از Hold | Accepted |
 | [0022](0022-payments-gateway-and-mor.md) | Payments، Gateway و Merchant of Record | Accepted |
+| [0023](0023-settlement-ledger-and-commission.md) | Settlement Ledger و Accrual کمیسیون | Accepted |
 
 ## قالب ADR جدید
 

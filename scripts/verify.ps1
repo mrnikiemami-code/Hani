@@ -44,6 +44,11 @@ dotnet ef migrations has-pending-model-changes `
     --startup-project src/Hani.Api `
     --context PaymentsDbContext --no-build
 
+dotnet ef migrations has-pending-model-changes `
+    --project src/Modules/Settlement/Hani.Modules.Settlement.Infrastructure `
+    --startup-project src/Hani.Api `
+    --context SettlementDbContext --no-build
+
 Write-Host "== Format =="
 dotnet format Hani.slnx --verify-no-changes --no-restore
 

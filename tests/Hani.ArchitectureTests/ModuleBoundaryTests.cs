@@ -19,6 +19,10 @@ using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
 using Hani.Modules.Payments.Domain.PaymentIntents;
 using Hani.Modules.Payments.Infrastructure.Persistence;
 using Hani.Modules.Payments.Presentation;
+using Hani.Modules.Settlement.Application.Commands.CreateCommissionRule;
+using Hani.Modules.Settlement.Domain.Commissions;
+using Hani.Modules.Settlement.Infrastructure.Persistence;
+using Hani.Modules.Settlement.Presentation;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 using Hani.Modules.Supply.Infrastructure.Persistence;
@@ -54,7 +58,11 @@ public sealed class ModuleBoundaryTests
         typeof(PaymentIntent).Assembly,
         typeof(CreatePaymentIntentCommand).Assembly,
         typeof(PaymentsDbContext).Assembly,
-        typeof(PaymentEndpoints).Assembly
+        typeof(PaymentEndpoints).Assembly,
+        typeof(CommissionEntry).Assembly,
+        typeof(CreateCommissionRuleCommand).Assembly,
+        typeof(SettlementDbContext).Assembly,
+        typeof(SettlementEndpoints).Assembly
     ];
 
     [Fact]

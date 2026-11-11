@@ -433,6 +433,9 @@
       "hani.contracts.identity": {
         "type": "Project"
       },
+      "hani.contracts.settlement": {
+        "type": "Project"
+      },
       "hani.contracts.supply": {
         "type": "Project"
       },
@@ -573,6 +576,7 @@
           "FluentValidation": "[12.2.0, )",
           "Hani.BuildingBlocks.Application": "[1.0.0, )",
           "Hani.Contracts.Booking": "[1.0.0, )",
+          "Hani.Contracts.Settlement": "[1.0.0, )",
           "Hani.Modules.Payments.Domain": "[1.0.0, )",
           "MediatR": "[12.5.0, )",
           "Microsoft.Extensions.Options": "[10.0.15, )"
@@ -600,6 +604,40 @@
         "dependencies": {
           "Hani.BuildingBlocks.AspNetCore": "[1.0.0, )",
           "Hani.Modules.Payments.Application": "[1.0.0, )"
+        }
+      },
+      "hani.modules.settlement.application": {
+        "type": "Project",
+        "dependencies": {
+          "FluentValidation": "[12.2.0, )",
+          "Hani.BuildingBlocks.Application": "[1.0.0, )",
+          "Hani.Contracts.Settlement": "[1.0.0, )",
+          "Hani.Modules.Settlement.Domain": "[1.0.0, )",
+          "MediatR": "[12.5.0, )",
+          "Microsoft.Extensions.Options": "[10.0.15, )"
+        }
+      },
+      "hani.modules.settlement.domain": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "hani.modules.settlement.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Settlement.Application": "[1.0.0, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.15, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.15, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
+      "hani.modules.settlement.presentation": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.AspNetCore": "[1.0.0, )",
+          "Hani.Modules.Settlement.Application": "[1.0.0, )"
         }
       },
       "hani.modules.supply.application": {

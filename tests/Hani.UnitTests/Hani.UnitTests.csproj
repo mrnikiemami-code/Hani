@@ -17,6 +17,9 @@
     <ProjectReference Include="..\..\src\Modules\Payments\Hani.Modules.Payments.Domain\Hani.Modules.Payments.Domain.csproj" />
     <ProjectReference Include="..\..\src\Modules\Payments\Hani.Modules.Payments.Application\Hani.Modules.Payments.Application.csproj" />
     <ProjectReference Include="..\..\src\Modules\Payments\Hani.Modules.Payments.Infrastructure\Hani.Modules.Payments.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Settlement\Hani.Modules.Settlement.Domain\Hani.Modules.Settlement.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Settlement\Hani.Modules.Settlement.Application\Hani.Modules.Settlement.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Settlement\Hani.Modules.Settlement.Infrastructure\Hani.Modules.Settlement.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Hani.Contracts\Hani.Contracts.Catalog\Hani.Contracts.Catalog.csproj" />
     <ProjectReference Include="..\..\src\Hani.Contracts\Hani.Contracts.Supply\Hani.Contracts.Supply.csproj" />
     <ProjectReference Include="..\..\src\Hani.Contracts\Hani.Contracts.Identity\Hani.Contracts.Identity.csproj" />
