@@ -25,6 +25,8 @@ public static class SupplyEndpoints
             .Produces<AgencyOfferDto>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 
+        app.MapDepartureEndpoints();
+
         return app;
     }
 

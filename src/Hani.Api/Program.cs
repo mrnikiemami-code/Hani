@@ -20,7 +20,11 @@ using Hani.Modules.Identity.Infrastructure;
 using Hani.Modules.Identity.Infrastructure.Persistence;
 using Hani.Modules.Identity.Presentation;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
+using Hani.Modules.Supply.Application.Commands.CreateTourDeparture;
+using Hani.Modules.Supply.Application.Commands.UpdateDepartureAvailability;
+using Hani.Modules.Supply.Application.Commands.UpdateDeparturePrice;
 using Hani.Modules.Supply.Application.Queries.GetAgencyOfferById;
+using Hani.Modules.Supply.Application.Queries.GetDeparturesByOffer;
 using Hani.Modules.Supply.Infrastructure;
 using Hani.Modules.Supply.Infrastructure.Persistence;
 using Hani.Modules.Supply.Presentation;
@@ -95,6 +99,10 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(IdempotencyBe
 
 builder.Services.AddScoped<IValidator<CreateAgencyOfferCommand>, CreateAgencyOfferCommandValidator>();
 builder.Services.AddScoped<IValidator<GetAgencyOfferByIdQuery>, GetAgencyOfferByIdQueryValidator>();
+builder.Services.AddScoped<IValidator<CreateTourDepartureCommand>, CreateTourDepartureCommandValidator>();
+builder.Services.AddScoped<IValidator<UpdateDepartureAvailabilityCommand>, UpdateDepartureAvailabilityCommandValidator>();
+builder.Services.AddScoped<IValidator<UpdateDeparturePriceCommand>, UpdateDeparturePriceCommandValidator>();
+builder.Services.AddScoped<IValidator<GetDeparturesByOfferQuery>, GetDeparturesByOfferQueryValidator>();
 builder.Services.AddScoped<IValidator<CreateTourProductCommand>, CreateTourProductCommandValidator>();
 builder.Services.AddScoped<IValidator<PublishTourProductCommand>, PublishTourProductCommandValidator>();
 builder.Services.AddScoped<IValidator<GetTourProductByIdQuery>, GetTourProductByIdQueryValidator>();

@@ -1,0 +1,41 @@
+using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.Domain;
+using Hani.Modules.Supply.Application.Abstractions;
+using Hani.Modules.Supply.Domain.Departures;
+
+namespace Hani.Modules.Supply.Application.Commands.UpdateDeparturePrice;
+
+internal sealed class UpdateDeparturePriceCommandHandler(
+    IDepartureRepository departures)
+    : ICommandHandler<UpdateDeparturePriceCommand, bool>
+{
+    public async Task<Result<bool>> Handle(
+        UpdateDeparturePriceCommand request,
+        CancellationToken cancellationToken)
+    {
+        var departure = await departures.GetByIdAsync(request.DepartureId, cancellationToken);
+
+        if (departure is null)
+        {
+            return Result<bool>.Failure(
+                Error.NotFound("HANI-SUPPLY-1115", "Departure was not found."));
+        }
+
+        try
+        {
+            departure.UpdatePrice(
+                request.RoomType,
+                Money.Of(request.Amount, request.Currency),
+                request.Version);
+        }
+        catch (DepartureConcurrencyException exception)
+        {
+            return Result<bool>.Failure(
+                Error.Conflict("HANI-SUPPLY-1116", exception.Message));
+        }
+
+        await departures.SaveChangesAsync(cancellationToken);
+
+        return Result<bool>.Success(true);
+    }
+}
