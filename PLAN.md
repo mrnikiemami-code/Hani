@@ -2663,7 +2663,7 @@ logger.LogWarning(
 - Identity (Agency/ApiClient/Secret + API Key Auth)
 - Supply (AgencyOffer + Departure + Price + Capacity + Moderation + Upsert)
 - Messaging/Outbox/Cache/Tenant/Observability/Docker
-- ۴۰ Unit + ۱۳ Architecture Test
+- ۴۰ Unit + ۱۴ Architecture Test
 - دموی Phase 1: `scripts/demo-phase1.ps1`
 
 **Phase 1 Gate:** ✅ PASSED — گزارش: [`docs/reports/phase-1-gate.md`](docs/reports/phase-1-gate.md)

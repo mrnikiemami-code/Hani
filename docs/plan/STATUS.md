@@ -68,6 +68,7 @@
 | Destination API | `POST /internal/v1/destinations` | `d4b9465` |
 | Offer Migration | `AddOfferLifecycle` | `d4b9465` |
 | Gate Demo | `scripts/demo-phase1.ps1` | `d4b9465` |
+| Documentation | XML summary + module README + test | `8bc804c` |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
 
@@ -168,3 +169,4 @@
 | `af5b415` | Identity |
 | `56a9243` | Tour Departures |
 | `d4b9465` | Auth / Upsert / Moderation / Gate |
+| `8bc804c` | XML docs / module READMEs / DocumentationTests |

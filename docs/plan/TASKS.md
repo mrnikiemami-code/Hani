@@ -35,6 +35,7 @@
 | TC-021 | Departure + Price + Capacity | ✅ | TC-020 | سانس + ظرفیت + قیمت + Concurrency | `56a9243` |
 | TC-022 | Supplier upsert + idempotency | ? | TC-021 | upsert + Idempotency-Key | `d4b9465` |
 | TC-023 | Moderation | ? | TC-022 | Submit/Approve/Reject | `d4b9465` |
+| TC-079 | Documentation | ? | TC-001 | XML summaries + module READMEs + DocumentationTests | `8bc804c` |
 | TC-024 | Search projection | ❌ | TC-018 | ایندکس جستجو | — |
 | TC-025 | Compare API | ❌ | TC-024, TC-021 | مقایسه چند آژانس | — |
 | TC-026 | Quote + Hold | ❌ | TC-025 | TTL + release | — |

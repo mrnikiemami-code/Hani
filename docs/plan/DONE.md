@@ -85,6 +85,10 @@
 | D-68 | Lifecycle Tests | 5 tests | `d4b9465` |
 | D-69 | Phase 1 Demo | `scripts/demo-phase1.ps1` | `d4b9465` |
 | D-70 | Phase 1 Gate Report | `docs/reports/phase-1-gate.md` | `d4b9465` |
+| D-71 | XML summaries | ???? type??? public | `8bc804c` |
+| D-72 | Module READMEs | Supply / Catalog / Identity / BuildingBlocks / Api | `8bc804c` |
+| D-73 | Documentation standard | `docs/engineering/code-documentation.md` | `8bc804c` |
+| D-74 | DocumentationTests | ? ??? | `8bc804c` |
 
 ## ۳. مستندات
 
@@ -137,4 +141,5 @@
 | `af5b415` | Identity |
 | `56a9243` | Tour Departures |
 | `d4b9465` | Auth / Upsert / Moderation / Gate |
+| `8bc804c` | XML docs / module READMEs / DocumentationTests |
 | `7df2265` | Phase roadmap + status + tasks |

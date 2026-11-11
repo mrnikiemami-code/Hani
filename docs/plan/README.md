@@ -10,6 +10,7 @@
 | [`STATUS.md`](STATUS.md) | وضعیت زنده: انجام‌شده / در حال انجام / بعدی |
 | [`TASKS.md`](TASKS.md) | بک‌لاگ تسک‌ها با ID، وابستگی، DoD و commit |
 | [`DONE.md`](DONE.md) | دفتر کارهای تحویل‌شده (Done Ledger) |
+| [`../engineering/code-documentation.md`](../engineering/code-documentation.md) | استاندارد کامنت‌گذاری و XML docs |
 | [`../../PLAN.md`](../../PLAN.md) | معماری، تصمیم‌ها، جزئیات فنی |
 
 ## چرخه کار
