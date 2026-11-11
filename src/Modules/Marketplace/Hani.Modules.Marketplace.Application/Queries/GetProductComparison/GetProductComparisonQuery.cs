@@ -5,7 +5,7 @@ namespace Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
 /// <summary>
 /// Query that returns one product with all approved agency offers for comparison.
 /// </summary>
-public sealed record GetProductComparisonQuery(Guid ProductId, string Locale)
+public sealed record GetProductComparisonQuery(Guid ProductId, string? Locale)
     : IQuery<ProductComparisonDto>;
 
 /// <summary>

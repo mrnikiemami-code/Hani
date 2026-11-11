@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.Domain;
 using Hani.Contracts.Supply;
 using Hani.Modules.Booking.Application.Abstractions;
 using Hani.Modules.Booking.Domain.Quotes;
@@ -7,7 +8,8 @@ namespace Hani.Modules.Booking.Application.Commands.CreateQuote;
 
 internal sealed class CreateQuoteCommandHandler(
     IDeparturePricingService pricing,
-    IQuoteRepository quotes)
+    IQuoteRepository quotes,
+    IIdGenerator ids)
     : ICommandHandler<CreateQuoteCommand, QuoteDto>
 {
     public async Task<Result<QuoteDto>> Handle(
@@ -58,6 +60,7 @@ internal sealed class CreateQuoteCommandHandler(
                     (request.Infants * infantPrice);
 
         var quote = Quote.Create(
+            ids,
             departure.DepartureId,
             departure.AgencyOfferId,
             departure.AgencyId,

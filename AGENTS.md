@@ -42,6 +42,8 @@
 - merge کد بدون XML summary برای type عمومی.
 - تغییر API بدون به‌روزرسانی OpenAPI.
 - تغییر معماری بدون ADR.
+- ساخت GUID با `Guid.NewGuid`/`Guid.CreateVersion7` خارج از Infrastructure؛ از `IIdGenerator` استفاده شود.
+- hard-code کردن فهرست زبان‌ها یا fallback زبانی؛ از `Localization` و `ILanguageCatalog` استفاده شود.
 - رها کردن `STATUS.md` / `TASKS.md` / `DONE.md` به‌صورت کهنه.
 - commit بدون اجرای `scripts/verify.ps1`.
 

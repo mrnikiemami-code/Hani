@@ -73,6 +73,7 @@ public sealed class Quote : AggregateRoot<Guid>
     public DateTimeOffset ExpiresAt { get; private set; }
 
     public static Quote Create(
+        IIdGenerator ids,
         Guid departureId,
         Guid agencyOfferId,
         Guid agencyId,
@@ -103,7 +104,7 @@ public sealed class Quote : AggregateRoot<Guid>
 
         var createdAt = now ?? DateTimeOffset.UtcNow;
         var quote = new Quote(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             departureId,
             agencyOfferId,
             agencyId,
@@ -118,7 +119,7 @@ public sealed class Quote : AggregateRoot<Guid>
             createdAt,
             createdAt.AddMinutes(15));
 
-        quote.AddDomainEvent(new QuoteCreatedDomainEvent(quote.Id, departureId));
+        quote.AddDomainEvent(new QuoteCreatedDomainEvent(ids.NewId(), quote.Id, departureId));
         return quote;
     }
 

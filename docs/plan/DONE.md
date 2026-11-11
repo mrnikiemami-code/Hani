@@ -90,6 +90,8 @@
 | D-73 | Documentation standard | `docs/engineering/code-documentation.md` | `8bc804c` |
 | D-74 | DocumentationTests | ? ??? | `8bc804c` |
 | D-75 | Agent documentation policy | `AGENTS.md` + Cursor + PR/DoD | AGENTS.md |
+| D-76 | Config-driven localization | `LocalizationOptions` + `ILanguageCatalog` + `appsettings` | این تغییر |
+| D-77 | IIdGenerator + UUIDv7 | `IIdGenerator` + `Uuid7IdGenerator` + ArchitectureTest | این تغییر |
 
 ## ۳. مستندات
 
@@ -109,10 +111,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۴۰ passed |
-| Architecture Tests | ۱۳ passed |
-| Total | **۵۳ passed** |
-| Migrations | Supply + Catalog + Identity |
+| Unit Tests | ۵۲ passed |
+| Architecture Tests | ۲۲ passed |
+| Total | **۷۴ passed** |
+| Migrations | Supply + Catalog + Identity + Booking |
 | Format | clean |
 | Vulnerable Packages | none |
 | API `/health` | Healthy |
@@ -126,7 +128,7 @@
 |---|---|---|
 | Idempotency | InMemory + Behavior | Postgres/Redis پایدار |
 | MassTransit | wired + Outbox entities | Outbox فعال + Consumer |
-| Localization | عنوان محلی FA/EN/AR | resx per-code (Phase 5) |
+| Localization | عنوان محلی config-driven | resx per-code (Phase 5) |
 | Identity | Agency + ApiClient | User + Role + JWT |
 | Catalog | TourProduct + Destination | Hotel + Attraction + Visa |
 | Tenant | Context + Middleware + demo | تست Integration DB |
@@ -145,4 +147,5 @@
 | `8bc804c` | XML docs / module READMEs / DocumentationTests |
 | `17b6415` | Marketplace search + compare |
 | `422b06d` | Booking quote + hold |
+| `f2b7a15` | Booking/Marketplace API docs |
 | `7df2265` | Phase roadmap + status + tasks |

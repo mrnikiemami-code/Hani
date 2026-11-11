@@ -37,6 +37,7 @@ public sealed class Destination : AggregateRoot<Guid>
     public IReadOnlyCollection<DestinationTranslation> Translations => _translations;
 
     public static Destination Create(
+        IIdGenerator ids,
         string slug,
         DestinationType type,
         Guid? parentId = null)
@@ -46,7 +47,7 @@ public sealed class Destination : AggregateRoot<Guid>
             throw new ArgumentException("Slug is required.", nameof(slug));
         }
 
-        return new Destination(Guid.CreateVersion7(), slug.Trim(), type, parentId);
+        return new Destination(ids.NewId(), slug.Trim(), type, parentId);
     }
 
     public void SetCoordinates(decimal latitude, decimal longitude)
@@ -55,7 +56,7 @@ public sealed class Destination : AggregateRoot<Guid>
         Longitude = longitude;
     }
 
-    public void AddTranslation(string locale, string name, string? description = null)
+    public void AddTranslation(IIdGenerator ids, string locale, string name, string? description = null)
     {
         if (_translations.Any(item =>
                 string.Equals(item.Locale, locale, StringComparison.OrdinalIgnoreCase)))
@@ -64,7 +65,7 @@ public sealed class Destination : AggregateRoot<Guid>
         }
 
         _translations.Add(new DestinationTranslation(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             Id,
             locale,
             name,

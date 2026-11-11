@@ -6,7 +6,8 @@ using Hani.Modules.Supply.Domain.AgencyOffers;
 namespace Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 
 internal sealed class CreateAgencyOfferCommandHandler(
-    IAgencyOfferRepository repository)
+    IAgencyOfferRepository repository,
+    IIdGenerator ids)
     : ICommandHandler<CreateAgencyOfferCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(
@@ -16,6 +17,7 @@ internal sealed class CreateAgencyOfferCommandHandler(
         var price = Money.Of(request.BasePrice, request.Currency);
 
         var offer = AgencyOffer.Create(
+            ids,
             request.AgencyId,
             request.TourProductId,
             request.Title,

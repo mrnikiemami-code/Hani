@@ -9,7 +9,7 @@ public sealed class IdentityDomainTests
     [Fact]
     public void Agency_Should_Start_Active()
     {
-        var agency = Agency.Create("bal-chakavak", "بال چکاوک", "B-123", "تهران");
+        var agency = Agency.Create(TestIds.Generator, "bal-chakavak", "بال چکاوک", "B-123", "تهران");
 
         agency.Status.ShouldBe(AgencyStatus.Active);
         agency.DomainEvents.Count.ShouldBe(1);
@@ -18,7 +18,7 @@ public sealed class IdentityDomainTests
     [Fact]
     public void Agency_Should_Be_Suspended_And_Activated()
     {
-        var agency = Agency.Create("bal-chakavak", "بال چکاوک", "B-123", "تهران");
+        var agency = Agency.Create(TestIds.Generator, "bal-chakavak", "بال چکاوک", "B-123", "تهران");
 
         agency.Suspend();
         agency.Status.ShouldBe(AgencyStatus.Suspended);
@@ -31,6 +31,7 @@ public sealed class IdentityDomainTests
     public void ApiClient_Should_Be_Created_Without_Storing_Plain_Secret()
     {
         var client = ApiClient.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             "Website",
             "ag_123",
@@ -46,6 +47,7 @@ public sealed class IdentityDomainTests
     public void ApiClient_Should_Be_Revoked()
     {
         var client = ApiClient.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             "Website",
             "ag_123",

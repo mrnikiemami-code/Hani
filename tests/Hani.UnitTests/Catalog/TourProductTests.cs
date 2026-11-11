@@ -9,7 +9,7 @@ public sealed class TourProductTests
     [Fact]
     public void Create_Should_Start_As_Draft()
     {
-        var product = TourProduct.Create("istanbul-4-nights", 4, "city-break");
+        var product = TourProduct.Create(TestIds.Generator, "istanbul-4-nights", 4, "city-break");
 
         product.Status.ShouldBe(TourProductStatus.Draft);
         product.DomainEvents.Count.ShouldBe(1);
@@ -18,33 +18,33 @@ public sealed class TourProductTests
     [Fact]
     public void AddTranslation_Should_Reject_Duplicate_Locale()
     {
-        var product = TourProduct.Create("istanbul-4-nights", 4, "city-break");
+        var product = TourProduct.Create(TestIds.Generator, "istanbul-4-nights", 4, "city-break");
 
-        product.AddTranslation("fa", "استانبول", "خلاصه", "توضیحات");
+        product.AddTranslation(TestIds.Generator, "fa", "استانبول", "خلاصه", "توضیحات");
 
         Should.Throw<InvalidOperationException>(() =>
-            product.AddTranslation("fa", "استانبول ۲", "خلاصه", "توضیحات"));
+            product.AddTranslation(TestIds.Generator, "fa", "استانبول ۲", "خلاصه", "توضیحات"));
     }
 
     [Fact]
     public void Publish_Should_Fail_Without_Destination()
     {
-        var product = TourProduct.Create("istanbul-4-nights", 4, "city-break");
-        product.AddTranslation("fa", "استانبول", "خلاصه", "توضیحات");
+        var product = TourProduct.Create(TestIds.Generator, "istanbul-4-nights", 4, "city-break");
+        product.AddTranslation(TestIds.Generator, "fa", "استانبول", "خلاصه", "توضیحات");
 
-        Should.Throw<InvalidOperationException>(() => product.Publish());
+        Should.Throw<InvalidOperationException>(() => product.Publish(TestIds.Generator));
     }
 
     [Fact]
     public void Publish_Should_Succeed_With_Translation_And_Destination()
     {
-        var product = TourProduct.Create("istanbul-4-nights", 4, "city-break");
-        product.AddTranslation("fa", "استانبول", "خلاصه", "توضیحات");
+        var product = TourProduct.Create(TestIds.Generator, "istanbul-4-nights", 4, "city-break");
+        product.AddTranslation(TestIds.Generator, "fa", "استانبول", "خلاصه", "توضیحات");
 
-        var destination = Destination.Create("istanbul", DestinationType.City);
-        product.AddDestination(destination);
+        var destination = Destination.Create(TestIds.Generator, "istanbul", DestinationType.City);
+        product.AddDestination(TestIds.Generator, destination);
 
-        product.Publish();
+        product.Publish(TestIds.Generator);
 
         product.Status.ShouldBe(TourProductStatus.Published);
         product.DomainEvents.Count.ShouldBe(2);

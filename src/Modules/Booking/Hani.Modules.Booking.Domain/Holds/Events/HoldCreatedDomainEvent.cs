@@ -6,10 +6,9 @@ namespace Hani.Modules.Booking.Domain.Holds.Events;
 /// Raised when a seat hold is created.
 /// </summary>
 public sealed record HoldCreatedDomainEvent(
+    Guid EventId,
     Guid HoldId,
     Guid QuoteId) : IDomainEvent
 {
-    public Guid EventId { get; } = Guid.CreateVersion7();
-
     public DateTimeOffset OccurredAt { get; } = DateTimeOffset.UtcNow;
 }

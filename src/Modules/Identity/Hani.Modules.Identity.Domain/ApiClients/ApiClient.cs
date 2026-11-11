@@ -46,6 +46,7 @@ public sealed class ApiClient : AggregateRoot<Guid>
     public DateTimeOffset? LastUsedAt { get; private set; }
 
     public static ApiClient Create(
+        IIdGenerator ids,
         Guid agencyId,
         string name,
         string clientId,
@@ -73,14 +74,14 @@ public sealed class ApiClient : AggregateRoot<Guid>
         }
 
         var client = new ApiClient(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             agencyId,
             name.Trim(),
             clientId.Trim(),
             secretHash,
             scopes.Trim());
 
-        client.AddDomainEvent(new ApiClientCreatedDomainEvent(client.Id, agencyId));
+        client.AddDomainEvent(new ApiClientCreatedDomainEvent(ids.NewId(), client.Id, agencyId));
 
         return client;
     }

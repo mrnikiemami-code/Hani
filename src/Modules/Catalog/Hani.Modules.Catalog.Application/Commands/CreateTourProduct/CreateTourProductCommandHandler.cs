@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Catalog.Application.Abstractions;
 using Hani.Modules.Catalog.Domain.TourProducts;
 
@@ -6,7 +7,8 @@ namespace Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 
 internal sealed class CreateTourProductCommandHandler(
     ITourProductRepository tourProducts,
-    IDestinationRepository destinations)
+    IDestinationRepository destinations,
+    IIdGenerator ids)
     : ICommandHandler<CreateTourProductCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(
@@ -23,6 +25,7 @@ internal sealed class CreateTourProductCommandHandler(
         }
 
         var product = TourProduct.Create(
+            ids,
             request.Slug,
             request.DurationDays,
             request.TourType);
@@ -30,6 +33,7 @@ internal sealed class CreateTourProductCommandHandler(
         foreach (var translation in request.Translations)
         {
             product.AddTranslation(
+                ids,
                 translation.Locale,
                 translation.Title,
                 translation.Summary,
@@ -41,7 +45,7 @@ internal sealed class CreateTourProductCommandHandler(
         var sortOrder = 0;
         foreach (var destination in foundDestinations)
         {
-            product.AddDestination(destination, sortOrder++);
+            product.AddDestination(ids, destination, sortOrder++);
         }
 
         await tourProducts.AddAsync(product, cancellationToken);

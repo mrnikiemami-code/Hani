@@ -36,7 +36,7 @@ public sealed class ProductComparisonHandlerTests
             Offer(productId, agencyB, 45_000_000m)
         ];
 
-        var handler = new GetProductComparisonQueryHandler(catalog, offers, agencies);
+        var handler = new GetProductComparisonQueryHandler(catalog, offers, agencies, new FakeLanguageCatalog());
 
         var result = await handler.Handle(
             new GetProductComparisonQuery(productId, "fa"),
@@ -55,7 +55,8 @@ public sealed class ProductComparisonHandlerTests
         var handler = new GetProductComparisonQueryHandler(
             new FakeCatalogReadService(),
             new FakeOfferReadService(),
-            new FakeAgencyReadService());
+            new FakeAgencyReadService(),
+            new FakeLanguageCatalog());
 
         var result = await handler.Handle(
             new GetProductComparisonQuery(Guid.CreateVersion7(), "fa"),

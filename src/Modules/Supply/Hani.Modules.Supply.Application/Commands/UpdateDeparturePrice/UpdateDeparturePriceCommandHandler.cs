@@ -6,7 +6,8 @@ using Hani.Modules.Supply.Domain.Departures;
 namespace Hani.Modules.Supply.Application.Commands.UpdateDeparturePrice;
 
 internal sealed class UpdateDeparturePriceCommandHandler(
-    IDepartureRepository departures)
+    IDepartureRepository departures,
+    IIdGenerator ids)
     : ICommandHandler<UpdateDeparturePriceCommand, bool>
 {
     public async Task<Result<bool>> Handle(
@@ -27,6 +28,7 @@ internal sealed class UpdateDeparturePriceCommandHandler(
         try
         {
             departure.UpdatePrice(
+                ids,
                 request.RoomType,
                 Money.Of(request.Amount, request.Currency),
                 request.Version);

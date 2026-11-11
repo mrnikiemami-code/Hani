@@ -7,7 +7,8 @@ namespace Hani.Modules.Supply.Application.Commands.CreateTourDeparture;
 
 internal sealed class CreateTourDepartureCommandHandler(
     IAgencyOfferRepository offers,
-    IDepartureRepository departures)
+    IDepartureRepository departures,
+    IIdGenerator ids)
     : ICommandHandler<CreateTourDepartureCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(
@@ -32,6 +33,7 @@ internal sealed class CreateTourDepartureCommandHandler(
             .ToArray();
 
         var departure = TourDeparture.Create(
+            ids,
             request.AgencyOfferId,
             request.StartDate,
             request.EndDate,

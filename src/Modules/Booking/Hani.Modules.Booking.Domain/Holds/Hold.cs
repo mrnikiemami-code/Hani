@@ -41,6 +41,7 @@ public sealed class Hold : AggregateRoot<Guid>
     public DateTimeOffset ExpiresAt { get; private set; }
 
     public static Hold Create(
+        IIdGenerator ids,
         Guid quoteId,
         Guid departureId,
         int seats,
@@ -53,14 +54,14 @@ public sealed class Hold : AggregateRoot<Guid>
 
         var createdAt = now ?? DateTimeOffset.UtcNow;
         var hold = new Hold(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             quoteId,
             departureId,
             seats,
             createdAt,
             createdAt.AddMinutes(15));
 
-        hold.AddDomainEvent(new HoldCreatedDomainEvent(hold.Id, quoteId));
+        hold.AddDomainEvent(new HoldCreatedDomainEvent(ids.NewId(), hold.Id, quoteId));
         return hold;
     }
 

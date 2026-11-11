@@ -56,7 +56,7 @@ Resources/Errors.ar.resx
 ```
 
 - کلید = `MessageKey`.
-- Fallback: `ar → en → fa`؛ در نهایت `Code`.
+- Fallback از تنظیمات `Localization` خوانده می‌شود؛ در نهایت `Code`.
 - هیچ متن خطای hard-code شده در کد نیست.
 
 ## ۴. پاسخ API

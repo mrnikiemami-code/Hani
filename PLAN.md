@@ -20,7 +20,7 @@
 6. **حاکمیت اجرایی معماری** اضافه شد: قالب واحد ماژول، تست‌های معماری، Analyzer، CI Gate، ADR/Waiver و Drift Report. جزئیات: بخش ۳۳ و `docs/engineering/architecture-governance.md`.
 7. **Blueprint صفحه جزئیات تور** بر اساس بررسی واقعی صفحه `g2739` لست‌سکند اضافه شد: آناتومی، داده‌ها، جریان رزرو، نقاط ضعف و نقشه به دامنه Hani. جزئیات: بخش ۳۴ و `docs/product/tour-detail-page.md`.
 8. **کمیسیون داینامیک per agency + per ProductType** و **SettlementTerms قابل تنظیم per contract** قفل شد. جزئیات: بخش ۳۰.۸ و ۳۲.
-9. **کد و لاگ فنی انگلیسی؛ پیام کاربر چندزبانه** قفل شد. خطاها کد `HANI-...` دارند و در FA/EN/AR ترجمه می‌شوند. جزئیات: بخش ۳۵.
+9. **کد و لاگ فنی انگلیسی؛ پیام کاربر چندزبانه** قفل شد. خطاها کد `HANI-...` دارند و در زبان‌های تنظیم‌شده (شروع با FA/EN/AR) ترجمه می‌شوند. جزئیات: بخش ۳۵.
 
 ---
 
@@ -311,7 +311,7 @@ TourProduct (مشترک، مالک: پلتفرم/تیم کاتالوگ)
 | محتوا | سفرنامه، خاطرات سفر، بلاگ، ویدیو، نویسنده، دسته‌بندی |
 | نظرات | نقد چندمعیاره، تایید، پاسخ، گزارش |
 | پنل‌ها | پنل مدیریت، پنل آژانس، داشبورد مسافر |
-| چندزبانه | FA/EN/AR در UI، محتوا، خطاها، SEO |
+| چندزبانه | زبان‌های قابل تنظیم (شروع: FA/EN/AR) در UI، محتوا، خطاها، SEO |
 | SEO | Slug، متا، Sitemap، JSON-LD، Redirect، hreflang، Route Landing |
 
 ---
@@ -767,13 +767,16 @@ internal sealed class CreateAgencyOfferCommandHandler
 {
     private readonly IAgencyOfferRepository _offers;
     private readonly IUnitOfWork _uow;
+    private readonly IIdGenerator _ids;
 
     public CreateAgencyOfferCommandHandler(
         IAgencyOfferRepository offers,
-        IUnitOfWork uow)
+        IUnitOfWork uow,
+        IIdGenerator ids)
     {
         _offers = offers;
         _uow = uow;
+        _ids = ids;
     }
 
     public async Task<Result<Guid>> Handle(
@@ -781,7 +784,7 @@ internal sealed class CreateAgencyOfferCommandHandler
         CancellationToken ct)
     {
         var offer = AgencyOffer.Create(
-            new AgencyOfferId(Guid.CreateVersion7()),
+            _ids,
             request.AgencyId,
             request.TourProductId,
             request.Title,
@@ -2394,7 +2397,7 @@ Created → Pending → Succeeded | Failed | Expired
 - هر Command/Query: یک Handler + یک Validator.
 - Handlerها `internal sealed`.
 - Endpoint فقط `ISender.Send`.
-- Banned: `DateTime.Now`, `Guid.NewGuid`, `Console.WriteLine`, `Task.Run` در request، `HttpClient` در Application.
+- Banned: `DateTime.Now`, `Guid.NewGuid`, `Guid.CreateVersion7` خارج از Infrastructure (از `IIdGenerator` استفاده شود), `Console.WriteLine`, `Task.Run` در request، `HttpClient` در Application.
 - هر POST مالی: `Idempotency-Key`.
 - هر تغییر داده: Migration + Integration Test.
 - هر تغییر API: OpenAPI Diff.

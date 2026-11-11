@@ -58,7 +58,7 @@ public sealed class TourDepartureTests
         var departure = CreateDeparture();
         var version = departure.Version;
 
-        departure.UpdatePrice(RoomType.Double, Money.Of(50_000_000m, "IRR"), version);
+        departure.UpdatePrice(TestIds.Generator, RoomType.Double, Money.Of(50_000_000m, "IRR"), version);
 
         var price = departure.Prices.Single(item => item.RoomType == RoomType.Double);
         price.Amount.ShouldBe(50_000_000m);
@@ -79,6 +79,7 @@ public sealed class TourDepartureTests
 
     private static TourDeparture CreateDeparture(int capacity = 10)
         => TourDeparture.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             Start,
             End,

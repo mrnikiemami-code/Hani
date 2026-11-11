@@ -34,6 +34,11 @@ dotnet ef migrations has-pending-model-changes `
     --startup-project src/Hani.Api `
     --context IdentityDbContext --no-build
 
+dotnet ef migrations has-pending-model-changes `
+    --project src/Modules/Booking/Hani.Modules.Booking.Infrastructure `
+    --startup-project src/Hani.Api `
+    --context BookingDbContext --no-build
+
 Write-Host "== Format =="
 dotnet format Hani.slnx --verify-no-changes --no-restore
 

@@ -6,7 +6,7 @@ namespace Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 /// Query that searches published products and enriches them with offer price/count.
 /// </summary>
 public sealed record SearchProductsQuery(
-    string Locale,
+    string? Locale,
     string? DestinationSlug = null,
     int Page = 1,
     int PageSize = 20) : IQuery<PagedResult<ProductSearchItemDto>>;

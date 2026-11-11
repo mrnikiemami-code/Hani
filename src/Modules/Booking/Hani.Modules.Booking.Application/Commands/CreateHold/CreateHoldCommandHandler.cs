@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.Domain;
 using Hani.Contracts.Supply;
 using Hani.Modules.Booking.Application.Abstractions;
 using Hani.Modules.Booking.Domain.Holds;
@@ -8,7 +9,8 @@ namespace Hani.Modules.Booking.Application.Commands.CreateHold;
 internal sealed class CreateHoldCommandHandler(
     IQuoteRepository quotes,
     IHoldRepository holds,
-    IInventoryReservationService inventory)
+    IInventoryReservationService inventory,
+    IIdGenerator ids)
     : ICommandHandler<CreateHoldCommand, HoldDto>
 {
     public async Task<Result<HoldDto>> Handle(
@@ -50,7 +52,7 @@ internal sealed class CreateHoldCommandHandler(
                 Error.Conflict("HANI-BOOKING-2103", "Not enough seats to hold this quote."));
         }
 
-        var hold = Hold.Create(quote.Id, quote.DepartureId, quote.Seats);
+        var hold = Hold.Create(ids, quote.Id, quote.DepartureId, quote.Seats);
 
         try
         {

@@ -16,6 +16,7 @@ public sealed class ApiKeyValidatorTests
         var agencyId = Guid.CreateVersion7();
 
         dbContext.ApiClients.Add(ApiClient.Create(
+            TestIds.Generator,
             agencyId,
             "Website",
             "ag_test",
@@ -41,6 +42,7 @@ public sealed class ApiKeyValidatorTests
         var hasher = new SecretHasher();
 
         dbContext.ApiClients.Add(ApiClient.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             "Website",
             "ag_test",
@@ -63,6 +65,7 @@ public sealed class ApiKeyValidatorTests
         var hasher = new SecretHasher();
 
         var client = ApiClient.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             "Website",
             "ag_test",

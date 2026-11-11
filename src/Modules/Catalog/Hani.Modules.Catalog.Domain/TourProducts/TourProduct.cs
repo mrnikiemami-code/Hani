@@ -47,6 +47,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
     public IReadOnlyCollection<TourProductDestination> Destinations => _destinations;
 
     public static TourProduct Create(
+        IIdGenerator ids,
         string slug,
         int durationDays,
         string tourType)
@@ -64,17 +65,18 @@ public sealed class TourProduct : AggregateRoot<Guid>
         }
 
         var product = new TourProduct(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             slug.Trim(),
             durationDays,
             tourType.Trim());
 
-        product.AddDomainEvent(new TourProductCreatedDomainEvent(product.Id));
+        product.AddDomainEvent(new TourProductCreatedDomainEvent(ids.NewId(), product.Id));
 
         return product;
     }
 
     public void AddTranslation(
+        IIdGenerator ids,
         string locale,
         string title,
         string summary,
@@ -89,7 +91,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
         }
 
         _translations.Add(new TourProductTranslation(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             Id,
             locale,
             title,
@@ -101,7 +103,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
         Touch();
     }
 
-    public void AddDestination(Destination destination, int sortOrder = 0)
+    public void AddDestination(IIdGenerator ids, Destination destination, int sortOrder = 0)
     {
         ArgumentNullException.ThrowIfNull(destination);
 
@@ -111,7 +113,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
         }
 
         _destinations.Add(new TourProductDestination(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             Id,
             destination.Id,
             sortOrder));
@@ -119,7 +121,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
         Touch();
     }
 
-    public void Publish()
+    public void Publish(IIdGenerator ids)
     {
         if (_translations.Count == 0)
         {
@@ -133,7 +135,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
 
         Status = TourProductStatus.Published;
         Touch();
-        AddDomainEvent(new TourProductPublishedDomainEvent(Id));
+        AddDomainEvent(new TourProductPublishedDomainEvent(ids.NewId(), Id));
     }
 
     private void Touch() => UpdatedAt = DateTimeOffset.UtcNow;

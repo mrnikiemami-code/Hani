@@ -6,13 +6,15 @@ namespace Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 
 internal sealed class SearchProductsQueryHandler(
     ICatalogReadService catalog,
-    IOfferReadService offers)
+    IOfferReadService offers,
+    ILanguageCatalog languages)
     : IQueryHandler<SearchProductsQuery, PagedResult<ProductSearchItemDto>>
 {
     public async Task<Result<PagedResult<ProductSearchItemDto>>> Handle(
         SearchProductsQuery request,
         CancellationToken cancellationToken)
     {
+        var locale = languages.Normalize(request.Locale);
         var page = Math.Max(1, request.Page);
         var pageSize = Math.Clamp(request.PageSize, 1, 50);
         var skip = (page - 1) * pageSize;
@@ -64,7 +66,7 @@ internal sealed class SearchProductsQueryHandler(
                 return new ProductSearchItemDto(
                     product.Id,
                     product.Slug,
-                    Resolve(product.Titles, request.Locale),
+                    Resolve(product.Titles, locale, languages.DefaultLanguage),
                     product.DurationDays,
                     product.TourType,
                     minPrice,
@@ -80,10 +82,11 @@ internal sealed class SearchProductsQueryHandler(
 
     private static string Resolve(
         IReadOnlyDictionary<string, string> values,
-        string locale)
+        string locale,
+        string defaultLanguage)
         => values.TryGetValue(locale, out var value)
             ? value
-            : values.TryGetValue("fa", out var fallback)
+            : values.TryGetValue(defaultLanguage, out var fallback)
                 ? fallback
                 : values.Values.FirstOrDefault() ?? string.Empty;
 }

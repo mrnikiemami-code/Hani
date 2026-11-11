@@ -53,6 +53,7 @@ public sealed class TourDeparture : AggregateRoot<Guid>
     public IReadOnlyCollection<DeparturePrice> Prices => _prices;
 
     public static TourDeparture Create(
+        IIdGenerator ids,
         Guid agencyOfferId,
         DateOnly startDate,
         DateOnly endDate,
@@ -82,7 +83,7 @@ public sealed class TourDeparture : AggregateRoot<Guid>
         }
 
         var departure = new TourDeparture(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             agencyOfferId,
             startDate,
             endDate,
@@ -91,7 +92,7 @@ public sealed class TourDeparture : AggregateRoot<Guid>
         foreach (var (roomType, price) in prices)
         {
             departure._prices.Add(new DeparturePrice(
-                Guid.CreateVersion7(),
+                ids.NewId(),
                 departure.Id,
                 roomType,
                 price.Amount,
@@ -99,6 +100,7 @@ public sealed class TourDeparture : AggregateRoot<Guid>
         }
 
         departure.AddDomainEvent(new TourDepartureCreatedDomainEvent(
+            ids.NewId(),
             departure.Id,
             agencyOfferId));
 
@@ -161,7 +163,7 @@ public sealed class TourDeparture : AggregateRoot<Guid>
         Touch();
     }
 
-    public void UpdatePrice(RoomType roomType, Money price, long expectedVersion)
+    public void UpdatePrice(IIdGenerator ids, RoomType roomType, Money price, long expectedVersion)
     {
         EnsureVersion(expectedVersion);
 
@@ -170,7 +172,7 @@ public sealed class TourDeparture : AggregateRoot<Guid>
         if (existing is null)
         {
             _prices.Add(new DeparturePrice(
-                Guid.CreateVersion7(),
+                ids.NewId(),
                 Id,
                 roomType,
                 price.Amount,

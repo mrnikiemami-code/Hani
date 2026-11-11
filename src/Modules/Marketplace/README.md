@@ -31,7 +31,7 @@ Marketplace.Application
 - فقط `AgencyOffer` با وضعیت `Approved` دیده می‌شود.
 - فقط `TourDeparture` با وضعیت `Open` و پایان‌نگرفته دیده می‌شود.
 - قیمت مقایسه از قیمت سانس‌ها محاسبه می‌شود؛ در نبود سانس، `BasePrice`.
-- عنوان/خلاصه/توضیح بر اساس locale با fallback به FA.
+- عنوان/خلاصه/توضیح بر اساس locale با fallback به زبان پیش‌فرض `Localization:DefaultCulture`.
 
 ## محدودیت فعلی
 

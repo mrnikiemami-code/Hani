@@ -5,7 +5,9 @@ using Hani.Modules.Supply.Domain.AgencyOffers;
 
 namespace Hani.Modules.Supply.Application.Commands.UpsertAgencyOffer;
 
-internal sealed class UpsertAgencyOfferCommandHandler(IAgencyOfferRepository offers)
+internal sealed class UpsertAgencyOfferCommandHandler(
+    IAgencyOfferRepository offers,
+    IIdGenerator ids)
     : ICommandHandler<UpsertAgencyOfferCommand, UpsertAgencyOfferResult>
 {
     public async Task<Result<UpsertAgencyOfferResult>> Handle(
@@ -47,6 +49,7 @@ internal sealed class UpsertAgencyOfferCommandHandler(IAgencyOfferRepository off
         }
 
         var offer = AgencyOffer.Create(
+            ids,
             request.AgencyId,
             request.TourProductId,
             request.Title,

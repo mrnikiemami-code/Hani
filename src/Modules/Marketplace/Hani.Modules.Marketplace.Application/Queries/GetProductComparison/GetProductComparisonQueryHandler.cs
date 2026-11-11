@@ -8,13 +8,15 @@ namespace Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
 internal sealed class GetProductComparisonQueryHandler(
     ICatalogReadService catalog,
     IOfferReadService offers,
-    IAgencyReadService agencies)
+    IAgencyReadService agencies,
+    ILanguageCatalog languages)
     : IQueryHandler<GetProductComparisonQuery, ProductComparisonDto>
 {
     public async Task<Result<ProductComparisonDto>> Handle(
         GetProductComparisonQuery request,
         CancellationToken cancellationToken)
     {
+        var locale = languages.Normalize(request.Locale);
         var product = await catalog.GetPublishedByIdAsync(request.ProductId, cancellationToken);
 
         if (product is null)
@@ -42,9 +44,9 @@ internal sealed class GetProductComparisonQueryHandler(
         var dto = new ProductComparisonDto(
             product.Id,
             product.Slug,
-            Resolve(product.Titles, request.Locale),
-            Resolve(product.Summaries, request.Locale),
-            Resolve(product.Descriptions, request.Locale),
+            Resolve(product.Titles, locale, languages.DefaultLanguage),
+            Resolve(product.Summaries, locale, languages.DefaultLanguage),
+            Resolve(product.Descriptions, locale, languages.DefaultLanguage),
             product.DurationDays,
             mappedOffers);
 
@@ -93,10 +95,11 @@ internal sealed class GetProductComparisonQueryHandler(
 
     private static string Resolve(
         IReadOnlyDictionary<string, string> values,
-        string locale)
+        string locale,
+        string defaultLanguage)
         => values.TryGetValue(locale, out var value)
             ? value
-            : values.TryGetValue("fa", out var fallback)
+            : values.TryGetValue(defaultLanguage, out var fallback)
                 ? fallback
                 : values.Values.FirstOrDefault() ?? string.Empty;
 }

@@ -3,8 +3,11 @@ using System.Globalization;
 using FluentValidation;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
+using Hani.BuildingBlocks.Domain;
 using Hani.BuildingBlocks.Infrastructure.Caching;
 using Hani.BuildingBlocks.Infrastructure.Idempotency;
+using Hani.BuildingBlocks.Infrastructure.Ids;
+using Hani.BuildingBlocks.Infrastructure.Localization;
 using Hani.BuildingBlocks.Infrastructure.Messaging;
 using Hani.BuildingBlocks.Infrastructure.Observability;
 using Hani.BuildingBlocks.Infrastructure.Tenancy;
@@ -118,6 +121,7 @@ builder.Services.AddHaniObservability(builder.Configuration);
 builder.Services.AddHaniMessaging<SupplyDbContext>(builder.Configuration);
 builder.Services.AddSingleton<ICurrentTenant, CurrentTenant>();
 builder.Services.AddSingleton<IIdempotencyStore, InMemoryIdempotencyStore>();
+builder.Services.AddSingleton<IIdGenerator, Uuid7IdGenerator>();
 
 // ---------------------------------------------------------------------------
 // CQRS: MediatR handlers + pipeline behaviors (log -> validate -> idempotency)
@@ -178,16 +182,24 @@ builder.Services.AddAuthorization(options =>
 });
 
 // ---------------------------------------------------------------------------
-// Localization: FA (default), EN, AR for API problem titles
+// Localization: languages and problem titles are configuration-driven
 // ---------------------------------------------------------------------------
+var localizationOptions = builder.Configuration
+    .GetSection("Localization")
+    .Get<LocalizationOptions>() ?? new LocalizationOptions();
+
+ProblemDetailsLocalizer.Configure(localizationOptions);
+builder.Services.Configure<LocalizationOptions>(
+    builder.Configuration.GetSection("Localization"));
+builder.Services.AddSingleton<ILanguageCatalog, LanguageCatalog>();
+
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var cultureNames = new List<string> { "fa-IR", "en-US", "ar-SA" };
-    var cultures = cultureNames
+    var cultures = localizationOptions.SupportedCultures
         .Select(culture => new CultureInfo(culture))
         .ToArray();
 
-    options.DefaultRequestCulture = new RequestCulture("fa-IR");
+    options.DefaultRequestCulture = new RequestCulture(localizationOptions.DefaultCulture);
     options.SupportedCultures = cultures;
     options.SupportedUICultures = cultures;
 });

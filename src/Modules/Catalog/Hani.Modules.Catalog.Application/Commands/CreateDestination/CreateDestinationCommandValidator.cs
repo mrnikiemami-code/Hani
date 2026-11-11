@@ -1,4 +1,5 @@
 using FluentValidation;
+using Hani.BuildingBlocks.Application;
 
 namespace Hani.Modules.Catalog.Application.Commands.CreateDestination;
 
@@ -7,7 +8,7 @@ namespace Hani.Modules.Catalog.Application.Commands.CreateDestination;
 /// </summary>
 public sealed class CreateDestinationCommandValidator : AbstractValidator<CreateDestinationCommand>
 {
-    public CreateDestinationCommandValidator()
+    public CreateDestinationCommandValidator(ILanguageCatalog languages)
     {
         RuleFor(command => command.Slug)
             .NotEmpty()
@@ -22,7 +23,7 @@ public sealed class CreateDestinationCommandValidator : AbstractValidator<Create
         {
             translation.RuleFor(item => item.Locale)
                 .NotEmpty()
-                .Must(locale => locale is "fa" or "en" or "ar")
+                .Must(locale => languages.IsSupported(locale))
                 .WithErrorCode("HANI-CATALOG-1017");
 
             translation.RuleFor(item => item.Name)

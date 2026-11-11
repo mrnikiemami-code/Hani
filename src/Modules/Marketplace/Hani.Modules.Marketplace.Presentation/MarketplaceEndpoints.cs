@@ -46,7 +46,7 @@ public static class MarketplaceEndpoints
     {
         var result = await sender.Send(
             new SearchProductsQuery(
-                NormalizeLocale(locale),
+                locale,
                 destinationSlug,
                 page == 0 ? 1 : page,
                 pageSize == 0 ? 20 : pageSize),
@@ -62,14 +62,11 @@ public static class MarketplaceEndpoints
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(
-            new GetProductComparisonQuery(productId, NormalizeLocale(locale)),
+            new GetProductComparisonQuery(productId, locale),
             cancellationToken);
 
         return result.IsSuccess ? Results.Ok(result.Value) : ToProblem(result.Error!);
     }
-
-    private static string NormalizeLocale(string? locale)
-        => string.IsNullOrWhiteSpace(locale) ? "fa" : locale.Trim().ToLowerInvariant();
 
     private static IResult ToProblem(Error error)
     {

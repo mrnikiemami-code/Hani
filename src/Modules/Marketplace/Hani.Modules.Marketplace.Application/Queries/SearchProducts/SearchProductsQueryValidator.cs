@@ -1,4 +1,5 @@
 using FluentValidation;
+using Hani.BuildingBlocks.Application;
 
 namespace Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 
@@ -10,10 +11,10 @@ public sealed class SearchProductsQueryValidator : AbstractValidator<SearchProdu
     /// <summary>
     /// Creates validation rules for locale and paging.
     /// </summary>
-    public SearchProductsQueryValidator()
+    public SearchProductsQueryValidator(ILanguageCatalog languages)
     {
         RuleFor(query => query.Locale)
-            .Must(locale => locale is "fa" or "en" or "ar")
+            .Must(locale => languages.IsSupported(locale))
             .WithErrorCode("HANI-MARKET-1001");
 
         RuleFor(query => query.Page)

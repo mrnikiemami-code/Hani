@@ -49,6 +49,7 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
     public DateTimeOffset UpdatedAt { get; private set; }
 
     public static AgencyOffer Create(
+        IIdGenerator ids,
         Guid agencyId,
         Guid tourProductId,
         string title,
@@ -71,14 +72,14 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
         }
 
         var offer = new AgencyOffer(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             agencyId,
             externalId.Trim(),
             tourProductId,
             title.Trim(),
             basePrice);
 
-        offer.AddDomainEvent(new AgencyOfferCreatedDomainEvent(offer.Id, agencyId));
+        offer.AddDomainEvent(new AgencyOfferCreatedDomainEvent(ids.NewId(), offer.Id, agencyId));
 
         return offer;
     }

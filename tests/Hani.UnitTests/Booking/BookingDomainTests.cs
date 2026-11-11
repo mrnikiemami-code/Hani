@@ -11,6 +11,7 @@ public sealed class BookingDomainTests
     {
         var now = new DateTimeOffset(2026, 11, 11, 10, 0, 0, TimeSpan.Zero);
         var quote = Quote.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             Guid.CreateVersion7(),
             Guid.CreateVersion7(),
@@ -67,7 +68,12 @@ public sealed class BookingDomainTests
     public void Hold_Should_Expire()
     {
         var now = new DateTimeOffset(2026, 11, 11, 10, 0, 0, TimeSpan.Zero);
-        var hold = Hold.Create(Guid.CreateVersion7(), Guid.CreateVersion7(), 2, now);
+        var hold = Hold.Create(
+            TestIds.Generator,
+            Guid.CreateVersion7(),
+            Guid.CreateVersion7(),
+            2,
+            now);
 
         hold.IsExpired(now.AddMinutes(14)).ShouldBeFalse();
         hold.IsExpired(now.AddMinutes(16)).ShouldBeTrue();
@@ -75,6 +81,7 @@ public sealed class BookingDomainTests
 
     private static Quote CreateQuote()
         => Quote.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             Guid.CreateVersion7(),
             Guid.CreateVersion7(),
@@ -88,5 +95,9 @@ public sealed class BookingDomainTests
             "IRR");
 
     private static Hold CreateHold()
-        => Hold.Create(Guid.CreateVersion7(), Guid.CreateVersion7(), 2);
+        => Hold.Create(
+            TestIds.Generator,
+            Guid.CreateVersion7(),
+            Guid.CreateVersion7(),
+            2);
 }

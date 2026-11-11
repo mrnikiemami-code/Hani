@@ -15,7 +15,7 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | 🚧 In Progress | ~10% |
+| 2 | Marketplace Read + Booking | 🚧 In Progress | ~35% |
 | 3 | Channel + Billing + Settlement | ⏳ Planned | 0% |
 | 4 | Flights | ⏳ Planned | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Planned | 0% |
@@ -75,6 +75,8 @@
 | Booking Hold | atomic reserve + idempotent + release | `422b06d` |
 | Booking Migration | InitialBooking | `422b06d` |
 | Read Contracts | Catalog / Supply / Identity read services | `17b6415` |
+| Localization config | زبان‌ها و عنوان خطاها از `Localization` در appsettings؛ بدون hard-code | این تغییر |
+| ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -122,10 +124,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۴۰ passed |
-| Architecture Tests | ۱۳ passed |
-| Total | **۵۳ passed** |
-| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) |
+| Unit Tests | ۵۲ passed |
+| Architecture Tests | ۲۲ passed |
+| Total | **۷۴ passed** |
+| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۱) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -134,7 +136,7 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** TC-024 — Search projection + TC-025 — Compare API
+**تسک فعال:** TC-027 — Order + Contract (پس از تکمیل تغییرات عرضی زبان و شناسه)
 **Phase 2:** در حال انجام
 
 ### ۵ تسک اول Phase 2 (پس از تأیید)
@@ -179,3 +181,4 @@
 | `8bc804c` | XML docs / module READMEs / DocumentationTests |
 | `17b6415` | Marketplace search + compare |
 | `422b06d` | Booking quote + hold |
+| `f2b7a15` | Booking/Marketplace API docs |

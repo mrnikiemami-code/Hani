@@ -11,6 +11,7 @@ public sealed class AgencyOfferTests
     public void Create_Should_Set_Draft_Status_And_Raise_Event()
     {
         var offer = AgencyOffer.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             Guid.CreateVersion7(),
             "Istanbul 4 nights",
@@ -25,6 +26,7 @@ public sealed class AgencyOfferTests
     public void Create_Should_Reject_Empty_Agency()
     {
         Should.Throw<ArgumentException>(() => AgencyOffer.Create(
+            TestIds.Generator,
             Guid.Empty,
             Guid.CreateVersion7(),
             "Istanbul",
@@ -35,6 +37,7 @@ public sealed class AgencyOfferTests
     public void Create_Should_Trim_Title()
     {
         var offer = AgencyOffer.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             Guid.CreateVersion7(),
             "  Istanbul  ",

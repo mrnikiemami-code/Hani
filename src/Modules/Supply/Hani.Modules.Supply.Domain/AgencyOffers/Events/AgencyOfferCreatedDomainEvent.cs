@@ -6,10 +6,9 @@ namespace Hani.Modules.Supply.Domain.AgencyOffers.Events;
 /// Domain event raised by an aggregate.
 /// </summary>
 public sealed record AgencyOfferCreatedDomainEvent(
+    Guid EventId,
     Guid OfferId,
     Guid AgencyId) : IDomainEvent
 {
-    public Guid EventId { get; } = Guid.CreateVersion7();
-
     public DateTimeOffset OccurredAt { get; } = DateTimeOffset.UtcNow;
 }

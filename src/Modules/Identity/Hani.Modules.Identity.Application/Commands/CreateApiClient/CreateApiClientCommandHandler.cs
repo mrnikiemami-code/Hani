@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Identity.Application.Abstractions;
 using Hani.Modules.Identity.Domain.ApiClients;
 
@@ -8,7 +9,8 @@ internal sealed class CreateApiClientCommandHandler(
     IAgencyRepository agencies,
     IApiClientRepository apiClients,
     ISecretGenerator secretGenerator,
-    ISecretHasher secretHasher)
+    ISecretHasher secretHasher,
+    IIdGenerator ids)
     : ICommandHandler<CreateApiClientCommand, CreateApiClientResult>
 {
     public async Task<Result<CreateApiClientResult>> Handle(
@@ -32,6 +34,7 @@ internal sealed class CreateApiClientCommandHandler(
             .ToArray();
 
         var apiClient = ApiClient.Create(
+            ids,
             agency.Id,
             request.Name,
             clientId,

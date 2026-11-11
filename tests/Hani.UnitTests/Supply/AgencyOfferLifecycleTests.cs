@@ -58,6 +58,7 @@ public sealed class AgencyOfferLifecycleTests
     public void Create_Should_Keep_External_Id()
     {
         var offer = AgencyOffer.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             Guid.CreateVersion7(),
             "Istanbul",
@@ -69,6 +70,7 @@ public sealed class AgencyOfferLifecycleTests
 
     private static AgencyOffer CreateOffer()
         => AgencyOffer.Create(
+            TestIds.Generator,
             Guid.CreateVersion7(),
             Guid.CreateVersion7(),
             "Istanbul",

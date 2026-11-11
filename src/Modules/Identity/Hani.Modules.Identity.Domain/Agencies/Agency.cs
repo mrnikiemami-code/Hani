@@ -44,6 +44,7 @@ public sealed class Agency : AggregateRoot<Guid>
     public DateTimeOffset CreatedAt { get; private set; }
 
     public static Agency Create(
+        IIdGenerator ids,
         string slug,
         string name,
         string licenseNo,
@@ -66,14 +67,14 @@ public sealed class Agency : AggregateRoot<Guid>
         }
 
         var agency = new Agency(
-            Guid.CreateVersion7(),
+            ids.NewId(),
             slug.Trim(),
             name.Trim(),
             licenseNo.Trim(),
             city.Trim(),
             subscriptionValidUntil);
 
-        agency.AddDomainEvent(new AgencyCreatedDomainEvent(agency.Id));
+        agency.AddDomainEvent(new AgencyCreatedDomainEvent(ids.NewId(), agency.Id));
 
         return agency;
     }

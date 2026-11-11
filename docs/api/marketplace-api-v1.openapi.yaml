@@ -21,7 +21,10 @@ paths:
       tags: [Catalog]
       summary: Search published products with offer price and count
       parameters:
-        - { name: locale, in: query, schema: { type: string, enum: [fa, en, ar], default: fa } }
+        - name: locale
+          in: query
+          description: Configured language code (see Localization:SupportedCultures); unknown values fall back to the default language.
+          schema: { type: string }
         - { name: destinationSlug, in: query, schema: { type: [string, 'null'] } }
         - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
         - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
@@ -47,7 +50,10 @@ paths:
       summary: Compare approved offers for one product
       parameters:
         - { name: productId, in: path, required: true, schema: { type: string, format: uuid } }
-        - { name: locale, in: query, schema: { type: string, enum: [fa, en, ar], default: fa } }
+        - name: locale
+          in: query
+          description: Configured language code (see Localization:SupportedCultures); unknown values fall back to the default language.
+          schema: { type: string }
       responses:
         '200':
           description: OK

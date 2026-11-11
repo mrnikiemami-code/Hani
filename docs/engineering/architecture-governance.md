@@ -276,7 +276,7 @@ T:System.Console;Use ILogger
   - هیچ feature به feature دیگر import نکند.
 - `dependency-cruiser` برای cycle detection.
 - Server Components پیش‌فرض؛ `use client` فقط با دلیل.
-- `messages/{fa,en,ar}.json` منبع متن؛ متن hard-code ممنوع.
+- `messages/{language}.json` منبع متن؛ فهرست زبان‌ها و fallback از تنظیمات خوانده می‌شود و hard-code ممنوع است.
 - `size-limit` برای routeهای اصلی.
 - `Lighthouse CI` برای SEO/Performance/A11y.
 

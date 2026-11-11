@@ -29,7 +29,7 @@ public sealed class SearchProductsHandlerTests
             Offer(productId, 50_000_000m, 55_000_000m)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers);
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
 
         var result = await handler.Handle(
             new SearchProductsQuery("en", Page: 1, PageSize: 20),
@@ -60,7 +60,7 @@ public sealed class SearchProductsHandlerTests
                 DateTimeOffset.UtcNow));
         }
 
-        var handler = new SearchProductsQueryHandler(catalog, offers);
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
 
         var result = await handler.Handle(
             new SearchProductsQuery("fa", Page: 2, PageSize: 2),

@@ -1,3 +1,4 @@
+using Hani.BuildingBlocks.Application;
 using Hani.Contracts.Catalog;
 using Hani.Contracts.Identity;
 using Hani.Contracts.Supply;
@@ -40,6 +41,23 @@ internal sealed class FakeOfferReadService : IOfferReadService
             OffersByProduct.TryGetValue(tourProductId, out var offers)
                 ? offers
                 : (IReadOnlyList<OfferSnapshot>)[]);
+}
+
+internal sealed class FakeLanguageCatalog : ILanguageCatalog
+{
+    private static readonly string[] Languages = ["fa", "en", "ar"];
+
+    public IReadOnlyList<string> SupportedLanguages => Languages;
+
+    public string DefaultLanguage => "fa";
+
+    public string Normalize(string? language)
+        => string.IsNullOrWhiteSpace(language) || !Languages.Contains(language.Split('-')[0])
+            ? DefaultLanguage
+            : language.Split('-')[0].ToLowerInvariant();
+
+    public bool IsSupported(string? language)
+        => string.IsNullOrWhiteSpace(language) || Languages.Contains(language.Split('-')[0]);
 }
 
 internal sealed class FakeAgencyReadService : IAgencyReadService
