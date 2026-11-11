@@ -138,6 +138,53 @@ paths:
           description: Not found
         default: { $ref: '#/components/responses/Problem' }
 
+  /orders:
+    post:
+      tags: [Booking]
+      summary: Create an order and immutable contract from an active hold
+      parameters:
+        - { name: Idempotency-Key, in: header, required: false, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateOrderRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Order' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /orders/{orderId}:
+    get:
+      tags: [Booking]
+      summary: Read an order
+      parameters:
+        - { name: orderId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Order' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /orders/{orderId}/contract:
+    get:
+      tags: [Booking]
+      summary: Read the immutable contract issued for an order
+      parameters:
+        - { name: orderId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Contract' }
+        default: { $ref: '#/components/responses/Problem' }
+
 components:
   responses:
     Problem:
@@ -261,3 +308,100 @@ components:
         seats: { type: integer }
         status: { type: string, enum: [Active, Released, Consumed, Expired] }
         expiresAt: { type: string, format: date-time }
+
+    OrderTravelerInput:
+      type: object
+      required: [fullName, type]
+      properties:
+        fullName: { type: string, maxLength: 200 }
+        type: { type: string, enum: [Adult, Child, Infant] }
+        dateOfBirth: { type: [string, 'null'], format: date }
+
+    CreateOrderRequest:
+      type: object
+      required: [holdId, contactEmail, travelers]
+      properties:
+        holdId: { type: string, format: uuid }
+        contactEmail: { type: string, format: email, maxLength: 320 }
+        contactPhone: { type: [string, 'null'], maxLength: 32 }
+        travelers:
+          type: array
+          minItems: 1
+          items: { $ref: '#/components/schemas/OrderTravelerInput' }
+
+    OrderTraveler:
+      type: object
+      properties:
+        travelerId: { type: string, format: uuid }
+        fullName: { type: string }
+        type: { type: string, enum: [Adult, Child, Infant] }
+        dateOfBirth: { type: [string, 'null'], format: date }
+
+    OrderLine:
+      type: object
+      properties:
+        lineId: { type: string, format: uuid }
+        description: { type: string }
+        quantity: { type: integer }
+        unitPrice: { type: number }
+        total: { type: number }
+        currency: { type: string }
+
+    Order:
+      type: object
+      properties:
+        orderId: { type: string, format: uuid }
+        orderNumber: { type: string }
+        quoteId: { type: string, format: uuid }
+        holdId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        agencyOfferId: { type: string, format: uuid }
+        departureId: { type: string, format: uuid }
+        roomType: { type: string }
+        adults: { type: integer }
+        children: { type: integer }
+        infants: { type: integer }
+        seats: { type: integer }
+        unitPrice: { type: number }
+        total: { type: number }
+        currency: { type: string }
+        status: { type: string, enum: [PendingPayment, Paid, Cancelled, Expired] }
+        createdAt: { type: string, format: date-time }
+        paymentDueAt: { type: string, format: date-time }
+        contractId: { type: string, format: uuid }
+        contractNumber: { type: string }
+        travelers:
+          type: array
+          items: { $ref: '#/components/schemas/OrderTraveler' }
+        lines:
+          type: array
+          items: { $ref: '#/components/schemas/OrderLine' }
+
+    Contract:
+      type: object
+      properties:
+        contractId: { type: string, format: uuid }
+        contractNumber: { type: string }
+        orderId: { type: string, format: uuid }
+        issuedAt: { type: string, format: date-time }
+        quoteId: { type: string, format: uuid }
+        holdId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        agencyOfferId: { type: string, format: uuid }
+        departureId: { type: string, format: uuid }
+        roomType: { type: string }
+        adults: { type: integer }
+        children: { type: integer }
+        infants: { type: integer }
+        seats: { type: integer }
+        unitPrice: { type: number }
+        total: { type: number }
+        currency: { type: string }
+        contactEmail: { type: string }
+        contactPhone: { type: [string, 'null'] }
+        travelers:
+          type: array
+          items: { $ref: '#/components/schemas/OrderTraveler' }
+        lines:
+          type: array
+          items: { $ref: '#/components/schemas/OrderLine' }

@@ -42,6 +42,18 @@ public sealed class BookingDomainTests
     }
 
     [Fact]
+    public void Quote_Should_Be_Converted_Once()
+    {
+        var quote = CreateQuote();
+        quote.MarkHeld();
+
+        quote.MarkConverted();
+        quote.Status.ShouldBe(QuoteStatus.Converted);
+
+        Should.Throw<InvalidOperationException>(() => quote.MarkConverted());
+    }
+
+    [Fact]
     public void Quote_Should_Return_To_Active_When_Hold_Is_Released()
     {
         var quote = CreateQuote();

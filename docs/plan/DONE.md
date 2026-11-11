@@ -94,6 +94,7 @@
 | D-77 | IIdGenerator + UUIDv7 | `IIdGenerator` + `Uuid7IdGenerator` + ArchitectureTest | `5b956d3` |
 | D-78 | Localization hard-code gate | `LocalizationHardcodeTests` + AGENTS checklist + verify | `783cd59` |
 | D-79 | Central ProblemDetails + Correlation ID | `HaniProblemDetails` + `CorrelationIdMiddleware` + OpenAPI | `3b4c68e` |
+| D-80 | Order + immutable Contract | Order/Contract aggregates + order endpoints + `AddOrdersAndContracts` | این تغییر |
 
 ## ۳. مستندات
 
@@ -113,9 +114,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۶۲ passed |
+| Unit Tests | ۶۷ passed |
 | Architecture Tests | ۲۵ passed |
-| Total | **۸۷ passed** |
+| Total | **۹۲ passed** |
 | Migrations | Supply + Catalog + Identity + Booking |
 | Format | clean |
 | Vulnerable Packages | none |

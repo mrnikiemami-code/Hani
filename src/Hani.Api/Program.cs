@@ -12,8 +12,11 @@ using Hani.BuildingBlocks.Infrastructure.Messaging;
 using Hani.BuildingBlocks.Infrastructure.Observability;
 using Hani.BuildingBlocks.Infrastructure.Tenancy;
 using Hani.Modules.Booking.Application.Commands.CreateHold;
+using Hani.Modules.Booking.Application.Commands.CreateOrder;
 using Hani.Modules.Booking.Application.Commands.CreateQuote;
 using Hani.Modules.Booking.Application.Commands.ReleaseHold;
+using Hani.Modules.Booking.Application.Queries.GetContract;
+using Hani.Modules.Booking.Application.Queries.GetOrder;
 using Hani.Modules.Booking.Application.Queries.GetQuote;
 using Hani.Modules.Booking.Infrastructure;
 using Hani.Modules.Booking.Infrastructure.Persistence;
@@ -167,6 +170,9 @@ builder.Services.AddScoped<IValidator<CreateQuoteCommand>, CreateQuoteCommandVal
 builder.Services.AddScoped<IValidator<CreateHoldCommand>, CreateHoldCommandValidator>();
 builder.Services.AddScoped<IValidator<ReleaseHoldCommand>, ReleaseHoldCommandValidator>();
 builder.Services.AddScoped<IValidator<GetQuoteQuery>, GetQuoteQueryValidator>();
+builder.Services.AddScoped<IValidator<CreateOrderCommand>, CreateOrderCommandValidator>();
+builder.Services.AddScoped<IValidator<GetOrderQuery>, GetOrderQueryValidator>();
+builder.Services.AddScoped<IValidator<GetContractQuery>, GetContractQueryValidator>();
 
 // ---------------------------------------------------------------------------
 // Authentication: API key scheme for Supplier API + authorization policies

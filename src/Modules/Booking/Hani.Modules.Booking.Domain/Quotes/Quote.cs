@@ -153,6 +153,19 @@ public sealed class Quote : AggregateRoot<Guid>
     }
 
     /// <summary>
+    /// Marks a held quote as converted into an order.
+    /// </summary>
+    public void MarkConverted()
+    {
+        if (Status != QuoteStatus.Held)
+        {
+            throw new InvalidOperationException("Only a held quote can be converted.");
+        }
+
+        Status = QuoteStatus.Converted;
+    }
+
+    /// <summary>
     /// Expires the quote if it is still active.
     /// </summary>
     public void Expire()

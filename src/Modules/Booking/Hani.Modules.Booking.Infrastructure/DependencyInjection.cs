@@ -16,6 +16,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IQuoteRepository, QuoteRepository>();
         services.AddScoped<IHoldRepository, HoldRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         return services;
     }
 }

@@ -15,7 +15,7 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | 🚧 In Progress | ~35% |
+| 2 | Marketplace Read + Booking | 🚧 In Progress | ~50% |
 | 3 | Channel + Billing + Settlement | ⏳ Planned | 0% |
 | 4 | Flights | ⏳ Planned | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Planned | 0% |
@@ -78,6 +78,7 @@
 | Localization config | زبان‌ها و عنوان خطاها از `Localization` در appsettings؛ بدون hard-code؛ `LocalizationHardcodeTests` | `5b956d3` / `783cd59` |
 | ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | `5b956d3` |
 | ProblemDetails | خروجی خطای مرکزی RFC 7807 + `X-Correlation-Id` + `traceId` | `3b4c68e` |
+| Order + Contract | تبدیل Hold به Order + Contract immutable + مسافران/خطوط | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -114,6 +115,9 @@
 | GET | `/supplier/v1/offers/{id}/departures` | ✅ |
 | PATCH | `/supplier/v1/departures/{id}/availability` | ✅ |
 | PUT | `/supplier/v1/departures/{id}/prices` | ✅ |
+| POST | `/market/v1/orders` | ✅ (Idempotent) |
+| GET | `/market/v1/orders/{id}` | ✅ |
+| GET | `/market/v1/orders/{id}/contract` | ✅ |
 | GET | `/health` | ✅ |
 
 > Supplier API با `X-Api-Key` + `X-Api-Secret` و scope `supplier.write` محافظت می‌شود.
@@ -125,10 +129,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۶۲ passed |
+| Unit Tests | ۶۷ passed |
 | Architecture Tests | ۲۵ passed |
-| Total | **۸۷ passed** |
-| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۱) |
+| Total | **۹۲ passed** |
+| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۲) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -137,7 +141,7 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** TC-027 — Order + Contract (پس از تکمیل تغییرات عرضی زبان و شناسه)
+**تسک فعال:** TC-028 — PaymentIntent + Gateway
 **Phase 2:** در حال انجام
 
 ### ۵ تسک اول Phase 2 (پس از تأیید)

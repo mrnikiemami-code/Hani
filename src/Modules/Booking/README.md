@@ -12,6 +12,12 @@ Departure (Supply)
    → POST /market/v1/holds  (Idempotency-Key)
        → رزرو اتمیک صندلی در Supply
        → Hold با TTL ۱۵ دقیقه
+   → POST /market/v1/orders  (Idempotency-Key)
+       → مصرف Hold (بدون رزرو مجدد)
+       → Quote به Converted
+       → Order + Contract immutable
+   → GET /market/v1/orders/{id}
+   → GET /market/v1/orders/{id}/contract
    → DELETE /market/v1/holds/{id}
        → آزادسازی صندلی + بازگشت Quote به Active
 ```
@@ -24,6 +30,10 @@ Departure (Supply)
 - Hold به‌صورت idempotent است (هم با `Idempotency-Key` و هم با Hold فعال موجود برای Quote).
 - در صورت خطای ذخیره Hold، صندلی‌ها آزاد می‌شوند (compensation).
 - Release ظرفیت را برمی‌گرداند و Quote را Active می‌کند.
+- Order فقط از Hold فعال و Quote در وضعیت Held ساخته می‌شود و صندلی را دوباره رزرو نمی‌کند.
+- ساختار مسافران باید دقیقاً با ترکیب Quote (Adults/Children/Infants) بخواند.
+- `Contract` snapshot immutable است: قیمت، مسافران، خطوط و شرایط در زمان صدور کپی می‌شوند و بعد از آن تغییر نمی‌کنند.
+- Order به‌صورت idempotent با `Idempotency-Key` و همچنین با `HoldId` یکتا است.
 
 ## APIها
 
@@ -33,15 +43,18 @@ Departure (Supply)
 | GET | `/market/v1/quotes/{id}` | عمومی |
 | POST | `/market/v1/holds` | عمومی + Idempotency-Key |
 | DELETE | `/market/v1/holds/{id}` | عمومی |
+| POST | `/market/v1/orders` | عمومی + Idempotency-Key |
+| GET | `/market/v1/orders/{id}` | عمومی |
+| GET | `/market/v1/orders/{id}/contract` | عمومی |
 
 ## Persistence
 
 - Schema: `booking`
-- جدول‌ها: `quotes`, `holds`
-- Migration: `InitialBooking`
+- جدول‌ها: `quotes`, `holds`, `orders`, `order_travelers`, `order_lines`, `contracts`, `contract_travelers`, `contract_lines`
+- Migrationها: `InitialBooking`, `AddOrdersAndContracts`
 
 ## محدودیت فعلی
 
 - Job خودکار انقضای Quote/Hold هنوز اضافه نشده؛ Expiry در خواندن/استفاده بررسی می‌شود.
-- تبدیل Hold به Order و پرداخت در تسک‌های بعدی (`TC-027`, `TC-028`).
+- پرداخت و تغییر وضعیت Order به Paid در `TC-028` اضافه می‌شود.
 - تراکنش بین Booking و Supply با compensation است، نه Saga کامل.

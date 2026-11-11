@@ -1,4 +1,5 @@
 using Hani.Modules.Booking.Domain.Holds;
+using Hani.Modules.Booking.Domain.Orders;
 using Hani.Modules.Booking.Domain.Quotes;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,11 @@ public sealed class BookingDbContext(DbContextOptions<BookingDbContext> options)
     /// Seat holds.
     /// </summary>
     public DbSet<Hold> Holds => Set<Hold>();
+
+    /// <summary>
+    /// Confirmed orders with immutable contracts.
+    /// </summary>
+    public DbSet<Order> Orders => Set<Order>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
