@@ -92,7 +92,7 @@
 | D-75 | Agent documentation policy | `AGENTS.md` + Cursor + PR/DoD | AGENTS.md |
 | D-76 | Config-driven localization | `LocalizationOptions` + `ILanguageCatalog` + `appsettings` | `5b956d3` |
 | D-77 | IIdGenerator + UUIDv7 | `IIdGenerator` + `Uuid7IdGenerator` + ArchitectureTest | `5b956d3` |
-| D-78 | Localization hard-code gate | `LocalizationHardcodeTests` + AGENTS checklist + verify | این تغییر |
+| D-78 | Localization hard-code gate | `LocalizationHardcodeTests` + AGENTS checklist + verify | `783cd59` |
 
 ## ۳. مستندات
 
@@ -150,4 +150,5 @@
 | `422b06d` | Booking quote + hold |
 | `f2b7a15` | Booking/Marketplace API docs |
 | `5b956d3` | Config-driven localization + IIdGenerator |
+| `783cd59` | Localization hard-code CI gate |
 | `7df2265` | Phase roadmap + status + tasks |
