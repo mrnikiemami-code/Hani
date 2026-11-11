@@ -75,7 +75,7 @@
 | Booking Hold | atomic reserve + idempotent + release | `422b06d` |
 | Booking Migration | InitialBooking | `422b06d` |
 | Read Contracts | Catalog / Supply / Identity read services | `17b6415` |
-| Localization config | زبان‌ها و عنوان خطاها از `Localization` در appsettings؛ بدون hard-code | `5b956d3` |
+| Localization config | زبان‌ها و عنوان خطاها از `Localization` در appsettings؛ بدون hard-code؛ `LocalizationHardcodeTests` | `5b956d3` / این تغییر |
 | ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | `5b956d3` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
@@ -124,9 +124,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۵۲ passed |
-| Architecture Tests | ۲۲ passed |
-| Total | **۷۴ passed** |
+| Unit Tests | ۵۳ passed |
+| Architecture Tests | ۲۳ passed |
+| Total | **۷۶ passed** |
 | Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۱) |
 | Format | clean |
 | Vulnerable Packages | none |

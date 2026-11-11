@@ -34,4 +34,11 @@ public sealed class LanguageCatalogTests
         catalog.IsSupported("fr").ShouldBeFalse();
         catalog.Normalize(null).ShouldBe("fa");
     }
+
+    [Fact]
+    public void Missing_Supported_Cultures_Should_Fail_Fast()
+    {
+        Should.Throw<InvalidOperationException>(() =>
+            new LanguageCatalog(Options.Create(new LocalizationOptions())));
+    }
 }

@@ -23,7 +23,8 @@ public sealed class LanguageCatalog : ILanguageCatalog
 
         if (supported.Length == 0)
         {
-            supported = [options.Value.DefaultCulture.Split('-')[0].ToLowerInvariant()];
+            throw new InvalidOperationException(
+                "Localization:SupportedCultures must contain at least one culture.");
         }
 
         SupportedLanguages = supported;
@@ -55,6 +56,11 @@ public sealed class LanguageCatalog : ILanguageCatalog
 
     private static string NormalizeLanguage(string culture, IReadOnlyList<string> supported)
     {
+        if (string.IsNullOrWhiteSpace(culture))
+        {
+            return supported[0];
+        }
+
         var language = culture.Split('-')[0].ToLowerInvariant();
         return supported.Contains(language, StringComparer.Ordinal) ? language : supported[0];
     }

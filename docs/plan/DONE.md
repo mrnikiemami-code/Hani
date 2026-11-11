@@ -92,6 +92,7 @@
 | D-75 | Agent documentation policy | `AGENTS.md` + Cursor + PR/DoD | AGENTS.md |
 | D-76 | Config-driven localization | `LocalizationOptions` + `ILanguageCatalog` + `appsettings` | `5b956d3` |
 | D-77 | IIdGenerator + UUIDv7 | `IIdGenerator` + `Uuid7IdGenerator` + ArchitectureTest | `5b956d3` |
+| D-78 | Localization hard-code gate | `LocalizationHardcodeTests` + AGENTS checklist + verify | این تغییر |
 
 ## ۳. مستندات
 
@@ -111,9 +112,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۵۲ passed |
-| Architecture Tests | ۲۲ passed |
-| Total | **۷۴ passed** |
+| Unit Tests | ۵۳ passed |
+| Architecture Tests | ۲۳ passed |
+| Total | **۷۶ passed** |
 | Migrations | Supply + Catalog + Identity + Booking |
 | Format | clean |
 | Vulnerable Packages | none |

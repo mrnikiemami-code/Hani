@@ -17,8 +17,10 @@
 - `ILanguageCatalog` در `Hani.BuildingBlocks.Application` قرار دارد و پیاده‌سازی `LanguageCatalog` در Infrastructure آن را از `IOptions<LocalizationOptions>` می‌سازد.
 - validatorها و هندلرها به‌جای مقایسه با `"fa"`/`"en"`/`"ar"` از `ILanguageCatalog.IsSupported` و `Normalize` استفاده می‌کنند.
 - `ProblemDetailsLocalizer` یک‌بار در startup با `LocalizationOptions` پیکربندی می‌شود و عنوان‌ها را از تنظیمات می‌خواند.
+- هیچ زبان/کالچر پیش‌فرضی در کد نیست؛ نبود `SupportedCultures` یا `DefaultCulture` در startup خطا می‌دهد.
 - `locale` در OpenAPI به‌صورت string توصیف می‌شود (نه enum ثابت) تا افزودن زبان، تغییر قرارداد API نباشد.
 - متن ترجمه‌شده محتوا همچنان داده است (جدول translation) و افزودن زبان یعنی افزودن ردیف داده/فایل ترجمه، نه تغییر منطق.
+- تست معماری `LocalizationHardcodeTests` هر string literal شبیه کد زبان/کالچر (`fa`, `en`, `de-DE`, ...) را در C# خارج از Infrastructure/Migrations رد می‌کند. این تست بخشی از `scripts/verify.ps1` و CI است.
 
 ## پیامدها
 
@@ -26,6 +28,7 @@
 - زبان ناشناخته به زبان پیش‌فرض fallback می‌کند.
 - تست‌های `LanguageCatalogTests` و `ProblemDetailsLocalizerTests` این رفتار را تضمین می‌کنند.
 - `ProblemTitles` باید برای هر زبان جدید تکمیل شود؛ در غیر این صورت fallback پیش‌فرض اعمال می‌شود.
+- هر تلاش برای بازگرداندن hard-code زبان در کد، CI را fail می‌کند.
 
 ## جایگزین‌های رد شده
 

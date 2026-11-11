@@ -7,13 +7,15 @@ public sealed class LocalizationOptions
 {
     /// <summary>
     /// Default culture used when the request has no supported language.
+    /// Must be provided by configuration.
     /// </summary>
-    public string DefaultCulture { get; set; } = "fa-IR";
+    public string DefaultCulture { get; set; } = string.Empty;
 
     /// <summary>
     /// Cultures supported by the API and UI.
+    /// Must be provided by configuration.
     /// </summary>
-    public List<string> SupportedCultures { get; set; } = ["fa-IR"];
+    public List<string> SupportedCultures { get; set; } = [];
 
     /// <summary>
     /// Localized problem titles keyed by language then error type.
@@ -27,7 +29,7 @@ public sealed class LocalizationOptions
 public interface ILanguageCatalog
 {
     /// <summary>
-    /// Supported two-letter languages (for example: fa, en, ar).
+    /// Supported two-letter language codes.
     /// </summary>
     IReadOnlyList<string> SupportedLanguages { get; }
 

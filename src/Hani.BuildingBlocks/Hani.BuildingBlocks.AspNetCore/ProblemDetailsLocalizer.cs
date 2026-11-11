@@ -29,7 +29,7 @@ public static class ProblemDetailsLocalizer
             return title;
         }
 
-        return "An unexpected error occurred.";
+        return errorType.ToString();
     }
 
     private static bool TryGet(string language, string key, out string title)
@@ -64,16 +64,17 @@ public static class ProblemDetailsLocalizer
     private static string Normalize(string? culture)
     {
         var supported = _options.SupportedCultures
+            .Where(item => !string.IsNullOrWhiteSpace(item))
             .Select(item => item.Split('-')[0].ToLowerInvariant())
             .ToHashSet(StringComparer.Ordinal);
 
         if (supported.Count == 0)
         {
-            supported.Add(_options.DefaultCulture.Split('-')[0].ToLowerInvariant());
+            return string.Empty;
         }
 
         var defaultLanguage = _options.DefaultCulture.Split('-')[0].ToLowerInvariant();
-        if (!supported.Contains(defaultLanguage))
+        if (string.IsNullOrWhiteSpace(defaultLanguage) || !supported.Contains(defaultLanguage))
         {
             defaultLanguage = supported.First();
         }

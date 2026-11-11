@@ -188,6 +188,13 @@ var localizationOptions = builder.Configuration
     .GetSection("Localization")
     .Get<LocalizationOptions>() ?? new LocalizationOptions();
 
+if (localizationOptions.SupportedCultures is not { Count: > 0 } ||
+    string.IsNullOrWhiteSpace(localizationOptions.DefaultCulture))
+{
+    throw new InvalidOperationException(
+        "Localization configuration is required: configure Localization:SupportedCultures and Localization:DefaultCulture.");
+}
+
 ProblemDetailsLocalizer.Configure(localizationOptions);
 builder.Services.Configure<LocalizationOptions>(
     builder.Configuration.GetSection("Localization"));

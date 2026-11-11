@@ -16,6 +16,7 @@
 - [ ] اگر API، جریان داده یا رفتار ماژول تغییر کرد، `src/Modules/{Module}/README.md` به‌روز شود.
 - [ ] اگر قرارداد API تغییر کرد، `docs/api/*.openapi.yaml` به‌روز شود.
 - [ ] اگر تصمیم معماری تغییر کرد، ADR جدید ثبت شود.
+- [ ] هیچ کد زبان/کالچر در C# hard-code نشده باشد؛ `LocalizationHardcodeTests` باید سبز باشد.
 - [ ] `docs/plan/STATUS.md` و `docs/plan/DONE.md` به‌روز شوند.
 - [ ] `scripts/verify.ps1` سبز باشد.
 - [ ] commit + push انجام شود.
