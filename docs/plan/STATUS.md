@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۰ آبان ۱۴۰۵
 > **فاز فعال:** Phase 2 — Marketplace Read + Booking
-> **آخرین commit کد:** `d4b9465`
+> **آخرین commit کد:** `5b956d3`
 > **وضعیت Gate:** Phase 2 — In Progress
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -75,8 +75,8 @@
 | Booking Hold | atomic reserve + idempotent + release | `422b06d` |
 | Booking Migration | InitialBooking | `422b06d` |
 | Read Contracts | Catalog / Supply / Identity read services | `17b6415` |
-| Localization config | زبان‌ها و عنوان خطاها از `Localization` در appsettings؛ بدون hard-code | این تغییر |
-| ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | این تغییر |
+| Localization config | زبان‌ها و عنوان خطاها از `Localization` در appsettings؛ بدون hard-code | `5b956d3` |
+| ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | `5b956d3` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -182,3 +182,4 @@
 | `17b6415` | Marketplace search + compare |
 | `422b06d` | Booking quote + hold |
 | `f2b7a15` | Booking/Marketplace API docs |
+| `5b956d3` | Config-driven localization + IIdGenerator |

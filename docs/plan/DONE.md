@@ -90,8 +90,8 @@
 | D-73 | Documentation standard | `docs/engineering/code-documentation.md` | `8bc804c` |
 | D-74 | DocumentationTests | ? ??? | `8bc804c` |
 | D-75 | Agent documentation policy | `AGENTS.md` + Cursor + PR/DoD | AGENTS.md |
-| D-76 | Config-driven localization | `LocalizationOptions` + `ILanguageCatalog` + `appsettings` | این تغییر |
-| D-77 | IIdGenerator + UUIDv7 | `IIdGenerator` + `Uuid7IdGenerator` + ArchitectureTest | این تغییر |
+| D-76 | Config-driven localization | `LocalizationOptions` + `ILanguageCatalog` + `appsettings` | `5b956d3` |
+| D-77 | IIdGenerator + UUIDv7 | `IIdGenerator` + `Uuid7IdGenerator` + ArchitectureTest | `5b956d3` |
 
 ## ۳. مستندات
 
@@ -148,4 +148,5 @@
 | `17b6415` | Marketplace search + compare |
 | `422b06d` | Booking quote + hold |
 | `f2b7a15` | Booking/Marketplace API docs |
+| `5b956d3` | Config-driven localization + IIdGenerator |
 | `7df2265` | Phase roadmap + status + tasks |

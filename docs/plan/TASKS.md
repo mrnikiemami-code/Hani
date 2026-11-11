@@ -20,7 +20,7 @@
 | TC-011 | Cache abstraction | ✅ | — | Memory/Redis/None | `98ab18d` |
 | TC-012 | MassTransit + Outbox | ⚠️ | TC-011 | wired؛ Outbox خاموش | `ab3b2e7` |
 | TC-013 | TenantContext | ✅ | — | تست ایزولاسیون پایه | `98ab18d` |
-| TC-014 | Localization foundation | ✅ | — | config-driven languages + localized title | `d4b9465` / این تغییر |
+| TC-014 | Localization foundation | ✅ | — | config-driven languages + localized title | `d4b9465` / `5b956d3` |
 
 ## Phase 1 ? Core Domain ? (Gate Passed)
 
@@ -36,7 +36,7 @@
 | TC-022 | Supplier upsert + idempotency | ? | TC-021 | upsert + Idempotency-Key | `d4b9465` |
 | TC-023 | Moderation | ? | TC-022 | Submit/Approve/Reject | `d4b9465` |
 | TC-079 | Documentation | ✅ | TC-001 | XML summaries + module READMEs + DocumentationTests | `8bc804c` |
-| TC-080 | Config-driven i18n + IIdGenerator | ✅ | TC-014 | زبان از تنظیمات؛ UUIDv7 از طریق interface | این تغییر |
+| TC-080 | Config-driven i18n + IIdGenerator | ✅ | TC-014 | زبان از تنظیمات؛ UUIDv7 از طریق interface | `5b956d3` |
 | TC-024 | Search projection | ? | TC-018 | search + min price + offer count | `17b6415` |
 | TC-025 | Compare API | ? | TC-024, TC-021 | offer comparison + agency names | `17b6415` |
 | TC-026 | Quote + Hold | ? | TC-025 | TTL + release + atomic reserve | `422b06d` |
