@@ -9,6 +9,7 @@
     <Project Path="src/Hani.BuildingBlocks/Hani.BuildingBlocks.Infrastructure/Hani.BuildingBlocks.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/src/Hani.Contracts/">
+    <Project Path="src/Hani.Contracts/Hani.Contracts.Booking/Hani.Contracts.Booking.csproj" />
     <Project Path="src/Hani.Contracts/Hani.Contracts.Catalog/Hani.Contracts.Catalog.csproj" />
     <Project Path="src/Hani.Contracts/Hani.Contracts.Identity/Hani.Contracts.Identity.csproj" />
     <Project Path="src/Hani.Contracts/Hani.Contracts.Supply/Hani.Contracts.Supply.csproj" />
@@ -37,6 +38,12 @@
     <Project Path="src/Modules/Marketplace/Hani.Modules.Marketplace.Domain/Hani.Modules.Marketplace.Domain.csproj" />
     <Project Path="src/Modules/Marketplace/Hani.Modules.Marketplace.Infrastructure/Hani.Modules.Marketplace.Infrastructure.csproj" />
     <Project Path="src/Modules/Marketplace/Hani.Modules.Marketplace.Presentation/Hani.Modules.Marketplace.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Payments/">
+    <Project Path="src/Modules/Payments/Hani.Modules.Payments.Application/Hani.Modules.Payments.Application.csproj" />
+    <Project Path="src/Modules/Payments/Hani.Modules.Payments.Domain/Hani.Modules.Payments.Domain.csproj" />
+    <Project Path="src/Modules/Payments/Hani.Modules.Payments.Infrastructure/Hani.Modules.Payments.Infrastructure.csproj" />
+    <Project Path="src/Modules/Payments/Hani.Modules.Payments.Presentation/Hani.Modules.Payments.Presentation.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Supply/">
     <Project Path="src/Modules/Supply/Hani.Modules.Supply.Application/Hani.Modules.Supply.Application.csproj" />

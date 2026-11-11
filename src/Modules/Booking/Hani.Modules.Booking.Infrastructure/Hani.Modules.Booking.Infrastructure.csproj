@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hani.Modules.Booking.Application\Hani.Modules.Booking.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Booking\Hani.Contracts.Booking.csproj" />
     <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Infrastructure\Hani.BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>

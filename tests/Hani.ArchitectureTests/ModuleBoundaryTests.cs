@@ -15,6 +15,10 @@ using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 using Hani.Modules.Marketplace.Domain;
 using Hani.Modules.Marketplace.Infrastructure;
 using Hani.Modules.Marketplace.Presentation;
+using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
+using Hani.Modules.Payments.Domain.PaymentIntents;
+using Hani.Modules.Payments.Infrastructure.Persistence;
+using Hani.Modules.Payments.Presentation;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 using Hani.Modules.Supply.Infrastructure.Persistence;
@@ -46,7 +50,11 @@ public sealed class ModuleBoundaryTests
         typeof(Quote).Assembly,
         typeof(CreateQuoteCommand).Assembly,
         typeof(BookingDbContext).Assembly,
-        typeof(BookingEndpoints).Assembly
+        typeof(BookingEndpoints).Assembly,
+        typeof(PaymentIntent).Assembly,
+        typeof(CreatePaymentIntentCommand).Assembly,
+        typeof(PaymentsDbContext).Assembly,
+        typeof(PaymentEndpoints).Assembly
     ];
 
     [Fact]

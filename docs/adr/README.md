@@ -23,6 +23,7 @@
 | [0019](0019-id-generator-uuid7.md) | تولید شناسه با IIdGenerator و UUIDv7 | Accepted |
 | [0020](0020-problem-details-and-correlation-id.md) | ProblemDetails مرکزی و Correlation ID | Accepted (Locked) |
 | [0021](0021-order-and-immutable-contract.md) | Order و Contract غیرقابل‌تغییر از Hold | Accepted |
+| [0022](0022-payments-gateway-and-mor.md) | Payments، Gateway و Merchant of Record | Accepted |
 
 ## قالب ADR جدید
 

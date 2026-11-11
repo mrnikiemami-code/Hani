@@ -10,6 +10,9 @@ using Hani.Modules.Identity.Presentation;
 using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 using Hani.Modules.Marketplace.Domain;
 using Hani.Modules.Marketplace.Presentation;
+using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
+using Hani.Modules.Payments.Domain.PaymentIntents;
+using Hani.Modules.Payments.Presentation;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 using Hani.Modules.Supply.Presentation;
@@ -240,6 +243,53 @@ public sealed class LayerDependencyTests
     {
         var result = Types.InAssembly(typeof(IdentityEndpoints).Assembly)
             .That().ResideInNamespace("Hani.Modules.Identity.Presentation")
+            .ShouldNot().HaveDependencyOn("Microsoft.EntityFrameworkCore")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Payments_Domain_Should_Not_Depend_On_Infrastructure()
+    {
+        var result = Types.InAssembly(typeof(PaymentIntent).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Payments.Domain")
+            .ShouldNot().HaveDependencyOnAny(
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore",
+                "MassTransit",
+                "StackExchange.Redis",
+                "System.Net.Http")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Payments_Application_Should_Not_Depend_On_Infrastructure()
+    {
+        var result = Types.InAssembly(typeof(CreatePaymentIntentCommand).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Payments.Application")
+            .ShouldNot().HaveDependencyOnAny(
+                "Hani.Modules.Payments.Infrastructure",
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore",
+                "MassTransit",
+                "StackExchange.Redis",
+                "System.Net.Http")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    [Fact]
+    public void Payments_Presentation_Should_Not_Use_DbContext()
+    {
+        var result = Types.InAssembly(typeof(PaymentEndpoints).Assembly)
+            .That().ResideInNamespace("Hani.Modules.Payments.Presentation")
             .ShouldNot().HaveDependencyOn("Microsoft.EntityFrameworkCore")
             .GetResult();
 

@@ -38,6 +38,12 @@ using Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
 using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 using Hani.Modules.Marketplace.Infrastructure;
 using Hani.Modules.Marketplace.Presentation;
+using Hani.Modules.Payments.Application;
+using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
+using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
+using Hani.Modules.Payments.Infrastructure;
+using Hani.Modules.Payments.Infrastructure.Persistence;
+using Hani.Modules.Payments.Presentation;
 using Hani.Modules.Supply.Application.Commands.ApproveAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.ArchiveAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
@@ -112,11 +118,14 @@ builder.Services.AddDbContext<SupplyDbContext>(options => options.UseNpgsql(conn
 builder.Services.AddDbContext<CatalogDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<IdentityDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<BookingDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<PaymentsDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddSupplyInfrastructure();
 builder.Services.AddCatalogInfrastructure();
 builder.Services.AddIdentityInfrastructure();
 builder.Services.AddMarketplaceInfrastructure();
 builder.Services.AddBookingInfrastructure();
+builder.Services.AddPaymentsInfrastructure();
+builder.Services.Configure<PaymentOptions>(builder.Configuration.GetSection("Payments"));
 
 // ---------------------------------------------------------------------------
 // Cross-cutting infrastructure: cache, messaging, tenant, idempotency, telemetry
@@ -137,7 +146,8 @@ builder.Services.AddMediatR(configuration =>
         typeof(CreateTourProductCommand).Assembly,
         typeof(CreateAgencyCommand).Assembly,
         typeof(SearchProductsQuery).Assembly,
-        typeof(CreateQuoteCommand).Assembly));
+        typeof(CreateQuoteCommand).Assembly,
+        typeof(CreatePaymentIntentCommand).Assembly));
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -173,6 +183,8 @@ builder.Services.AddScoped<IValidator<GetQuoteQuery>, GetQuoteQueryValidator>();
 builder.Services.AddScoped<IValidator<CreateOrderCommand>, CreateOrderCommandValidator>();
 builder.Services.AddScoped<IValidator<GetOrderQuery>, GetOrderQueryValidator>();
 builder.Services.AddScoped<IValidator<GetContractQuery>, GetContractQueryValidator>();
+builder.Services.AddScoped<IValidator<CreatePaymentIntentCommand>, CreatePaymentIntentCommandValidator>();
+builder.Services.AddScoped<IValidator<GetPaymentIntentQuery>, GetPaymentIntentQueryValidator>();
 
 // ---------------------------------------------------------------------------
 // Authentication: API key scheme for Supplier API + authorization policies
@@ -250,6 +262,7 @@ app.MapCatalogEndpoints();
 app.MapIdentityEndpoints();
 app.MapMarketplaceEndpoints();
 app.MapBookingEndpoints();
+app.MapPaymentEndpoints();
 
 app.Run();
 

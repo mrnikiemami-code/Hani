@@ -15,7 +15,7 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | 🚧 In Progress | ~50% |
+| 2 | Marketplace Read + Booking | 🚧 In Progress | ~65% |
 | 3 | Channel + Billing + Settlement | ⏳ Planned | 0% |
 | 4 | Flights | ⏳ Planned | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Planned | 0% |
@@ -79,6 +79,7 @@
 | ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | `5b956d3` |
 | ProblemDetails | خروجی خطای مرکزی RFC 7807 + `X-Correlation-Id` + `traceId` | `3b4c68e` |
 | Order + Contract | تبدیل Hold به Order + Contract immutable + مسافران/خطوط | `f43339e` |
+| Payments | PaymentIntent + Gateway Adapter + MerchantScope=Hani | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -118,6 +119,8 @@
 | POST | `/market/v1/orders` | ✅ (Idempotent) |
 | GET | `/market/v1/orders/{id}` | ✅ |
 | GET | `/market/v1/orders/{id}/contract` | ✅ |
+| POST | `/market/v1/payments/intents` | ✅ (Idempotent) |
+| GET | `/market/v1/payments/intents/{id}` | ✅ |
 | GET | `/health` | ✅ |
 
 > Supplier API با `X-Api-Key` + `X-Api-Secret` و scope `supplier.write` محافظت می‌شود.
@@ -129,10 +132,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۶۷ passed |
-| Architecture Tests | ۲۵ passed |
-| Total | **۹۲ passed** |
-| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۲) |
+| Unit Tests | ۷۴ passed |
+| Architecture Tests | ۲۸ passed |
+| Total | **۱۰۲ passed** |
+| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۲) / Payments (۱) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -141,7 +144,7 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** TC-028 — PaymentIntent + Gateway
+**تسک فعال:** TC-029 — Payment Webhook + Verify
 **Phase 2:** در حال انجام
 
 ### ۵ تسک اول Phase 2 (پس از تأیید)

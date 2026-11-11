@@ -1,4 +1,6 @@
+using Hani.Contracts.Booking;
 using Hani.Modules.Booking.Application.Abstractions;
+using Hani.Modules.Booking.Infrastructure.ReadServices;
 using Hani.Modules.Booking.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IQuoteRepository, QuoteRepository>();
         services.AddScoped<IHoldRepository, HoldRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOrderPaymentReadService, OrderPaymentReadService>();
         return services;
     }
 }

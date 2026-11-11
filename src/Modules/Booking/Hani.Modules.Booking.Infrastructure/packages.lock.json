@@ -477,6 +477,9 @@
           "Serilog.Sinks.Seq": "[9.1.0, )"
         }
       },
+      "hani.contracts.booking": {
+        "type": "Project"
+      },
       "hani.contracts.supply": {
         "type": "Project"
       },

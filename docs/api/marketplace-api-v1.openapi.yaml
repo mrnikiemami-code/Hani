@@ -14,6 +14,7 @@ servers:
 tags:
   - name: Catalog
   - name: Booking
+  - name: Payment
 
 paths:
   /search:
@@ -183,6 +184,39 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Contract' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /payments/intents:
+    post:
+      tags: [Payment]
+      summary: Create a payment intent for a pending order
+      parameters:
+        - { name: Idempotency-Key, in: header, required: false, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreatePaymentIntentRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaymentIntent' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /payments/intents/{paymentIntentId}:
+    get:
+      tags: [Payment]
+      summary: Read a payment intent
+      parameters:
+        - { name: paymentIntentId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaymentIntent' }
         default: { $ref: '#/components/responses/Problem' }
 
 components:
@@ -405,3 +439,28 @@ components:
         lines:
           type: array
           items: { $ref: '#/components/schemas/OrderLine' }
+
+    CreatePaymentIntentRequest:
+      type: object
+      required: [orderId]
+      properties:
+        orderId: { type: string, format: uuid }
+
+    PaymentIntent:
+      type: object
+      properties:
+        paymentIntentId: { type: string, format: uuid }
+        orderId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        amount: { type: number }
+        currency: { type: string }
+        status: { type: string, enum: [Created, Pending, Succeeded, Failed, Expired] }
+        provider: { type: string }
+        providerRef: { type: [string, 'null'] }
+        redirectUrl: { type: [string, 'null'], format: uri }
+        pspAccountRef: { type: string }
+        merchantScope: { type: string, enum: [Hani, Agency] }
+        fundsHeldBy: { type: string }
+        failureReason: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
