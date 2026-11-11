@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۰ آبان ۱۴۰۵
 > **فاز فعال:** Phase 2 — Marketplace Read + Booking
-> **آخرین commit کد:** `dc76539`
+> **آخرین commit کد:** `7b85652`
 > **وضعیت Gate:** Phase 2 — In Progress
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -80,7 +80,7 @@
 | ProblemDetails | خروجی خطای مرکزی RFC 7807 + `X-Correlation-Id` + `traceId` | `3b4c68e` |
 | Order + Contract | تبدیل Hold به Order + Contract immutable + مسافران/خطوط | `f43339e` |
 | Payments | PaymentIntent + Gateway Adapter + MerchantScope=Hani | `dc76539` |
-| Payment Webhook | HMAC verify + dedupe + Order.Paid | این تغییر |
+| Payment Webhook | HMAC verify + dedupe + Order.Paid | `7b85652` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -197,3 +197,4 @@
 | `3b4c68e` | Central ProblemDetails + Correlation ID |
 | `f43339e` | Order + immutable Contract |
 | `dc76539` | PaymentIntent + Gateway adapter |
+| `7b85652` | Payment webhook verification and dedupe |
