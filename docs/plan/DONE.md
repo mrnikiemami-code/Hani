@@ -94,7 +94,7 @@
 | D-77 | IIdGenerator + UUIDv7 | `IIdGenerator` + `Uuid7IdGenerator` + ArchitectureTest | `5b956d3` |
 | D-78 | Localization hard-code gate | `LocalizationHardcodeTests` + AGENTS checklist + verify | `783cd59` |
 | D-79 | Central ProblemDetails + Correlation ID | `HaniProblemDetails` + `CorrelationIdMiddleware` + OpenAPI | `3b4c68e` |
-| D-80 | Order + immutable Contract | Order/Contract aggregates + order endpoints + `AddOrdersAndContracts` | این تغییر |
+| D-80 | Order + immutable Contract | Order/Contract aggregates + order endpoints + `AddOrdersAndContracts` | `f43339e` |
 
 ## ۳. مستندات
 
@@ -154,4 +154,5 @@
 | `5b956d3` | Config-driven localization + IIdGenerator |
 | `783cd59` | Localization hard-code CI gate |
 | `3b4c68e` | Central ProblemDetails + Correlation ID |
+| `f43339e` | Order + immutable Contract |
 | `7df2265` | Phase roadmap + status + tasks |

@@ -41,7 +41,7 @@
 | TC-024 | Search projection | ? | TC-018 | search + min price + offer count | `17b6415` |
 | TC-025 | Compare API | ? | TC-024, TC-021 | offer comparison + agency names | `17b6415` |
 | TC-026 | Quote + Hold | ? | TC-025 | TTL + release + atomic reserve | `422b06d` |
-| TC-027 | Order + Contract | ✅ | TC-026 | snapshot immutable + consume hold | این تغییر |
+| TC-027 | Order + Contract | ✅ | TC-026 | snapshot immutable + consume hold | `f43339e` |
 | TC-028 | PaymentIntent + Gateway | ❌ | TC-027 | idempotent initiate | — |
 | TC-029 | Payment Webhook | ❌ | TC-028 | dedupe | — |
 | TC-030 | Settlement Ledger | ❌ | TC-028 | double-entry | — |
