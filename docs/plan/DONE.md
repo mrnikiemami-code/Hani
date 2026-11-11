@@ -97,7 +97,7 @@
 | D-80 | Order + immutable Contract | Order/Contract aggregates + order endpoints + `AddOrdersAndContracts` | `f43339e` |
 | D-81 | PaymentIntent + Gateway | Payments module + `InitialPayments` + Mock gateway | `dc76539` |
 | D-82 | Payment webhook + verify | HMAC verify + `payment_webhook_events` + Order.Paid | `7b85652` |
-| D-83 | Settlement ledger + commission | Commission rules/entries + balanced double-entry ledger | این تغییر |
+| D-83 | Settlement ledger + commission | Commission rules/entries + balanced double-entry ledger | `0dd6fbe` |
 
 ## ۳. مستندات
 
@@ -160,4 +160,5 @@
 | `f43339e` | Order + immutable Contract |
 | `dc76539` | PaymentIntent + Gateway adapter |
 | `7b85652` | Payment webhook verification and dedupe |
+| `0dd6fbe` | Settlement ledger and commission accrual |
 | `7df2265` | Phase roadmap + status + tasks |

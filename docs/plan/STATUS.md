@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۰ آبان ۱۴۰۵
 > **فاز فعال:** Phase 2 — Marketplace Read + Booking
-> **آخرین commit کد:** `7b85652`
+> **آخرین commit کد:** `0dd6fbe`
 > **وضعیت Gate:** Phase 2 — In Progress
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -81,7 +81,7 @@
 | Order + Contract | تبدیل Hold به Order + Contract immutable + مسافران/خطوط | `f43339e` |
 | Payments | PaymentIntent + Gateway Adapter + MerchantScope=Hani | `dc76539` |
 | Payment Webhook | HMAC verify + dedupe + Order.Paid | `7b85652` |
-| Settlement | Commission Rule + CommissionEntry + Double-entry Ledger | این تغییر |
+| Settlement | Commission Rule + CommissionEntry + Double-entry Ledger | `0dd6fbe` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -202,3 +202,4 @@
 | `f43339e` | Order + immutable Contract |
 | `dc76539` | PaymentIntent + Gateway adapter |
 | `7b85652` | Payment webhook verification and dedupe |
+| `0dd6fbe` | Settlement ledger and commission accrual |
