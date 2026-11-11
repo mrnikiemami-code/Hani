@@ -13,7 +13,7 @@
 | فاز | عنوان | وضعیت | پیشرفت |
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
-| 1 | Core Domain: Catalog + Identity + Supply | 🚧 In Progress | ~۵۰٪ |
+| 1 | Core Domain: Catalog + Identity + Supply | 🚧 In Progress | ~۶۰٪ |
 | 2 | Marketplace Read + Booking | ⏳ Next | 0% |
 | 3 | Channel + Billing + Settlement | ⏳ Planned | 0% |
 | 4 | Flights | ⏳ Planned | 0% |
@@ -55,12 +55,15 @@
 | Identity Migration | `InitialIdentity` | `af5b415` |
 | Supply | AgencyOffer Create/Get | `825ed39` |
 | Supply Migration | `InitialSupply` + Outbox | `ab3b2e7` |
+| Departure Domain | TourDeparture + Price + Capacity + Concurrency | `56a9243` |
+| Departure API | Create/List/Availability/Price | `56a9243` |
+| Departure Migration | `AddTourDepartures` | `56a9243` |
 
 ### ناقص / باقی‌مانده
 
 | مورد | وضعیت | تسک |
 |---|---|---|
-| Departure + Price + Capacity | ❌ | TC-021 |
+| Departure + Price + Capacity | ✅ | TC-021 |
 | Supplier upsert + idempotency | ⚠️ فقط Create/Get | TC-022 |
 | Moderation | ❌ | TC-023 |
 | API Key Authentication | ❌ | TC-017 |
@@ -84,6 +87,10 @@
 | GET | `/market/v1/products/{id}` | ✅ |
 | POST | `/supplier/v1/offers` | ✅ (Create) |
 | GET | `/supplier/v1/offers/{id}` | ✅ |
+| POST | `/supplier/v1/offers/{id}/departures` | ✅ |
+| GET | `/supplier/v1/offers/{id}/departures` | ✅ |
+| PATCH | `/supplier/v1/departures/{id}/availability` | ✅ |
+| PUT | `/supplier/v1/departures/{id}/prices` | ✅ |
 | GET | `/health` | ✅ |
 
 > هیچ‌کدام از این endpointها فعلاً احراز هویت اجباری ندارند. این در Phase 1 Gate بسته می‌شود.
@@ -95,8 +102,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۲۲ passed |
+| Unit Tests | ۲۸ passed |
 | Architecture Tests | ۱۳ passed |
+| Total | **۴۱ passed** |
 | Migrations | Supply / Catalog / Identity |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -107,17 +115,17 @@
 ## ۶. تسک فعال / بعدی
 
 **تسک فعال:** هیچ (آماده شروع)
-**تسک بعدی:** `TC-021 — Departure + Price + Capacity`
+**تسک بعدی:** `TC-022 — Supplier upsert + Idempotency`
 
 ### ۵ تسک بعدی
 
 | ترتیب | تسک | وابستگی | خروجی |
 |---|---|---|---|
-| 1 | TC-021 Departure + Price + Capacity | TC-020 | سانس + قیمت + ظرفیت |
-| 2 | TC-022 Supplier upsert + idempotency | TC-021 | upsert ایمن |
-| 3 | TC-017 API Key Auth + tenant isolation | TC-016 | 401/403 |
-| 4 | TC-023 Moderation | TC-022 | approve/reject |
-| 5 | TC-020 Update/Delete Offer | TC-020 | CRUD کامل |
+| 1 | TC-022 Supplier upsert + idempotency | TC-021 | upsert ایمن |
+| 2 | TC-017 API Key Auth + tenant isolation | TC-016 | 401/403 |
+| 3 | TC-023 Moderation | TC-022 | approve/reject |
+| 4 | TC-020 Update/Delete Offer | TC-020 | CRUD کامل |
+| 5 | TC-014A Error resources FA/EN/AR | TC-014 | پیام‌های محلی |
 
 ---
 
@@ -126,7 +134,7 @@
 - [ ] Agency → ApiClient → Product → Offer → Publish → Query (دمو)
 - [ ] API Key اجباری روی Supplier API
 - [ ] Tenant isolation test
-- [ ] Departure + Price + Capacity
+- [x] Departure + Price + Capacity (`56a9243`)
 - [ ] Supplier upsert idempotent
 - [ ] Moderation approve/reject
 - [ ] Error resources FA/EN/AR
@@ -144,3 +152,4 @@
 | `ab3b2e7` | MassTransit + Outbox |
 | `9fa5a3e` | Catalog |
 | `af5b415` | Identity |
+| `56a9243` | Tour Departures |

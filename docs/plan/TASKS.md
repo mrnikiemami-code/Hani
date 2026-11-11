@@ -32,7 +32,7 @@
 | TC-018 | TourProduct + Translation | ✅ | TC-015 | CRUD + publish | `9fa5a3e` |
 | TC-019 | Destination / Hotel / Attraction / Visa | ⚠️ | TC-018 | Destination ✅ / بقیه ❌ | `9fa5a3e` |
 | TC-020 | AgencyOffer CRUD | ⚠️ | TC-018 | Create/Get ✅ / Update/Delete ❌ | `825ed39` |
-| TC-021 | Departure + Price + Capacity | ⏳ | TC-020 | سانس + ظرفیت + قیمت | — |
+| TC-021 | Departure + Price + Capacity | ✅ | TC-020 | سانس + ظرفیت + قیمت + Concurrency | `56a9243` |
 | TC-022 | Supplier upsert + idempotency | ⏳ | TC-021 | upsert ایمن | — |
 | TC-023 | Moderation | ⏳ | TC-022 | approve/reject | — |
 | TC-024 | Search projection | ❌ | TC-018 | ایندکس جستجو | — |

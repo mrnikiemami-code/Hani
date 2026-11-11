@@ -64,6 +64,14 @@
 | D-39 | Get AgencyOffer | Query/Handler/Validator/DTO | `825ed39` |
 | D-40 | Supply API | `/supplier/v1/offers` (Create/Get) | `825ed39` |
 | D-41 | Supply Migration | `InitialSupply` | `ab3b2e7` |
+| D-50 | TourDeparture Domain | `TourDeparture.cs` + Price + Status | `56a9243` |
+| D-51 | Capacity + Concurrency | `UpdateAvailability` + `Version` | `56a9243` |
+| D-52 | Departure Pricing | RoomType + Amount + Currency | `56a9243` |
+| D-53 | Create/List Departure API | `/supplier/v1/offers/{id}/departures` | `56a9243` |
+| D-54 | Availability API | `/supplier/v1/departures/{id}/availability` | `56a9243` |
+| D-55 | Price API | `/supplier/v1/departures/{id}/prices` | `56a9243` |
+| D-56 | Departure Migration | `AddTourDepartures` | `56a9243` |
+| D-57 | Departure Unit Tests | ۶ تست | `56a9243` |
 
 ## ۳. مستندات
 
@@ -83,9 +91,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۲۲ passed |
+| Unit Tests | ۲۸ passed |
 | Architecture Tests | ۱۳ passed |
-| Total | **۳۵ passed** |
+| Total | **۴۱ passed** |
 | Migrations | Supply + Catalog + Identity |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -116,4 +124,5 @@
 | `ab3b2e7` | MassTransit + Outbox |
 | `9fa5a3e` | Catalog |
 | `af5b415` | Identity |
+| `56a9243` | Tour Departures |
 | `7df2265` | Phase roadmap + status + tasks |

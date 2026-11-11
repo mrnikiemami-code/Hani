@@ -14,10 +14,10 @@
 
 ## وضعیت
 
-🚧 **فاز ۰ — Governance Bootstrap انجام شد**
+🚧 **Phase 0 انجام شد — Phase 1 در حال انجام**
 
 - Solution + `BuildingBlocks` + ماژول‌های `Supply`، `Catalog` و `Identity`
-- ArchitectureTests (۱۳ تست)، UnitTests (۲۲ تست)
+- ArchitectureTests (۱۳ تست)، UnitTests (۲۸ تست)
 - Serilog + OpenTelemetry با Toggle
 - Cache (Memory/Redis/None) + TenantContext + Idempotency
 - MassTransit 8.5.12 + Outbox/Inbox + Migration
