@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<IApiClientRepository, ApiClientRepository>();
         services.AddSingleton<ISecretGenerator, SecretGenerator>();
         services.AddSingleton<ISecretHasher, SecretHasher>();
+        services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
         return services;
     }
 }

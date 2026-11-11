@@ -14,6 +14,8 @@ public interface ITourProductRepository
 
 public interface IDestinationRepository
 {
+    Task AddAsync(Destination destination, CancellationToken cancellationToken);
+
     Task<IReadOnlyCollection<Destination>> GetByIdsAsync(
         IReadOnlyCollection<Guid> ids,
         CancellationToken cancellationToken);

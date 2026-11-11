@@ -8,7 +8,7 @@ public sealed class IdentityDbContextFactory : IDesignTimeDbContextFactory<Ident
     public IdentityDbContext CreateDbContext(string[] args)
     {
         var connectionString = Environment.GetEnvironmentVariable("HANI_DB")
-            ?? "Host=localhost;Database=hani;Username=hani;Password=hani_dev";
+            ?? "Host=localhost;Port=5433;Database=hani;Username=hani;Password=hani_dev";
 
         var options = new DbContextOptionsBuilder<IdentityDbContext>()
             .UseNpgsql(connectionString)

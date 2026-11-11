@@ -14,7 +14,10 @@ internal sealed class CreateTourDepartureCommandHandler(
         CreateTourDepartureCommand request,
         CancellationToken cancellationToken)
     {
-        var offer = await offers.GetByIdAsync(request.AgencyOfferId, cancellationToken);
+        var offer = await offers.GetByIdAsync(
+            request.AgencyOfferId,
+            request.AgencyId,
+            cancellationToken);
 
         if (offer is null)
         {

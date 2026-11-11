@@ -4,6 +4,7 @@ using Hani.Modules.Supply.Domain.Departures;
 namespace Hani.Modules.Supply.Application.Commands.UpdateDeparturePrice;
 
 public sealed record UpdateDeparturePriceCommand(
+    Guid AgencyId,
     Guid DepartureId,
     RoomType RoomType,
     decimal Amount,

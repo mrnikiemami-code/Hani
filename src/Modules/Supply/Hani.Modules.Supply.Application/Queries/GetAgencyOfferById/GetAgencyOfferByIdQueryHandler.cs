@@ -11,7 +11,10 @@ internal sealed class GetAgencyOfferByIdQueryHandler(
         GetAgencyOfferByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var offer = await repository.GetByIdAsync(request.OfferId, cancellationToken);
+        var offer = await repository.GetByIdAsync(
+            request.OfferId,
+            request.AgencyId,
+            cancellationToken);
 
         if (offer is null)
         {
@@ -22,11 +25,14 @@ internal sealed class GetAgencyOfferByIdQueryHandler(
         var dto = new AgencyOfferDto(
             offer.Id,
             offer.AgencyId,
+            offer.ExternalId,
             offer.TourProductId,
             offer.Title,
             offer.BasePrice.Amount,
             offer.BasePrice.Currency,
-            offer.Status.ToString());
+            offer.Status.ToString(),
+            offer.RejectionReason,
+            offer.UpdatedAt);
 
         return Result<AgencyOfferDto>.Success(dto);
     }

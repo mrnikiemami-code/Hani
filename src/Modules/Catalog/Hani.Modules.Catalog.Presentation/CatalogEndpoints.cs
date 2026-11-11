@@ -1,4 +1,7 @@
+using System.Globalization;
 using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.AspNetCore;
+using Hani.Modules.Catalog.Application.Commands.CreateDestination;
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Catalog.Application.Commands.PublishTourProduct;
 using Hani.Modules.Catalog.Application.Queries.GetTourProductById;
@@ -15,7 +18,13 @@ public static class CatalogEndpoints
     public static IEndpointRouteBuilder MapCatalogEndpoints(this IEndpointRouteBuilder app)
     {
         var internalApi = app.MapGroup("/internal/v1/products").WithTags("Internal.Catalog");
+        var destinations = app.MapGroup("/internal/v1/destinations").WithTags("Internal.Catalog");
         var market = app.MapGroup("/market/v1/products").WithTags("Marketplace.Catalog");
+
+        destinations.MapPost("/", CreateDestinationAsync)
+            .WithName("Internal.CreateDestination")
+            .Produces<Guid>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
 
         internalApi.MapPost("/", CreateProductAsync)
             .WithName("Internal.CreateTourProduct")
@@ -33,6 +42,29 @@ public static class CatalogEndpoints
             .ProducesProblem(StatusCodes.Status404NotFound);
 
         return app;
+    }
+
+    private static async Task<IResult> CreateDestinationAsync(
+        CreateDestinationRequest request,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateDestinationCommand(
+                request.Slug,
+                request.Type,
+                request.ParentId,
+                request.Translations
+                    .Select(translation => new DestinationTranslationInput(
+                        translation.Locale,
+                        translation.Name,
+                        translation.Description))
+                    .ToArray()),
+            cancellationToken);
+
+        return result.IsSuccess
+            ? Results.Created($"/internal/v1/destinations/{result.Value}", result.Value)
+            : ToProblem(result.Error!);
     }
 
     private static async Task<IResult> CreateProductAsync(
@@ -92,12 +124,16 @@ public static class CatalogEndpoints
             _ => StatusCodes.Status500InternalServerError
         };
 
+        var locale = CultureInfo.CurrentUICulture.Name;
+
         return Results.Problem(
-            title: error.Message,
+            title: ProblemDetailsLocalizer.Title(error.Type, locale),
+            detail: error.Message,
             statusCode: statusCode,
             extensions: new Dictionary<string, object?>
             {
-                ["code"] = error.Code
+                ["code"] = error.Code,
+                ["locale"] = locale
             });
     }
 }
@@ -109,6 +145,17 @@ public sealed record TourProductTranslationRequest(
     string Description,
     string? SeoTitle = null,
     string? SeoDescription = null);
+
+public sealed record DestinationTranslationRequest(
+    string Locale,
+    string Name,
+    string? Description = null);
+
+public sealed record CreateDestinationRequest(
+    string Slug,
+    Hani.Modules.Catalog.Domain.Destinations.DestinationType Type,
+    Guid? ParentId,
+    IReadOnlyList<DestinationTranslationRequest> Translations);
 
 public sealed record CreateTourProductRequest(
     string Slug,

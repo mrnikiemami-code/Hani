@@ -24,6 +24,12 @@ internal sealed class TourProductRepository(CatalogDbContext dbContext) : ITourP
 
 internal sealed class DestinationRepository(CatalogDbContext dbContext) : IDestinationRepository
 {
+    public async Task AddAsync(Destination destination, CancellationToken cancellationToken)
+    {
+        await dbContext.Destinations.AddAsync(destination, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<Destination>> GetByIdsAsync(
         IReadOnlyCollection<Guid> ids,
         CancellationToken cancellationToken)

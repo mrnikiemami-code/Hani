@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: hani
       POSTGRES_PASSWORD: hani_dev
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - hani-postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -22,7 +22,7 @@ services:
     image: redis:7-alpine
     container_name: hani-redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - hani-redis-data:/data
     healthcheck:
@@ -38,8 +38,8 @@ services:
       RABBITMQ_DEFAULT_USER: hani
       RABBITMQ_DEFAULT_PASS: hani_dev
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5672"
+      - "15673:15672"
     volumes:
       - hani-rabbitmq-data:/var/lib/rabbitmq
     healthcheck:
@@ -55,8 +55,8 @@ services:
       ACCEPT_EULA: "Y"
       SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
     ports:
-      - "5341:5341"
-      - "5380:80"
+      - "5342:5341"
+      - "5381:80"
     volumes:
       - hani-seq-data:/data
 

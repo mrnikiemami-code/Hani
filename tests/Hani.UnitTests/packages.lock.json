@@ -2,6 +2,17 @@
   "version": 2,
   "dependencies": {
     "net10.0": {
+      "Microsoft.EntityFrameworkCore.InMemory": {
+        "type": "Direct",
+        "requested": "[10.0.15, )",
+        "resolved": "10.0.15",
+        "contentHash": "gUn1xV1AR+dum+f4unK4G48rkScxxt9TSkYsu6B2NWPCMJJjo0nMD64z9Xb5Cd7L+SVBtdrwaexao6PhS+704w==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.15",
+          "Microsoft.Extensions.Caching.Memory": "10.0.15",
+          "Microsoft.Extensions.Logging": "10.0.15"
+        }
+      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[18.11.0, )",
@@ -376,6 +387,12 @@
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.15, )"
         }
       },
+      "hani.buildingblocks.aspnetcore": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Application": "[1.0.0, )"
+        }
+      },
       "hani.buildingblocks.domain": {
         "type": "Project"
       },
@@ -430,6 +447,16 @@
         "type": "Project",
         "dependencies": {
           "Hani.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "hani.modules.identity.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Identity.Application": "[1.0.0, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.15, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.15, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
         }
       },
       "hani.modules.supply.application": {

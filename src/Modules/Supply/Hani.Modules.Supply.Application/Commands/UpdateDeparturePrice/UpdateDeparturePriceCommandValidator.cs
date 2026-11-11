@@ -6,6 +6,10 @@ public sealed class UpdateDeparturePriceCommandValidator : AbstractValidator<Upd
 {
     public UpdateDeparturePriceCommandValidator()
     {
+        RuleFor(command => command.AgencyId)
+            .NotEmpty()
+            .WithErrorCode("HANI-SUPPLY-1116");
+
         RuleFor(command => command.DepartureId)
             .NotEmpty()
             .WithErrorCode("HANI-SUPPLY-1117");

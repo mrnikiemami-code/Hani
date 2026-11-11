@@ -7,6 +7,10 @@ public sealed class UpdateDepartureAvailabilityCommandValidator
 {
     public UpdateDepartureAvailabilityCommandValidator()
     {
+        RuleFor(command => command.AgencyId)
+            .NotEmpty()
+            .WithErrorCode("HANI-SUPPLY-1115");
+
         RuleFor(command => command.DepartureId)
             .NotEmpty()
             .WithErrorCode("HANI-SUPPLY-1112");

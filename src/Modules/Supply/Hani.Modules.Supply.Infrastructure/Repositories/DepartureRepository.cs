@@ -17,6 +17,16 @@ internal sealed class DepartureRepository(SupplyDbContext dbContext) : IDepartur
         => dbContext.TourDepartures
             .FirstOrDefaultAsync(departure => departure.Id == id, cancellationToken);
 
+    public Task<TourDeparture?> GetByIdForAgencyAsync(
+        Guid id,
+        Guid agencyId,
+        CancellationToken cancellationToken)
+        => (from departure in dbContext.TourDepartures
+            join offer in dbContext.AgencyOffers on departure.AgencyOfferId equals offer.Id
+            where departure.Id == id && offer.AgencyId == agencyId
+            select departure)
+            .FirstOrDefaultAsync(cancellationToken);
+
     public async Task<IReadOnlyList<TourDeparture>> GetByOfferIdAsync(
         Guid agencyOfferId,
         CancellationToken cancellationToken)

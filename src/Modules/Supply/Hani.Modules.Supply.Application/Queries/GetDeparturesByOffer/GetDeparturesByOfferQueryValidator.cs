@@ -6,6 +6,10 @@ public sealed class GetDeparturesByOfferQueryValidator : AbstractValidator<GetDe
 {
     public GetDeparturesByOfferQueryValidator()
     {
+        RuleFor(query => query.AgencyId)
+            .NotEmpty()
+            .WithErrorCode("HANI-SUPPLY-1120");
+
         RuleFor(query => query.AgencyOfferId)
             .NotEmpty()
             .WithErrorCode("HANI-SUPPLY-1121");

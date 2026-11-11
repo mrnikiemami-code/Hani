@@ -1,4 +1,6 @@
+using System.Globalization;
 using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Supply.Application.Commands.CreateTourDeparture;
 using Hani.Modules.Supply.Application.Commands.UpdateDepartureAvailability;
 using Hani.Modules.Supply.Application.Commands.UpdateDeparturePrice;
@@ -16,7 +18,9 @@ public static class DepartureEndpoints
 {
     public static IEndpointRouteBuilder MapDepartureEndpoints(this IEndpointRouteBuilder app)
     {
-        var supplier = app.MapGroup("/supplier/v1").WithTags("Supplier");
+        var supplier = app.MapGroup("/supplier/v1")
+            .WithTags("Supplier")
+            .RequireAuthorization("Supplier");
 
         supplier.MapPost("/offers/{offerId:guid}/departures", CreateDepartureAsync)
             .WithName("Supplier.CreateTourDeparture")
@@ -46,10 +50,17 @@ public static class DepartureEndpoints
     private static async Task<IResult> CreateDepartureAsync(
         Guid offerId,
         CreateTourDepartureRequest request,
+        ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
+        if (currentTenant.TenantId is not { } agencyId)
+        {
+            return Results.Unauthorized();
+        }
+
         var command = new CreateTourDepartureCommand(
+            agencyId,
             offerId,
             request.StartDate,
             request.EndDate,
@@ -70,21 +81,37 @@ public static class DepartureEndpoints
 
     private static async Task<IResult> GetDeparturesAsync(
         Guid offerId,
+        ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new GetDeparturesByOfferQuery(offerId), cancellationToken);
+        if (currentTenant.TenantId is not { } agencyId)
+        {
+            return Results.Unauthorized();
+        }
+
+        var result = await sender.Send(
+            new GetDeparturesByOfferQuery(agencyId, offerId),
+            cancellationToken);
+
         return result.IsSuccess ? Results.Ok(result.Value) : ToProblem(result.Error!);
     }
 
     private static async Task<IResult> UpdateAvailabilityAsync(
         Guid departureId,
         UpdateDepartureAvailabilityRequest request,
+        ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
+        if (currentTenant.TenantId is not { } agencyId)
+        {
+            return Results.Unauthorized();
+        }
+
         var result = await sender.Send(
             new UpdateDepartureAvailabilityCommand(
+                agencyId,
                 departureId,
                 request.SeatsLeft,
                 request.Version),
@@ -96,11 +123,18 @@ public static class DepartureEndpoints
     private static async Task<IResult> UpdatePriceAsync(
         Guid departureId,
         UpdateDeparturePriceRequest request,
+        ICurrentTenant currentTenant,
         ISender sender,
         CancellationToken cancellationToken)
     {
+        if (currentTenant.TenantId is not { } agencyId)
+        {
+            return Results.Unauthorized();
+        }
+
         var result = await sender.Send(
             new UpdateDeparturePriceCommand(
+                agencyId,
                 departureId,
                 request.RoomType,
                 request.Amount,
@@ -123,12 +157,16 @@ public static class DepartureEndpoints
             _ => StatusCodes.Status500InternalServerError
         };
 
+        var locale = CultureInfo.CurrentUICulture.Name;
+
         return Results.Problem(
-            title: error.Message,
+            title: ProblemDetailsLocalizer.Title(error.Type, locale),
+            detail: error.Message,
             statusCode: statusCode,
             extensions: new Dictionary<string, object?>
             {
-                ["code"] = error.Code
+                ["code"] = error.Code,
+                ["locale"] = locale
             });
     }
 }

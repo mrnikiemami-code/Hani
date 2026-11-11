@@ -35,6 +35,21 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("agency_id");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("ExternalId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("external_id");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("rejection_reason");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -50,6 +65,10 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("TourProductId")
                         .HasColumnType("uuid")
                         .HasColumnName("tour_product_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "BasePrice", "Hani.Modules.Supply.Domain.AgencyOffers.AgencyOffer.BasePrice#Money", b1 =>
                         {
@@ -74,6 +93,11 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TourProductId")
                         .HasDatabaseName("ix_agency_offers_tour_product_id");
+
+                    b.HasIndex("AgencyId", "ExternalId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_agency_offers_agency_external")
+                        .HasFilter("external_id <> ''");
 
                     b.ToTable("agency_offers", "supply");
                 });

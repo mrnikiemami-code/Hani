@@ -8,6 +8,11 @@ public interface IDepartureRepository
 
     Task<TourDeparture?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
+    Task<TourDeparture?> GetByIdForAgencyAsync(
+        Guid id,
+        Guid agencyId,
+        CancellationToken cancellationToken);
+
     Task<IReadOnlyList<TourDeparture>> GetByOfferIdAsync(
         Guid agencyOfferId,
         CancellationToken cancellationToken);

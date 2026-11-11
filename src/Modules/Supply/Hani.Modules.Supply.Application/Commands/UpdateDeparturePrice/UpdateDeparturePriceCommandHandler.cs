@@ -13,7 +13,10 @@ internal sealed class UpdateDeparturePriceCommandHandler(
         UpdateDeparturePriceCommand request,
         CancellationToken cancellationToken)
     {
-        var departure = await departures.GetByIdAsync(request.DepartureId, cancellationToken);
+        var departure = await departures.GetByIdForAgencyAsync(
+            request.DepartureId,
+            request.AgencyId,
+            cancellationToken);
 
         if (departure is null)
         {

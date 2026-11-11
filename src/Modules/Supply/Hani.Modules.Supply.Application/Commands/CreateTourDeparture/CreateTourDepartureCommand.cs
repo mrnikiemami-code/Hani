@@ -9,6 +9,7 @@ public sealed record DeparturePriceInput(
     string Currency);
 
 public sealed record CreateTourDepartureCommand(
+    Guid AgencyId,
     Guid AgencyOfferId,
     DateOnly StartDate,
     DateOnly EndDate,

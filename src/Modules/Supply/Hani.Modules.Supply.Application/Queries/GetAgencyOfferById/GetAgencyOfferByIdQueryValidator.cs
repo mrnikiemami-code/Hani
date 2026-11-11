@@ -9,5 +9,9 @@ public sealed class GetAgencyOfferByIdQueryValidator : AbstractValidator<GetAgen
         RuleFor(query => query.OfferId)
             .NotEmpty()
             .WithErrorCode("HANI-SUPPLY-1007");
+
+        RuleFor(query => query.AgencyId)
+            .NotEmpty()
+            .WithErrorCode("HANI-SUPPLY-1008");
     }
 }

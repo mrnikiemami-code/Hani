@@ -1,4 +1,6 @@
+using System.Globalization;
 using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Identity.Application.Commands.CreateApiClient;
 using Hani.Modules.Identity.Application.Queries.GetAgencyById;
@@ -89,12 +91,16 @@ public static class IdentityEndpoints
             _ => StatusCodes.Status500InternalServerError
         };
 
+        var locale = CultureInfo.CurrentUICulture.Name;
+
         return Results.Problem(
-            title: error.Message,
+            title: ProblemDetailsLocalizer.Title(error.Type, locale),
+            detail: error.Message,
             statusCode: statusCode,
             extensions: new Dictionary<string, object?>
             {
-                ["code"] = error.Code
+                ["code"] = error.Code,
+                ["locale"] = locale
             });
     }
 }

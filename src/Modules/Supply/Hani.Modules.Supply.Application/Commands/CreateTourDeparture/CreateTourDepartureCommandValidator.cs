@@ -6,6 +6,10 @@ public sealed class CreateTourDepartureCommandValidator : AbstractValidator<Crea
 {
     public CreateTourDepartureCommandValidator()
     {
+        RuleFor(command => command.AgencyId)
+            .NotEmpty()
+            .WithErrorCode("HANI-SUPPLY-1100");
+
         RuleFor(command => command.AgencyOfferId)
             .NotEmpty()
             .WithErrorCode("HANI-SUPPLY-1102");

@@ -19,6 +19,11 @@ internal sealed class AgencyOfferConfiguration : IEntityTypeConfiguration<Agency
             .HasColumnName("agency_id")
             .IsRequired();
 
+        builder.Property(offer => offer.ExternalId)
+            .HasColumnName("external_id")
+            .HasMaxLength(100)
+            .IsRequired();
+
         builder.Property(offer => offer.TourProductId)
             .HasColumnName("tour_product_id")
             .IsRequired();
@@ -32,6 +37,18 @@ internal sealed class AgencyOfferConfiguration : IEntityTypeConfiguration<Agency
             .HasColumnName("status")
             .HasConversion<string>()
             .HasMaxLength(32)
+            .IsRequired();
+
+        builder.Property(offer => offer.RejectionReason)
+            .HasColumnName("rejection_reason")
+            .HasMaxLength(500);
+
+        builder.Property(offer => offer.CreatedAt)
+            .HasColumnName("created_at")
+            .IsRequired();
+
+        builder.Property(offer => offer.UpdatedAt)
+            .HasColumnName("updated_at")
             .IsRequired();
 
         builder.ComplexProperty(offer => offer.BasePrice, price =>
@@ -52,5 +69,10 @@ internal sealed class AgencyOfferConfiguration : IEntityTypeConfiguration<Agency
 
         builder.HasIndex(offer => offer.TourProductId)
             .HasDatabaseName("ix_agency_offers_tour_product_id");
+
+        builder.HasIndex(offer => new { offer.AgencyId, offer.ExternalId })
+            .IsUnique()
+            .HasFilter("external_id <> ''")
+            .HasDatabaseName("ux_agency_offers_agency_external");
     }
 }
