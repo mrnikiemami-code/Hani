@@ -143,4 +143,5 @@
 | `56a9243` | Tour Departures |
 | `d4b9465` | Auth / Upsert / Moderation / Gate |
 | `8bc804c` | XML docs / module READMEs / DocumentationTests |
+| `17b6415` | Marketplace search + compare |
 | `7df2265` | Phase roadmap + status + tasks |

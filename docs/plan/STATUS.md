@@ -69,6 +69,9 @@
 | Offer Migration | `AddOfferLifecycle` | `d4b9465` |
 | Gate Demo | `scripts/demo-phase1.ps1` | `d4b9465` |
 | Documentation | XML summary + module README + test | `8bc804c` |
+| Marketplace Search | Product search + min price + offer count | `17b6415` |
+| Marketplace Compare | Compare approved offers + agency names | `17b6415` |
+| Read Contracts | Catalog / Supply / Identity read services | `17b6415` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -171,3 +174,4 @@
 | `56a9243` | Tour Departures |
 | `d4b9465` | Auth / Upsert / Moderation / Gate |
 | `8bc804c` | XML docs / module READMEs / DocumentationTests |
+| `17b6415` | Marketplace search + compare |
