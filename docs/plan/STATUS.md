@@ -71,6 +71,9 @@
 | Documentation | XML summary + module README + test | `8bc804c` |
 | Marketplace Search | Product search + min price + offer count | `17b6415` |
 | Marketplace Compare | Compare approved offers + agency names | `17b6415` |
+| Booking Quote | pricing + 15m TTL | `422b06d` |
+| Booking Hold | atomic reserve + idempotent + release | `422b06d` |
+| Booking Migration | InitialBooking | `422b06d` |
 | Read Contracts | Catalog / Supply / Identity read services | `17b6415` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
@@ -175,3 +178,4 @@
 | `d4b9465` | Auth / Upsert / Moderation / Gate |
 | `8bc804c` | XML docs / module READMEs / DocumentationTests |
 | `17b6415` | Marketplace search + compare |
+| `422b06d` | Booking quote + hold |

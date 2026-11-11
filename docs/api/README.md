@@ -6,7 +6,7 @@
 |---|---|---|---|
 | `channel-api-v1.openapi.yaml` | Channel | `/channel/v1` | سایت/اپ آژانس |
 | `supplier-api-v1.openapi.yaml` | Supplier | `/supplier/v1` | سیستم آژانس |
-| (در PLAN) | Marketplace | `/market/v1` | مشتری نهایی |
+| `marketplace-api-v1.openapi.yaml` | Marketplace | `/market/v1` | مشتری نهایی |
 
 ## قواعد مشترک
 

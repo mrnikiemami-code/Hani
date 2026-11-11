@@ -1,0 +1,225 @@
+openapi: 3.1.0
+info:
+  title: Marketplace API — Draft v1
+  version: 1.0.0
+  description: |
+    Public marketplace reads plus quote/hold flow.
+    Booking/contract/payment endpoints are added in Phase 2.
+servers:
+  - url: https://api.example.com/market/v1
+    description: Production
+  - url: https://sandbox-api.example.com/market/v1
+    description: Sandbox
+
+tags:
+  - name: Catalog
+  - name: Booking
+
+paths:
+  /search:
+    get:
+      tags: [Catalog]
+      summary: Search published products with offer price and count
+      parameters:
+        - { name: locale, in: query, schema: { type: string, enum: [fa, en, ar], default: fa } }
+        - { name: destinationSlug, in: query, schema: { type: [string, 'null'] } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/ProductSearchItem' }
+                  page: { type: integer }
+                  pageSize: { type: integer }
+                  totalCount: { type: integer }
+                  totalPages: { type: integer }
+
+  /products/{productId}/compare:
+    get:
+      tags: [Catalog]
+      summary: Compare approved offers for one product
+      parameters:
+        - { name: productId, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: locale, in: query, schema: { type: string, enum: [fa, en, ar], default: fa } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductComparison' }
+        '404':
+          description: Product not found
+
+  /quotes:
+    post:
+      tags: [Booking]
+      summary: Create a priced quote (15 minute TTL)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateQuoteRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Quote' }
+        '409':
+          description: Not enough seats
+
+  /quotes/{quoteId}:
+    get:
+      tags: [Booking]
+      summary: Read a quote
+      parameters:
+        - { name: quoteId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Quote' }
+        '404':
+          description: Not found
+
+  /holds:
+    post:
+      tags: [Booking]
+      summary: Reserve seats for a quote (idempotent)
+      parameters:
+        - { name: Idempotency-Key, in: header, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [quoteId]
+              properties:
+                quoteId: { type: string, format: uuid }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Hold' }
+        '409':
+          description: Quote expired or not enough seats
+
+  /holds/{holdId}:
+    delete:
+      tags: [Booking]
+      summary: Release a hold and return its seats
+      parameters:
+        - { name: holdId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Released
+        '404':
+          description: Not found
+
+components:
+  schemas:
+    ProductSearchItem:
+      type: object
+      properties:
+        productId: { type: string, format: uuid }
+        slug: { type: string }
+        title: { type: string }
+        durationDays: { type: integer }
+        tourType: { type: string }
+        minPrice: { type: [number, 'null'] }
+        currency: { type: [string, 'null'] }
+        offerCount: { type: integer }
+        destinationIds:
+          type: array
+          items: { type: string, format: uuid }
+
+    ProductComparison:
+      type: object
+      properties:
+        productId: { type: string, format: uuid }
+        slug: { type: string }
+        title: { type: string }
+        summary: { type: string }
+        description: { type: string }
+        durationDays: { type: integer }
+        offers:
+          type: array
+          items: { $ref: '#/components/schemas/OfferComparison' }
+
+    OfferComparison:
+      type: object
+      properties:
+        offerId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        agencyName: { type: string }
+        title: { type: string }
+        minPrice: { type: number }
+        currency: { type: string }
+        departures:
+          type: array
+          items: { $ref: '#/components/schemas/DepartureComparison' }
+
+    DepartureComparison:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        seatsLeft: { type: integer }
+        status: { type: string }
+        prices:
+          type: array
+          items:
+            type: object
+            properties:
+              roomType: { type: string }
+              amount: { type: number }
+              currency: { type: string }
+
+    CreateQuoteRequest:
+      type: object
+      required: [departureId, roomType, adults]
+      properties:
+        departureId: { type: string, format: uuid }
+        roomType: { type: string, enum: [Double, Single, Triple, ChildWithBed, ChildWithoutBed, Infant] }
+        adults: { type: integer, minimum: 1, maximum: 10 }
+        children: { type: integer, minimum: 0, maximum: 10, default: 0 }
+        infants: { type: integer, minimum: 0, maximum: 10, default: 0 }
+
+    Quote:
+      type: object
+      properties:
+        quoteId: { type: string, format: uuid }
+        departureId: { type: string, format: uuid }
+        agencyOfferId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        roomType: { type: string }
+        adults: { type: integer }
+        children: { type: integer }
+        infants: { type: integer }
+        seats: { type: integer }
+        unitPrice: { type: number }
+        total: { type: number }
+        currency: { type: string }
+        status: { type: string, enum: [Active, Held, Expired, Converted, Cancelled] }
+        expiresAt: { type: string, format: date-time }
+
+    Hold:
+      type: object
+      properties:
+        holdId: { type: string, format: uuid }
+        quoteId: { type: string, format: uuid }
+        departureId: { type: string, format: uuid }
+        seats: { type: integer }
+        status: { type: string, enum: [Active, Released, Consumed, Expired] }
+        expiresAt: { type: string, format: date-time }

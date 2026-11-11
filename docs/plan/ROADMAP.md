@@ -69,7 +69,7 @@
 
 ---
 
-## Phase 2 ? Marketplace Read + Booking ?? In Progress (~25%)
+## Phase 2 ? Marketplace Read + Booking ?? In Progress (~40%)
 
 **هدف:** مشتری بتواند مقایسه کند و رزرو کامل انجام دهد.
 
