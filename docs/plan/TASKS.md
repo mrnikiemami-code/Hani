@@ -37,7 +37,7 @@
 | TC-023 | Moderation | ? | TC-022 | Submit/Approve/Reject | `d4b9465` |
 | TC-079 | Documentation | ✅ | TC-001 | XML summaries + module READMEs + DocumentationTests | `8bc804c` |
 | TC-080 | Config-driven i18n + IIdGenerator | ✅ | TC-014 | زبان از تنظیمات؛ UUIDv7 از interface؛ LocalizationHardcodeTests | `5b956d3` |
-| TC-081 | Central ProblemDetails + Correlation ID | ✅ | TC-080 | همه خطاها RFC 7807 + `X-Correlation-Id` + trace | این تغییر |
+| TC-081 | Central ProblemDetails + Correlation ID | ✅ | TC-080 | همه خطاها RFC 7807 + `X-Correlation-Id` + trace | `3b4c68e` |
 | TC-024 | Search projection | ? | TC-018 | search + min price + offer count | `17b6415` |
 | TC-025 | Compare API | ? | TC-024, TC-021 | offer comparison + agency names | `17b6415` |
 | TC-026 | Quote + Hold | ? | TC-025 | TTL + release + atomic reserve | `422b06d` |

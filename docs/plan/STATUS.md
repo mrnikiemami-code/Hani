@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۰ آبان ۱۴۰۵
 > **فاز فعال:** Phase 2 — Marketplace Read + Booking
-> **آخرین commit کد:** `783cd59`
+> **آخرین commit کد:** `3b4c68e`
 > **وضعیت Gate:** Phase 2 — In Progress
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -77,7 +77,7 @@
 | Read Contracts | Catalog / Supply / Identity read services | `17b6415` |
 | Localization config | زبان‌ها و عنوان خطاها از `Localization` در appsettings؛ بدون hard-code؛ `LocalizationHardcodeTests` | `5b956d3` / `783cd59` |
 | ID Generator | `IIdGenerator` + `Uuid7IdGenerator`؛ حذف `Guid.*` مستقیم از دامنه/کاربرد | `5b956d3` |
-| ProblemDetails | خروجی خطای مرکزی RFC 7807 + `X-Correlation-Id` + `traceId` | این تغییر |
+| ProblemDetails | خروجی خطای مرکزی RFC 7807 + `X-Correlation-Id` + `traceId` | `3b4c68e` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -185,3 +185,4 @@
 | `f2b7a15` | Booking/Marketplace API docs |
 | `5b956d3` | Config-driven localization + IIdGenerator |
 | `783cd59` | Localization hard-code CI gate |
+| `3b4c68e` | Central ProblemDetails + Correlation ID |
