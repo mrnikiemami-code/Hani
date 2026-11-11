@@ -89,6 +89,7 @@
 | D-72 | Module READMEs | Supply / Catalog / Identity / BuildingBlocks / Api | `8bc804c` |
 | D-73 | Documentation standard | `docs/engineering/code-documentation.md` | `8bc804c` |
 | D-74 | DocumentationTests | ? ??? | `8bc804c` |
+| D-75 | Agent documentation policy | `AGENTS.md` + Cursor + PR/DoD | AGENTS.md |
 
 ## ۳. مستندات
 

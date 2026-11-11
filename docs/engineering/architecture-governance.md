@@ -351,8 +351,11 @@ T:System.Console;Use ILogger
 - [ ] لاگ ساختاریافته + Telemetry
 - [ ] Idempotency (اگر POST مالی)
 - [ ] بدون PII/Secret
-- [ ] مستندات/ADR به‌روز
-- [ ] `scripts/verify.ps1` سبز
+- [ ] XML `<summary>` برای هر type عمومی
+- [ ] README ماژول به‌روز (API/رفتار/داده)
+- [ ] OpenAPI/ADR به‌روز
+- [ ] `STATUS.md` / `DONE.md` به‌روز
+- [ ] `scripts/verify.ps1` سبز (شامل DocumentationTests)
 
 ---
 

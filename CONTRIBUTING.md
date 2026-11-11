@@ -51,9 +51,12 @@ chore(ci): add architecture tests
 - [ ] تست واحد برای Domain/Application
 - [ ] تست Integration برای زیرساخت (در صورت تغییر)
 - [ ] ArchitectureTests سبز
+- [ ] XML `<summary>` برای هر type عمومی
+- [ ] `src/Modules/{Module}/README.md` به‌روز (در صورت تغییر API/رفتار/داده)
+- [ ] OpenAPI / ADR به‌روز (در صورت تغییر قرارداد/معماری)
+- [ ] `docs/plan/STATUS.md` و `DONE.md` به‌روز
 - [ ] لاگ ساختاریافته + Trace
 - [ ] Idempotency برای POST مالی
-- [ ] مستندات/ADR به‌روز
 - [ ] بدون Secret در کد
 - [ ] i18n برای پیام‌های کاربر
 

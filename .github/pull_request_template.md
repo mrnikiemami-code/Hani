@@ -20,7 +20,10 @@
 - [ ] OpenAPI/event contract updated if the contract changed
 - [ ] Idempotency added for financial POST
 - [ ] Logs are English with `ErrorCode`; user messages localized
-- [ ] Docs/ADR updated if architecture changed
+- [ ] Every new public type has an XML `<summary>`
+- [ ] Module README updated if API/flow/persistence changed
+- [ ] OpenAPI/ADR updated if contract/architecture changed
+- [ ] `docs/plan/STATUS.md` and `DONE.md` updated
 
 ## Tests
 

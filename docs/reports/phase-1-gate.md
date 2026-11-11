@@ -59,8 +59,8 @@ dotnet run --project src/Hani.Api --urls http://localhost:5094
 |---|---|
 | Build | ۰ warning / ۰ error |
 | Unit Tests | ۴۰ passed |
-| Architecture Tests | ۱۳ passed |
-| Total | **۵۳ passed** |
+| Architecture Tests | ۱۵ passed |
+| Total | **۵۵ passed** |
 | Migrations | Supply (۳) / Catalog (۱) / Identity (۱) |
 | Format | clean |
 | Vulnerable Packages | none |

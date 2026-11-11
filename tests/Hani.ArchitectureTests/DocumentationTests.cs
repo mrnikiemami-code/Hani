@@ -57,6 +57,28 @@ public sealed class DocumentationTests
             "Public types must have an XML <summary>. Missing: " + string.Join(", ", missing));
     }
 
+    [Fact]
+    public void Required_Documentation_Files_Should_Exist()
+    {
+        var root = FindRepositoryRoot();
+        var required = new[]
+        {
+            "AGENTS.md",
+            "docs/engineering/code-documentation.md",
+            "src/Hani.Api/README.md",
+            "src/Hani.BuildingBlocks/README.md",
+            "src/Modules/Supply/README.md",
+            "src/Modules/Catalog/README.md",
+            "src/Modules/Identity/README.md"
+        };
+
+        var missing = required
+            .Where(path => !File.Exists(Path.Combine(root, path.Replace('/', Path.DirectorySeparatorChar))))
+            .ToArray();
+
+        missing.ShouldBeEmpty("Required documentation files are missing: " + string.Join(", ", missing));
+    }
+
     private static string FindRepositoryRoot()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

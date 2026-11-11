@@ -115,6 +115,16 @@ Every module has exactly four projects:
 - Add a test for every architecture bug found in review.
 - Keep PRs small (<= 400 changed lines) and within one module.
 
+## Documentation (mandatory)
+- Every public class/interface/record/enum has an XML `<summary>` explaining its responsibility.
+- Every public interface documents its contract and method behavior.
+- Commands/Queries document their use case and side effects; endpoints document auth and main errors.
+- Update `src/Modules/{Module}/README.md` when API, flow, or persistence changes.
+- Update `docs/api/*.openapi.yaml` when a contract changes; add an ADR when architecture changes.
+- Update `docs/plan/STATUS.md`, `TASKS.md`, and `DONE.md` after every task.
+- Run `scripts/verify.ps1`; it enforces `DocumentationTests`.
+- Never commit code without documentation.
+
 ## Workflow
 - Small tasks only (<= 1 day).
 - Update `PLAN.md` / ADR before architectural changes.

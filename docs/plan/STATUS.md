@@ -69,6 +69,7 @@
 | Offer Migration | `AddOfferLifecycle` | `d4b9465` |
 | Gate Demo | `scripts/demo-phase1.ps1` | `d4b9465` |
 | Documentation | XML summary + module README + test | `8bc804c` |
+| Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
 

@@ -2399,6 +2399,10 @@ Created → Pending → Succeeded | Failed | Expired
 - هر تغییر داده: Migration + Integration Test.
 - هر تغییر API: OpenAPI Diff.
 - هر تغییر معماری: ADR Accepted.
+- هر type عمومی: XML `<summary>`.
+- هر تغییر API/رفتار/داده: README ماژول به‌روز.
+- هر تسک: `STATUS.md` + `DONE.md` به‌روز.
+- هر commit: `DocumentationTests` سبز.
 
 ### ۳۳.۳. CI Gateها (همه اجباری)
 

@@ -18,10 +18,11 @@
 ```
 1. انتخاب تسک از TASKS.md (فقط از فاز فعال)
 2. به‌روزرسانی STATUS.md: In Progress
-3. پیاده‌سازی + تست + migration + مستندات
-4. اجرای scripts/verify.ps1
-5. commit + push
-6. به‌روزرسانی STATUS.md: Done + commit hash
+3. پیاده‌سازی + تست + migration
+4. XML docs + README ماژول + OpenAPI/ADR (در صورت نیاز)
+5. اجرای scripts/verify.ps1
+6. commit + push
+7. به‌روزرسانی STATUS.md / DONE.md: Done + commit hash
 ```
 
 ## قواعد
