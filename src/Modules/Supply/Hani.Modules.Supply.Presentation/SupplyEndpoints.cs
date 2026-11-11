@@ -16,6 +16,9 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Modules.Supply.Presentation;
 
+/// <summary>
+/// Minimal API endpoints for agency offers.
+/// </summary>
 public static class SupplyEndpoints
 {
     public static IEndpointRouteBuilder MapSupplyEndpoints(this IEndpointRouteBuilder app)
@@ -231,16 +234,25 @@ public static class SupplyEndpoints
     }
 }
 
+/// <summary>
+/// HTTP request to create an agency offer.
+/// </summary>
 public sealed record CreateAgencyOfferRequest(
     Guid TourProductId,
     string Title,
     decimal BasePrice,
     string Currency);
 
+/// <summary>
+/// HTTP request to upsert an agency offer.
+/// </summary>
 public sealed record UpsertAgencyOfferRequest(
     Guid TourProductId,
     string Title,
     decimal BasePrice,
     string Currency);
 
+/// <summary>
+/// HTTP request body for rejecting an offer.
+/// </summary>
 public sealed record RejectAgencyOfferRequest(string Reason);

@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Supply.Application.Commands.SubmitAgencyOffer;
 
+/// <summary>
+/// Validation rules for submitting an offer.
+/// </summary>
 public sealed class SubmitAgencyOfferCommandValidator : AbstractValidator<SubmitAgencyOfferCommand>
 {
     public SubmitAgencyOfferCommandValidator()

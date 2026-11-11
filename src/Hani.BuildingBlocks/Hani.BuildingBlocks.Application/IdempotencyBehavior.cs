@@ -5,6 +5,9 @@ using MediatR;
 
 namespace Hani.BuildingBlocks.Application;
 
+/// <summary>
+/// MediatR behavior that replays or records idempotent command responses.
+/// </summary>
 public sealed class IdempotencyBehavior<TRequest, TResponse>(
     IIdempotencyStore store)
     : IPipelineBehavior<TRequest, TResponse>
@@ -55,5 +58,8 @@ public sealed class IdempotencyBehavior<TRequest, TResponse>(
         => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
 }
 
+/// <summary>
+/// Thrown when an idempotency key is reused with a different request.
+/// </summary>
 public sealed class IdempotencyConflictException(string key)
     : Exception($"Idempotency key '{key}' was reused with a different request.");

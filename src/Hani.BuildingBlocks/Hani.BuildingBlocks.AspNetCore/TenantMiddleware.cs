@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Hani.BuildingBlocks.AspNetCore;
 
+/// <summary>
+/// Resolves the agency tenant from the authenticated claim (or dev header).
+/// </summary>
 public sealed class TenantMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context, ICurrentTenant currentTenant)

@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hani.Modules.Supply.Infrastructure;
 
+/// <summary>
+/// Registers the module infrastructure services.
+/// </summary>
 public static class DependencyInjection
 {
     public static IServiceCollection AddSupplyInfrastructure(this IServiceCollection services)

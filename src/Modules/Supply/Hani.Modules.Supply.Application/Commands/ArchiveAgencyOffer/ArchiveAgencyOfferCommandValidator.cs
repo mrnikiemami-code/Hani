@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Supply.Application.Commands.ArchiveAgencyOffer;
 
+/// <summary>
+/// Validation rules for archiving an offer.
+/// </summary>
 public sealed class ArchiveAgencyOfferCommandValidator : AbstractValidator<ArchiveAgencyOfferCommand>
 {
     public ArchiveAgencyOfferCommandValidator()

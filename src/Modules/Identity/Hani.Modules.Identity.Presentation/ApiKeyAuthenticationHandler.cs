@@ -8,6 +8,9 @@ using Microsoft.Extensions.Options;
 
 namespace Hani.Modules.Identity.Presentation;
 
+/// <summary>
+/// ASP.NET Core authentication handler for X-Api-Key/X-Api-Secret.
+/// </summary>
 public sealed class ApiKeyAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,

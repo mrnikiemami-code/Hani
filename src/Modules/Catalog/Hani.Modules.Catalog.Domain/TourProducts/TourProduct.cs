@@ -4,6 +4,9 @@ using Hani.Modules.Catalog.Domain.TourProducts.Events;
 
 namespace Hani.Modules.Catalog.Domain.TourProducts;
 
+/// <summary>
+/// Shared canonical tour product owned by the platform, not by an agency.
+/// </summary>
 public sealed class TourProduct : AggregateRoot<Guid>
 {
     private readonly List<TourProductTranslation> _translations = [];

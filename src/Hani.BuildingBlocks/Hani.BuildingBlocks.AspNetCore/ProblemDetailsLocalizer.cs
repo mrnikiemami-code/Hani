@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Application;
 
 namespace Hani.BuildingBlocks.AspNetCore;
 
+/// <summary>
+/// Localizes RFC 7807 problem titles for FA/EN/AR.
+/// </summary>
 public static class ProblemDetailsLocalizer
 {
     public static string Title(ErrorType errorType, string? culture)

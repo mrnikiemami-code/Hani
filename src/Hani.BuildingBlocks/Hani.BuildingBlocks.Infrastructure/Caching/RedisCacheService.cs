@@ -5,6 +5,9 @@ using Microsoft.Extensions.Options;
 
 namespace Hani.BuildingBlocks.Infrastructure.Caching;
 
+/// <summary>
+/// Distributed cache implementation backed by Redis.
+/// </summary>
 public sealed class RedisCacheService(
     IDistributedCache cache,
     IOptions<CacheOptions> options) : ICacheService

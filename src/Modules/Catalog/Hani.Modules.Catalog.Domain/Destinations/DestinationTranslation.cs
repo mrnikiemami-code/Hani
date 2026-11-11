@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Domain;
 
 namespace Hani.Modules.Catalog.Domain.Destinations;
 
+/// <summary>
+/// Localized destination name and description.
+/// </summary>
 public sealed class DestinationTranslation : Entity<Guid>
 {
     private DestinationTranslation()

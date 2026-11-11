@@ -14,6 +14,9 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Modules.Supply.Presentation;
 
+/// <summary>
+/// Minimal API endpoints for departures and prices.
+/// </summary>
 public static class DepartureEndpoints
 {
     public static IEndpointRouteBuilder MapDepartureEndpoints(this IEndpointRouteBuilder app)
@@ -171,21 +174,33 @@ public static class DepartureEndpoints
     }
 }
 
+/// <summary>
+/// HTTP price item for a departure.
+/// </summary>
 public sealed record DeparturePriceRequest(
     RoomType RoomType,
     decimal Amount,
     string Currency);
 
+/// <summary>
+/// HTTP request to create a departure.
+/// </summary>
 public sealed record CreateTourDepartureRequest(
     DateOnly StartDate,
     DateOnly EndDate,
     int Capacity,
     IReadOnlyList<DeparturePriceRequest> Prices);
 
+/// <summary>
+/// HTTP request to update departure availability.
+/// </summary>
 public sealed record UpdateDepartureAvailabilityRequest(
     int SeatsLeft,
     long Version);
 
+/// <summary>
+/// HTTP request to update a departure price.
+/// </summary>
 public sealed record UpdateDeparturePriceRequest(
     RoomType RoomType,
     decimal Amount,

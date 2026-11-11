@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Domain;
 
 namespace Hani.Modules.Catalog.Domain.TourProducts;
 
+/// <summary>
+/// Ordered link between a tour product and a destination.
+/// </summary>
 public sealed class TourProductDestination : Entity<Guid>
 {
     private TourProductDestination()

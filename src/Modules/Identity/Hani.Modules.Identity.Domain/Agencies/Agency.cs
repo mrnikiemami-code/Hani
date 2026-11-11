@@ -3,6 +3,9 @@ using Hani.Modules.Identity.Domain.Agencies.Events;
 
 namespace Hani.Modules.Identity.Domain.Agencies;
 
+/// <summary>
+/// Travel agency tenant with license, city, status, and subscription validity.
+/// </summary>
 public sealed class Agency : AggregateRoot<Guid>
 {
     private Agency()

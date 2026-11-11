@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Supply.Application.Commands.CreateTourDeparture;
 
+/// <summary>
+/// Validation rules for creating a departure.
+/// </summary>
 public sealed class CreateTourDepartureCommandValidator : AbstractValidator<CreateTourDepartureCommand>
 {
     public CreateTourDepartureCommandValidator()

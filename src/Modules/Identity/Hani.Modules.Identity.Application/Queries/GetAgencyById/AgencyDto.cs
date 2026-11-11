@@ -1,5 +1,8 @@
 namespace Hani.Modules.Identity.Application.Queries.GetAgencyById;
 
+/// <summary>
+/// Agency read model returned to clients.
+/// </summary>
 public sealed record AgencyDto(
     Guid Id,
     string Slug,

@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Supply.Infrastructure.Persistence;
 
+/// <summary>
+/// EF Core context for the supply schema, including outbox/inbox.
+/// </summary>
 public sealed class SupplyDbContext(DbContextOptions<SupplyDbContext> options) : DbContext(options)
 {
     public DbSet<AgencyOffer> AgencyOffers => Set<AgencyOffer>();

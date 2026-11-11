@@ -1,5 +1,8 @@
 namespace Hani.BuildingBlocks.Domain;
 
+/// <summary>
+/// Base class for aggregate roots that collect domain events.
+/// </summary>
 public abstract class AggregateRoot<TId> : Entity<TId> where TId : notnull
 {
     private readonly List<IDomainEvent> _domainEvents = [];

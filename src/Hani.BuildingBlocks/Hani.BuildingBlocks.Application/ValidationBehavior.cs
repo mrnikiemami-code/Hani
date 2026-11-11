@@ -4,6 +4,9 @@ using MediatR;
 
 namespace Hani.BuildingBlocks.Application;
 
+/// <summary>
+/// MediatR behavior that runs FluentValidation validators before handlers.
+/// </summary>
 public sealed class ValidationBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>

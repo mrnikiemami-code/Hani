@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Identity.Application.Commands.CreateApiClient;
 
+/// <summary>
+/// Validation rules for creating an API client.
+/// </summary>
 public sealed class CreateApiClientCommandValidator : AbstractValidator<CreateApiClientCommand>
 {
     public CreateApiClientCommandValidator()

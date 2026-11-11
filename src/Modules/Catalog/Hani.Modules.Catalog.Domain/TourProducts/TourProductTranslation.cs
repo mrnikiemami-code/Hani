@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Domain;
 
 namespace Hani.Modules.Catalog.Domain.TourProducts;
 
+/// <summary>
+/// Localized marketing and SEO content for a tour product.
+/// </summary>
 public sealed class TourProductTranslation : Entity<Guid>
 {
     private TourProductTranslation()

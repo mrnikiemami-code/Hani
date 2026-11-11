@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Hani.Modules.Catalog.Infrastructure.Persistence;
 
+/// <summary>
+/// Design-time factory used by EF Core migrations.
+/// </summary>
 public sealed class CatalogDbContextFactory : IDesignTimeDbContextFactory<CatalogDbContext>
 {
     public CatalogDbContext CreateDbContext(string[] args)

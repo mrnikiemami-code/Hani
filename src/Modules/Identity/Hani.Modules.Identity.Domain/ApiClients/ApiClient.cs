@@ -3,6 +3,9 @@ using Hani.Modules.Identity.Domain.ApiClients.Events;
 
 namespace Hani.Modules.Identity.Domain.ApiClients;
 
+/// <summary>
+/// Machine client credentials for an agency (Supplier/Channel API).
+/// </summary>
 public sealed class ApiClient : AggregateRoot<Guid>
 {
     private ApiClient()

@@ -3,6 +3,9 @@ using Hani.BuildingBlocks.Application;
 
 namespace Hani.BuildingBlocks.Infrastructure.Idempotency;
 
+/// <summary>
+/// Process-local idempotency store with per-key locking.
+/// </summary>
 public sealed class InMemoryIdempotencyStore : IIdempotencyStore
 {
     private readonly ConcurrentDictionary<string, IdempotencyRecord> _records = new(StringComparer.Ordinal);

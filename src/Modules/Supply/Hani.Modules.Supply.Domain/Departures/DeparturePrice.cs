@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Domain;
 
 namespace Hani.Modules.Supply.Domain.Departures;
 
+/// <summary>
+/// Price for one room/passenger type on a departure.
+/// </summary>
 public sealed class DeparturePrice : Entity<Guid>
 {
     private DeparturePrice()

@@ -13,6 +13,9 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Modules.Catalog.Presentation;
 
+/// <summary>
+/// Minimal API endpoints for the catalog module.
+/// </summary>
 public static class CatalogEndpoints
 {
     public static IEndpointRouteBuilder MapCatalogEndpoints(this IEndpointRouteBuilder app)
@@ -138,6 +141,9 @@ public static class CatalogEndpoints
     }
 }
 
+/// <summary>
+/// HTTP request contract.
+/// </summary>
 public sealed record TourProductTranslationRequest(
     string Locale,
     string Title,
@@ -146,17 +152,26 @@ public sealed record TourProductTranslationRequest(
     string? SeoTitle = null,
     string? SeoDescription = null);
 
+/// <summary>
+/// HTTP request contract.
+/// </summary>
 public sealed record DestinationTranslationRequest(
     string Locale,
     string Name,
     string? Description = null);
 
+/// <summary>
+/// HTTP request to create a destination.
+/// </summary>
 public sealed record CreateDestinationRequest(
     string Slug,
     Hani.Modules.Catalog.Domain.Destinations.DestinationType Type,
     Guid? ParentId,
     IReadOnlyList<DestinationTranslationRequest> Translations);
 
+/// <summary>
+/// HTTP request to create a shared tour product.
+/// </summary>
 public sealed record CreateTourProductRequest(
     string Slug,
     int DurationDays,

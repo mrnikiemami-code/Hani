@@ -3,6 +3,9 @@ using MassTransit;
 
 namespace Hani.BuildingBlocks.Infrastructure.Messaging;
 
+/// <summary>
+/// MassTransit implementation of <see cref="IIntegrationEventPublisher"/>.
+/// </summary>
 public sealed class MassTransitIntegrationEventPublisher(IPublishEndpoint publishEndpoint)
     : IIntegrationEventPublisher
 {

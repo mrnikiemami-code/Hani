@@ -12,6 +12,9 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Modules.Identity.Presentation;
 
+/// <summary>
+/// Minimal API endpoints for the identity module.
+/// </summary>
 public static class IdentityEndpoints
 {
     public static IEndpointRouteBuilder MapIdentityEndpoints(this IEndpointRouteBuilder app)
@@ -105,6 +108,9 @@ public static class IdentityEndpoints
     }
 }
 
+/// <summary>
+/// HTTP request to create an agency.
+/// </summary>
 public sealed record CreateAgencyRequest(
     string Slug,
     string Name,
@@ -112,6 +118,9 @@ public sealed record CreateAgencyRequest(
     string City,
     DateOnly? SubscriptionValidUntil = null);
 
+/// <summary>
+/// HTTP request to create an API client.
+/// </summary>
 public sealed record CreateApiClientRequest(
     string Name,
     IReadOnlyList<string> Scopes);

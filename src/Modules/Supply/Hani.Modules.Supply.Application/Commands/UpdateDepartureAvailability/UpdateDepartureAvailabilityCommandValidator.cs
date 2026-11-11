@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Supply.Application.Commands.UpdateDepartureAvailability;
 
+/// <summary>
+/// Validation rules for updating departure availability.
+/// </summary>
 public sealed class UpdateDepartureAvailabilityCommandValidator
     : AbstractValidator<UpdateDepartureAvailabilityCommand>
 {

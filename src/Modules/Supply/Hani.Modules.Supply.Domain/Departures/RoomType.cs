@@ -1,5 +1,8 @@
 namespace Hani.Modules.Supply.Domain.Departures;
 
+/// <summary>
+/// Room or passenger pricing category.
+/// </summary>
 public enum RoomType
 {
     Double = 0,

@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hani.Modules.Identity.Infrastructure;
 
+/// <summary>
+/// Registers the module infrastructure services.
+/// </summary>
 public static class DependencyInjection
 {
     public static IServiceCollection AddIdentityInfrastructure(this IServiceCollection services)

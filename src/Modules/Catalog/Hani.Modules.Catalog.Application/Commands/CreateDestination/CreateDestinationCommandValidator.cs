@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Catalog.Application.Commands.CreateDestination;
 
+/// <summary>
+/// Validation rules for creating a destination.
+/// </summary>
 public sealed class CreateDestinationCommandValidator : AbstractValidator<CreateDestinationCommand>
 {
     public CreateDestinationCommandValidator()

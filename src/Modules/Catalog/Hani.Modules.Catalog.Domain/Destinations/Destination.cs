@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Domain;
 
 namespace Hani.Modules.Catalog.Domain.Destinations;
 
+/// <summary>
+/// Canonical destination (country/province/city/region).
+/// </summary>
 public sealed class Destination : AggregateRoot<Guid>
 {
     private readonly List<DestinationTranslation> _translations = [];

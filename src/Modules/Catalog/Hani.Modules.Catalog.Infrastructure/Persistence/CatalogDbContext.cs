@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Catalog.Infrastructure.Persistence;
 
+/// <summary>
+/// EF Core context for the catalog schema.
+/// </summary>
 public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options) : DbContext(options)
 {
     public DbSet<TourProduct> TourProducts => Set<TourProduct>();

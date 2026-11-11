@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hani.BuildingBlocks.Infrastructure.Messaging;
 
+/// <summary>
+/// Registers MassTransit transport and outbox.
+/// </summary>
 public static class MessagingServiceCollectionExtensions
 {
     public static IServiceCollection AddHaniMessaging<TDbContext>(

@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Identity.Infrastructure.Persistence;
 
+/// <summary>
+/// EF Core context for the identity schema.
+/// </summary>
 public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : DbContext(options)
 {
     public DbSet<Agency> Agencies => Set<Agency>();

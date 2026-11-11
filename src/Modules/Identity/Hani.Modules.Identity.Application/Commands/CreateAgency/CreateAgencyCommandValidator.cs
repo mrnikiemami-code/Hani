@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Identity.Application.Commands.CreateAgency;
 
+/// <summary>
+/// Validation rules for creating an agency.
+/// </summary>
 public sealed class CreateAgencyCommandValidator : AbstractValidator<CreateAgencyCommand>
 {
     public CreateAgencyCommandValidator()

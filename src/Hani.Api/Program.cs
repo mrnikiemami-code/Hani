@@ -1,3 +1,4 @@
+// Hani API composition root: wires modules, persistence, auth, messaging, caching, and observability.
 using System.Globalization;
 using FluentValidation;
 using Hani.BuildingBlocks.Application;
@@ -41,6 +42,9 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
+// ---------------------------------------------------------------------------
+// Host and structured logging
+// ---------------------------------------------------------------------------
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, services, configuration) =>
@@ -79,6 +83,9 @@ builder.Host.UseSerilog((context, services, configuration) =>
     }
 });
 
+// ---------------------------------------------------------------------------
+// Persistence: one DbContext per module/schema
+// ---------------------------------------------------------------------------
 var connectionString = builder.Configuration.GetConnectionString("Default")
     ?? "Host=localhost;Database=hani;Username=postgres;Password=postgres";
 
@@ -89,12 +96,18 @@ builder.Services.AddSupplyInfrastructure();
 builder.Services.AddCatalogInfrastructure();
 builder.Services.AddIdentityInfrastructure();
 
+// ---------------------------------------------------------------------------
+// Cross-cutting infrastructure: cache, messaging, tenant, idempotency, telemetry
+// ---------------------------------------------------------------------------
 builder.Services.AddHaniCache(builder.Configuration);
 builder.Services.AddHaniObservability(builder.Configuration);
 builder.Services.AddHaniMessaging<SupplyDbContext>(builder.Configuration);
 builder.Services.AddSingleton<ICurrentTenant, CurrentTenant>();
 builder.Services.AddSingleton<IIdempotencyStore, InMemoryIdempotencyStore>();
 
+// ---------------------------------------------------------------------------
+// CQRS: MediatR handlers + pipeline behaviors (log -> validate -> idempotency)
+// ---------------------------------------------------------------------------
 builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssemblies(
         typeof(CreateAgencyOfferCommand).Assembly,
@@ -105,6 +118,9 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavi
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(IdempotencyBehavior<,>));
 
+// ---------------------------------------------------------------------------
+// FluentValidation validators (explicit registration keeps startup deterministic)
+// ---------------------------------------------------------------------------
 builder.Services.AddScoped<IValidator<CreateAgencyOfferCommand>, CreateAgencyOfferCommandValidator>();
 builder.Services.AddScoped<IValidator<UpsertAgencyOfferCommand>, UpsertAgencyOfferCommandValidator>();
 builder.Services.AddScoped<IValidator<SubmitAgencyOfferCommand>, SubmitAgencyOfferCommandValidator>();
@@ -124,6 +140,9 @@ builder.Services.AddScoped<IValidator<CreateAgencyCommand>, CreateAgencyCommandV
 builder.Services.AddScoped<IValidator<CreateApiClientCommand>, CreateApiClientCommandValidator>();
 builder.Services.AddScoped<IValidator<GetAgencyByIdQuery>, GetAgencyByIdQueryValidator>();
 
+// ---------------------------------------------------------------------------
+// Authentication: API key scheme for Supplier API + authorization policies
+// ---------------------------------------------------------------------------
 builder.Services.AddAuthentication(ApiKeyAuthenticationHandler.SchemeName)
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(
         ApiKeyAuthenticationHandler.SchemeName,
@@ -136,6 +155,9 @@ builder.Services.AddAuthorization(options =>
         .RequireClaim("scope", "supplier.write"));
 });
 
+// ---------------------------------------------------------------------------
+// Localization: FA (default), EN, AR for API problem titles
+// ---------------------------------------------------------------------------
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var cultureNames = new List<string> { "fa-IR", "en-US", "ar-SA" };
@@ -152,6 +174,7 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+// Request pipeline: localization -> authentication -> tenant -> authorization
 app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseMiddleware<TenantMiddleware>();
@@ -163,4 +186,7 @@ app.MapIdentityEndpoints();
 
 app.Run();
 
+/// <summary>
+/// Entry point marker used by integration tests and tooling.
+/// </summary>
 public partial class Program;

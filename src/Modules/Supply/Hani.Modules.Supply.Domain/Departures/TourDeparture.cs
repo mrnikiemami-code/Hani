@@ -3,6 +3,9 @@ using Hani.Modules.Supply.Domain.Departures.Events;
 
 namespace Hani.Modules.Supply.Domain.Departures;
 
+/// <summary>
+/// Concrete departure of an agency offer with capacity and prices.
+/// </summary>
 public sealed class TourDeparture : AggregateRoot<Guid>
 {
     private readonly List<DeparturePrice> _prices = [];

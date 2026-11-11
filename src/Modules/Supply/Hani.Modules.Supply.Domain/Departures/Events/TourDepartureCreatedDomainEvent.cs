@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Domain;
 
 namespace Hani.Modules.Supply.Domain.Departures.Events;
 
+/// <summary>
+/// Domain event raised by an aggregate.
+/// </summary>
 public sealed record TourDepartureCreatedDomainEvent(
     Guid TourDepartureId,
     Guid AgencyOfferId) : IDomainEvent

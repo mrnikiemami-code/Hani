@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Application;
 
 namespace Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 
+/// <summary>
+/// Input translation for a tour product command.
+/// </summary>
 public sealed record TourProductTranslationInput(
     string Locale,
     string Title,
@@ -10,6 +13,9 @@ public sealed record TourProductTranslationInput(
     string? SeoTitle = null,
     string? SeoDescription = null);
 
+/// <summary>
+/// Command that creates a shared tour product with translations.
+/// </summary>
 public sealed record CreateTourProductCommand(
     string Slug,
     int DurationDays,

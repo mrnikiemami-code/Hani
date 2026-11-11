@@ -1,5 +1,8 @@
 namespace Hani.Modules.Supply.Domain.Departures;
 
+/// <summary>
+/// Thrown when a departure is updated with a stale version.
+/// </summary>
 public sealed class DepartureConcurrencyException(
     Guid departureId,
     long expectedVersion,

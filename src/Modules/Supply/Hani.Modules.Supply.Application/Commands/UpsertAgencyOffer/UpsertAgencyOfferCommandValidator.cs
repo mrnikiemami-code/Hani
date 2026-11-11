@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Supply.Application.Commands.UpsertAgencyOffer;
 
+/// <summary>
+/// Validation rules for upserting an agency offer.
+/// </summary>
 public sealed class UpsertAgencyOfferCommandValidator : AbstractValidator<UpsertAgencyOfferCommand>
 {
     public UpsertAgencyOfferCommandValidator()

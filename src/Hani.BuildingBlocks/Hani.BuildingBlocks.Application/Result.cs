@@ -1,5 +1,8 @@
 namespace Hani.BuildingBlocks.Application;
 
+/// <summary>
+/// Non-generic view over a result so infrastructure can inspect success/error.
+/// </summary>
 public interface IResult
 {
     bool IsSuccess { get; }
@@ -7,6 +10,9 @@ public interface IResult
     Error? Error { get; }
 }
 
+/// <summary>
+/// Represents struct.
+/// </summary>
 public readonly record struct Result<T> : IResult
 {
     public bool IsSuccess { get; init; }

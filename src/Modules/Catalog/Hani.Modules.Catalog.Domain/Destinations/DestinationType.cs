@@ -1,5 +1,8 @@
 namespace Hani.Modules.Catalog.Domain.Destinations;
 
+/// <summary>
+/// Kind of destination (country, province, city, region).
+/// </summary>
 public enum DestinationType
 {
     Country = 0,

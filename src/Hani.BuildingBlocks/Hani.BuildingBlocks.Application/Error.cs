@@ -1,5 +1,8 @@
 namespace Hani.BuildingBlocks.Application;
 
+/// <summary>
+/// Category of an application error, used to map HTTP status codes.
+/// </summary>
 public enum ErrorType
 {
     Failure = 0,
@@ -10,6 +13,9 @@ public enum ErrorType
     Forbidden = 5
 }
 
+/// <summary>
+/// Structured application error with a stable code and English developer message.
+/// </summary>
 public sealed record Error(string Code, string Message, ErrorType Type = ErrorType.Failure)
 {
     public static Error Validation(string code, string message) => new(code, message, ErrorType.Validation);

@@ -3,6 +3,9 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Hani.BuildingBlocks.Infrastructure.Caching;
 
+/// <summary>
+/// In-process cache implementation for tests and single-node deployments.
+/// </summary>
 public sealed class MemoryCacheService(IMemoryCache cache) : ICacheService
 {
     public Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)

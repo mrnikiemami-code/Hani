@@ -1,5 +1,8 @@
 namespace Hani.BuildingBlocks.Infrastructure.Observability;
 
+/// <summary>
+/// Logging, tracing, and metrics configuration.
+/// </summary>
 public sealed class ObservabilityOptions
 {
     public string ServiceName { get; set; } = "Hani.Api";
@@ -13,6 +16,9 @@ public sealed class ObservabilityOptions
     public MetricsOptions Metrics { get; set; } = new();
 }
 
+/// <summary>
+/// Serilog configuration.
+/// </summary>
 public sealed class LoggingOptions
 {
     public bool Enabled { get; set; } = true;
@@ -26,6 +32,9 @@ public sealed class LoggingOptions
     public bool RedactPii { get; set; } = true;
 }
 
+/// <summary>
+/// OpenTelemetry tracing configuration.
+/// </summary>
 public sealed class TracingOptions
 {
     public bool Enabled { get; set; } = true;
@@ -35,6 +44,9 @@ public sealed class TracingOptions
     public double SamplingRatio { get; set; } = 0.2;
 }
 
+/// <summary>
+/// OpenTelemetry metrics configuration.
+/// </summary>
 public sealed class MetricsOptions
 {
     public bool Enabled { get; set; } = true;

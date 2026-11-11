@@ -1,5 +1,8 @@
 namespace Hani.BuildingBlocks.Infrastructure.Caching;
 
+/// <summary>
+/// Cache provider configuration.
+/// </summary>
 public sealed class CacheOptions
 {
     public string Provider { get; set; } = "Memory";
@@ -9,6 +12,9 @@ public sealed class CacheOptions
     public RedisCacheOptions Redis { get; set; } = new();
 }
 
+/// <summary>
+/// Redis-specific cache configuration.
+/// </summary>
 public sealed class RedisCacheOptions
 {
     public string Configuration { get; set; } = "localhost:6379";

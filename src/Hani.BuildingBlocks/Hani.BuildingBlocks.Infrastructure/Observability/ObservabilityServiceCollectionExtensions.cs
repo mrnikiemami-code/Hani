@@ -6,6 +6,9 @@ using OpenTelemetry.Trace;
 
 namespace Hani.BuildingBlocks.Infrastructure.Observability;
 
+/// <summary>
+/// Registers OpenTelemetry tracing and metrics.
+/// </summary>
 public static class ObservabilityServiceCollectionExtensions
 {
     public static IServiceCollection AddHaniObservability(

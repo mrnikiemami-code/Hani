@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Application;
 
 namespace Hani.BuildingBlocks.Infrastructure.Tenancy;
 
+/// <summary>
+/// AsyncLocal implementation of <see cref="ICurrentTenant"/>.
+/// </summary>
 public sealed class CurrentTenant : ICurrentTenant
 {
     private readonly AsyncLocal<Guid?> _tenantId = new();

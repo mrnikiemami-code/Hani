@@ -1,5 +1,8 @@
 namespace Hani.BuildingBlocks.Domain;
 
+/// <summary>
+/// Base class for entities identified by a typed id.
+/// </summary>
 public abstract class Entity<TId> where TId : notnull
 {
     protected Entity(TId id) => Id = id;

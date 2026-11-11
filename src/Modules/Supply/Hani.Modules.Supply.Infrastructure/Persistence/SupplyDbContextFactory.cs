@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Hani.Modules.Supply.Infrastructure.Persistence;
 
+/// <summary>
+/// Design-time factory used by EF Core migrations.
+/// </summary>
 public sealed class SupplyDbContextFactory : IDesignTimeDbContextFactory<SupplyDbContext>
 {
     public SupplyDbContext CreateDbContext(string[] args)

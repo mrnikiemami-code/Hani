@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Hani.BuildingBlocks.Application;
 
+/// <summary>
+/// MediatR behavior that logs request start, completion, and failures.
+/// </summary>
 public sealed class LoggingBehavior<TRequest, TResponse>(
     ILogger<LoggingBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>

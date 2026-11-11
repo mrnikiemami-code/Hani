@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hani.BuildingBlocks.Infrastructure.Caching;
 
+/// <summary>
+/// Registers the configured cache provider.
+/// </summary>
 public static class CacheServiceCollectionExtensions
 {
     public static IServiceCollection AddHaniCache(

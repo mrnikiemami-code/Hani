@@ -1,5 +1,8 @@
 namespace Hani.Modules.Catalog.Application.Queries.GetTourProductById;
 
+/// <summary>
+/// Localized tour product content returned to clients.
+/// </summary>
 public sealed record TourProductTranslationDto(
     string Locale,
     string Title,
@@ -8,6 +11,9 @@ public sealed record TourProductTranslationDto(
     string? SeoTitle,
     string? SeoDescription);
 
+/// <summary>
+/// Tour product read model returned to clients.
+/// </summary>
 public sealed record TourProductDto(
     Guid Id,
     string Slug,

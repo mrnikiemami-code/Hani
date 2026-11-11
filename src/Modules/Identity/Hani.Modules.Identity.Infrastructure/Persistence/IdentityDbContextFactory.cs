@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Hani.Modules.Identity.Infrastructure.Persistence;
 
+/// <summary>
+/// Design-time factory used by EF Core migrations.
+/// </summary>
 public sealed class IdentityDbContextFactory : IDesignTimeDbContextFactory<IdentityDbContext>
 {
     public IdentityDbContext CreateDbContext(string[] args)

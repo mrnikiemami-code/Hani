@@ -3,6 +3,9 @@ using Hani.Modules.Supply.Domain.AgencyOffers.Events;
 
 namespace Hani.Modules.Supply.Domain.AgencyOffers;
 
+/// <summary>
+/// Agency-specific offer on a shared tour product.
+/// </summary>
 public sealed class AgencyOffer : AggregateRoot<Guid>
 {
     private AgencyOffer()

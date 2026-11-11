@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Supply.Application.Queries.GetAgencyOfferById;
 
+/// <summary>
+/// Validation rules for reading an offer.
+/// </summary>
 public sealed class GetAgencyOfferByIdQueryValidator : AbstractValidator<GetAgencyOfferByIdQuery>
 {
     public GetAgencyOfferByIdQueryValidator()

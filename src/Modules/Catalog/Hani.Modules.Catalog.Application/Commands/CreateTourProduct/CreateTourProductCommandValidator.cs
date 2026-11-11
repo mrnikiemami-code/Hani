@@ -2,6 +2,9 @@ using FluentValidation;
 
 namespace Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 
+/// <summary>
+/// Validation rules for creating a tour product.
+/// </summary>
 public sealed class CreateTourProductCommandValidator : AbstractValidator<CreateTourProductCommand>
 {
     public CreateTourProductCommandValidator()

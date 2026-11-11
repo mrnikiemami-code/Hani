@@ -2,6 +2,9 @@ using Hani.BuildingBlocks.Application;
 
 namespace Hani.BuildingBlocks.Infrastructure.Caching;
 
+/// <summary>
+/// No-op cache used when caching is disabled.
+/// </summary>
 public sealed class NullCacheService : ICacheService
 {
     public Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
