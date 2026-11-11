@@ -125,6 +125,71 @@ namespace Hani.Modules.Payments.Infrastructure.Persistence.Migrations
 
                     b.ToTable("payment_intents", "payment");
                 });
+
+            modelBuilder.Entity("Hani.Modules.Payments.Domain.PaymentWebhooks.PaymentWebhookEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("event_type");
+
+                    b.Property<string>("FailureReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("failure_reason");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("payload");
+
+                    b.Property<Guid>("PaymentIntentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("payment_intent_id");
+
+                    b.Property<DateTimeOffset?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("provider");
+
+                    b.Property<string>("ProviderEventId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("provider_event_id");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("received_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentIntentId")
+                        .HasDatabaseName("ix_payment_webhook_events_intent_id");
+
+                    b.HasIndex("Provider", "ProviderEventId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_payment_webhook_events_provider_event");
+
+                    b.ToTable("payment_webhook_events", "payment");
+                });
 #pragma warning restore 612, 618
         }
     }

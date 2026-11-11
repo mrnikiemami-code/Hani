@@ -1,4 +1,5 @@
 using Hani.Modules.Payments.Domain.PaymentIntents;
+using Hani.Modules.Payments.Domain.PaymentWebhooks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Payments.Infrastructure.Persistence;
@@ -12,6 +13,11 @@ public sealed class PaymentsDbContext(DbContextOptions<PaymentsDbContext> option
     /// Payment intents.
     /// </summary>
     public DbSet<PaymentIntent> PaymentIntents => Set<PaymentIntent>();
+
+    /// <summary>
+    /// Deduplicated provider webhooks.
+    /// </summary>
+    public DbSet<PaymentWebhookEvent> PaymentWebhookEvents => Set<PaymentWebhookEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

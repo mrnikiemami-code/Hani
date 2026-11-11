@@ -16,6 +16,7 @@ public static class DependencyInjection
     public static IServiceCollection AddPaymentsInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IPaymentIntentRepository, PaymentIntentRepository>();
+        services.AddScoped<IPaymentWebhookEventRepository, PaymentWebhookEventRepository>();
         services.AddSingleton<IPaymentGateway, MockPaymentGateway>();
         return services;
     }

@@ -23,3 +23,15 @@ public interface IOrderPaymentReadService
         Guid orderId,
         CancellationToken cancellationToken);
 }
+
+/// <summary>
+/// Write-side contract used by Payments after a verified success callback.
+/// </summary>
+public interface IOrderPaymentWriteService
+{
+    /// <summary>
+    /// Marks a pending-payment order as paid. Returns <c>true</c> when the order is paid
+    /// (or was already paid); <c>false</c> when the order cannot be updated.
+    /// </summary>
+    Task<bool> MarkPaidAsync(Guid orderId, CancellationToken cancellationToken);
+}

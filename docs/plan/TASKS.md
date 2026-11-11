@@ -43,7 +43,7 @@
 | TC-026 | Quote + Hold | ? | TC-025 | TTL + release + atomic reserve | `422b06d` |
 | TC-027 | Order + Contract | ✅ | TC-026 | snapshot immutable + consume hold | `f43339e` |
 | TC-028 | PaymentIntent + Gateway | ✅ | TC-027 | idempotent initiate + Hani MoR | `dc76539` |
-| TC-029 | Payment Webhook | ❌ | TC-028 | dedupe | — |
+| TC-029 | Payment Webhook | ✅ | TC-028 | dedupe + verify + Order.Paid | این تغییر |
 | TC-030 | Settlement Ledger | ❌ | TC-028 | double-entry | — |
 | TC-031 | Channel OAuth | ❌ | TC-017 | token + scope | — |
 | TC-032 | Channel Catalog/Availability | ❌ | TC-031, TC-021 | فقط Offer مجاز | — |

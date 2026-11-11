@@ -17,6 +17,8 @@
 - PaymentIntent برای هر Order یکتا است و با `Idempotency-Key` و `OrderId` تکرارپذیر است.
 - `MerchantScope` و `FundsHeldBy` روی Intent snapshot می‌شوند؛ برای checkout فعلی هر دو `Hani` هستند.
 - `PspAccountRef` از تنظیمات `Payments` خوانده می‌شود.
+- Webhookها با HMAC-SHA256 و timestamp تأیید می‌شوند و با جدول `payment_webhook_events` و کلید یکتای `(provider, provider_event_id)` dedupe می‌شوند.
+- `payment.succeeded` باعث `Order.MarkPaid` می‌شود؛ `payment.failed` فقط Intent را Failed می‌کند.
 
 ## پیامدها
 

@@ -96,6 +96,7 @@
 | D-79 | Central ProblemDetails + Correlation ID | `HaniProblemDetails` + `CorrelationIdMiddleware` + OpenAPI | `3b4c68e` |
 | D-80 | Order + immutable Contract | Order/Contract aggregates + order endpoints + `AddOrdersAndContracts` | `f43339e` |
 | D-81 | PaymentIntent + Gateway | Payments module + `InitialPayments` + Mock gateway | `dc76539` |
+| D-82 | Payment webhook + verify | HMAC verify + `payment_webhook_events` + Order.Paid | این تغییر |
 
 ## ۳. مستندات
 
@@ -115,9 +116,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۷۴ passed |
+| Unit Tests | ۷۸ passed |
 | Architecture Tests | ۲۸ passed |
-| Total | **۱۰۲ passed** |
+| Total | **۱۰۶ passed** |
 | Migrations | Supply + Catalog + Identity + Booking + Payments |
 | Format | clean |
 | Vulnerable Packages | none |

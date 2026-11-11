@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
+using Hani.Modules.Payments.Application.Commands.HandlePaymentWebhook;
 using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -33,6 +34,12 @@ public static class PaymentEndpoints
             .Produces<PaymentIntentDto>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 
+        market.MapPost("/webhook/{provider}", HandleWebhookAsync)
+            .WithName("Marketplace.PaymentWebhook")
+            .Produces<PaymentWebhookResultDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
         return app;
     }
 
@@ -64,6 +71,24 @@ public static class PaymentEndpoints
     {
         var result = await sender.Send(
             new GetPaymentIntentQuery(paymentIntentId),
+            cancellationToken);
+
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    private static async Task<IResult> HandleWebhookAsync(
+        string provider,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var payload = await reader.ReadToEndAsync(cancellationToken);
+        var signature = context.Request.Headers["X-Payment-Signature"].FirstOrDefault();
+        var timestamp = context.Request.Headers["X-Payment-Timestamp"].FirstOrDefault();
+
+        var result = await sender.Send(
+            new HandlePaymentWebhookCommand(provider, payload, signature, timestamp),
             cancellationToken);
 
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);

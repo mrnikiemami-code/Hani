@@ -40,6 +40,7 @@ using Hani.Modules.Marketplace.Infrastructure;
 using Hani.Modules.Marketplace.Presentation;
 using Hani.Modules.Payments.Application;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
+using Hani.Modules.Payments.Application.Commands.HandlePaymentWebhook;
 using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
 using Hani.Modules.Payments.Infrastructure;
 using Hani.Modules.Payments.Infrastructure.Persistence;
@@ -185,6 +186,7 @@ builder.Services.AddScoped<IValidator<GetOrderQuery>, GetOrderQueryValidator>();
 builder.Services.AddScoped<IValidator<GetContractQuery>, GetContractQueryValidator>();
 builder.Services.AddScoped<IValidator<CreatePaymentIntentCommand>, CreatePaymentIntentCommandValidator>();
 builder.Services.AddScoped<IValidator<GetPaymentIntentQuery>, GetPaymentIntentQueryValidator>();
+builder.Services.AddScoped<IValidator<HandlePaymentWebhookCommand>, HandlePaymentWebhookCommandValidator>();
 
 // ---------------------------------------------------------------------------
 // Authentication: API key scheme for Supplier API + authorization policies

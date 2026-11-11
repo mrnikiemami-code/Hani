@@ -1,4 +1,5 @@
 using Hani.Modules.Payments.Domain.PaymentIntents;
+using Hani.Modules.Payments.Domain.PaymentWebhooks;
 
 namespace Hani.Modules.Payments.Application.Abstractions;
 
@@ -21,6 +22,27 @@ public sealed record PaymentGatewayResponse(
     string RedirectUrl);
 
 /// <summary>
+/// Raw webhook request sent to a provider adapter for signature verification and parsing.
+/// </summary>
+public sealed record PaymentWebhookRequest(
+    string Provider,
+    string Payload,
+    string? Signature,
+    string? Timestamp);
+
+/// <summary>
+/// Verified and parsed provider webhook message.
+/// </summary>
+public sealed record PaymentWebhookMessage(
+    string Provider,
+    string ProviderEventId,
+    Guid PaymentIntentId,
+    string ProviderRef,
+    string EventType,
+    DateTimeOffset OccurredAt,
+    string Payload);
+
+/// <summary>
 /// Port for PSP adapters. Production adapters must never store card data.
 /// </summary>
 public interface IPaymentGateway
@@ -31,6 +53,11 @@ public interface IPaymentGateway
     Task<PaymentGatewayResponse> InitiateAsync(
         PaymentGatewayRequest request,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Verifies the provider signature and parses the webhook payload.
+    /// </summary>
+    PaymentWebhookMessage VerifyWebhook(PaymentWebhookRequest request);
 }
 
 /// <summary>
@@ -52,6 +79,30 @@ public interface IPaymentIntentRepository
     /// Returns the intent for an order, or <c>null</c>.
     /// </summary>
     Task<PaymentIntent?> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Persists pending changes.
+    /// </summary>
+    Task SaveChangesAsync(CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Persistence abstraction for deduplicated provider webhooks.
+/// </summary>
+public interface IPaymentWebhookEventRepository
+{
+    /// <summary>
+    /// Adds a webhook event and saves changes.
+    /// </summary>
+    Task AddAsync(PaymentWebhookEvent webhookEvent, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns a webhook event by provider and provider event id, or <c>null</c>.
+    /// </summary>
+    Task<PaymentWebhookEvent?> GetAsync(
+        string provider,
+        string providerEventId,
+        CancellationToken cancellationToken);
 
     /// <summary>
     /// Persists pending changes.

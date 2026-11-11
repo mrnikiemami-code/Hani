@@ -29,4 +29,9 @@ public sealed class PaymentOptions
     /// Base URL the gateway redirects the traveler to after checkout.
     /// </summary>
     public string ReturnUrlBase { get; set; } = string.Empty;
+
+    /// <summary>
+    /// HMAC secret used to verify webhook signatures.
+    /// </summary>
+    public string WebhookSecret { get; set; } = string.Empty;
 }
