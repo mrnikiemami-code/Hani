@@ -20,21 +20,21 @@
 | TC-011 | Cache abstraction | ✅ | — | Memory/Redis/None | `98ab18d` |
 | TC-012 | MassTransit + Outbox | ⚠️ | TC-011 | wired؛ Outbox خاموش | `ab3b2e7` |
 | TC-013 | TenantContext | ✅ | — | تست ایزولاسیون پایه | `98ab18d` |
-| TC-014 | Localization foundation | ⚠️ | — | کد خطا دارد؛ resx ندارد | `825ed39` |
+| TC-014 | Localization foundation | ? | ? | code + localized title FA/EN/AR | `d4b9465` |
 
-## Phase 1 — Core Domain 🚧
+## Phase 1 ? Core Domain ? (Gate Passed)
 
 | ID | تسک | وضعیت | وابستگی | DoD | Commit |
 |---|---|---|---|---|---|
 | TC-015 | Agency + User/Role | ⚠️ | TC-013 | Agency ✅ / User,Role ❌ | `af5b415` |
-| TC-016 | ApiClient + Scope | ⚠️ | TC-015 | ساخت کلاینت ✅ / enforcement ❌ | `af5b415` |
-| TC-017 | API Key Auth + Tenant isolation | ⏳ | TC-016 | 401/403 + تست | — |
+| TC-016 | ApiClient + Scope | ? | TC-015 | ???? ?????? + enforcement | `d4b9465` |
+| TC-017 | API Key Auth + Tenant isolation | ? | TC-016 | 401/403 + demo | `d4b9465` |
 | TC-018 | TourProduct + Translation | ✅ | TC-015 | CRUD + publish | `9fa5a3e` |
 | TC-019 | Destination / Hotel / Attraction / Visa | ⚠️ | TC-018 | Destination ✅ / بقیه ❌ | `9fa5a3e` |
-| TC-020 | AgencyOffer CRUD | ⚠️ | TC-018 | Create/Get ✅ / Update/Delete ❌ | `825ed39` |
+| TC-020 | AgencyOffer CRUD | ? | TC-018 | Upsert + Archive + Moderation | `d4b9465` |
 | TC-021 | Departure + Price + Capacity | ✅ | TC-020 | سانس + ظرفیت + قیمت + Concurrency | `56a9243` |
-| TC-022 | Supplier upsert + idempotency | ⏳ | TC-021 | upsert ایمن | — |
-| TC-023 | Moderation | ⏳ | TC-022 | approve/reject | — |
+| TC-022 | Supplier upsert + idempotency | ? | TC-021 | upsert + Idempotency-Key | `d4b9465` |
+| TC-023 | Moderation | ? | TC-022 | Submit/Approve/Reject | `d4b9465` |
 | TC-024 | Search projection | ❌ | TC-018 | ایندکس جستجو | — |
 | TC-025 | Compare API | ❌ | TC-024, TC-021 | مقایسه چند آژانس | — |
 | TC-026 | Quote + Hold | ❌ | TC-025 | TTL + release | — |

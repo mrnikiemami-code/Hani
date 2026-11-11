@@ -72,6 +72,19 @@
 | D-55 | Price API | `/supplier/v1/departures/{id}/prices` | `56a9243` |
 | D-56 | Departure Migration | `AddTourDepartures` | `56a9243` |
 | D-57 | Departure Unit Tests | ۶ تست | `56a9243` |
+| D-58 | Supplier Upsert | `PUT /supplier/v1/offers/{externalId}` | `d4b9465` |
+| D-59 | ExternalId + unique index | `agency_offers.external_id` | `d4b9465` |
+| D-60 | Offer Lifecycle | Submit / Approve / Reject / Archive | `d4b9465` |
+| D-61 | API Key Auth | `X-Api-Key` + `X-Api-Secret` | `d4b9465` |
+| D-62 | Tenant Isolation | claim-based + 401/404 demo | `d4b9465` |
+| D-63 | Localized Errors | FA/EN/AR titles + code | `d4b9465` |
+| D-64 | Destination API | `POST /internal/v1/destinations` | `d4b9465` |
+| D-65 | Offer Migration | `AddOfferLifecycle` | `d4b9465` |
+| D-66 | Auth Unit Tests | 3 tests | `d4b9465` |
+| D-67 | Localization Tests | 4 tests | `d4b9465` |
+| D-68 | Lifecycle Tests | 5 tests | `d4b9465` |
+| D-69 | Phase 1 Demo | `scripts/demo-phase1.ps1` | `d4b9465` |
+| D-70 | Phase 1 Gate Report | `docs/reports/phase-1-gate.md` | `d4b9465` |
 
 ## ۳. مستندات
 
@@ -91,9 +104,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۲۸ passed |
+| Unit Tests | ۴۰ passed |
 | Architecture Tests | ۱۳ passed |
-| Total | **۴۱ passed** |
+| Total | **۵۳ passed** |
 | Migrations | Supply + Catalog + Identity |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -108,12 +121,10 @@
 |---|---|---|
 | Idempotency | InMemory + Behavior | Postgres/Redis پایدار |
 | MassTransit | wired + Outbox entities | Outbox فعال + Consumer |
-| Localization | کد خطا | resx FA/EN/AR |
-| Supplier API | Create/Get | Upsert + Availability + Moderation |
-| AgencyOffer | Create/Get | Update/Delete |
+| Localization | عنوان محلی FA/EN/AR | resx per-code (Phase 5) |
 | Identity | Agency + ApiClient | User + Role + JWT |
 | Catalog | TourProduct + Destination | Hotel + Attraction + Visa |
-| Tenant | Context + Middleware | تست ایزولاسیون DB |
+| Tenant | Context + Middleware + demo | تست Integration DB |
 
 ## ۶. Commitهای کد
 
@@ -125,4 +136,5 @@
 | `9fa5a3e` | Catalog |
 | `af5b415` | Identity |
 | `56a9243` | Tour Departures |
+| `d4b9465` | Auth / Upsert / Moderation / Gate |
 | `7df2265` | Phase roadmap + status + tasks |

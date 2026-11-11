@@ -30,7 +30,7 @@
 
 ---
 
-## Phase 1 — Core Domain: Catalog + Identity + Supply 🚧
+## Phase 1 — Core Domain: Catalog + Identity + Supply ✅
 
 **هدف:** یک آژانس بتواند محصول تور بسازد، پیشنهاد بدهد و داده پایه را از API بخواند.
 
@@ -65,11 +65,11 @@
 8. درخواست tenant A به Offer tenant B → 404/403
 9. `verify.ps1` سبز
 
-**وضعیت:** 🚧 در حال انجام (~۶۰٪)
+**وضعیت:** ✅ Gate Passed — گزارش: [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 
 ---
 
-## Phase 2 — Marketplace Read + Booking
+## Phase 2 — Marketplace Read + Booking ⏳ Next (not started)
 
 **هدف:** مشتری بتواند مقایسه کند و رزرو کامل انجام دهد.
 

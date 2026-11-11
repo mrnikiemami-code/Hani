@@ -14,10 +14,13 @@
 
 ## وضعیت
 
-🚧 **Phase 0 انجام شد — Phase 1 در حال انجام**
+✅ **Phase 1 Gate Passed — Phase 2 شروع نشده (در انتظار بازبینی)**
 
 - Solution + `BuildingBlocks` + ماژول‌های `Supply`، `Catalog` و `Identity`
-- ArchitectureTests (۱۳ تست)، UnitTests (۲۸ تست)
+- ArchitectureTests (۱۳ تست)، UnitTests (۴۰ تست)
+- Supplier API با API Key + Tenant Isolation
+- Upsert + Moderation + Departure/Price/Capacity
+- گزارش Gate: [`docs/reports/phase-1-gate.md`](docs/reports/phase-1-gate.md)
 - Serilog + OpenTelemetry با Toggle
 - Cache (Memory/Redis/None) + TenantContext + Idempotency
 - MassTransit 8.5.12 + Outbox/Inbox + Migration

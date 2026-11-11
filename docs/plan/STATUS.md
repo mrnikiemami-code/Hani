@@ -1,9 +1,10 @@
 # Hani — STATUS (وضعیت زنده)
 
-> **تاریخ:** ۱۹ آبان ۱۴۰۵
-> **فاز فعال:** Phase 1 — Core Domain
-> **آخرین commit کد:** `af5b415`
-> **وضعیت Gate:** باز
+> **تاریخ:** ۲۰ آبان ۱۴۰۵
+> **فاز فعال:** هیچ — Phase 1 بسته شد
+> **آخرین commit کد:** `d4b9465`
+> **وضعیت Gate:** ✅ PASSED
+> **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
 ---
@@ -13,8 +14,8 @@
 | فاز | عنوان | وضعیت | پیشرفت |
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
-| 1 | Core Domain: Catalog + Identity + Supply | 🚧 In Progress | ~۶۰٪ |
-| 2 | Marketplace Read + Booking | ⏳ Next | 0% |
+| 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
+| 2 | Marketplace Read + Booking | ⏳ Next (not started) | 0% |
 | 3 | Channel + Billing + Settlement | ⏳ Planned | 0% |
 | 4 | Flights | ⏳ Planned | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Planned | 0% |
@@ -40,7 +41,7 @@
 
 ---
 
-## ۳. Phase 1 — In Progress 🚧
+## ۳. Phase 1 — Done ✅ (Gate Passed)
 
 ### انجام‌شده
 
@@ -58,20 +59,25 @@
 | Departure Domain | TourDeparture + Price + Capacity + Concurrency | `56a9243` |
 | Departure API | Create/List/Availability/Price | `56a9243` |
 | Departure Migration | `AddTourDepartures` | `56a9243` |
+| Supplier Upsert | `PUT /offers/{externalId}` + Idempotency | `d4b9465` |
+| Moderation | Submit / Approve / Reject | `d4b9465` |
+| Archive Offer | `DELETE /offers/{id}` | `d4b9465` |
+| API Key Auth | `X-Api-Key` + `X-Api-Secret` + scope | `d4b9465` |
+| Tenant Isolation | claim + 401/404 | `d4b9465` |
+| Localized Errors | عنوان FA/EN/AR + code | `d4b9465` |
+| Destination API | `POST /internal/v1/destinations` | `d4b9465` |
+| Offer Migration | `AddOfferLifecycle` | `d4b9465` |
+| Gate Demo | `scripts/demo-phase1.ps1` | `d4b9465` |
 
-### ناقص / باقی‌مانده
+### خارج از Gate (به فاز بعد منتقل شد)
 
-| مورد | وضعیت | تسک |
-|---|---|---|
-| Departure + Price + Capacity | ✅ | TC-021 |
-| Supplier upsert + idempotency | ⚠️ فقط Create/Get | TC-022 |
-| Moderation | ❌ | TC-023 |
-| API Key Authentication | ❌ | TC-017 |
-| Tenant isolation integration test | ❌ | TC-013A |
-| Error resources FA/EN/AR | ⚠️ فقط کد | TC-014A |
-| Update/Delete AgencyOffer | ❌ | TC-020 |
-| User + Role | ❌ | TC-015 (باقی) |
-| Hotel / Attraction / Visa | ❌ | TC-019 (باقی) |
+| مورد | فاز مقصد |
+|---|---|
+| User + Role + JWT | Phase 2/3 |
+| Hotel / Attraction / Visa | Phase 5 |
+| ترجمه per-code با resx کامل | Phase 5 |
+| Postgres Idempotency پایدار | Phase 2 |
+| Outbox فعال + Consumer | Phase 2 |
 
 ---
 
@@ -82,18 +88,24 @@
 | POST | `/internal/v1/agencies` | ✅ |
 | GET | `/internal/v1/agencies/{id}` | ✅ |
 | POST | `/internal/v1/agencies/{id}/api-clients` | ✅ |
+| POST | `/internal/v1/destinations` | ✅ |
 | POST | `/internal/v1/products` | ✅ |
 | POST | `/internal/v1/products/{id}/publish` | ✅ |
 | GET | `/market/v1/products/{id}` | ✅ |
-| POST | `/supplier/v1/offers` | ✅ (Create) |
+| POST | `/supplier/v1/offers` | ✅ |
+| PUT | `/supplier/v1/offers/{externalId}` | ✅ (Idempotent) |
 | GET | `/supplier/v1/offers/{id}` | ✅ |
+| POST | `/supplier/v1/offers/{id}/submit` | ✅ |
+| DELETE | `/supplier/v1/offers/{id}` | ✅ (Archive) |
+| POST | `/internal/v1/offers/{id}/approve` | ✅ |
+| POST | `/internal/v1/offers/{id}/reject` | ✅ |
 | POST | `/supplier/v1/offers/{id}/departures` | ✅ |
 | GET | `/supplier/v1/offers/{id}/departures` | ✅ |
 | PATCH | `/supplier/v1/departures/{id}/availability` | ✅ |
 | PUT | `/supplier/v1/departures/{id}/prices` | ✅ |
 | GET | `/health` | ✅ |
 
-> هیچ‌کدام از این endpointها فعلاً احراز هویت اجباری ندارند. این در Phase 1 Gate بسته می‌شود.
+> Supplier API با `X-Api-Key` + `X-Api-Secret` و scope `supplier.write` محافظت می‌شود.
 
 ---
 
@@ -102,10 +114,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۲۸ passed |
+| Unit Tests | ۴۰ passed |
 | Architecture Tests | ۱۳ passed |
-| Total | **۴۱ passed** |
-| Migrations | Supply / Catalog / Identity |
+| Total | **۵۳ passed** |
+| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -114,32 +126,34 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** هیچ (آماده شروع)
-**تسک بعدی:** `TC-022 — Supplier upsert + Idempotency`
+**تسک فعال:** هیچ — **توقف برای بازبینی کاربر**
+**Phase 2:** شروع نشده
 
-### ۵ تسک بعدی
+### ۵ تسک اول Phase 2 (پس از تأیید)
 
 | ترتیب | تسک | وابستگی | خروجی |
 |---|---|---|---|
-| 1 | TC-022 Supplier upsert + idempotency | TC-021 | upsert ایمن |
-| 2 | TC-017 API Key Auth + tenant isolation | TC-016 | 401/403 |
-| 3 | TC-023 Moderation | TC-022 | approve/reject |
-| 4 | TC-020 Update/Delete Offer | TC-020 | CRUD کامل |
-| 5 | TC-014A Error resources FA/EN/AR | TC-014 | پیام‌های محلی |
+| 1 | TC-024 Search projection | Phase 1 Gate | ایندکس جستجو |
+| 2 | TC-025 Compare API | TC-024, TC-021 | مقایسه چند آژانس |
+| 3 | TC-026 Quote + Hold | TC-025 | TTL + release |
+| 4 | TC-027 Order + Contract | TC-026 | snapshot immutable |
+| 5 | TC-028 PaymentIntent + Gateway | TC-027 | پرداخت Hani |
 
 ---
 
 ## ۷. Phase 1 Gate
 
-- [ ] Agency → ApiClient → Product → Offer → Publish → Query (دمو)
-- [ ] API Key اجباری روی Supplier API
-- [ ] Tenant isolation test
+- [x] Agency → ApiClient → Product → Offer → Publish → Query (دمو)
+- [x] API Key اجباری روی Supplier API
+- [x] Tenant isolation test
 - [x] Departure + Price + Capacity (`56a9243`)
-- [ ] Supplier upsert idempotent
-- [ ] Moderation approve/reject
-- [ ] Error resources FA/EN/AR
-- [ ] `scripts/verify.ps1` سبز
-- [ ] STATUS.md و TASKS.md به‌روز
+- [x] Supplier upsert idempotent
+- [x] Moderation approve/reject
+- [x] خطاهای کددار + عنوان محلی FA/EN/AR
+- [x] `scripts/verify.ps1` سبز
+- [x] STATUS.md و TASKS.md به‌روز
+
+**نتیجه:** ✅ **PASSED** — گزارش: [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 
 ---
 
@@ -153,3 +167,4 @@
 | `9fa5a3e` | Catalog |
 | `af5b415` | Identity |
 | `56a9243` | Tour Departures |
+| `d4b9465` | Auth / Upsert / Moderation / Gate |

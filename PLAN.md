@@ -2648,8 +2648,8 @@ logger.LogWarning(
 | فاز | عنوان | وضعیت |
 |---|---|---|
 | ۰ | Foundation & Governance | ✅ Done |
-| ۱ | Core Domain: Catalog + Identity + Supply | 🚧 In Progress |
-| ۲ | Marketplace Read + Booking | ⏳ Next |
+| ۱ | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed |
+| ۲ | Marketplace Read + Booking | ⏳ Next (not started) |
 | ۳ | Channel + Billing + Settlement | ⏳ Planned |
 | ۴ | Flights | ⏳ Planned |
 | ۵ | Content + Hotels + Visa + SEO/i18n | ⏳ Planned |
@@ -2660,33 +2660,27 @@ logger.LogWarning(
 **انجام‌شده:**
 - Phase 0 کامل
 - Catalog (TourProduct/Translation/Destination/Publish)
-- Identity (Agency/ApiClient/Secret)
-- Supply (AgencyOffer Create/Get)
+- Identity (Agency/ApiClient/Secret + API Key Auth)
+- Supply (AgencyOffer + Departure + Price + Capacity + Moderation + Upsert)
 - Messaging/Outbox/Cache/Tenant/Observability/Docker
-- ۲۲ Unit + ۱۳ Architecture Test
+- ۴۰ Unit + ۱۳ Architecture Test
+- دموی Phase 1: `scripts/demo-phase1.ps1`
 
-**باقی‌مانده در Phase 1:**
-- Departure + Price + Capacity
-- Supplier upsert + idempotency
-- Moderation
-- API Key Auth + Tenant isolation
-- Error resources FA/EN/AR
-- Update/Delete Offer
-
-**تسک بعدی:** `TC-021 — Departure + Price + Capacity`
+**Phase 1 Gate:** ✅ PASSED — گزارش: [`docs/reports/phase-1-gate.md`](docs/reports/phase-1-gate.md)
+**Phase 2:** شروع نشده — در انتظار بازبینی
 
 ### ۳۶.۴. Phase 1 Gate
 
-- [ ] دموی Agency → Client → Product → Offer → Publish → Query
-- [ ] API Key اجباری
-- [ ] Tenant isolation
-- [ ] Departure/Price/Capacity
-- [ ] Upsert idempotent
-- [ ] Moderation
-- [ ] Error resources
-- [ ] `verify.ps1` سبز
+- [x] دموی Agency → Client → Product → Offer → Publish → Query
+- [x] API Key اجباری
+- [x] Tenant isolation
+- [x] Departure/Price/Capacity
+- [x] Upsert idempotent
+- [x] Moderation
+- [x] خطاهای کددار + عنوان محلی FA/EN/AR
+- [x] `verify.ps1` سبز
 
-> تا بسته‌شدن این Gate، هیچ تسکی از Phase 2 شروع نمی‌شود.
+> **Gate بسته شد.** Phase 2 تا تأیید بازبینی شروع نمی‌شود.
 
 ---
 
