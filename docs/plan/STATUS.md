@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 1 — Tour Experience & Pricing
-> **آخرین commit کد:** `3a8992b`
+> **آخرین commit کد:** `99d42ea`
 > **وضعیت Gate:** Gate 1 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
@@ -87,7 +87,7 @@
 | Settlement | Commission Rule + CommissionEntry + Double-entry Ledger | `0dd6fbe` |
 | Pricing architecture | ADR-0024: چندارزی + VAT/Duty + BookingMode + تفکیک MoR | docs only |
 | Lastsecond gap analysis | گزارش بررسی صفحات و اولویت‌بندی شکاف‌ها | `docs/reports/lastsecond-gap-analysis-2026-11-12.md` |
-| Tour Content Model | Itinerary/Meals/Services/Policies/RequiredItems چندزبانه (GAP-01) | این تغییر |
+| Tour Content Model | Itinerary/Meals/Services/Policies/RequiredItems چندزبانه (GAP-01) | `99d42ea` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -211,3 +211,4 @@
 | `7b85652` | Payment webhook verification and dedupe |
 | `0dd6fbe` | Settlement ledger and commission accrual |
 | `3a8992b` | Lastsecond baseline lock and gate checks |
+| `99d42ea` | Multilingual tour content model (TC-083) |
