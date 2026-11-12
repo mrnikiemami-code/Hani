@@ -83,6 +83,7 @@
 | Payment Webhook | HMAC verify + dedupe + Order.Paid | `7b85652` |
 | Settlement | Commission Rule + CommissionEntry + Double-entry Ledger | `0dd6fbe` |
 | Pricing architecture | ADR-0024: چندارزی + VAT/Duty + BookingMode + تفکیک MoR | docs only |
+| Lastsecond gap analysis | گزارش بررسی صفحات و اولویت‌بندی شکاف‌ها | `docs/reports/lastsecond-gap-analysis-2026-11-12.md` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
