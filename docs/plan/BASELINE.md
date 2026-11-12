@@ -36,8 +36,8 @@
 | GAP | قابلیت | اولویت | Gate | Task | وضعیت |
 |---|---|---|---|---|---|
 | GAP-01 | Tour Content Model | P0 | 1 | TC-083 | Done |
-| GAP-02 | Accommodation Options | P0 | 1 | TC-084 | Planned |
-| GAP-03 | Flight Details | P0 | 1 | TC-084 | Planned |
+| GAP-02 | Accommodation Options | P0 | 1 | TC-084 | Done |
+| GAP-03 | Flight Details | P0 | 1 | TC-084 | Done |
 | GAP-04 | Faceted Search | P0 | 2 | TC-085 | Planned |
 | GAP-05 | Booking/Request Modes | P0 | 4 | TC-088 | Planned |
 | GAP-06 | Lead/RFQ | P0 | 4 | TC-088 | Planned |

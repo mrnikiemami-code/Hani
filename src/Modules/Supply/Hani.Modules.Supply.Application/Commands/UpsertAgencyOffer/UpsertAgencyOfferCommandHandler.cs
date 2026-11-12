@@ -35,6 +35,25 @@ internal sealed class UpsertAgencyOfferCommandHandler(
             try
             {
                 existing.UpdateDetails(request.Title, price);
+
+                if (request.AccommodationOptions is not null)
+                {
+                    existing.ReplaceAccommodationOptions(
+                        ids,
+                        AgencyOfferOptions.MapAccommodation(request.AccommodationOptions)!);
+                }
+
+                if (request.FlightOptions is not null)
+                {
+                    existing.ReplaceFlightOptions(
+                        ids,
+                        AgencyOfferOptions.MapFlights(request.FlightOptions)!);
+                }
+            }
+            catch (ArgumentException exception)
+            {
+                return Result<UpsertAgencyOfferResult>.Failure(
+                    Error.Validation("HANI-SUPPLY-1301", exception.Message));
             }
             catch (InvalidOperationException exception)
             {
@@ -55,6 +74,28 @@ internal sealed class UpsertAgencyOfferCommandHandler(
             request.Title,
             price,
             externalId);
+
+        try
+        {
+            if (request.AccommodationOptions is not null)
+            {
+                offer.ReplaceAccommodationOptions(
+                    ids,
+                    AgencyOfferOptions.MapAccommodation(request.AccommodationOptions)!);
+            }
+
+            if (request.FlightOptions is not null)
+            {
+                offer.ReplaceFlightOptions(
+                    ids,
+                    AgencyOfferOptions.MapFlights(request.FlightOptions)!);
+            }
+        }
+        catch (ArgumentException exception)
+        {
+            return Result<UpsertAgencyOfferResult>.Failure(
+                Error.Validation("HANI-SUPPLY-1301", exception.Message));
+        }
 
         await offers.AddAsync(offer, cancellationToken);
 

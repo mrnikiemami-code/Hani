@@ -7,6 +7,8 @@ using Hani.Modules.Supply.Application.Commands.RejectAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.SubmitAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.UpsertAgencyOffer;
 using Hani.Modules.Supply.Application.Queries.GetAgencyOfferById;
+using Hani.Modules.Supply.Domain.AgencyOffers;
+using Hani.Modules.Supply.Domain.Departures;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -88,7 +90,30 @@ public static class SupplyEndpoints
                 request.TourProductId,
                 request.Title,
                 request.BasePrice,
-                request.Currency),
+                request.Currency,
+                request.AccommodationOptions?
+                    .Select(option => new AccommodationOptionInput(
+                        option.HotelName,
+                        option.HotelStars,
+                        option.RoomType,
+                        option.MealPlan,
+                        option.Amount,
+                        option.Currency,
+                        option.Description))
+                    .ToArray(),
+                request.FlightOptions?
+                    .Select(option => new FlightOptionInput(
+                        option.Direction,
+                        option.Airline,
+                        option.FlightNumber,
+                        option.DepartureAirport,
+                        option.ArrivalAirport,
+                        option.DepartureTime,
+                        option.ArrivalTime,
+                        option.DurationMinutes,
+                        option.Cabin,
+                        option.BaggageAllowance))
+                    .ToArray()),
             cancellationToken);
 
         return result.IsSuccess
@@ -120,7 +145,30 @@ public static class SupplyEndpoints
                 request.Title,
                 request.BasePrice,
                 request.Currency,
-                idempotencyKey),
+                idempotencyKey,
+                request.AccommodationOptions?
+                    .Select(option => new AccommodationOptionInput(
+                        option.HotelName,
+                        option.HotelStars,
+                        option.RoomType,
+                        option.MealPlan,
+                        option.Amount,
+                        option.Currency,
+                        option.Description))
+                    .ToArray(),
+                request.FlightOptions?
+                    .Select(option => new FlightOptionInput(
+                        option.Direction,
+                        option.Airline,
+                        option.FlightNumber,
+                        option.DepartureAirport,
+                        option.ArrivalAirport,
+                        option.DepartureTime,
+                        option.ArrivalTime,
+                        option.DurationMinutes,
+                        option.Cabin,
+                        option.BaggageAllowance))
+                    .ToArray()),
             cancellationToken);
 
         return result.IsSuccess
@@ -216,13 +264,42 @@ public static class SupplyEndpoints
 }
 
 /// <summary>
+/// HTTP request for an accommodation option.
+/// </summary>
+public sealed record AccommodationOptionRequest(
+    string HotelName,
+    int HotelStars,
+    RoomType RoomType,
+    MealPlanType MealPlan,
+    decimal Amount,
+    string Currency,
+    string? Description = null);
+
+/// <summary>
+/// HTTP request for a flight option.
+/// </summary>
+public sealed record FlightOptionRequest(
+    FlightDirection Direction,
+    string Airline,
+    string FlightNumber,
+    string DepartureAirport,
+    string ArrivalAirport,
+    TimeOnly DepartureTime,
+    TimeOnly ArrivalTime,
+    int DurationMinutes,
+    string Cabin,
+    string BaggageAllowance);
+
+/// <summary>
 /// HTTP request to create an agency offer.
 /// </summary>
 public sealed record CreateAgencyOfferRequest(
     Guid TourProductId,
     string Title,
     decimal BasePrice,
-    string Currency);
+    string Currency,
+    IReadOnlyList<AccommodationOptionRequest>? AccommodationOptions = null,
+    IReadOnlyList<FlightOptionRequest>? FlightOptions = null);
 
 /// <summary>
 /// HTTP request to upsert an agency offer.
@@ -231,7 +308,9 @@ public sealed record UpsertAgencyOfferRequest(
     Guid TourProductId,
     string Title,
     decimal BasePrice,
-    string Currency);
+    string Currency,
+    IReadOnlyList<AccommodationOptionRequest>? AccommodationOptions = null,
+    IReadOnlyList<FlightOptionRequest>? FlightOptions = null);
 
 /// <summary>
 /// HTTP request body for rejecting an offer.

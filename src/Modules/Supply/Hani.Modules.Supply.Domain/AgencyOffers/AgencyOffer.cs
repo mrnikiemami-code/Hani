@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Supply.Domain.AgencyOffers.Events;
+using Hani.Modules.Supply.Domain.Departures;
 
 namespace Hani.Modules.Supply.Domain.AgencyOffers;
 
@@ -8,6 +9,9 @@ namespace Hani.Modules.Supply.Domain.AgencyOffers;
 /// </summary>
 public sealed class AgencyOffer : AggregateRoot<Guid>
 {
+    private readonly List<OfferAccommodationOption> _accommodationOptions = [];
+    private readonly List<OfferFlightOption> _flightOptions = [];
+
     private AgencyOffer()
     {
     }
@@ -39,6 +43,16 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
     public string Title { get; private set; } = string.Empty;
 
     public Money BasePrice { get; private set; }
+
+    /// <summary>
+    /// Hotel/room/board options.
+    /// </summary>
+    public IReadOnlyCollection<OfferAccommodationOption> AccommodationOptions => _accommodationOptions;
+
+    /// <summary>
+    /// Outbound/inbound flight details.
+    /// </summary>
+    public IReadOnlyCollection<OfferFlightOption> FlightOptions => _flightOptions;
 
     public AgencyOfferStatus Status { get; private set; }
 
@@ -153,5 +167,127 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
         Touch();
     }
 
+    /// <summary>
+    /// Replaces all accommodation options. Only draft, rejected, or pending offers can be edited.
+    /// </summary>
+    public void ReplaceAccommodationOptions(
+        IIdGenerator ids,
+        IReadOnlyCollection<OfferAccommodationOptionDetails> options)
+    {
+        EnsureEditable();
+
+        _accommodationOptions.Clear();
+
+        foreach (var option in options)
+        {
+            if (string.IsNullOrWhiteSpace(option.HotelName))
+            {
+                throw new ArgumentException("Hotel name is required.", nameof(options));
+            }
+
+            if (option.HotelStars is < 1 or > 5)
+            {
+                throw new ArgumentOutOfRangeException(nameof(options), "Hotel stars must be between 1 and 5.");
+            }
+
+            if (option.Price.Amount <= 0m)
+            {
+                throw new ArgumentOutOfRangeException(nameof(options), "Accommodation price must be positive.");
+            }
+
+            _accommodationOptions.Add(new OfferAccommodationOption(
+                ids.NewId(),
+                Id,
+                option.HotelName.Trim(),
+                option.HotelStars,
+                option.RoomType,
+                option.MealPlan,
+                option.Price,
+                string.IsNullOrWhiteSpace(option.Description) ? null : option.Description.Trim()));
+        }
+
+        Touch();
+    }
+
+    /// <summary>
+    /// Replaces all flight options. Only draft, rejected, or pending offers can be edited.
+    /// </summary>
+    public void ReplaceFlightOptions(
+        IIdGenerator ids,
+        IReadOnlyCollection<OfferFlightOptionDetails> options)
+    {
+        EnsureEditable();
+
+        _flightOptions.Clear();
+
+        foreach (var option in options)
+        {
+            if (string.IsNullOrWhiteSpace(option.Airline) ||
+                string.IsNullOrWhiteSpace(option.FlightNumber) ||
+                string.IsNullOrWhiteSpace(option.DepartureAirport) ||
+                string.IsNullOrWhiteSpace(option.ArrivalAirport))
+            {
+                throw new ArgumentException("Flight identifiers and airports are required.", nameof(options));
+            }
+
+            if (option.DurationMinutes <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(options), "Flight duration must be positive.");
+            }
+
+            _flightOptions.Add(new OfferFlightOption(
+                ids.NewId(),
+                Id,
+                option.Direction,
+                option.Airline.Trim(),
+                option.FlightNumber.Trim(),
+                option.DepartureAirport.Trim(),
+                option.ArrivalAirport.Trim(),
+                option.DepartureTime,
+                option.ArrivalTime,
+                option.DurationMinutes,
+                string.IsNullOrWhiteSpace(option.Cabin) ? "ECONOMY" : option.Cabin.Trim(),
+                string.IsNullOrWhiteSpace(option.BaggageAllowance)
+                    ? string.Empty
+                    : option.BaggageAllowance.Trim()));
+        }
+
+        Touch();
+    }
+
+    private void EnsureEditable()
+    {
+        if (Status is AgencyOfferStatus.Approved or AgencyOfferStatus.Archived)
+        {
+            throw new InvalidOperationException("Only draft, rejected, or pending offers can be edited.");
+        }
+    }
+
     private void Touch() => UpdatedAt = DateTimeOffset.UtcNow;
 }
+
+/// <summary>
+/// Accommodation option input.
+/// </summary>
+public sealed record OfferAccommodationOptionDetails(
+    string HotelName,
+    int HotelStars,
+    RoomType RoomType,
+    MealPlanType MealPlan,
+    Money Price,
+    string? Description = null);
+
+/// <summary>
+/// Flight option input.
+/// </summary>
+public sealed record OfferFlightOptionDetails(
+    FlightDirection Direction,
+    string Airline,
+    string FlightNumber,
+    string DepartureAirport,
+    string ArrivalAirport,
+    TimeOnly DepartureTime,
+    TimeOnly ArrivalTime,
+    int DurationMinutes,
+    string Cabin,
+    string BaggageAllowance);

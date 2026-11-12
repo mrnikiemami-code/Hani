@@ -230,6 +230,39 @@ components:
           type: array
           items: { type: string, format: uri }
         externalUpdatedAt: { type: string, format: date-time }
+        accommodationOptions:
+          type: array
+          items: { $ref: '#/components/schemas/AccommodationOption' }
+        flightOptions:
+          type: array
+          items: { $ref: '#/components/schemas/FlightOption' }
+
+    AccommodationOption:
+      type: object
+      required: [hotelName, hotelStars, roomType, mealPlan, amount, currency]
+      properties:
+        hotelName: { type: string, maxLength: 200 }
+        hotelStars: { type: integer, minimum: 1, maximum: 5 }
+        roomType: { type: string, enum: [Double, Single, Triple, ChildWithBed, ChildWithoutBed, Infant] }
+        mealPlan: { type: string, enum: [RoomOnly, Breakfast, HalfBoard, FullBoard, AllInclusive] }
+        amount: { type: number, minimum: 0 }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        description: { type: [string, 'null'] }
+
+    FlightOption:
+      type: object
+      required: [direction, airline, flightNumber, departureAirport, arrivalAirport, departureTime, arrivalTime, durationMinutes, cabin]
+      properties:
+        direction: { type: string, enum: [Outbound, Inbound] }
+        airline: { type: string }
+        flightNumber: { type: string }
+        departureAirport: { type: string }
+        arrivalAirport: { type: string }
+        departureTime: { type: string, format: time }
+        arrivalTime: { type: string, format: time }
+        durationMinutes: { type: integer, minimum: 1 }
+        cabin: { type: string }
+        baggageAllowance: { type: string }
 
     Offer:
       allOf:

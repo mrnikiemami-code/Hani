@@ -32,7 +32,32 @@ internal sealed class GetAgencyOfferByIdQueryHandler(
             offer.BasePrice.Currency,
             offer.Status.ToString(),
             offer.RejectionReason,
-            offer.UpdatedAt);
+            offer.UpdatedAt,
+            offer.AccommodationOptions
+                .Select(option => new AccommodationOptionDto(
+                    option.Id,
+                    option.HotelName,
+                    option.HotelStars,
+                    option.RoomType.ToString(),
+                    option.MealPlan.ToString(),
+                    option.Amount,
+                    option.Currency,
+                    option.Description))
+                .ToArray(),
+            offer.FlightOptions
+                .Select(option => new FlightOptionDto(
+                    option.Id,
+                    option.Direction.ToString(),
+                    option.Airline,
+                    option.FlightNumber,
+                    option.DepartureAirport,
+                    option.ArrivalAirport,
+                    option.DepartureTime,
+                    option.ArrivalTime,
+                    option.DurationMinutes,
+                    option.Cabin,
+                    option.BaggageAllowance))
+                .ToArray());
 
         return Result<AgencyOfferDto>.Success(dto);
     }

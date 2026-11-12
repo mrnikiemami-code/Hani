@@ -323,6 +323,146 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                     b.ToTable("OutboxState", "supply");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Supply.Domain.AgencyOffers.AgencyOffer", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Supply.Domain.AgencyOffers.OfferAccommodationOption", "AccommodationOptions", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("AgencyOfferId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("agency_offer_id");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("price");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("currency");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("text")
+                                .HasColumnName("description");
+
+                            b1.Property<string>("HotelName")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("hotel_name");
+
+                            b1.Property<int>("HotelStars")
+                                .HasColumnType("integer")
+                                .HasColumnName("hotel_stars");
+
+                            b1.Property<string>("MealPlan")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("meal_plan");
+
+                            b1.Property<string>("RoomType")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("room_type");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("AgencyOfferId");
+
+                            b1.ToTable("agency_offer_accommodations", "supply");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AgencyOfferId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Supply.Domain.AgencyOffers.OfferFlightOption", "FlightOptions", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("AgencyOfferId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("agency_offer_id");
+
+                            b1.Property<string>("Airline")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("airline");
+
+                            b1.Property<string>("ArrivalAirport")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("arrival_airport");
+
+                            b1.Property<TimeOnly>("ArrivalTime")
+                                .HasColumnType("time without time zone")
+                                .HasColumnName("arrival_time");
+
+                            b1.Property<string>("BaggageAllowance")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("baggage_allowance");
+
+                            b1.Property<string>("Cabin")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("cabin");
+
+                            b1.Property<string>("DepartureAirport")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("departure_airport");
+
+                            b1.Property<TimeOnly>("DepartureTime")
+                                .HasColumnType("time without time zone")
+                                .HasColumnName("departure_time");
+
+                            b1.Property<string>("Direction")
+                                .IsRequired()
+                                .HasMaxLength(16)
+                                .HasColumnType("character varying(16)")
+                                .HasColumnName("direction");
+
+                            b1.Property<int>("DurationMinutes")
+                                .HasColumnType("integer")
+                                .HasColumnName("duration_minutes");
+
+                            b1.Property<string>("FlightNumber")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("flight_number");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("AgencyOfferId");
+
+                            b1.ToTable("agency_offer_flights", "supply");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AgencyOfferId");
+                        });
+
+                    b.Navigation("AccommodationOptions");
+
+                    b.Navigation("FlightOptions");
+                });
+
             modelBuilder.Entity("Hani.Modules.Supply.Domain.Departures.TourDeparture", b =>
                 {
                     b.OwnsMany("Hani.Modules.Supply.Domain.Departures.DeparturePrice", "Prices", b1 =>

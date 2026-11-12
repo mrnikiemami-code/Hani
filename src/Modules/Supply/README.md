@@ -8,9 +8,12 @@
 |---|---|
 | `AgencyOffer` | پیشنهاد یک آژانس روی یک `TourProduct` مشترک |
 | `AgencyOfferStatus` | Draft → Pending → Approved / Rejected → Archived |
+| `OfferAccommodationOption` | هتل/اتاق/MealPlan/قیمت |
+| `OfferFlightOption` | پرواز رفت/برگشت با ایرلاین/فرودگاه/ساعت/بار |
 | `TourDeparture` | یک تاریخ اجرای مشخص با ظرفیت و قیمت |
 | `DeparturePrice` | قیمت هر نوع اتاق/مسافر برای یک سانس |
 | `RoomType` | Double / Single / Triple / Child / Infant |
+| `MealPlanType` | RoomOnly / Breakfast / HalfBoard / FullBoard / AllInclusive |
 | `DepartureStatus` | Open / SoldOut / Closed / Cancelled |
 | `DepartureConcurrencyException` | جلوگیری از بازنویسی هم‌زمان سانس |
 
@@ -19,6 +22,7 @@
 - `AgencyOffer` همیشه `AgencyId` دارد (tenant-scoped).
 - `ExternalId` یکتای هر آژانس برای upsert idempotent است.
 - قیمت و ظرفیت روی `TourDeparture` است، نه `TourProduct`.
+- هر Offer می‌تواند چند گزینه اقامت و چند پرواز داشته باشد.
 - ویرایش Offer در وضعیت Approved مجاز نیست.
 - کاهش/افزایش ظرفیت با `Version` کنترل می‌شود.
 
@@ -50,5 +54,5 @@ Presentation    → Minimal API endpoints
 ## Persistence
 
 - Schema: `supply`
-- جدول‌ها: `agency_offers`, `tour_departures`, `tour_departure_prices`, Outbox/Inbox
-- Migrationها: `InitialSupply`, `AddTourDepartures`, `AddOfferLifecycle`
+- جدول‌ها: `agency_offers`, `agency_offer_accommodations`, `agency_offer_flights`, `tour_departures`, `tour_departure_prices`, Outbox/Inbox
+- Migrationها: `InitialSupply`, `AddTourDepartures`, `AddOfferLifecycle`, `AddOfferOptions`

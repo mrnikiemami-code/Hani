@@ -100,6 +100,7 @@
 | D-83 | Settlement ledger + commission | Commission rules/entries + balanced double-entry ledger | `0dd6fbe` |
 | D-84 | Lastsecond baseline lock | `BASELINE.md` + `baseline.json` + `BaselineCoverageTests` + `check-baseline.ps1` | `3a8992b` |
 | D-85 | Tour Content Model | Itinerary/meals/services/policies/required items + `AddTourContent` | `99d42ea` |
+| D-86 | Offer Accommodation + Flight Options | Hotel/room/MealPlan + flight details + `AddOfferOptions` | این تغییر |
 
 ## ۳. مستندات
 
@@ -119,9 +120,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۸۸ passed |
+| Unit Tests | ۸۹ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۲۱ passed** |
+| Total | **۱۲۲ passed** |
 | Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
 | Format | clean |
 | Vulnerable Packages | none |

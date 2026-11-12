@@ -23,6 +23,28 @@ internal sealed class CreateAgencyOfferCommandHandler(
             request.Title,
             price);
 
+        try
+        {
+            if (request.AccommodationOptions is not null)
+            {
+                offer.ReplaceAccommodationOptions(
+                    ids,
+                    AgencyOfferOptions.MapAccommodation(request.AccommodationOptions)!);
+            }
+
+            if (request.FlightOptions is not null)
+            {
+                offer.ReplaceFlightOptions(
+                    ids,
+                    AgencyOfferOptions.MapFlights(request.FlightOptions)!);
+            }
+        }
+        catch (ArgumentException exception)
+        {
+            return Result<Guid>.Failure(
+                Error.Validation("HANI-SUPPLY-1301", exception.Message));
+        }
+
         await repository.AddAsync(offer, cancellationToken);
 
         return Result<Guid>.Success(offer.Id);

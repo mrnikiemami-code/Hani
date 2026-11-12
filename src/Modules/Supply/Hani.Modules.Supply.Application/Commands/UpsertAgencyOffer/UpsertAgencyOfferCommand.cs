@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Application;
+using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 
 namespace Hani.Modules.Supply.Application.Commands.UpsertAgencyOffer;
 
@@ -12,7 +13,9 @@ public sealed record UpsertAgencyOfferCommand(
     string Title,
     decimal BasePrice,
     string Currency,
-    string IdempotencyKey = "") : ICommand<UpsertAgencyOfferResult>, IIdempotentCommand
+    string IdempotencyKey = "",
+    IReadOnlyList<AccommodationOptionInput>? AccommodationOptions = null,
+    IReadOnlyList<FlightOptionInput>? FlightOptions = null) : ICommand<UpsertAgencyOfferResult>, IIdempotentCommand
 {
     string IIdempotentCommand.IdempotencyKey => IdempotencyKey;
 }

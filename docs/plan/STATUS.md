@@ -88,6 +88,7 @@
 | Pricing architecture | ADR-0024: چندارزی + VAT/Duty + BookingMode + تفکیک MoR | docs only |
 | Lastsecond gap analysis | گزارش بررسی صفحات و اولویت‌بندی شکاف‌ها | `docs/reports/lastsecond-gap-analysis-2026-11-12.md` |
 | Tour Content Model | Itinerary/Meals/Services/Policies/RequiredItems چندزبانه (GAP-01) | `99d42ea` |
+| Offer Options | Accommodation + Flight + MealPlan (GAP-02/03) | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -144,10 +145,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۸۸ passed |
+| Unit Tests | ۸۹ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۲۱ passed** |
-| Migrations | Supply (۳) / Catalog (۲) / Identity (۱) / Booking (۲) / Payments (۲) / Settlement (۱) |
+| Total | **۱۲۲ passed** |
+| Migrations | Supply (۴) / Catalog (۲) / Identity (۱) / Booking (۲) / Payments (۲) / Settlement (۱) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
