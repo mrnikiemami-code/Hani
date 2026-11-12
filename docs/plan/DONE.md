@@ -98,6 +98,7 @@
 | D-81 | PaymentIntent + Gateway | Payments module + `InitialPayments` + Mock gateway | `dc76539` |
 | D-82 | Payment webhook + verify | HMAC verify + `payment_webhook_events` + Order.Paid | `7b85652` |
 | D-83 | Settlement ledger + commission | Commission rules/entries + balanced double-entry ledger | `0dd6fbe` |
+| D-84 | Lastsecond baseline lock | `BASELINE.md` + `baseline.json` + `BaselineCoverageTests` + `check-baseline.ps1` | این تغییر |
 
 ## ۳. مستندات
 
@@ -118,8 +119,8 @@
 |---|---|
 | Build | ۰ warning / ۰ error |
 | Unit Tests | ۸۵ passed |
-| Architecture Tests | ۳۱ passed |
-| Total | **۱۱۶ passed** |
+| Architecture Tests | ۳۳ passed |
+| Total | **۱۱۸ passed** |
 | Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
 | Format | clean |
 | Vulnerable Packages | none |

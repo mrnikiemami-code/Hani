@@ -15,6 +15,12 @@ dotnet restore Hani.slnx --locked-mode
 Write-Host "== Build (warnings as errors) =="
 dotnet build Hani.slnx -c $Configuration -warnaserror --no-restore
 
+Write-Host "== Baseline gate =="
+dotnet test tests/Hani.ArchitectureTests/Hani.ArchitectureTests.csproj `
+    -c $Configuration `
+    --no-build `
+    --filter FullyQualifiedName~BaselineCoverageTests
+
 Write-Host "== Tests (unit + architecture) =="
 dotnet test Hani.slnx -c $Configuration --no-build
 

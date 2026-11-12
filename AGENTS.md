@@ -18,6 +18,7 @@
 - [ ] اگر تصمیم معماری تغییر کرد، ADR جدید ثبت شود.
 - [ ] هیچ کد زبان/کالچر در C# hard-code نشده باشد؛ `LocalizationHardcodeTests` باید سبز باشد.
 - [ ] همه خطاهای endpoint از `HttpContext.ToProblem(...)` / `HaniProblemDetails` استفاده کنند؛ `ProblemDetailsConventionTests` باید سبز باشد.
+- [ ] هر تسک به `GAP-xx` در `docs/plan/baseline.json` متصل باشد و `scripts/check-baseline.ps1` سبز باشد.
 - [ ] `docs/plan/STATUS.md` و `docs/plan/DONE.md` به‌روز شوند.
 - [ ] `scripts/verify.ps1` سبز باشد.
 - [ ] commit + push انجام شود.
@@ -48,6 +49,8 @@
 - hard-code کردن فهرست زبان‌ها یا fallback زبانی؛ از `Localization` و `ILanguageCatalog` استفاده شود.
 - ساخت خروجی خطای دستی در endpoint (`Results.Problem`/`Results.BadRequest`/...)؛ فقط `HttpContext.ToProblem(...)` مجاز است.
 - حذف یا دور زدن `correlationId` در پاسخ‌های خطا.
+- تغییر یا حذف یک `GAP` در Baseline بدون نسخه جدید و ADR/Waiver.
+- بستن یک Gate با P0 باز از همان Gate یا Gateهای قبلی.
 - رها کردن `STATUS.md` / `TASKS.md` / `DONE.md` به‌صورت کهنه.
 - commit بدون اجرای `scripts/verify.ps1`.
 

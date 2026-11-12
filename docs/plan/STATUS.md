@@ -1,9 +1,10 @@
 # Hani — STATUS (وضعیت زنده)
 
-> **تاریخ:** ۲۰ آبان ۱۴۰۵
-> **فاز فعال:** Phase 2 — Marketplace Read + Booking
+> **تاریخ:** ۲۱ آبان ۱۴۰۵
+> **فاز فعال:** Baseline Gate 0 — Financial Foundation
 > **آخرین commit کد:** `0dd6fbe`
-> **وضعیت Gate:** Phase 2 — In Progress
+> **وضعیت Gate:** Gate 0 — Not Started
+> **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
@@ -15,11 +16,13 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | 🚧 In Progress | ~85% |
-| 3 | Channel + Billing + Settlement | ⏳ Planned | 0% |
-| 4 | Flights | ⏳ Planned | 0% |
-| 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Planned | 0% |
-| 6 | Hardening & Scale | ⏳ Planned | 0% |
+| 2 | Marketplace Read + Booking | 🚧 Baseline Gate 0 | ~85% |
+| 3 | Channel + Billing + Settlement | ⏳ Gate 7 | 0% |
+| 4 | Flights | ⏳ Gate 5 | 0% |
+| 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Gate 1/5/6 | 0% |
+| 6 | Hardening & Scale | ⏳ Gate 8 | 0% |
+
+> از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۰ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 0 به‌عنوان وضعیت تاریخی باقی می‌ماند.
 
 ---
 
@@ -141,8 +144,8 @@
 |---|---|
 | Build | ۰ warning / ۰ error |
 | Unit Tests | ۸۵ passed |
-| Architecture Tests | ۳۱ passed |
-| Total | **۱۱۶ passed** |
+| Architecture Tests | ۳۳ passed |
+| Total | **۱۱۸ passed** |
 | Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۲) / Payments (۲) / Settlement (۱) |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -152,18 +155,19 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** TC-082 — Multi-currency Pricing + Tax/Duty + BookingMode + MoR (Phase A)
-**Phase 2:** در حال انجام
+**تسک فعال:** Gate 0 — TC-082 Financial Foundation
+**GAPهای Gate 0:** GAP-07 (Multi-currency)، GAP-08 (VAT/Duty)
+**Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای قبلی
 
-### ۵ تسک اول Phase 2 (پس از تأیید)
+### ۵ تسک اول Baseline Gate 0
 
-| ترتیب | تسک | وابستگی | خروجی |
+| ترتیب | تسک | GAP | خروجی |
 |---|---|---|---|
-| 1 | TC-024 Search projection | Phase 1 Gate | ایندکس جستجو |
-| 2 | TC-025 Compare API | TC-024, TC-021 | مقایسه چند آژانس |
-| 3 | TC-026 Quote + Hold | TC-025 | TTL + release |
-| 4 | TC-027 Order + Contract | TC-026 | snapshot immutable |
-| 5 | TC-028 PaymentIntent + Gateway | TC-027 | پرداخت Hani |
+| 1 | PriceComponent + TaxStatus | GAP-07/08 | مدل قیمت پایه |
+| 2 | OfferTaxRule + BookingMode | GAP-07/08 | تنظیمات مالیات/رزرو |
+| 3 | Quote/Order/Contract Snapshot | GAP-07/08 | snapshot چندارزی |
+| 4 | PaymentObligation + CollectionMode | GAP-07/08 | پرداخت چندتعهدی |
+| 5 | Commission per currency + Ledger | GAP-07/08 | کمیسیون/دفتر چندارزی |
 
 ---
 

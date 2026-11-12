@@ -3,6 +3,32 @@
 > وضعیت‌ها: ✅ Done | 🚧 In Progress | ⚠️ Partial | ⏳ Next | ❌ Not Started
 > هر تسک باید حداکثر ۱ روز کاری باشد.
 
+> **Baseline:** از این لحظه هر تسک باید به یک `GAP-xx` در [`baseline.json`](baseline.json) متصل باشد. Gate 0 فعال است: GAP-07 و GAP-08.
+
+## Baseline Gate 0 — Financial Foundation
+
+| ID | تسک | وضعیت | GAP | DoD |
+|---|---|---|---|---|
+| TC-082 | Multi-currency + VAT/Duty + PaymentObligation + Commission per currency | ⏳ | GAP-07/08 | snapshot چندارزی + تست |
+| TC-083 | Tour Content Model | ❌ | GAP-01 | itinerary/services/policies |
+| TC-084 | Offer Accommodation + Flight Options + MealPlan | ❌ | GAP-02/03 | چند هتل/اتاق/پرواز |
+| TC-085 | Faceted Search + Sort | ❌ | GAP-04 | فیلترهای کامل |
+| TC-086 | User Identity + OTP + Profile | ❌ | GAP-09/10 | auth/profile |
+| TC-087 | Agency Onboarding + Panel | ❌ | GAP-26/27/31 | مجوز/پنل |
+| TC-088 | BookingMode + Request/Lead + RFQ | ❌ | GAP-05/06/19 | Online + Request |
+| TC-089 | Reviews + Photos + Claims | ❌ | GAP-11/20/32 | UGC/اعتماد |
+| TC-090 | Hotels + Inquiry | ❌ | GAP-14 | هتل/استعلام |
+| TC-091 | Visa + Documents | ❌ | GAP-15/21 | ویزا/مدارک |
+| TC-092 | Flights Metasearch | ❌ | GAP-16 | جستجو/ارجاع |
+| TC-093 | Content: Itineraries/Blog/Videos | ❌ | GAP-12 | محتوا |
+| TC-094 | Places + Geo + Restaurant Reservation | ❌ | GAP-13/25/29 | دایرکتوری/نقشه |
+| TC-095 | Media + Moderation | ❌ | GAP-32 | آپلود/مدیریت |
+| TC-096 | SMS + Newsletter + Notifications | ❌ | GAP-22/33 | OTP/خبرنامه |
+| TC-097 | SEO + Landing + Sitemap | ❌ | GAP-28 | Canonical/JSON-LD |
+| TC-098 | Installments + Offline Payment | ❌ | GAP-17/18 | اقساط/آفلاین |
+| TC-099 | Ranking + Ads + Analytics | ❌ | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
+| TC-100 | Campaigns + BlindTour | ❌ | GAP-23 | کمپین |
+
 ## Phase 0 — Foundation ✅
 
 | ID | تسک | وضعیت | وابستگی | DoD | Commit |
@@ -45,7 +71,6 @@
 | TC-028 | PaymentIntent + Gateway | ✅ | TC-027 | idempotent initiate + Hani MoR | `dc76539` |
 | TC-029 | Payment Webhook | ✅ | TC-028 | dedupe + verify + Order.Paid | `7b85652` |
 | TC-030 | Settlement Ledger | ✅ | TC-028 | double-entry + commission accrual | `0dd6fbe` |
-| TC-082 | Multi-currency pricing + Tax/Duty + BookingMode + MoR | ⏳ | TC-030 | ADR-0024 + phased implementation | — |
 | TC-031 | Channel OAuth | ❌ | TC-017 | token + scope | — |
 | TC-032 | Channel Catalog/Availability | ❌ | TC-031, TC-021 | فقط Offer مجاز | — |
 | TC-033 | Channel Booking + Webhook | ❌ | TC-032, TC-026 | end-to-end | — |
