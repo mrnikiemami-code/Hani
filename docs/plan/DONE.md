@@ -98,7 +98,7 @@
 | D-81 | PaymentIntent + Gateway | Payments module + `InitialPayments` + Mock gateway | `dc76539` |
 | D-82 | Payment webhook + verify | HMAC verify + `payment_webhook_events` + Order.Paid | `7b85652` |
 | D-83 | Settlement ledger + commission | Commission rules/entries + balanced double-entry ledger | `0dd6fbe` |
-| D-84 | Lastsecond baseline lock | `BASELINE.md` + `baseline.json` + `BaselineCoverageTests` + `check-baseline.ps1` | این تغییر |
+| D-84 | Lastsecond baseline lock | `BASELINE.md` + `baseline.json` + `BaselineCoverageTests` + `check-baseline.ps1` | `3a8992b` |
 
 ## ۳. مستندات
 
@@ -162,4 +162,5 @@
 | `dc76539` | PaymentIntent + Gateway adapter |
 | `7b85652` | Payment webhook verification and dedupe |
 | `0dd6fbe` | Settlement ledger and commission accrual |
+| `3a8992b` | Lastsecond baseline lock and gate checks |
 | `7df2265` | Phase roadmap + status + tasks |

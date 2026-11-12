@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 0 — Financial Foundation
-> **آخرین commit کد:** `0dd6fbe`
+> **آخرین commit کد:** `3a8992b`
 > **وضعیت Gate:** Gate 0 — Not Started
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
@@ -209,3 +209,4 @@
 | `dc76539` | PaymentIntent + Gateway adapter |
 | `7b85652` | Payment webhook verification and dedupe |
 | `0dd6fbe` | Settlement ledger and commission accrual |
+| `3a8992b` | Lastsecond baseline lock and gate checks |
