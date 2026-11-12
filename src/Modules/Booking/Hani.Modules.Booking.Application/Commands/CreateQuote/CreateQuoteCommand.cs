@@ -13,6 +13,21 @@ public sealed record CreateQuoteCommand(
     int Infants = 0) : ICommand<QuoteDto>;
 
 /// <summary>
+/// Price component read model with VAT and duty details.
+/// </summary>
+public sealed record PriceComponentDto(
+    string Kind,
+    decimal BaseAmount,
+    string Currency,
+    string DutyStatus,
+    decimal DutyRate,
+    decimal DutyAmount,
+    string VatStatus,
+    decimal VatRate,
+    decimal VatAmount,
+    decimal TotalAmount);
+
+/// <summary>
 /// Quote read model returned to marketplace clients.
 /// </summary>
 public sealed record QuoteDto(
@@ -29,4 +44,5 @@ public sealed record QuoteDto(
     decimal Total,
     string Currency,
     string Status,
-    DateTimeOffset ExpiresAt);
+    DateTimeOffset ExpiresAt,
+    IReadOnlyList<PriceComponentDto> Components);

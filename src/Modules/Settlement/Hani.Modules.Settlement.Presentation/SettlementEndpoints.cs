@@ -64,11 +64,14 @@ public static class SettlementEndpoints
 
     private static async Task<IResult> GetCommissionAsync(
         Guid orderId,
+        string? currency,
         HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new GetCommissionQuery(orderId), cancellationToken);
+        var result = await sender.Send(
+            new GetCommissionQuery(orderId, currency),
+            cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 

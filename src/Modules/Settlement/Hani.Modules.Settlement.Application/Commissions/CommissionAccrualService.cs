@@ -22,7 +22,10 @@ public sealed class CommissionAccrualService(
         CommissionAccrualRequest request,
         CancellationToken cancellationToken)
     {
-        var existing = await entries.GetByOrderIdAsync(request.OrderId, cancellationToken);
+        var existing = await entries.GetByOrderAndCurrencyAsync(
+            request.OrderId,
+            request.Currency,
+            cancellationToken);
 
         if (existing is not null)
         {

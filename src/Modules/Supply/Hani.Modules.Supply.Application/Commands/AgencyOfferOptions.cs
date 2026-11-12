@@ -33,4 +33,16 @@ internal static class AgencyOfferOptions
                 option.Cabin,
                 option.BaggageAllowance))
             .ToArray();
+
+    public static IReadOnlyCollection<OfferTaxRuleDetails>? MapTaxRules(
+        IReadOnlyList<TaxRuleInput>? rules)
+        => rules?
+            .Select(rule => new OfferTaxRuleDetails(
+                rule.Currency,
+                rule.VatStatus,
+                rule.VatRate,
+                rule.DutyStatus,
+                rule.DutyRate,
+                rule.ExemptionReason))
+            .ToArray();
 }

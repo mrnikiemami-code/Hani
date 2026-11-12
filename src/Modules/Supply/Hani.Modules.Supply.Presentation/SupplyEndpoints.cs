@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
+using Hani.BuildingBlocks.Domain.Pricing;
 using Hani.Modules.Supply.Application.Commands.ApproveAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.ArchiveAgencyOffer;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
@@ -113,6 +114,15 @@ public static class SupplyEndpoints
                         option.DurationMinutes,
                         option.Cabin,
                         option.BaggageAllowance))
+                    .ToArray(),
+                request.TaxRules?
+                    .Select(rule => new TaxRuleInput(
+                        rule.Currency,
+                        rule.VatStatus,
+                        rule.VatRate,
+                        rule.DutyStatus,
+                        rule.DutyRate,
+                        rule.ExemptionReason))
                     .ToArray()),
             cancellationToken);
 
@@ -168,6 +178,15 @@ public static class SupplyEndpoints
                         option.DurationMinutes,
                         option.Cabin,
                         option.BaggageAllowance))
+                    .ToArray(),
+                request.TaxRules?
+                    .Select(rule => new TaxRuleInput(
+                        rule.Currency,
+                        rule.VatStatus,
+                        rule.VatRate,
+                        rule.DutyStatus,
+                        rule.DutyRate,
+                        rule.ExemptionReason))
                     .ToArray()),
             cancellationToken);
 
@@ -291,6 +310,17 @@ public sealed record FlightOptionRequest(
     string BaggageAllowance);
 
 /// <summary>
+/// HTTP request for an offer tax rule.
+/// </summary>
+public sealed record TaxRuleRequest(
+    string Currency,
+    TaxStatus VatStatus,
+    decimal VatRate,
+    TaxStatus DutyStatus,
+    decimal DutyRate,
+    string? ExemptionReason = null);
+
+/// <summary>
 /// HTTP request to create an agency offer.
 /// </summary>
 public sealed record CreateAgencyOfferRequest(
@@ -299,7 +329,8 @@ public sealed record CreateAgencyOfferRequest(
     decimal BasePrice,
     string Currency,
     IReadOnlyList<AccommodationOptionRequest>? AccommodationOptions = null,
-    IReadOnlyList<FlightOptionRequest>? FlightOptions = null);
+    IReadOnlyList<FlightOptionRequest>? FlightOptions = null,
+    IReadOnlyList<TaxRuleRequest>? TaxRules = null);
 
 /// <summary>
 /// HTTP request to upsert an agency offer.
@@ -310,7 +341,8 @@ public sealed record UpsertAgencyOfferRequest(
     decimal BasePrice,
     string Currency,
     IReadOnlyList<AccommodationOptionRequest>? AccommodationOptions = null,
-    IReadOnlyList<FlightOptionRequest>? FlightOptions = null);
+    IReadOnlyList<FlightOptionRequest>? FlightOptions = null,
+    IReadOnlyList<TaxRuleRequest>? TaxRules = null);
 
 /// <summary>
 /// HTTP request body for rejecting an offer.

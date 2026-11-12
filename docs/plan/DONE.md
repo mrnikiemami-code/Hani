@@ -100,7 +100,8 @@
 | D-83 | Settlement ledger + commission | Commission rules/entries + balanced double-entry ledger | `0dd6fbe` |
 | D-84 | Lastsecond baseline lock | `BASELINE.md` + `baseline.json` + `BaselineCoverageTests` + `check-baseline.ps1` | `3a8992b` |
 | D-85 | Tour Content Model | Itinerary/meals/services/policies/required items + `AddTourContent` | `99d42ea` |
-| D-86 | Offer Accommodation + Flight Options | Hotel/room/MealPlan + flight details + `AddOfferOptions` | این تغییر |
+| D-86 | Offer Accommodation + Flight Options | Hotel/room/MealPlan + flight details + `AddOfferOptions` | `68a4895` |
+| D-87 | Multi-currency + VAT/Duty + PaymentObligation | PriceComponent snapshot + OfferTaxRule + per-currency obligations/intents/commission | این تغییر |
 
 ## ۳. مستندات
 
@@ -120,9 +121,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۸۹ passed |
+| Unit Tests | ۹۱ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۲۲ passed** |
+| Total | **۱۲۴ passed** |
 | Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -166,4 +167,5 @@
 | `0dd6fbe` | Settlement ledger and commission accrual |
 | `3a8992b` | Lastsecond baseline lock and gate checks |
 | `99d42ea` | Multilingual tour content model (TC-083) |
+| `68a4895` | Offer accommodation and flight options (TC-084) |
 | `7df2265` | Phase roadmap + status + tasks |

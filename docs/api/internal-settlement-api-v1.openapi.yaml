@@ -36,6 +36,7 @@ paths:
       summary: Read the commission accrued for an order
       parameters:
         - { name: orderId, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: currency, in: query, required: false, schema: { type: string, minLength: 3, maxLength: 3 } }
       responses:
         '200':
           description: OK

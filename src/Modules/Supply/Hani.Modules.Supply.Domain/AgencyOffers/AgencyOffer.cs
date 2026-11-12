@@ -11,6 +11,7 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
 {
     private readonly List<OfferAccommodationOption> _accommodationOptions = [];
     private readonly List<OfferFlightOption> _flightOptions = [];
+    private readonly List<OfferTaxRule> _taxRules = [];
 
     private AgencyOffer()
     {
@@ -53,6 +54,11 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
     /// Outbound/inbound flight details.
     /// </summary>
     public IReadOnlyCollection<OfferFlightOption> FlightOptions => _flightOptions;
+
+    /// <summary>
+    /// VAT and duty rules per offer currency.
+    /// </summary>
+    public IReadOnlyCollection<OfferTaxRule> TaxRules => _taxRules;
 
     public AgencyOfferStatus Status { get; private set; }
 
@@ -250,6 +256,48 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
                 string.IsNullOrWhiteSpace(option.BaggageAllowance)
                     ? string.Empty
                     : option.BaggageAllowance.Trim()));
+        }
+
+        Touch();
+    }
+
+    /// <summary>
+    /// Replaces all tax rules. Rates must be between 0 and 1 and currencies unique.
+    /// </summary>
+    public void ReplaceTaxRules(
+        IIdGenerator ids,
+        IReadOnlyCollection<OfferTaxRuleDetails> rules)
+    {
+        EnsureEditable();
+
+        if (rules.Select(rule => rule.Currency.Trim().ToUpperInvariant()).Distinct().Count() != rules.Count)
+        {
+            throw new ArgumentException("Duplicate tax-rule currencies are not allowed.", nameof(rules));
+        }
+
+        _taxRules.Clear();
+
+        foreach (var rule in rules)
+        {
+            if (string.IsNullOrWhiteSpace(rule.Currency))
+            {
+                throw new ArgumentException("Tax-rule currency is required.", nameof(rules));
+            }
+
+            if (rule.VatRate is < 0m or > 1m || rule.DutyRate is < 0m or > 1m)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rules), "Tax rates must be between 0 and 1.");
+            }
+
+            _taxRules.Add(new OfferTaxRule(
+                ids.NewId(),
+                Id,
+                rule.Currency.Trim().ToUpperInvariant(),
+                rule.VatStatus,
+                rule.VatRate,
+                rule.DutyStatus,
+                rule.DutyRate,
+                string.IsNullOrWhiteSpace(rule.ExemptionReason) ? null : rule.ExemptionReason.Trim()));
         }
 
         Touch();

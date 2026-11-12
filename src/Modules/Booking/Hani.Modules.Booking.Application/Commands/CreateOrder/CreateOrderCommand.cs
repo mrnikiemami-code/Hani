@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Application;
+using Hani.Modules.Booking.Application.Commands.CreateQuote;
 
 namespace Hani.Modules.Booking.Application.Commands.CreateOrder;
 
@@ -43,12 +44,14 @@ public sealed record OrderDto(
     decimal Total,
     string Currency,
     string Status,
+    string PaymentStatus,
     DateTimeOffset CreatedAt,
     DateTimeOffset PaymentDueAt,
     Guid ContractId,
     string ContractNumber,
     IReadOnlyList<OrderTravelerDto> Travelers,
-    IReadOnlyList<OrderLineDto> Lines);
+    IReadOnlyList<OrderLineDto> Lines,
+    IReadOnlyList<PriceComponentDto> Components);
 
 /// <summary>
 /// Traveler snapshot returned with orders and contracts.
@@ -94,4 +97,5 @@ public sealed record ContractDto(
     string ContactEmail,
     string? ContactPhone,
     IReadOnlyList<OrderTravelerDto> Travelers,
-    IReadOnlyList<OrderLineDto> Lines);
+    IReadOnlyList<OrderLineDto> Lines,
+    IReadOnlyList<PriceComponentDto> Components);

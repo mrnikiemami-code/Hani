@@ -13,10 +13,12 @@ internal sealed class DeparturePricingService(SupplyDbContext dbContext)
         CancellationToken cancellationToken)
     {
         var data = await (from departure in dbContext.TourDepartures.AsNoTracking()
-                          join offer in dbContext.AgencyOffers.AsNoTracking()
+                          join offer in dbContext.AgencyOffers
+                              .AsNoTracking()
+                              .Include(item => item.TaxRules)
                               on departure.AgencyOfferId equals offer.Id
                           where departure.Id == departureId
-                          select new { departure, offer.AgencyId })
+                          select new { departure, offer })
             .FirstOrDefaultAsync(cancellationToken);
 
         if (data is null)
@@ -27,7 +29,7 @@ internal sealed class DeparturePricingService(SupplyDbContext dbContext)
         return new DeparturePricingSnapshot(
             data.departure.Id,
             data.departure.AgencyOfferId,
-            data.AgencyId,
+            data.offer.AgencyId,
             data.departure.Capacity,
             data.departure.SeatsLeft,
             data.departure.Prices
@@ -36,6 +38,15 @@ internal sealed class DeparturePricingService(SupplyDbContext dbContext)
                     price.RoomType.ToString(),
                     price.Amount,
                     price.Currency))
+                .ToArray(),
+            data.offer.TaxRules
+                .Select(rule => new DepartureTaxRuleSnapshot(
+                    rule.Currency,
+                    rule.VatStatus.ToString(),
+                    rule.VatRate,
+                    rule.DutyStatus.ToString(),
+                    rule.DutyRate,
+                    rule.ExemptionReason))
                 .ToArray());
     }
 }

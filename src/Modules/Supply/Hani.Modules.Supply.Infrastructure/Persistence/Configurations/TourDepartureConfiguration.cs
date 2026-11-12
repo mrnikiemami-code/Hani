@@ -38,9 +38,9 @@ internal sealed class TourDepartureConfiguration : IEntityTypeConfiguration<Tour
             prices.Property(price => price.Amount).HasColumnName("amount").HasPrecision(18, 2).IsRequired();
             prices.Property(price => price.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
 
-            prices.HasIndex(price => new { price.TourDepartureId, price.RoomType })
+            prices.HasIndex(price => new { price.TourDepartureId, price.RoomType, price.Currency })
                 .IsUnique()
-                .HasDatabaseName("ux_tour_departure_prices_departure_room");
+                .HasDatabaseName("ux_tour_departure_prices_departure_room_currency");
 
             prices.UsePropertyAccessMode(PropertyAccessMode.Field);
         });

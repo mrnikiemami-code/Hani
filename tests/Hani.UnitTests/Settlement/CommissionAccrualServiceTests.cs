@@ -68,6 +68,28 @@ public sealed class CommissionAccrualServiceTests
         entries.Entries.Single().RuleSource.ShouldBe("Rule");
     }
 
+    [Fact]
+    public async Task Accrue_Should_Keep_One_Entry_Per_Currency()
+    {
+        var entries = new FakeCommissionEntryRepository();
+        var service = CreateService(new FakeCommissionRuleRepository(), entries);
+        var orderId = Guid.CreateVersion7();
+        var agencyId = Guid.CreateVersion7();
+        var now = DateTimeOffset.UtcNow;
+
+        await service.AccrueAsync(
+            new CommissionAccrualRequest(orderId, agencyId, 1000m, "IRR", "Tour", now),
+            CancellationToken.None);
+        await service.AccrueAsync(
+            new CommissionAccrualRequest(orderId, agencyId, 20m, "USD", "Tour", now),
+            CancellationToken.None);
+
+        entries.Entries.Count.ShouldBe(2);
+        entries.Transactions.Count.ShouldBe(2);
+        entries.Entries.ShouldContain(entry => entry.Currency == "IRR");
+        entries.Entries.ShouldContain(entry => entry.Currency == "USD");
+    }
+
     private static CommissionAccrualService CreateService(
         ICommissionRuleRepository rules,
         ICommissionEntryRepository entries)
@@ -121,6 +143,14 @@ public sealed class CommissionAccrualServiceTests
             Guid orderId,
             CancellationToken cancellationToken)
             => Task.FromResult(Entries.FirstOrDefault(entry => entry.OrderId == orderId));
+
+        public Task<CommissionEntry?> GetByOrderAndCurrencyAsync(
+            Guid orderId,
+            string currency,
+            CancellationToken cancellationToken)
+            => Task.FromResult(Entries.FirstOrDefault(entry =>
+                entry.OrderId == orderId &&
+                string.Equals(entry.Currency, currency, StringComparison.OrdinalIgnoreCase)));
 
         public Task SaveChangesAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }

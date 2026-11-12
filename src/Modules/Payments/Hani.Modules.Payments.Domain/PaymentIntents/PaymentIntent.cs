@@ -19,6 +19,7 @@ public sealed class PaymentIntent : AggregateRoot<Guid>
         Guid agencyId,
         decimal amount,
         string currency,
+        Guid? paymentObligationId,
         string pspAccountRef,
         string merchantScope,
         string fundsHeldBy,
@@ -29,6 +30,7 @@ public sealed class PaymentIntent : AggregateRoot<Guid>
         AgencyId = agencyId;
         Amount = amount;
         Currency = currency;
+        PaymentObligationId = paymentObligationId;
         PspAccountRef = pspAccountRef;
         MerchantScope = merchantScope;
         FundsHeldBy = fundsHeldBy;
@@ -58,6 +60,11 @@ public sealed class PaymentIntent : AggregateRoot<Guid>
     /// ISO currency code.
     /// </summary>
     public string Currency { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Per-currency obligation this intent settles, when supplied by Booking.
+    /// </summary>
+    public Guid? PaymentObligationId { get; private set; }
 
     /// <summary>
     /// Current lifecycle state.
@@ -132,7 +139,8 @@ public sealed class PaymentIntent : AggregateRoot<Guid>
         string merchantScope,
         string fundsHeldBy,
         DateTimeOffset expiresAt,
-        DateTimeOffset? now = null)
+        DateTimeOffset? now = null,
+        Guid? paymentObligationId = null)
     {
         if (orderId == Guid.Empty || agencyId == Guid.Empty)
         {
@@ -162,6 +170,7 @@ public sealed class PaymentIntent : AggregateRoot<Guid>
             agencyId,
             amount,
             currency.ToUpperInvariant(),
+            paymentObligationId,
             pspAccountRef.Trim(),
             merchantScope.Trim(),
             fundsHeldBy.Trim(),

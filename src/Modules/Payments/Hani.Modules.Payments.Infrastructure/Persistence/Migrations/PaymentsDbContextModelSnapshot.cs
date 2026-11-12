@@ -74,6 +74,10 @@ namespace Hani.Modules.Payments.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("order_id");
 
+                    b.Property<Guid?>("PaymentObligationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("payment_obligation_id");
+
                     b.Property<string>("Provider")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -116,12 +120,12 @@ namespace Hani.Modules.Payments.Infrastructure.Persistence.Migrations
                     b.HasIndex("ExpiresAt")
                         .HasDatabaseName("ix_payment_intents_expires_at");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique()
-                        .HasDatabaseName("ux_payment_intents_order_id");
-
                     b.HasIndex("Status")
                         .HasDatabaseName("ix_payment_intents_status");
+
+                    b.HasIndex("OrderId", "Currency")
+                        .IsUnique()
+                        .HasDatabaseName("ux_payment_intents_order_currency");
 
                     b.ToTable("payment_intents", "payment");
                 });

@@ -8,5 +8,6 @@ public enum OrderStatus
     PendingPayment = 0,
     Paid = 1,
     Cancelled = 2,
-    Expired = 3
+    Expired = 3,
+    PartiallyPaid = 4
 }

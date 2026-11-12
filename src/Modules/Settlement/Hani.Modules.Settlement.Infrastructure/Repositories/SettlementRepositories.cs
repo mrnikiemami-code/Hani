@@ -46,8 +46,20 @@ internal sealed class CommissionEntryRepository(SettlementDbContext dbContext)
     public Task<CommissionEntry?> GetByOrderIdAsync(
         Guid orderId,
         CancellationToken cancellationToken)
+        => dbContext.CommissionEntries
+            .OrderBy(entry => entry.CreatedAt)
+            .FirstOrDefaultAsync(
+                entry => entry.OrderId == orderId,
+                cancellationToken);
+
+    public Task<CommissionEntry?> GetByOrderAndCurrencyAsync(
+        Guid orderId,
+        string currency,
+        CancellationToken cancellationToken)
         => dbContext.CommissionEntries.FirstOrDefaultAsync(
-            entry => entry.OrderId == orderId,
+            entry =>
+                entry.OrderId == orderId &&
+                entry.Currency == currency.ToUpperInvariant(),
             cancellationToken);
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)

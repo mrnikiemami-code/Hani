@@ -1,3 +1,4 @@
+using Hani.BuildingBlocks.Domain.Pricing;
 using Hani.Modules.Booking.Domain.Quotes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -23,6 +24,10 @@ internal sealed class QuoteConfiguration : IEntityTypeConfiguration<Quote>
         builder.Property(quote => quote.UnitPrice).HasColumnName("unit_price").HasPrecision(18, 2).IsRequired();
         builder.Property(quote => quote.Total).HasColumnName("total").HasPrecision(18, 2).IsRequired();
         builder.Property(quote => quote.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+        builder.Property(quote => quote.Pricing).HasColumnName("pricing").HasColumnType("jsonb")
+            .HasConversion(
+                snapshot => snapshot == null ? null : PricingSnapshotJson.Serialize(snapshot),
+                json => json == null ? null : PricingSnapshotJson.Deserialize(json));
         builder.Property(quote => quote.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(quote => quote.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(quote => quote.ExpiresAt).HasColumnName("expires_at").IsRequired();

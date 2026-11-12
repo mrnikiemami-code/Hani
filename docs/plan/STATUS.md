@@ -1,11 +1,11 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
-> **فاز فعال:** Baseline Gate 1 — Tour Experience & Pricing
-> **آخرین commit کد:** `99d42ea`
-> **وضعیت Gate:** Gate 1 — In Progress
+> **فاز فعال:** Baseline Gate 2 — Discovery/SEO
+> **آخرین commit کد:** `68a4895`
+> **وضعیت Gate:** Gate 1 — Passed ✅ / Gate 2 — Planned
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
-> **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
+> **گزارش Gate:** [`../reports/baseline-gate-1.md`](../reports/baseline-gate-1.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
 ---
@@ -16,7 +16,7 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | 🚧 Baseline Gate 1 | ~85% |
+| 2 | Marketplace Read + Booking | ✅ Baseline Gate 1 Passed | ~95% |
 | 3 | Channel + Billing + Settlement | ⏳ Gate 7 | 0% |
 | 4 | Flights | ⏳ Gate 5 | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Gate 1/5/6 | 0% |
@@ -88,7 +88,8 @@
 | Pricing architecture | ADR-0024: چندارزی + VAT/Duty + BookingMode + تفکیک MoR | docs only |
 | Lastsecond gap analysis | گزارش بررسی صفحات و اولویت‌بندی شکاف‌ها | `docs/reports/lastsecond-gap-analysis-2026-11-12.md` |
 | Tour Content Model | Itinerary/Meals/Services/Policies/RequiredItems چندزبانه (GAP-01) | `99d42ea` |
-| Offer Options | Accommodation + Flight + MealPlan (GAP-02/03) | این تغییر |
+| Offer Options | Accommodation + Flight + MealPlan (GAP-02/03) | `68a4895` |
+| Multi-currency Pricing | PriceComponent + VAT/Duty + PaymentObligation + per-currency Payment/Commission | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -145,10 +146,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۸۹ passed |
+| Unit Tests | ۹۱ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۲۲ passed** |
-| Migrations | Supply (۴) / Catalog (۲) / Identity (۱) / Booking (۲) / Payments (۲) / Settlement (۱) |
+| Total | **۱۲۴ passed** |
+| Migrations | Supply (۵) / Catalog (۲) / Identity (۱) / Booking (۴) / Payments (۴) / Settlement (۲) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -157,18 +158,19 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 1 — Tour Experience & Pricing
-**GAPهای Gate 1:** GAP-01 (Tour Content)، GAP-02 (Accommodation)، GAP-03 (Flight)، GAP-07 (Multi-currency)، GAP-08 (VAT/Duty)
+**تسک فعال:** Gate 2 — Discovery/SEO
+**GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
+**GAPهای Gate 2:** GAP-04 (Faceted Search), GAP-28 (SEO/Landing)
 **Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای قبلی
 
-### ۵ تسک اول Baseline Gate 1
+### ۵ تسک اول Baseline Gate 1 — Done ✅
 
 | ترتیب | تسک | GAP | خروجی |
 |---|---|---|---|
 | 1 | Tour Content Model | GAP-01 | برنامه سفر/خدمات/قوانین |
 | 2 | Accommodation + Flight Options | GAP-02/03 | چند هتل/اتاق/MealPlan/پرواز |
 | 3 | PriceComponent + TaxStatus | GAP-07/08 | مدل قیمت چندارزی/مالیاتی |
-| 4 | Quote/Order/Contract Snapshot | GAP-07/08 | snapshot چندارزی |
+| 4 | Quote/Order/Contract Snapshot | GAP-07/08 | snapshot چندارزی + PaymentObligation |
 | 5 | PaymentObligation + Commission/Ledger | GAP-07/08 | پرداخت/کمیسیون چندارزی |
 
 ---
@@ -213,3 +215,4 @@
 | `0dd6fbe` | Settlement ledger and commission accrual |
 | `3a8992b` | Lastsecond baseline lock and gate checks |
 | `99d42ea` | Multilingual tour content model (TC-083) |
+| `68a4895` | Offer accommodation and flight options (TC-084) |

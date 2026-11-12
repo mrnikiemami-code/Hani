@@ -16,10 +16,26 @@ internal sealed class PaymentIntentRepository(PaymentsDbContext dbContext) : IPa
     public Task<PaymentIntent?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         => dbContext.PaymentIntents.FirstOrDefaultAsync(intent => intent.Id == id, cancellationToken);
 
-    public Task<PaymentIntent?> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken)
-        => dbContext.PaymentIntents.FirstOrDefaultAsync(
-            intent => intent.OrderId == orderId,
+    public Task<PaymentIntent?> GetByOrderAndCurrencyAsync(
+        Guid orderId,
+        string currency,
+        CancellationToken cancellationToken)
+    {
+        var normalizedCurrency = currency.ToUpperInvariant();
+
+        return dbContext.PaymentIntents.FirstOrDefaultAsync(
+            intent =>
+                intent.OrderId == orderId &&
+                intent.Currency == normalizedCurrency,
             cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<PaymentIntent>> GetAllByOrderIdAsync(
+        Guid orderId,
+        CancellationToken cancellationToken)
+        => await dbContext.PaymentIntents
+            .Where(intent => intent.OrderId == orderId)
+            .ToArrayAsync(cancellationToken);
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)
         => dbContext.SaveChangesAsync(cancellationToken);

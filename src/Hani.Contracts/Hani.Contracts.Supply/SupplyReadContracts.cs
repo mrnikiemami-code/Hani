@@ -48,6 +48,17 @@ public interface IOfferReadService
 }
 
 /// <summary>
+/// Tax and duty rule snapshot for a departure currency.
+/// </summary>
+public sealed record DepartureTaxRuleSnapshot(
+    string Currency,
+    string VatStatus,
+    decimal VatRate,
+    string DutyStatus,
+    decimal DutyRate,
+    string? ExemptionReason);
+
+/// <summary>
 /// Departure pricing snapshot used when creating a quote.
 /// </summary>
 public sealed record DeparturePricingSnapshot(
@@ -56,7 +67,8 @@ public sealed record DeparturePricingSnapshot(
     Guid AgencyId,
     int Capacity,
     int SeatsLeft,
-    IReadOnlyList<DeparturePriceSnapshot> Prices);
+    IReadOnlyList<DeparturePriceSnapshot> Prices,
+    IReadOnlyList<DepartureTaxRuleSnapshot> TaxRules);
 
 /// <summary>
 /// Read-side contract for departure pricing.

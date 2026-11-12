@@ -1,3 +1,4 @@
+using Hani.BuildingBlocks.Domain.Pricing;
 using Hani.Modules.Booking.Domain.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -26,6 +27,10 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(order => order.UnitPrice).HasColumnName("unit_price").HasPrecision(18, 2).IsRequired();
         builder.Property(order => order.Total).HasColumnName("total").HasPrecision(18, 2).IsRequired();
         builder.Property(order => order.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+        builder.Property(order => order.Pricing).HasColumnName("pricing").HasColumnType("jsonb")
+            .HasConversion(
+                snapshot => snapshot == null ? null : PricingSnapshotJson.Serialize(snapshot),
+                json => json == null ? null : PricingSnapshotJson.Deserialize(json));
         builder.Property(order => order.ContactEmail).HasColumnName("contact_email").HasMaxLength(320).IsRequired();
         builder.Property(order => order.ContactPhone).HasColumnName("contact_phone").HasMaxLength(32);
         builder.Property(order => order.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
@@ -73,6 +78,27 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             lines.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 
+        builder.OwnsMany(order => order.PaymentObligations, obligations =>
+        {
+            obligations.ToTable("payment_obligations");
+            obligations.WithOwner().HasForeignKey(obligation => obligation.OrderId);
+            obligations.HasKey(obligation => obligation.Id);
+
+            obligations.Property(obligation => obligation.Id).HasColumnName("id");
+            obligations.Property(obligation => obligation.OrderId).HasColumnName("order_id");
+            obligations.Property(obligation => obligation.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+            obligations.Property(obligation => obligation.Amount).HasColumnName("amount").HasPrecision(18, 2).IsRequired();
+            obligations.Property(obligation => obligation.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
+            obligations.Property(obligation => obligation.PaymentIntentId).HasColumnName("payment_intent_id");
+            obligations.Property(obligation => obligation.PaidAt).HasColumnName("paid_at");
+
+            obligations.HasIndex(obligation => new { obligation.OrderId, obligation.Currency })
+                .IsUnique()
+                .HasDatabaseName("ux_payment_obligations_order_currency");
+
+            obligations.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
+
         builder.OwnsOne(order => order.Contract, contract =>
         {
             contract.ToTable("contracts");
@@ -96,6 +122,10 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             contract.Property(item => item.UnitPrice).HasColumnName("unit_price").HasPrecision(18, 2).IsRequired();
             contract.Property(item => item.Total).HasColumnName("total").HasPrecision(18, 2).IsRequired();
             contract.Property(item => item.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+            contract.Property(item => item.Pricing).HasColumnName("pricing").HasColumnType("jsonb")
+                .HasConversion(
+                    snapshot => snapshot == null ? null : PricingSnapshotJson.Serialize(snapshot),
+                    json => json == null ? null : PricingSnapshotJson.Deserialize(json));
             contract.Property(item => item.ContactEmail).HasColumnName("contact_email").HasMaxLength(320).IsRequired();
             contract.Property(item => item.ContactPhone).HasColumnName("contact_phone").HasMaxLength(32);
 

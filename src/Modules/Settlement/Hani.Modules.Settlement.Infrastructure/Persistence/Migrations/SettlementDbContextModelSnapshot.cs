@@ -144,12 +144,12 @@ namespace Hani.Modules.Settlement.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique()
-                        .HasDatabaseName("ux_commission_entries_order_id");
-
                     b.HasIndex("AgencyId", "Status")
                         .HasDatabaseName("ix_commission_entries_agency_status");
+
+                    b.HasIndex("OrderId", "Currency")
+                        .IsUnique()
+                        .HasDatabaseName("ux_commission_entries_order_currency");
 
                     b.ToTable("commission_entries", "settlement");
                 });

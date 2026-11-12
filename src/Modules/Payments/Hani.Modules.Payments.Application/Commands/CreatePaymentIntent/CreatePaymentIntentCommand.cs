@@ -7,6 +7,8 @@ namespace Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
 /// </summary>
 public sealed record CreatePaymentIntentCommand(
     Guid OrderId,
+    string? Currency = null,
+    Guid? PaymentObligationId = null,
     string IdempotencyKey = "") : ICommand<PaymentIntentDto>, IIdempotentCommand
 {
     string IIdempotentCommand.IdempotencyKey => IdempotencyKey;
@@ -21,6 +23,7 @@ public sealed record PaymentIntentDto(
     Guid AgencyId,
     decimal Amount,
     string Currency,
+    Guid? PaymentObligationId,
     string Status,
     string Provider,
     string? ProviderRef,

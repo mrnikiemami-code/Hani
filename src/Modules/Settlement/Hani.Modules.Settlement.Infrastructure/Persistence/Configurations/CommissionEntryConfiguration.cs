@@ -26,9 +26,9 @@ internal sealed class CommissionEntryConfiguration : IEntityTypeConfiguration<Co
         builder.Property(entry => entry.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(entry => entry.CreatedAt).HasColumnName("created_at").IsRequired();
 
-        builder.HasIndex(entry => entry.OrderId)
+        builder.HasIndex(entry => new { entry.OrderId, entry.Currency })
             .IsUnique()
-            .HasDatabaseName("ux_commission_entries_order_id");
+            .HasDatabaseName("ux_commission_entries_order_currency");
         builder.HasIndex(entry => new { entry.AgencyId, entry.Status })
             .HasDatabaseName("ix_commission_entries_agency_status");
     }

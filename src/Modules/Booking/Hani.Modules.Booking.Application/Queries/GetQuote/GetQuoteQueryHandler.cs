@@ -38,5 +38,18 @@ internal sealed class GetQuoteQueryHandler(IQuoteRepository quotes)
             quote.Total,
             quote.Currency,
             quote.Status.ToString(),
-            quote.ExpiresAt);
+            quote.ExpiresAt,
+            quote.EffectivePricing.Components
+                .Select(component => new PriceComponentDto(
+                    component.Kind.ToString(),
+                    component.BaseAmount,
+                    component.Currency,
+                    component.Duty.Status.ToString(),
+                    component.Duty.Rate,
+                    component.Duty.Amount,
+                    component.Vat.Status.ToString(),
+                    component.Vat.Rate,
+                    component.Vat.Amount,
+                    component.TotalAmount))
+                .ToArray());
 }

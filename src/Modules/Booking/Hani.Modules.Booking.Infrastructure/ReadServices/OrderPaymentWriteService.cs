@@ -23,12 +23,50 @@ internal sealed class OrderPaymentWriteService(BookingDbContext dbContext)
             return true;
         }
 
-        if (order.Status != OrderStatus.PendingPayment)
+        if (order.Status is not (OrderStatus.PendingPayment or OrderStatus.PartiallyPaid))
         {
             return false;
         }
 
         order.MarkPaid();
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
+    public async Task<bool> MarkObligationPaidAsync(
+        Guid orderId,
+        Guid? paymentObligationId,
+        string currency,
+        Guid paymentIntentId,
+        DateTimeOffset paidAt,
+        CancellationToken cancellationToken)
+    {
+        var order = await dbContext.Orders
+            .FirstOrDefaultAsync(item => item.Id == orderId, cancellationToken);
+
+        if (order is null)
+        {
+            return false;
+        }
+
+        if (order.PaymentObligations.Count == 0)
+        {
+            return await MarkPaidAsync(orderId, cancellationToken);
+        }
+
+        try
+        {
+            order.MarkObligationPaid(
+                paymentObligationId,
+                currency,
+                paymentIntentId,
+                paidAt);
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+
         await dbContext.SaveChangesAsync(cancellationToken);
         return true;
     }

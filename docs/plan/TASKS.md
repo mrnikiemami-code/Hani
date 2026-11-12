@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|
 | 1 | TC-083 | Tour Content Model | ✅ | GAP-01 | itinerary/services/policies |
 | 1 | TC-084 | Offer Accommodation + Flight Options + MealPlan | ✅ | GAP-02/03 | چند هتل/اتاق/پرواز |
-| 1 | TC-082 | PriceComponent + TaxStatus + Snapshot + PaymentObligation + Commission per currency | ❌ | GAP-07/08 | چندارزی/مالیات/دفتر |
+| 1 | TC-082 | PriceComponent + TaxStatus + Snapshot + PaymentObligation + Commission per currency | ✅ | GAP-07/08 | چندارزی/مالیات/دفتر |
 | 2 | TC-085 | Faceted Search + Sort | ❌ | GAP-04 | فیلترهای کامل |
 | 2 | TC-097 | SEO + Landing + Sitemap | ❌ | GAP-28 | Canonical/JSON-LD |
 | 3 | TC-086 | User Identity + OTP + Profile | ❌ | GAP-09/10 | auth/profile |

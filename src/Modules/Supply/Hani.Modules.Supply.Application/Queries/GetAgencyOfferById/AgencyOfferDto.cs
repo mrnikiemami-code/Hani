@@ -30,6 +30,17 @@ public sealed record FlightOptionDto(
     string BaggageAllowance);
 
 /// <summary>
+/// Tax rule read model.
+/// </summary>
+public sealed record TaxRuleDto(
+    string Currency,
+    string VatStatus,
+    decimal VatRate,
+    string DutyStatus,
+    decimal DutyRate,
+    string? ExemptionReason);
+
+/// <summary>
 /// Agency offer read model returned to suppliers.
 /// </summary>
 public sealed record AgencyOfferDto(
@@ -44,4 +55,5 @@ public sealed record AgencyOfferDto(
     string? RejectionReason,
     DateTimeOffset UpdatedAt,
     IReadOnlyList<AccommodationOptionDto> AccommodationOptions,
-    IReadOnlyList<FlightOptionDto> FlightOptions);
+    IReadOnlyList<FlightOptionDto> FlightOptions,
+    IReadOnlyList<TaxRuleDto> TaxRules);

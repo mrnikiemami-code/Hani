@@ -1,6 +1,15 @@
 namespace Hani.Contracts.Booking;
 
 /// <summary>
+/// One per-currency payment obligation exposed to the payment module.
+/// </summary>
+public sealed record OrderPaymentObligationSnapshot(
+    Guid ObligationId,
+    string Currency,
+    decimal Amount,
+    string Status);
+
+/// <summary>
 /// Minimal order snapshot used by the payment module without taking a dependency on Booking.
 /// </summary>
 public sealed record OrderPaymentSnapshot(
@@ -9,7 +18,8 @@ public sealed record OrderPaymentSnapshot(
     decimal Amount,
     string Currency,
     string Status,
-    DateTimeOffset PaymentDueAt);
+    DateTimeOffset PaymentDueAt,
+    IReadOnlyList<OrderPaymentObligationSnapshot> Obligations);
 
 /// <summary>
 /// Read-side contract exposed by Booking for payment initiation.
@@ -34,4 +44,16 @@ public interface IOrderPaymentWriteService
     /// (or was already paid); <c>false</c> when the order cannot be updated.
     /// </summary>
     Task<bool> MarkPaidAsync(Guid orderId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Marks one per-currency obligation paid. Returns <c>true</c> when the obligation
+    /// is paid (or was already paid); <c>false</c> when it cannot be updated.
+    /// </summary>
+    Task<bool> MarkObligationPaidAsync(
+        Guid orderId,
+        Guid? paymentObligationId,
+        string currency,
+        Guid paymentIntentId,
+        DateTimeOffset paidAt,
+        CancellationToken cancellationToken);
 }

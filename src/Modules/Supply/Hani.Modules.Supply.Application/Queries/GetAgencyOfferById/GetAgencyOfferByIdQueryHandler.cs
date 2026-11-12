@@ -57,6 +57,15 @@ internal sealed class GetAgencyOfferByIdQueryHandler(
                     option.DurationMinutes,
                     option.Cabin,
                     option.BaggageAllowance))
+                .ToArray(),
+            offer.TaxRules
+                .Select(rule => new TaxRuleDto(
+                    rule.Currency,
+                    rule.VatStatus.ToString(),
+                    rule.VatRate,
+                    rule.DutyStatus.ToString(),
+                    rule.DutyRate,
+                    rule.ExemptionReason))
                 .ToArray());
 
         return Result<AgencyOfferDto>.Success(dto);

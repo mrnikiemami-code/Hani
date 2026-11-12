@@ -5,7 +5,7 @@ namespace Hani.Modules.Settlement.Application.Queries.GetCommission;
 /// <summary>
 /// Query that reads the commission accrued for an order.
 /// </summary>
-public sealed record GetCommissionQuery(Guid OrderId) : IQuery<CommissionDto>;
+public sealed record GetCommissionQuery(Guid OrderId, string? Currency = null) : IQuery<CommissionDto>;
 
 /// <summary>
 /// Commission read model with the applied rule snapshot.

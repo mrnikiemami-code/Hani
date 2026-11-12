@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Domain;
+using Hani.BuildingBlocks.Domain.Pricing;
 using Hani.Modules.Booking.Domain.Quotes.Events;
 
 namespace Hani.Modules.Booking.Domain.Quotes;
@@ -25,6 +26,7 @@ public sealed class Quote : AggregateRoot<Guid>
         decimal unitPrice,
         decimal total,
         string currency,
+        PricingSnapshot pricing,
         DateTimeOffset createdAt,
         DateTimeOffset expiresAt) : base(id)
     {
@@ -39,6 +41,7 @@ public sealed class Quote : AggregateRoot<Guid>
         UnitPrice = unitPrice;
         Total = total;
         Currency = currency;
+        Pricing = pricing;
         CreatedAt = createdAt;
         ExpiresAt = expiresAt;
         Status = QuoteStatus.Active;
@@ -66,6 +69,16 @@ public sealed class Quote : AggregateRoot<Guid>
 
     public string Currency { get; private set; } = string.Empty;
 
+    /// <summary>
+    /// Multi-currency pricing and tax snapshot.
+    /// </summary>
+    public PricingSnapshot? Pricing { get; private set; }
+
+    /// <summary>
+    /// Effective pricing snapshot, falling back to the legacy single-currency total.
+    /// </summary>
+    public PricingSnapshot EffectivePricing => Pricing ?? PricingSnapshot.Single(Total, Currency);
+
     public QuoteStatus Status { get; private set; }
 
     public DateTimeOffset CreatedAt { get; private set; }
@@ -85,7 +98,8 @@ public sealed class Quote : AggregateRoot<Guid>
         decimal unitPrice,
         decimal total,
         string currency,
-        DateTimeOffset? now = null)
+        DateTimeOffset? now = null,
+        PricingSnapshot? pricing = null)
     {
         if (departureId == Guid.Empty || agencyOfferId == Guid.Empty || agencyId == Guid.Empty)
         {
@@ -116,6 +130,7 @@ public sealed class Quote : AggregateRoot<Guid>
             unitPrice,
             total,
             currency.ToUpperInvariant(),
+            pricing ?? PricingSnapshot.Single(total, currency),
             createdAt,
             createdAt.AddMinutes(15));
 

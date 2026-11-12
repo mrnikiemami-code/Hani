@@ -30,7 +30,10 @@ public sealed class CreateTourDepartureCommandValidator : AbstractValidator<Crea
             .WithErrorCode("HANI-SUPPLY-1105");
 
         RuleFor(command => command.Prices)
-            .Must(prices => prices.Select(price => price.RoomType).Distinct().Count() == prices.Count)
+            .Must(prices => prices
+                .Select(price => (price.RoomType, price.Currency))
+                .Distinct()
+                .Count() == prices.Count)
             .WithErrorCode("HANI-SUPPLY-1106");
 
         RuleForEach(command => command.Prices).ChildRules(price =>

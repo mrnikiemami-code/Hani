@@ -30,6 +30,7 @@ internal sealed class GetPaymentIntentQueryHandler(IPaymentIntentRepository inte
             intent.AgencyId,
             intent.Amount,
             intent.Currency,
+            intent.PaymentObligationId,
             intent.Status.ToString(),
             intent.Provider,
             intent.ProviderRef,

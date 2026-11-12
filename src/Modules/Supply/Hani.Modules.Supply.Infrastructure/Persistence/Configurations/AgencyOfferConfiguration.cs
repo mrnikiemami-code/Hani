@@ -111,6 +111,28 @@ internal sealed class AgencyOfferConfiguration : IEntityTypeConfiguration<Agency
             options.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 
+        builder.OwnsMany(offer => offer.TaxRules, rules =>
+        {
+            rules.ToTable("agency_offer_tax_rules");
+            rules.WithOwner().HasForeignKey(rule => rule.AgencyOfferId);
+            rules.HasKey(rule => rule.Id);
+
+            rules.Property(rule => rule.Id).HasColumnName("id");
+            rules.Property(rule => rule.AgencyOfferId).HasColumnName("agency_offer_id");
+            rules.Property(rule => rule.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+            rules.Property(rule => rule.VatStatus).HasColumnName("vat_status").HasConversion<string>().HasMaxLength(32).IsRequired();
+            rules.Property(rule => rule.VatRate).HasColumnName("vat_rate").HasPrecision(9, 6).IsRequired();
+            rules.Property(rule => rule.DutyStatus).HasColumnName("duty_status").HasConversion<string>().HasMaxLength(32).IsRequired();
+            rules.Property(rule => rule.DutyRate).HasColumnName("duty_rate").HasPrecision(9, 6).IsRequired();
+            rules.Property(rule => rule.ExemptionReason).HasColumnName("exemption_reason").HasMaxLength(500);
+
+            rules.HasIndex(rule => new { rule.AgencyOfferId, rule.Currency })
+                .IsUnique()
+                .HasDatabaseName("ux_agency_offer_tax_rules_offer_currency");
+
+            rules.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
+
         builder.HasIndex(offer => new { offer.AgencyId, offer.ExternalId })
             .IsUnique()
             .HasFilter("external_id <> ''")

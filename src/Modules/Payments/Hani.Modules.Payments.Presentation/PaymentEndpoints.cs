@@ -53,7 +53,11 @@ public static class PaymentEndpoints
             ?? string.Empty;
 
         var result = await sender.Send(
-            new CreatePaymentIntentCommand(request.OrderId, idempotencyKey),
+            new CreatePaymentIntentCommand(
+                request.OrderId,
+                request.Currency,
+                request.PaymentObligationId,
+                idempotencyKey),
             cancellationToken);
 
         return result.IsSuccess
@@ -98,4 +102,7 @@ public static class PaymentEndpoints
 /// <summary>
 /// HTTP request to create a payment intent for an order.
 /// </summary>
-public sealed record CreatePaymentIntentRequest(Guid OrderId);
+public sealed record CreatePaymentIntentRequest(
+    Guid OrderId,
+    string? Currency = null,
+    Guid? PaymentObligationId = null);

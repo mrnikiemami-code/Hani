@@ -1,4 +1,6 @@
+using Hani.BuildingBlocks.Domain.Pricing;
 using Hani.Modules.Booking.Application.Commands.CreateOrder;
+using Hani.Modules.Booking.Application.Commands.CreateQuote;
 using Hani.Modules.Booking.Domain.Orders;
 
 namespace Hani.Modules.Booking.Application.Orders;
@@ -23,6 +25,7 @@ internal static class OrderMappings
             order.Total,
             order.Currency,
             order.Status.ToString(),
+            order.PaymentStatus.ToString(),
             order.CreatedAt,
             order.PaymentDueAt,
             order.Contract.Id,
@@ -42,7 +45,8 @@ internal static class OrderMappings
                     line.UnitPrice,
                     line.Total,
                     line.Currency))
-                .ToArray());
+                .ToArray(),
+            MapComponents(order.EffectivePricing));
 
     public static ContractDto ToContractDto(Order order)
     {
@@ -83,6 +87,22 @@ internal static class OrderMappings
                     line.UnitPrice,
                     line.Total,
                     line.Currency))
-                .ToArray());
+                .ToArray(),
+            MapComponents(contract.EffectivePricing));
     }
+
+    private static PriceComponentDto[] MapComponents(PricingSnapshot pricing)
+        => pricing.Components
+            .Select(component => new PriceComponentDto(
+                component.Kind.ToString(),
+                component.BaseAmount,
+                component.Currency,
+                component.Duty.Status.ToString(),
+                component.Duty.Rate,
+                component.Duty.Amount,
+                component.Vat.Status.ToString(),
+                component.Vat.Rate,
+                component.Vat.Amount,
+                component.TotalAmount))
+            .ToArray();
 }

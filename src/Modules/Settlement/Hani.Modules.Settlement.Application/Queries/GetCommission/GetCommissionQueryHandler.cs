@@ -11,7 +11,12 @@ internal sealed class GetCommissionQueryHandler(ICommissionEntryRepository entri
         GetCommissionQuery request,
         CancellationToken cancellationToken)
     {
-        var entry = await entries.GetByOrderIdAsync(request.OrderId, cancellationToken);
+        var entry = string.IsNullOrWhiteSpace(request.Currency)
+            ? await entries.GetByOrderIdAsync(request.OrderId, cancellationToken)
+            : await entries.GetByOrderAndCurrencyAsync(
+                request.OrderId,
+                request.Currency,
+                cancellationToken);
 
         if (entry is null)
         {

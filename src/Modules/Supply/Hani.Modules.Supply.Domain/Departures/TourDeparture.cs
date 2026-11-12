@@ -77,9 +77,12 @@ public sealed class TourDeparture : AggregateRoot<Guid>
             throw new ArgumentException("At least one price is required.", nameof(prices));
         }
 
-        if (prices.Select(price => price.RoomType).Distinct().Count() != prices.Count)
+        if (prices
+                .Select(price => (price.RoomType, Currency: price.Price.Currency.ToUpperInvariant()))
+                .Distinct()
+                .Count() != prices.Count)
         {
-            throw new ArgumentException("Duplicate room types are not allowed.", nameof(prices));
+            throw new ArgumentException("Duplicate room type and currency combinations are not allowed.", nameof(prices));
         }
 
         var departure = new TourDeparture(
@@ -167,7 +170,9 @@ public sealed class TourDeparture : AggregateRoot<Guid>
     {
         EnsureVersion(expectedVersion);
 
-        var existing = _prices.SingleOrDefault(item => item.RoomType == roomType);
+        var existing = _prices.SingleOrDefault(item =>
+            item.RoomType == roomType &&
+            string.Equals(item.Currency, price.Currency, StringComparison.OrdinalIgnoreCase));
 
         if (existing is null)
         {

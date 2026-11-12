@@ -19,19 +19,59 @@ internal sealed class CreatePaymentIntentCommandHandler(
         CreatePaymentIntentCommand request,
         CancellationToken cancellationToken)
     {
-        var existing = await intents.GetByOrderIdAsync(request.OrderId, cancellationToken);
-
-        if (existing is not null)
-        {
-            return Result<PaymentIntentDto>.Success(Map(existing));
-        }
-
         var order = await orders.GetForPaymentAsync(request.OrderId, cancellationToken);
 
         if (order is null)
         {
             return Result<PaymentIntentDto>.Failure(
                 Error.NotFound("HANI-PAYMENT-1001", "Order was not found."));
+        }
+
+        var obligations = order.Obligations.Count > 0
+            ? order.Obligations
+            : [new OrderPaymentObligationSnapshot(Guid.Empty, order.Currency, order.Amount, "Unpaid")];
+
+        var obligation = request.PaymentObligationId is { } requestedObligationId &&
+                         requestedObligationId != Guid.Empty
+            ? obligations.FirstOrDefault(item => item.ObligationId == requestedObligationId)
+            : !string.IsNullOrWhiteSpace(request.Currency)
+                ? obligations.FirstOrDefault(item =>
+                    string.Equals(
+                        item.Currency,
+                        request.Currency.Trim(),
+                        StringComparison.OrdinalIgnoreCase))
+                : obligations.Count == 1
+                    ? obligations[0]
+                    : null;
+
+        if (obligation is null)
+        {
+            return Result<PaymentIntentDto>.Failure(
+                Error.Validation(
+                    "HANI-PAYMENT-1007",
+                    "Currency or payment obligation is required when an order has multiple obligations."));
+        }
+
+        if (obligation.Amount <= 0m)
+        {
+            return Result<PaymentIntentDto>.Failure(
+                Error.Validation("HANI-PAYMENT-1008", "Obligation is not payable."));
+        }
+
+        if (string.Equals(obligation.Status, "Paid", StringComparison.OrdinalIgnoreCase))
+        {
+            return Result<PaymentIntentDto>.Failure(
+                Error.Conflict("HANI-PAYMENT-1010", "Obligation is already paid."));
+        }
+
+        var existing = await intents.GetByOrderAndCurrencyAsync(
+            request.OrderId,
+            obligation.Currency,
+            cancellationToken);
+
+        if (existing is not null)
+        {
+            return Result<PaymentIntentDto>.Success(Map(existing));
         }
 
         if (!string.Equals(order.Status, "PendingPayment", StringComparison.Ordinal))
@@ -58,13 +98,14 @@ internal sealed class CreatePaymentIntentCommandHandler(
                 ids,
                 order.OrderId,
                 order.AgencyId,
-                order.Amount,
-                order.Currency,
+                obligation.Amount,
+                obligation.Currency,
                 configuration.PspAccountRef,
                 configuration.MerchantScope,
                 configuration.FundsHeldBy,
                 order.PaymentDueAt,
-                now);
+                now,
+                obligation.ObligationId == Guid.Empty ? null : obligation.ObligationId);
         }
         catch (ArgumentException exception)
         {
@@ -110,6 +151,7 @@ internal sealed class CreatePaymentIntentCommandHandler(
             intent.AgencyId,
             intent.Amount,
             intent.Currency,
+            intent.PaymentObligationId,
             intent.Status.ToString(),
             intent.Provider,
             intent.ProviderRef,

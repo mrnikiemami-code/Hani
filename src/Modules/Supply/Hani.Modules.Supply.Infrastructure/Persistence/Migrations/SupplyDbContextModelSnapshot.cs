@@ -458,9 +458,67 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("AgencyOfferId");
                         });
 
+                    b.OwnsMany("Hani.Modules.Supply.Domain.AgencyOffers.OfferTaxRule", "TaxRules", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("AgencyOfferId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("agency_offer_id");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("currency");
+
+                            b1.Property<decimal>("DutyRate")
+                                .HasPrecision(9, 6)
+                                .HasColumnType("numeric(9,6)")
+                                .HasColumnName("duty_rate");
+
+                            b1.Property<string>("DutyStatus")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("duty_status");
+
+                            b1.Property<string>("ExemptionReason")
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("exemption_reason");
+
+                            b1.Property<decimal>("VatRate")
+                                .HasPrecision(9, 6)
+                                .HasColumnType("numeric(9,6)")
+                                .HasColumnName("vat_rate");
+
+                            b1.Property<string>("VatStatus")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("vat_status");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("AgencyOfferId", "Currency")
+                                .IsUnique()
+                                .HasDatabaseName("ux_agency_offer_tax_rules_offer_currency");
+
+                            b1.ToTable("agency_offer_tax_rules", "supply");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AgencyOfferId");
+                        });
+
                     b.Navigation("AccommodationOptions");
 
                     b.Navigation("FlightOptions");
+
+                    b.Navigation("TaxRules");
                 });
 
             modelBuilder.Entity("Hani.Modules.Supply.Domain.Departures.TourDeparture", b =>
@@ -495,9 +553,9 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("Id");
 
-                            b1.HasIndex("TourDepartureId", "RoomType")
+                            b1.HasIndex("TourDepartureId", "RoomType", "Currency")
                                 .IsUnique()
-                                .HasDatabaseName("ux_tour_departure_prices_departure_room");
+                                .HasDatabaseName("ux_tour_departure_prices_departure_room_currency");
 
                             b1.ToTable("tour_departure_prices", "supply");
 

@@ -10,6 +10,7 @@
 | `AgencyOfferStatus` | Draft → Pending → Approved / Rejected → Archived |
 | `OfferAccommodationOption` | هتل/اتاق/MealPlan/قیمت |
 | `OfferFlightOption` | پرواز رفت/برگشت با ایرلاین/فرودگاه/ساعت/بار |
+| `OfferTaxRule` | VAT/Duty هر ارز با نرخ و وضعیت مالیاتی |
 | `TourDeparture` | یک تاریخ اجرای مشخص با ظرفیت و قیمت |
 | `DeparturePrice` | قیمت هر نوع اتاق/مسافر برای یک سانس |
 | `RoomType` | Double / Single / Triple / Child / Infant |
@@ -23,6 +24,8 @@
 - `ExternalId` یکتای هر آژانس برای upsert idempotent است.
 - قیمت و ظرفیت روی `TourDeparture` است، نه `TourProduct`.
 - هر Offer می‌تواند چند گزینه اقامت و چند پرواز داشته باشد.
+- هر Offer می‌تواند برای هر ارز یک `OfferTaxRule` داشته باشد؛ نرخ‌ها کسری بین ۰ و ۱ هستند.
+- یک سانس می‌تواند برای یک RoomType چند قیمت ارزی داشته باشد؛ یکتایی `(departure, roomType, currency)` است.
 - ویرایش Offer در وضعیت Approved مجاز نیست.
 - کاهش/افزایش ظرفیت با `Version` کنترل می‌شود.
 
@@ -54,5 +57,5 @@ Presentation    → Minimal API endpoints
 ## Persistence
 
 - Schema: `supply`
-- جدول‌ها: `agency_offers`, `agency_offer_accommodations`, `agency_offer_flights`, `tour_departures`, `tour_departure_prices`, Outbox/Inbox
-- Migrationها: `InitialSupply`, `AddTourDepartures`, `AddOfferLifecycle`, `AddOfferOptions`
+- جدول‌ها: `agency_offers`, `agency_offer_accommodations`, `agency_offer_flights`, `agency_offer_tax_rules`, `tour_departures`, `tour_departure_prices`, Outbox/Inbox
+- Migrationها: `InitialSupply`, `AddTourDepartures`, `AddOfferLifecycle`, `AddOfferOptions`, `AddTaxRulesAndCurrencyPrices`

@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Domain;
+using Hani.BuildingBlocks.Domain.Pricing;
 using Hani.Modules.Booking.Domain.Holds;
 using Hani.Modules.Booking.Domain.Quotes;
 
@@ -34,6 +35,7 @@ public sealed class Contract : Entity<Guid>
         decimal unitPrice,
         decimal total,
         string currency,
+        PricingSnapshot pricing,
         string contactEmail,
         string? contactPhone) : base(id)
     {
@@ -53,6 +55,7 @@ public sealed class Contract : Entity<Guid>
         UnitPrice = unitPrice;
         Total = total;
         Currency = currency;
+        Pricing = pricing;
         ContactEmail = contactEmail;
         ContactPhone = contactPhone;
     }
@@ -138,6 +141,16 @@ public sealed class Contract : Entity<Guid>
     public string Currency { get; private set; } = string.Empty;
 
     /// <summary>
+    /// Multi-currency pricing and tax snapshot captured at issuance.
+    /// </summary>
+    public PricingSnapshot? Pricing { get; private set; }
+
+    /// <summary>
+    /// Effective pricing snapshot, falling back to the legacy single-currency total.
+    /// </summary>
+    public PricingSnapshot EffectivePricing => Pricing ?? PricingSnapshot.Single(Total, Currency);
+
+    /// <summary>
     /// Contact email captured at issuance.
     /// </summary>
     public string ContactEmail { get; private set; } = string.Empty;
@@ -186,6 +199,7 @@ public sealed class Contract : Entity<Guid>
             quote.UnitPrice,
             quote.Total,
             quote.Currency,
+            quote.EffectivePricing,
             contactEmail.Trim(),
             string.IsNullOrWhiteSpace(contactPhone) ? null : contactPhone.Trim());
 
@@ -199,14 +213,17 @@ public sealed class Contract : Entity<Guid>
                 traveler.DateOfBirth));
         }
 
-        contract._lines.Add(new ContractLine(
-            ids.NewId(),
-            contract.Id,
-            ContractLineDescription(quote),
-            1,
-            quote.Total,
-            quote.Total,
-            quote.Currency));
+        foreach (var component in quote.EffectivePricing.Components)
+        {
+            contract._lines.Add(new ContractLine(
+                ids.NewId(),
+                contract.Id,
+                ContractLineDescription(quote),
+                1,
+                component.BaseAmount,
+                component.TotalAmount,
+                component.Currency));
+        }
 
         return contract;
     }

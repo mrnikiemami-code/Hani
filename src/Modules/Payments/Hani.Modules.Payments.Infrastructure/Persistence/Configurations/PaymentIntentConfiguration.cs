@@ -16,6 +16,7 @@ internal sealed class PaymentIntentConfiguration : IEntityTypeConfiguration<Paym
         builder.Property(intent => intent.AgencyId).HasColumnName("agency_id").IsRequired();
         builder.Property(intent => intent.Amount).HasColumnName("amount").HasPrecision(18, 2).IsRequired();
         builder.Property(intent => intent.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+        builder.Property(intent => intent.PaymentObligationId).HasColumnName("payment_obligation_id");
         builder.Property(intent => intent.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(intent => intent.Provider).HasColumnName("provider").HasMaxLength(64).IsRequired();
         builder.Property(intent => intent.ProviderRef).HasColumnName("provider_ref").HasMaxLength(128);
@@ -29,9 +30,9 @@ internal sealed class PaymentIntentConfiguration : IEntityTypeConfiguration<Paym
         builder.Property(intent => intent.ExpiresAt).HasColumnName("expires_at").IsRequired();
         builder.Property(intent => intent.Version).HasColumnName("version").IsConcurrencyToken().IsRequired();
 
-        builder.HasIndex(intent => intent.OrderId)
+        builder.HasIndex(intent => new { intent.OrderId, intent.Currency })
             .IsUnique()
-            .HasDatabaseName("ux_payment_intents_order_id");
+            .HasDatabaseName("ux_payment_intents_order_currency");
         builder.HasIndex(intent => intent.Status)
             .HasDatabaseName("ix_payment_intents_status");
         builder.HasIndex(intent => intent.ExpiresAt)

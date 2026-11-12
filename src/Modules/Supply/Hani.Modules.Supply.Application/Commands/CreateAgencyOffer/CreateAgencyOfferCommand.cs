@@ -1,8 +1,20 @@
 using Hani.BuildingBlocks.Application;
+using Hani.BuildingBlocks.Domain.Pricing;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 using Hani.Modules.Supply.Domain.Departures;
 
 namespace Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
+
+/// <summary>
+/// Tax/duty rule input for one offer currency.
+/// </summary>
+public sealed record TaxRuleInput(
+    string Currency,
+    TaxStatus VatStatus,
+    decimal VatRate,
+    TaxStatus DutyStatus,
+    decimal DutyRate,
+    string? ExemptionReason = null);
 
 /// <summary>
 /// Accommodation option input.
@@ -41,4 +53,5 @@ public sealed record CreateAgencyOfferCommand(
     decimal BasePrice,
     string Currency,
     IReadOnlyList<AccommodationOptionInput>? AccommodationOptions = null,
-    IReadOnlyList<FlightOptionInput>? FlightOptions = null) : ICommand<Guid>;
+    IReadOnlyList<FlightOptionInput>? FlightOptions = null,
+    IReadOnlyList<TaxRuleInput>? TaxRules = null) : ICommand<Guid>;

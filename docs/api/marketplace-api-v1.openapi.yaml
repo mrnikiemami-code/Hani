@@ -350,6 +350,20 @@ components:
         children: { type: integer, minimum: 0, maximum: 10, default: 0 }
         infants: { type: integer, minimum: 0, maximum: 10, default: 0 }
 
+    PriceComponent:
+      type: object
+      properties:
+        kind: { type: string, enum: [Base, Fee, Discount] }
+        baseAmount: { type: number }
+        currency: { type: string }
+        dutyStatus: { type: string, enum: [Applicable, ZeroRated, NotApplicable, Exempt] }
+        dutyRate: { type: number }
+        dutyAmount: { type: number }
+        vatStatus: { type: string, enum: [Applicable, ZeroRated, NotApplicable, Exempt] }
+        vatRate: { type: number }
+        vatAmount: { type: number }
+        totalAmount: { type: number }
+
     Quote:
       type: object
       properties:
@@ -367,6 +381,9 @@ components:
         currency: { type: string }
         status: { type: string, enum: [Active, Held, Expired, Converted, Cancelled] }
         expiresAt: { type: string, format: date-time }
+        components:
+          type: array
+          items: { $ref: '#/components/schemas/PriceComponent' }
 
     Hold:
       type: object
@@ -434,7 +451,8 @@ components:
         unitPrice: { type: number }
         total: { type: number }
         currency: { type: string }
-        status: { type: string, enum: [PendingPayment, Paid, Cancelled, Expired] }
+        status: { type: string, enum: [PendingPayment, PartiallyPaid, Paid, Cancelled, Expired] }
+        paymentStatus: { type: string, enum: [Unpaid, PartiallyPaid, Paid] }
         createdAt: { type: string, format: date-time }
         paymentDueAt: { type: string, format: date-time }
         contractId: { type: string, format: uuid }
@@ -445,6 +463,9 @@ components:
         lines:
           type: array
           items: { $ref: '#/components/schemas/OrderLine' }
+        components:
+          type: array
+          items: { $ref: '#/components/schemas/PriceComponent' }
 
     Contract:
       type: object
@@ -474,12 +495,17 @@ components:
         lines:
           type: array
           items: { $ref: '#/components/schemas/OrderLine' }
+        components:
+          type: array
+          items: { $ref: '#/components/schemas/PriceComponent' }
 
     CreatePaymentIntentRequest:
       type: object
       required: [orderId]
       properties:
         orderId: { type: string, format: uuid }
+        currency: { type: [string, 'null'], minLength: 3, maxLength: 3 }
+        paymentObligationId: { type: [string, 'null'], format: uuid }
 
     PaymentIntent:
       type: object
@@ -489,6 +515,7 @@ components:
         agencyId: { type: string, format: uuid }
         amount: { type: number }
         currency: { type: string }
+        paymentObligationId: { type: [string, 'null'], format: uuid }
         status: { type: string, enum: [Created, Pending, Succeeded, Failed, Expired] }
         provider: { type: string }
         providerRef: { type: [string, 'null'] }

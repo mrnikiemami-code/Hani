@@ -236,6 +236,20 @@ components:
         flightOptions:
           type: array
           items: { $ref: '#/components/schemas/FlightOption' }
+        taxRules:
+          type: array
+          items: { $ref: '#/components/schemas/TaxRule' }
+
+    TaxRule:
+      type: object
+      required: [currency, vatStatus, vatRate, dutyStatus, dutyRate]
+      properties:
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        vatStatus: { type: string, enum: [Applicable, ZeroRated, NotApplicable, Exempt] }
+        vatRate: { type: number, minimum: 0, maximum: 1 }
+        dutyStatus: { type: string, enum: [Applicable, ZeroRated, NotApplicable, Exempt] }
+        dutyRate: { type: number, minimum: 0, maximum: 1 }
+        exemptionReason: { type: [string, 'null'], maxLength: 500 }
 
     AccommodationOption:
       type: object
@@ -289,10 +303,11 @@ components:
           minItems: 1
           items:
             type: object
-            required: [roomType, amount]
+            required: [roomType, amount, currency]
             properties:
               roomType: { type: string, enum: [DOUBLE, SINGLE, CHILD_BED, CHILD_NO_BED, INFANT] }
               amount: { type: number, minimum: 0 }
+              currency: { type: string, minLength: 3, maxLength: 3 }
         flightLegs:
           type: array
           items: { type: object, additionalProperties: true }

@@ -41,8 +41,8 @@
 | GAP-04 | Faceted Search | P0 | 2 | TC-085 | Planned |
 | GAP-05 | Booking/Request Modes | P0 | 4 | TC-088 | Planned |
 | GAP-06 | Lead/RFQ | P0 | 4 | TC-088 | Planned |
-| GAP-07 | Multi-currency | P0 | 1 | TC-082 | Planned |
-| GAP-08 | VAT/Duty | P0 | 1 | TC-082 | Planned |
+| GAP-07 | Multi-currency | P0 | 1 | TC-082 | Done |
+| GAP-08 | VAT/Duty | P0 | 1 | TC-082 | Done |
 | GAP-09 | User Auth/OTP | P0 | 3 | TC-086 | Planned |
 | GAP-10 | Profiles/Authors | P1 | 3 | TC-086 | Planned |
 | GAP-11 | Reviews/UGC | P0 | 3 | TC-089 | Planned |

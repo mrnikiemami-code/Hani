@@ -133,6 +133,10 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("payment_due_at");
 
+                    b.Property<string>("Pricing")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("pricing");
+
                     b.Property<Guid>("QuoteId")
                         .HasColumnType("uuid")
                         .HasColumnName("quote_id");
@@ -223,6 +227,10 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                     b.Property<int>("Infants")
                         .HasColumnType("integer")
                         .HasColumnName("infants");
+
+                    b.Property<string>("Pricing")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("pricing");
 
                     b.Property<string>("RoomType")
                         .IsRequired()
@@ -328,6 +336,10 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("order_id");
+
+                            b1.Property<string>("Pricing")
+                                .HasColumnType("jsonb")
+                                .HasColumnName("pricing");
 
                             b1.Property<Guid>("QuoteId")
                                 .HasColumnType("uuid")
@@ -541,10 +553,60 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("OrderId");
                         });
 
+                    b.OwnsMany("Hani.Modules.Booking.Domain.Orders.PaymentObligation", "PaymentObligations", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("amount");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("currency");
+
+                            b1.Property<Guid>("OrderId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("order_id");
+
+                            b1.Property<DateTimeOffset?>("PaidAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("paid_at");
+
+                            b1.Property<Guid?>("PaymentIntentId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("payment_intent_id");
+
+                            b1.Property<string>("Status")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("status");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("OrderId", "Currency")
+                                .IsUnique()
+                                .HasDatabaseName("ux_payment_obligations_order_currency");
+
+                            b1.ToTable("payment_obligations", "booking");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
                     b.Navigation("Contract")
                         .IsRequired();
 
                     b.Navigation("Lines");
+
+                    b.Navigation("PaymentObligations");
 
                     b.Navigation("Travelers");
                 });

@@ -15,5 +15,10 @@ public sealed class CreatePaymentIntentCommandValidator : AbstractValidator<Crea
         RuleFor(command => command.OrderId)
             .NotEmpty()
             .WithErrorCode("HANI-PAYMENT-1004");
+
+        RuleFor(command => command.Currency)
+            .Length(3)
+            .When(command => !string.IsNullOrWhiteSpace(command.Currency))
+            .WithErrorCode("HANI-PAYMENT-1009");
     }
 }

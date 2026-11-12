@@ -76,9 +76,19 @@ public interface IPaymentIntentRepository
     Task<PaymentIntent?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Returns the intent for an order, or <c>null</c>.
+    /// Returns the intent for an order and currency, or <c>null</c>.
     /// </summary>
-    Task<PaymentIntent?> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken);
+    Task<PaymentIntent?> GetByOrderAndCurrencyAsync(
+        Guid orderId,
+        string currency,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns all intents for an order.
+    /// </summary>
+    Task<IReadOnlyList<PaymentIntent>> GetAllByOrderIdAsync(
+        Guid orderId,
+        CancellationToken cancellationToken);
 
     /// <summary>
     /// Persists pending changes.

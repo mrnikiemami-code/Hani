@@ -49,6 +49,13 @@ internal sealed class UpsertAgencyOfferCommandHandler(
                         ids,
                         AgencyOfferOptions.MapFlights(request.FlightOptions)!);
                 }
+
+                if (request.TaxRules is not null)
+                {
+                    existing.ReplaceTaxRules(
+                        ids,
+                        AgencyOfferOptions.MapTaxRules(request.TaxRules)!);
+                }
             }
             catch (ArgumentException exception)
             {
@@ -89,6 +96,13 @@ internal sealed class UpsertAgencyOfferCommandHandler(
                 offer.ReplaceFlightOptions(
                     ids,
                     AgencyOfferOptions.MapFlights(request.FlightOptions)!);
+            }
+
+            if (request.TaxRules is not null)
+            {
+                offer.ReplaceTaxRules(
+                    ids,
+                    AgencyOfferOptions.MapTaxRules(request.TaxRules)!);
             }
         }
         catch (ArgumentException exception)

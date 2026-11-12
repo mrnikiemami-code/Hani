@@ -42,6 +42,14 @@ public interface ICommissionEntryRepository
     Task<CommissionEntry?> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Returns the commission entry for an order and currency, or <c>null</c>.
+    /// </summary>
+    Task<CommissionEntry?> GetByOrderAndCurrencyAsync(
+        Guid orderId,
+        string currency,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Persists pending changes.
     /// </summary>
     Task SaveChangesAsync(CancellationToken cancellationToken);

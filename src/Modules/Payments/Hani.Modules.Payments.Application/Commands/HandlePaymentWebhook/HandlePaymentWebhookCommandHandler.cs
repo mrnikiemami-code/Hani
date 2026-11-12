@@ -79,7 +79,14 @@ internal sealed class HandlePaymentWebhookCommandHandler(
             message.EventType,
             message.Payload);
 
-        await ApplyAsync(intent, webhookEvent, message, orders, commissions, cancellationToken);
+        await ApplyAsync(
+            intent,
+            webhookEvent,
+            message,
+            intents,
+            orders,
+            commissions,
+            cancellationToken);
         await webhooks.AddAsync(webhookEvent, cancellationToken);
 
         return Result<PaymentWebhookResultDto>.Success(Map(webhookEvent));
@@ -89,6 +96,7 @@ internal sealed class HandlePaymentWebhookCommandHandler(
         PaymentIntent intent,
         PaymentWebhookEvent webhookEvent,
         PaymentWebhookMessage message,
+        IPaymentIntentRepository intents,
         IOrderPaymentWriteService orders,
         ICommissionAccrualService commissions,
         CancellationToken cancellationToken)
@@ -97,11 +105,19 @@ internal sealed class HandlePaymentWebhookCommandHandler(
         {
             if (intent.Status == PaymentIntentStatus.Pending)
             {
-                var paid = await orders.MarkPaidAsync(intent.OrderId, cancellationToken);
+                intent.MarkSucceeded(message.OccurredAt);
 
-                if (!paid)
+                var updated = await orders.MarkObligationPaidAsync(
+                    intent.OrderId,
+                    intent.PaymentObligationId,
+                    intent.Currency,
+                    intent.Id,
+                    message.OccurredAt,
+                    cancellationToken);
+
+                if (!updated)
                 {
-                    webhookEvent.MarkFailed("Order could not be marked paid.", message.OccurredAt);
+                    webhookEvent.MarkFailed("Order obligation could not be updated after payment.", message.OccurredAt);
                     return;
                 }
 
@@ -115,7 +131,6 @@ internal sealed class HandlePaymentWebhookCommandHandler(
                         message.OccurredAt),
                     cancellationToken);
 
-                intent.MarkSucceeded(message.OccurredAt);
                 webhookEvent.MarkProcessed(message.OccurredAt);
                 return;
             }

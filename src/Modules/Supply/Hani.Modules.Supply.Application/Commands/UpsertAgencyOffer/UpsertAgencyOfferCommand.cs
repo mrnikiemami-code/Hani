@@ -15,7 +15,8 @@ public sealed record UpsertAgencyOfferCommand(
     string Currency,
     string IdempotencyKey = "",
     IReadOnlyList<AccommodationOptionInput>? AccommodationOptions = null,
-    IReadOnlyList<FlightOptionInput>? FlightOptions = null) : ICommand<UpsertAgencyOfferResult>, IIdempotentCommand
+    IReadOnlyList<FlightOptionInput>? FlightOptions = null,
+    IReadOnlyList<TaxRuleInput>? TaxRules = null) : ICommand<UpsertAgencyOfferResult>, IIdempotentCommand
 {
     string IIdempotentCommand.IdempotencyKey => IdempotencyKey;
 }

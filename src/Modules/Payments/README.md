@@ -20,14 +20,15 @@ Order (Booking, PendingPayment)
 
 ## قواعد
 
-- پرداخت فقط برای Order با وضعیت `PendingPayment` و مهلت معتبر شروع می‌شود.
-- `PaymentIntent` یکتا برای هر Order است؛ درخواست تکراری همان Intent را برمی‌گرداند.
+- پرداخت برای Order با وضعیت `PendingPayment` و مهلت معتبر شروع می‌شود.
+- هر Order برای هر ارز یک `PaymentObligation` دارد و `PaymentIntent` به همان obligation ارجاع می‌دهد؛ یکتایی Intent `(order_id, currency)` است.
+- اگر Order چند obligation داشته باشد، ارسال `paymentObligationId` یا `currency` الزامی است.
 - `MerchantScope` و `FundsHeldBy` روی Intent ثبت می‌شوند؛ برای checkout فعلی Hani است.
 - هیچ داده کارت در این ماژول ذخیره نمی‌شود؛ فقط ProviderRef و RedirectUrl نگهداری می‌شود.
 - `PaymentIntent` وضعیت‌های Created → Pending → Succeeded/Failed/Expired دارد و `Version` برای Optimistic Concurrency استفاده می‌شود.
 - Webhook با HMAC-SHA256 روی `timestamp.payload` و پنجره زمانی ۵ دقیقه تأیید می‌شود.
 - `payment_webhook_events` با `(provider, provider_event_id)` یکتا است؛ event تکراری پردازش مجدد نمی‌شود.
-- `payment.succeeded` سفارش را Paid می‌کند؛ `payment.failed` فقط Intent را Failed می‌کند.
+- `payment.succeeded` obligation همان ارز را Paid می‌کند؛ Order فقط وقتی همه obligationها Paid شوند `Paid` می‌شود و `PaymentStatus` مستقل از lifecycle گزارش می‌شود؛ `payment.failed` فقط Intent را Failed می‌کند.
 - Gateway پیش‌فرض `MockPaymentGateway` است و برای توسعه/تست قابل جایگزینی با PSP واقعی است.
 - Refund و Reconciliation در تسک‌های بعدی اضافه می‌شوند.
 
@@ -43,7 +44,8 @@ Order (Booking, PendingPayment)
 
 - Schema: `payment`
 - جدول‌ها: `payment_intents`, `payment_webhook_events`
-- Migrationها: `InitialPayments`, `AddPaymentWebhookEvents`
+- ایندکس یکتای `payment_intents`: `(order_id, currency)`
+- Migrationها: `InitialPayments`, `AddPaymentWebhookEvents`, `AddMultipleIntentsPerOrder`, `AddPaymentObligationReference`
 
 ## پیکربندی
 
