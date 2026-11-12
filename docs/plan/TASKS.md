@@ -3,31 +3,33 @@
 > وضعیت‌ها: ✅ Done | 🚧 In Progress | ⚠️ Partial | ⏳ Next | ❌ Not Started
 > هر تسک باید حداکثر ۱ روز کاری باشد.
 
-> **Baseline:** از این لحظه هر تسک باید به یک `GAP-xx` در [`baseline.json`](baseline.json) متصل باشد. Gate 0 فعال است: GAP-07 و GAP-08.
+> **Baseline:** از این لحظه هر تسک باید به یک `GAP-xx` در [`baseline.json`](baseline.json) متصل باشد. Gate 1 فعال است: GAP-01، GAP-02، GAP-03، GAP-07، GAP-08.
 
-## Baseline Gate 0 — Financial Foundation
+## Baseline Task Index
 
-| ID | تسک | وضعیت | GAP | DoD |
-|---|---|---|---|---|
-| TC-082 | Multi-currency + VAT/Duty + PaymentObligation + Commission per currency | ⏳ | GAP-07/08 | snapshot چندارزی + تست |
-| TC-083 | Tour Content Model | ❌ | GAP-01 | itinerary/services/policies |
-| TC-084 | Offer Accommodation + Flight Options + MealPlan | ❌ | GAP-02/03 | چند هتل/اتاق/پرواز |
-| TC-085 | Faceted Search + Sort | ❌ | GAP-04 | فیلترهای کامل |
-| TC-086 | User Identity + OTP + Profile | ❌ | GAP-09/10 | auth/profile |
-| TC-087 | Agency Onboarding + Panel | ❌ | GAP-26/27/31 | مجوز/پنل |
-| TC-088 | BookingMode + Request/Lead + RFQ | ❌ | GAP-05/06/19 | Online + Request |
-| TC-089 | Reviews + Photos + Claims | ❌ | GAP-11/20/32 | UGC/اعتماد |
-| TC-090 | Hotels + Inquiry | ❌ | GAP-14 | هتل/استعلام |
-| TC-091 | Visa + Documents | ❌ | GAP-15/21 | ویزا/مدارک |
-| TC-092 | Flights Metasearch | ❌ | GAP-16 | جستجو/ارجاع |
-| TC-093 | Content: Itineraries/Blog/Videos | ❌ | GAP-12 | محتوا |
-| TC-094 | Places + Geo + Restaurant Reservation | ❌ | GAP-13/25/29 | دایرکتوری/نقشه |
-| TC-095 | Media + Moderation | ❌ | GAP-32 | آپلود/مدیریت |
-| TC-096 | SMS + Newsletter + Notifications | ❌ | GAP-22/33 | OTP/خبرنامه |
-| TC-097 | SEO + Landing + Sitemap | ❌ | GAP-28 | Canonical/JSON-LD |
-| TC-098 | Installments + Offline Payment | ❌ | GAP-17/18 | اقساط/آفلاین |
-| TC-099 | Ranking + Ads + Analytics | ❌ | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
-| TC-100 | Campaigns + BlindTour | ❌ | GAP-23 | کمپین |
+| Gate | ID | تسک | وضعیت | GAP | DoD |
+|---|---|---|---|---|---|
+| 1 | TC-083 | Tour Content Model | ⏳ | GAP-01 | itinerary/services/policies |
+| 1 | TC-084 | Offer Accommodation + Flight Options + MealPlan | ❌ | GAP-02/03 | چند هتل/اتاق/پرواز |
+| 1 | TC-082 | PriceComponent + TaxStatus + Snapshot + PaymentObligation + Commission per currency | ❌ | GAP-07/08 | چندارزی/مالیات/دفتر |
+| 2 | TC-085 | Faceted Search + Sort | ❌ | GAP-04 | فیلترهای کامل |
+| 2 | TC-097 | SEO + Landing + Sitemap | ❌ | GAP-28 | Canonical/JSON-LD |
+| 3 | TC-086 | User Identity + OTP + Profile | ❌ | GAP-09/10 | auth/profile |
+| 3 | TC-087 | Agency Onboarding + Panel | ❌ | GAP-26/27/31 | مجوز/پنل |
+| 3 | TC-089 | Reviews + Photos + Claims | ❌ | GAP-11/20/32 | UGC/اعتماد |
+| 4 | TC-088 | BookingMode + Request/Lead + RFQ | ❌ | GAP-05/06/19 | Online + Request |
+| 4 | TC-098 | Installments + Offline Payment | ❌ | GAP-17/18 | اقساط/آفلاین |
+| 5 | TC-090 | Hotels + Inquiry | ❌ | GAP-14 | هتل/استعلام |
+| 5 | TC-091 | Visa + Documents | ❌ | GAP-15/21 | ویزا/مدارک |
+| 5 | TC-092 | Flights Metasearch | ❌ | GAP-16 | جستجو/ارجاع |
+| 5 | TC-094 | Places + Geo + Restaurant Reservation | ❌ | GAP-13/25/29 | دایرکتوری/نقشه |
+| 6 | TC-093 | Content: Itineraries/Blog/Videos | ❌ | GAP-12 | محتوا |
+| 6 | TC-095 | Media + Moderation | ❌ | GAP-32 | آپلود/مدیریت |
+| 6 | TC-096 | SMS + Newsletter + Notifications | ❌ | GAP-22/33 | OTP/خبرنامه |
+| 6 | TC-099 | Ranking + Ads + Analytics | ❌ | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
+| 6 | TC-100 | Campaigns + BlindTour | ❌ | GAP-23 | کمپین |
+
+> Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
 ## Phase 0 — Foundation ✅
 

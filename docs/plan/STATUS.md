@@ -1,9 +1,9 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
-> **فاز فعال:** Baseline Gate 0 — Financial Foundation
+> **فاز فعال:** Baseline Gate 1 — Tour Experience & Pricing
 > **آخرین commit کد:** `3a8992b`
-> **وضعیت Gate:** Gate 0 — Not Started
+> **وضعیت Gate:** Gate 1 — Not Started
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -16,13 +16,13 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | 🚧 Baseline Gate 0 | ~85% |
+| 2 | Marketplace Read + Booking | 🚧 Baseline Gate 1 | ~85% |
 | 3 | Channel + Billing + Settlement | ⏳ Gate 7 | 0% |
 | 4 | Flights | ⏳ Gate 5 | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Gate 1/5/6 | 0% |
 | 6 | Hardening & Scale | ⏳ Gate 8 | 0% |
 
-> از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۰ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 0 به‌عنوان وضعیت تاریخی باقی می‌ماند.
+> از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۱ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 1 به‌عنوان وضعیت تاریخی باقی می‌ماند.
 
 ---
 
@@ -155,19 +155,19 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 0 — TC-082 Financial Foundation
-**GAPهای Gate 0:** GAP-07 (Multi-currency)، GAP-08 (VAT/Duty)
+**تسک فعال:** Gate 1 — Tour Experience & Pricing
+**GAPهای Gate 1:** GAP-01 (Tour Content)، GAP-02 (Accommodation)، GAP-03 (Flight)، GAP-07 (Multi-currency)، GAP-08 (VAT/Duty)
 **Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای قبلی
 
-### ۵ تسک اول Baseline Gate 0
+### ۵ تسک اول Baseline Gate 1
 
 | ترتیب | تسک | GAP | خروجی |
 |---|---|---|---|
-| 1 | PriceComponent + TaxStatus | GAP-07/08 | مدل قیمت پایه |
-| 2 | OfferTaxRule + BookingMode | GAP-07/08 | تنظیمات مالیات/رزرو |
-| 3 | Quote/Order/Contract Snapshot | GAP-07/08 | snapshot چندارزی |
-| 4 | PaymentObligation + CollectionMode | GAP-07/08 | پرداخت چندتعهدی |
-| 5 | Commission per currency + Ledger | GAP-07/08 | کمیسیون/دفتر چندارزی |
+| 1 | Tour Content Model | GAP-01 | برنامه سفر/خدمات/قوانین |
+| 2 | Accommodation + Flight Options | GAP-02/03 | چند هتل/اتاق/MealPlan/پرواز |
+| 3 | PriceComponent + TaxStatus | GAP-07/08 | مدل قیمت چندارزی/مالیاتی |
+| 4 | Quote/Order/Contract Snapshot | GAP-07/08 | snapshot چندارزی |
+| 5 | PaymentObligation + Commission/Ledger | GAP-07/08 | پرداخت/کمیسیون چندارزی |
 
 ---
 

@@ -4,10 +4,10 @@
 - **Report:** `docs/reports/lastsecond-gap-analysis-2026-11-12.md`
 - **Machine-readable:** `docs/plan/baseline.json`
 - **Status:** Locked for planning
-- **Current gate:** Gate 0 — Financial Foundation
+- **Current gate:** Gate 1 — Tour Experience & Pricing
 
 > این فایل مرجع برنامه‌ریزی است. هر GAP باید یک Gate، Task، وضعیت و Evidence داشته باشد.
-> تغییر یا حذف هر GAP فقط با نسخه جدید Baseline و ADR/Waiver مجاز است.
+> ترتیب Gateها از گزارش Lastsecond و وابستگی‌های واقعی محصول پیروی می‌کند؛ هیچ GAP حذف نمی‌شود.
 
 ## ۱. قواعد
 
@@ -22,11 +22,10 @@
 
 | Gate | عنوان | P0های اصلی | Exit Criteria |
 |---|---|---|---|
-| 0 | Financial Foundation | GAP-07, GAP-08 | چندارزی، VAT/Duty، PaymentObligation، Commission per currency، Ledger تفکیک‌شده |
-| 1 | Tour Depth & Supply | GAP-01, GAP-02, GAP-03 | محتوای کامل تور، هتل/اتاق/MealPlan، پرواز |
+| 1 | Tour Experience & Pricing | GAP-01, GAP-02, GAP-03, GAP-07, GAP-08 | محتوای کامل تور، هتل/اتاق/MealPlan، پرواز، چندارزی، VAT/Duty |
 | 2 | Discovery & SEO | GAP-04, GAP-28 | Faceted Search، Sort، Landing، Canonical، JSON-LD، Sitemap |
 | 3 | Identity, Trust & Agency | GAP-09, GAP-11, GAP-26 | User/OTP/Profile، Reviews، Agency Onboarding |
-| 4 | Booking, Request & Lead | GAP-05, GAP-06 | Online، ReservationRequest، RFQ، استعلام هتل، پرداخت آفلاین |
+| 4 | Booking, Request & Lead | GAP-05, GAP-06, GAP-18 | Online، ReservationRequest، RFQ، استعلام هتل، پرداخت آفلاین |
 | 5 | Verticals | GAP-13, GAP-14, GAP-15, GAP-16 | هتل، ویزا، پرواز، جاذبه/رستوران |
 | 6 | Content & Growth | GAP-12, GAP-22, GAP-23, GAP-24 | سفرنامه/بلاگ/ویدیو، SMS، کمپین، رتبه‌بندی |
 | 7 | Channel & Billing | — | Channel OAuth/Booking، Plans، White-label، Invoice/Settlement |
@@ -42,8 +41,8 @@
 | GAP-04 | Faceted Search | P0 | 2 | TC-085 | Planned |
 | GAP-05 | Booking/Request Modes | P0 | 4 | TC-088 | Planned |
 | GAP-06 | Lead/RFQ | P0 | 4 | TC-088 | Planned |
-| GAP-07 | Multi-currency | P0 | 0 | TC-082 | Planned |
-| GAP-08 | VAT/Duty | P0 | 0 | TC-082 | Planned |
+| GAP-07 | Multi-currency | P0 | 1 | TC-082 | Planned |
+| GAP-08 | VAT/Duty | P0 | 1 | TC-082 | Planned |
 | GAP-09 | User Auth/OTP | P0 | 3 | TC-086 | Planned |
 | GAP-10 | Profiles/Authors | P1 | 3 | TC-086 | Planned |
 | GAP-11 | Reviews/UGC | P0 | 3 | TC-089 | Planned |
