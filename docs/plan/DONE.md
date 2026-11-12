@@ -99,6 +99,7 @@
 | D-82 | Payment webhook + verify | HMAC verify + `payment_webhook_events` + Order.Paid | `7b85652` |
 | D-83 | Settlement ledger + commission | Commission rules/entries + balanced double-entry ledger | `0dd6fbe` |
 | D-84 | Lastsecond baseline lock | `BASELINE.md` + `baseline.json` + `BaselineCoverageTests` + `check-baseline.ps1` | `3a8992b` |
+| D-85 | Tour Content Model | Itinerary/meals/services/policies/required items + `AddTourContent` | این تغییر |
 
 ## ۳. مستندات
 
@@ -118,9 +119,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۸۵ passed |
+| Unit Tests | ۸۸ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۱۸ passed** |
+| Total | **۱۲۱ passed** |
 | Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
 | Format | clean |
 | Vulnerable Packages | none |

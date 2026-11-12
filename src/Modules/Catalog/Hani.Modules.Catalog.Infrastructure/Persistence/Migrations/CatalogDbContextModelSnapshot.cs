@@ -72,13 +72,35 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("AccommodationType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("accommodation_type");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<string>("Difficulty")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("difficulty");
+
                     b.Property<int>("DurationDays")
                         .HasColumnType("integer")
                         .HasColumnName("duration_days");
+
+                    b.Property<string>("LocalVehicleType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("local_vehicle_type");
+
+                    b.Property<Guid?>("OriginDestinationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("origin_destination_id");
 
                     b.Property<string>("Slug")
                         .IsRequired()
@@ -101,6 +123,12 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
+
+                    b.Property<string>("VehicleType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("vehicle_type");
 
                     b.HasKey("Id");
 
@@ -157,6 +185,92 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Hani.Modules.Catalog.Domain.TourProducts.TourProduct", b =>
                 {
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.TourProducts.TourItineraryDay", "ItineraryDays", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<bool>("Breakfast")
+                                .HasColumnType("boolean")
+                                .HasColumnName("breakfast");
+
+                            b1.Property<int>("DayNumber")
+                                .HasColumnType("integer")
+                                .HasColumnName("day_number");
+
+                            b1.Property<bool>("Dinner")
+                                .HasColumnType("boolean")
+                                .HasColumnName("dinner");
+
+                            b1.Property<bool>("Lunch")
+                                .HasColumnType("boolean")
+                                .HasColumnName("lunch");
+
+                            b1.Property<Guid>("TourProductId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("tour_product_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("TourProductId", "DayNumber")
+                                .IsUnique()
+                                .HasDatabaseName("ux_tour_itinerary_days_product_day");
+
+                            b1.ToTable("tour_itinerary_days", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TourProductId");
+
+                            b1.OwnsMany("Hani.Modules.Catalog.Domain.TourProducts.TourItineraryDayTranslation", "Translations", b2 =>
+                                {
+                                    b2.Property<Guid>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("id");
+
+                                    b2.Property<string>("Accommodation")
+                                        .HasMaxLength(200)
+                                        .HasColumnType("character varying(200)")
+                                        .HasColumnName("accommodation");
+
+                                    b2.Property<string>("Description")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasColumnName("description");
+
+                                    b2.Property<string>("Locale")
+                                        .IsRequired()
+                                        .HasMaxLength(5)
+                                        .HasColumnType("character varying(5)")
+                                        .HasColumnName("locale");
+
+                                    b2.Property<string>("Title")
+                                        .IsRequired()
+                                        .HasMaxLength(200)
+                                        .HasColumnType("character varying(200)")
+                                        .HasColumnName("title");
+
+                                    b2.Property<Guid>("TourItineraryDayId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("tour_itinerary_day_id");
+
+                                    b2.HasKey("Id");
+
+                                    b2.HasIndex("TourItineraryDayId", "Locale")
+                                        .IsUnique()
+                                        .HasDatabaseName("ux_tour_itinerary_day_translations_day_locale");
+
+                                    b2.ToTable("tour_itinerary_day_translations", "catalog");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("TourItineraryDayId");
+                                });
+
+                            b1.Navigation("Translations");
+                        });
+
                     b.OwnsMany("Hani.Modules.Catalog.Domain.TourProducts.TourProductDestination", "Destinations", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -195,16 +309,40 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
 
+                            b1.Property<string>("AdditionalInfo")
+                                .HasColumnType("text")
+                                .HasColumnName("additional_info");
+
+                            b1.Property<string>("CancellationPolicy")
+                                .HasColumnType("text")
+                                .HasColumnName("cancellation_policy");
+
                             b1.Property<string>("Description")
                                 .IsRequired()
                                 .HasColumnType("text")
                                 .HasColumnName("description");
+
+                            b1.Property<string>("ExcludedServices")
+                                .HasColumnType("text")
+                                .HasColumnName("excluded_services");
+
+                            b1.Property<string>("IncludedServices")
+                                .HasColumnType("text")
+                                .HasColumnName("included_services");
 
                             b1.Property<string>("Locale")
                                 .IsRequired()
                                 .HasMaxLength(5)
                                 .HasColumnType("character varying(5)")
                                 .HasColumnName("locale");
+
+                            b1.Property<string>("MealsSummary")
+                                .HasColumnType("text")
+                                .HasColumnName("meals_summary");
+
+                            b1.Property<string>("RequiredItems")
+                                .HasColumnType("text")
+                                .HasColumnName("required_items");
 
                             b1.Property<string>("SeoDescription")
                                 .HasMaxLength(300)
@@ -245,6 +383,8 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         });
 
                     b.Navigation("Destinations");
+
+                    b.Navigation("ItineraryDays");
 
                     b.Navigation("Translations");
                 });

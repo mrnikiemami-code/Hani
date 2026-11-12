@@ -3,7 +3,7 @@
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 1 — Tour Experience & Pricing
 > **آخرین commit کد:** `3a8992b`
-> **وضعیت Gate:** Gate 1 — Not Started
+> **وضعیت Gate:** Gate 1 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **گزارش Gate:** [`../reports/phase-1-gate.md`](../reports/phase-1-gate.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -87,6 +87,7 @@
 | Settlement | Commission Rule + CommissionEntry + Double-entry Ledger | `0dd6fbe` |
 | Pricing architecture | ADR-0024: چندارزی + VAT/Duty + BookingMode + تفکیک MoR | docs only |
 | Lastsecond gap analysis | گزارش بررسی صفحات و اولویت‌بندی شکاف‌ها | `docs/reports/lastsecond-gap-analysis-2026-11-12.md` |
+| Tour Content Model | Itinerary/Meals/Services/Policies/RequiredItems چندزبانه (GAP-01) | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -143,10 +144,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۸۵ passed |
+| Unit Tests | ۸۸ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۱۸ passed** |
-| Migrations | Supply (۳) / Catalog (۱) / Identity (۱) / Booking (۲) / Payments (۲) / Settlement (۱) |
+| Total | **۱۲۱ passed** |
+| Migrations | Supply (۳) / Catalog (۲) / Identity (۱) / Booking (۲) / Payments (۲) / Settlement (۱) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |

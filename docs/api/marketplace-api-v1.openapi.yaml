@@ -46,6 +46,20 @@ paths:
                   totalPages: { type: integer }
         default: { $ref: '#/components/responses/Problem' }
 
+  /products/{productId}:
+    get:
+      tags: [Catalog]
+      summary: Read a tour product with localized content and itinerary
+      parameters:
+        - { name: productId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TourProduct' }
+        default: { $ref: '#/components/responses/Problem' }
+
   /products/{productId}/compare:
     get:
       tags: [Catalog]
@@ -503,3 +517,62 @@ components:
         providerEventId: { type: string }
         status: { type: string, enum: [Processed, Duplicate, Ignored, Failed] }
         processedAt: { type: [string, 'null'], format: date-time }
+
+    TourProductTranslation:
+      type: object
+      properties:
+        locale: { type: string }
+        title: { type: string }
+        summary: { type: string }
+        description: { type: string }
+        seoTitle: { type: [string, 'null'] }
+        seoDescription: { type: [string, 'null'] }
+        mealsSummary: { type: [string, 'null'] }
+        includedServices: { type: [string, 'null'] }
+        excludedServices: { type: [string, 'null'] }
+        cancellationPolicy: { type: [string, 'null'] }
+        additionalInfo: { type: [string, 'null'] }
+        requiredItems: { type: [string, 'null'] }
+
+    TourItineraryDayTranslation:
+      type: object
+      properties:
+        locale: { type: string }
+        title: { type: string }
+        description: { type: string }
+        accommodation: { type: [string, 'null'] }
+
+    TourItineraryDay:
+      type: object
+      properties:
+        dayNumber: { type: integer }
+        breakfast: { type: boolean }
+        lunch: { type: boolean }
+        dinner: { type: boolean }
+        translations:
+          type: array
+          items: { $ref: '#/components/schemas/TourItineraryDayTranslation' }
+
+    TourProduct:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        durationDays: { type: integer }
+        tourType: { type: string }
+        status: { type: string, enum: [Draft, Published, Archived] }
+        originDestinationId: { type: [string, 'null'], format: uuid }
+        difficulty: { type: string, enum: [Easy, Normal, Hard] }
+        vehicleType: { type: string, enum: [None, Bus, VipBus, Minibus, Van, Train, Plane, Car, Other] }
+        localVehicleType: { type: string, enum: [None, Bus, VipBus, Minibus, Van, Train, Plane, Car, Other] }
+        accommodationType: { type: string, enum: [Hotel, Camp, GuestHouse, EcoLodge, Apartment, Other] }
+        createdAt: { type: string, format: date-time }
+        translations:
+          type: array
+          items: { $ref: '#/components/schemas/TourProductTranslation' }
+        destinationIds:
+          type: array
+          items: { type: string, format: uuid }
+        itineraryDays:
+          type: array
+          items: { $ref: '#/components/schemas/TourItineraryDay' }

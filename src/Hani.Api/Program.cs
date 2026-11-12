@@ -1,5 +1,6 @@
 // Hani API composition root: wires modules, persistence, auth, messaging, caching, and observability.
 using System.Globalization;
+using System.Text.Json.Serialization;
 using FluentValidation;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
@@ -77,6 +78,11 @@ using Serilog.Events;
 // Host and structured logging
 // ---------------------------------------------------------------------------
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Host.UseSerilog((context, services, configuration) =>
 {

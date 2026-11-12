@@ -11,6 +11,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
 {
     private readonly List<TourProductTranslation> _translations = [];
     private readonly List<TourProductDestination> _destinations = [];
+    private readonly List<TourItineraryDay> _itineraryDays = [];
 
     private TourProduct()
     {
@@ -20,11 +21,21 @@ public sealed class TourProduct : AggregateRoot<Guid>
         Guid id,
         string slug,
         int durationDays,
-        string tourType) : base(id)
+        string tourType,
+        Guid? originDestinationId,
+        TourDifficulty difficulty,
+        TourVehicleType vehicleType,
+        TourVehicleType localVehicleType,
+        TourAccommodationType accommodationType) : base(id)
     {
         Slug = slug;
         DurationDays = durationDays;
         TourType = tourType;
+        OriginDestinationId = originDestinationId;
+        Difficulty = difficulty;
+        VehicleType = vehicleType;
+        LocalVehicleType = localVehicleType;
+        AccommodationType = accommodationType;
         Status = TourProductStatus.Draft;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = CreatedAt;
@@ -36,6 +47,31 @@ public sealed class TourProduct : AggregateRoot<Guid>
 
     public string TourType { get; private set; } = string.Empty;
 
+    /// <summary>
+    /// Optional origin city destination.
+    /// </summary>
+    public Guid? OriginDestinationId { get; private set; }
+
+    /// <summary>
+    /// Tour difficulty.
+    /// </summary>
+    public TourDifficulty Difficulty { get; private set; }
+
+    /// <summary>
+    /// Primary transport type.
+    /// </summary>
+    public TourVehicleType VehicleType { get; private set; }
+
+    /// <summary>
+    /// Local transport type.
+    /// </summary>
+    public TourVehicleType LocalVehicleType { get; private set; }
+
+    /// <summary>
+    /// Accommodation type.
+    /// </summary>
+    public TourAccommodationType AccommodationType { get; private set; }
+
     public TourProductStatus Status { get; private set; }
 
     public DateTimeOffset CreatedAt { get; private set; }
@@ -46,11 +82,21 @@ public sealed class TourProduct : AggregateRoot<Guid>
 
     public IReadOnlyCollection<TourProductDestination> Destinations => _destinations;
 
+    /// <summary>
+    /// Localized day-by-day itinerary.
+    /// </summary>
+    public IReadOnlyCollection<TourItineraryDay> ItineraryDays => _itineraryDays;
+
     public static TourProduct Create(
         IIdGenerator ids,
         string slug,
         int durationDays,
-        string tourType)
+        string tourType,
+        Guid? originDestinationId = null,
+        TourDifficulty difficulty = TourDifficulty.Normal,
+        TourVehicleType vehicleType = TourVehicleType.None,
+        TourVehicleType localVehicleType = TourVehicleType.None,
+        TourAccommodationType accommodationType = TourAccommodationType.Hotel)
     {
         if (string.IsNullOrWhiteSpace(slug))
         {
@@ -68,7 +114,12 @@ public sealed class TourProduct : AggregateRoot<Guid>
             ids.NewId(),
             slug.Trim(),
             durationDays,
-            tourType.Trim());
+            tourType.Trim(),
+            originDestinationId,
+            difficulty,
+            vehicleType,
+            localVehicleType,
+            accommodationType);
 
         product.AddDomainEvent(new TourProductCreatedDomainEvent(ids.NewId(), product.Id));
 
@@ -82,7 +133,13 @@ public sealed class TourProduct : AggregateRoot<Guid>
         string summary,
         string description,
         string? seoTitle = null,
-        string? seoDescription = null)
+        string? seoDescription = null,
+        string? mealsSummary = null,
+        string? includedServices = null,
+        string? excludedServices = null,
+        string? cancellationPolicy = null,
+        string? additionalInfo = null,
+        string? requiredItems = null)
     {
         if (_translations.Any(item =>
                 string.Equals(item.Locale, locale, StringComparison.OrdinalIgnoreCase)))
@@ -98,7 +155,13 @@ public sealed class TourProduct : AggregateRoot<Guid>
             summary,
             description,
             seoTitle,
-            seoDescription));
+            seoDescription,
+            mealsSummary,
+            includedServices,
+            excludedServices,
+            cancellationPolicy,
+            additionalInfo,
+            requiredItems));
 
         Touch();
     }
@@ -121,6 +184,69 @@ public sealed class TourProduct : AggregateRoot<Guid>
         Touch();
     }
 
+    /// <summary>
+    /// Adds one localized itinerary day.
+    /// </summary>
+    public void AddItineraryDay(
+        IIdGenerator ids,
+        int dayNumber,
+        bool breakfast,
+        bool lunch,
+        bool dinner,
+        IReadOnlyCollection<TourItineraryDayTranslationDetails> translations)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(dayNumber);
+
+        if (_itineraryDays.Any(day => day.DayNumber == dayNumber))
+        {
+            throw new InvalidOperationException($"Itinerary day {dayNumber} already exists.");
+        }
+
+        if (translations.Count == 0)
+        {
+            throw new ArgumentException("Itinerary day needs at least one translation.", nameof(translations));
+        }
+
+        var day = new TourItineraryDay(
+            ids.NewId(),
+            Id,
+            dayNumber,
+            breakfast,
+            lunch,
+            dinner);
+
+        foreach (var translation in translations)
+        {
+            day.AddTranslation(
+                ids,
+                translation.Locale,
+                translation.Title,
+                translation.Description,
+                translation.Accommodation);
+        }
+
+        _itineraryDays.Add(day);
+        Touch();
+    }
+
+    /// <summary>
+    /// Updates the overview fields of the tour.
+    /// </summary>
+    public void SetOverview(
+        Guid? originDestinationId,
+        TourDifficulty difficulty,
+        TourVehicleType vehicleType,
+        TourVehicleType localVehicleType,
+        TourAccommodationType accommodationType)
+    {
+        OriginDestinationId = originDestinationId;
+        Difficulty = difficulty;
+        VehicleType = vehicleType;
+        LocalVehicleType = localVehicleType;
+        AccommodationType = accommodationType;
+        Touch();
+    }
+
     public void Publish(IIdGenerator ids)
     {
         if (_translations.Count == 0)
@@ -140,3 +266,12 @@ public sealed class TourProduct : AggregateRoot<Guid>
 
     private void Touch() => UpdatedAt = DateTimeOffset.UtcNow;
 }
+
+/// <summary>
+/// Localized content supplied for one itinerary day.
+/// </summary>
+public sealed record TourItineraryDayTranslationDetails(
+    string Locale,
+    string Title,
+    string Description,
+    string? Accommodation = null);

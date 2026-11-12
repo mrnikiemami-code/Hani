@@ -19,7 +19,13 @@ public sealed class TourProductTranslation : Entity<Guid>
         string summary,
         string description,
         string? seoTitle,
-        string? seoDescription) : base(id)
+        string? seoDescription,
+        string? mealsSummary,
+        string? includedServices,
+        string? excludedServices,
+        string? cancellationPolicy,
+        string? additionalInfo,
+        string? requiredItems) : base(id)
     {
         TourProductId = tourProductId;
         Locale = locale;
@@ -28,6 +34,12 @@ public sealed class TourProductTranslation : Entity<Guid>
         Description = description;
         SeoTitle = seoTitle;
         SeoDescription = seoDescription;
+        MealsSummary = mealsSummary;
+        IncludedServices = includedServices;
+        ExcludedServices = excludedServices;
+        CancellationPolicy = cancellationPolicy;
+        AdditionalInfo = additionalInfo;
+        RequiredItems = requiredItems;
     }
 
     public Guid TourProductId { get; private set; }
@@ -43,4 +55,34 @@ public sealed class TourProductTranslation : Entity<Guid>
     public string? SeoTitle { get; private set; }
 
     public string? SeoDescription { get; private set; }
+
+    /// <summary>
+    /// Localized summary of included meals.
+    /// </summary>
+    public string? MealsSummary { get; private set; }
+
+    /// <summary>
+    /// Localized list of included services.
+    /// </summary>
+    public string? IncludedServices { get; private set; }
+
+    /// <summary>
+    /// Localized list of excluded services.
+    /// </summary>
+    public string? ExcludedServices { get; private set; }
+
+    /// <summary>
+    /// Localized cancellation and refund policy.
+    /// </summary>
+    public string? CancellationPolicy { get; private set; }
+
+    /// <summary>
+    /// Localized additional information.
+    /// </summary>
+    public string? AdditionalInfo { get; private set; }
+
+    /// <summary>
+    /// Localized required and suggested items.
+    /// </summary>
+    public string? RequiredItems { get; private set; }
 }

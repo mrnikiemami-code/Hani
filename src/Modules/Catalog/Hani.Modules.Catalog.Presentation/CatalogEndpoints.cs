@@ -3,6 +3,7 @@ using Hani.Modules.Catalog.Application.Commands.CreateDestination;
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Catalog.Application.Commands.PublishTourProduct;
 using Hani.Modules.Catalog.Application.Queries.GetTourProductById;
+using Hani.Modules.Catalog.Domain.TourProducts;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -86,9 +87,37 @@ public static class CatalogEndpoints
                     translation.Summary,
                     translation.Description,
                     translation.SeoTitle,
-                    translation.SeoDescription))
+                    translation.SeoDescription,
+                    translation.MealsSummary,
+                    translation.IncludedServices,
+                    translation.ExcludedServices,
+                    translation.CancellationPolicy,
+                    translation.AdditionalInfo,
+                    translation.RequiredItems))
                 .ToArray(),
-            request.DestinationIds);
+            request.DestinationIds,
+            request.Content is null
+                ? null
+                : new TourProductContentInput(
+                    request.Content.OriginDestinationId,
+                    request.Content.Difficulty,
+                    request.Content.VehicleType,
+                    request.Content.LocalVehicleType,
+                    request.Content.AccommodationType,
+                    request.Content.ItineraryDays
+                        .Select(day => new TourItineraryDayInput(
+                            day.DayNumber,
+                            day.Breakfast,
+                            day.Lunch,
+                            day.Dinner,
+                            day.Translations
+                                .Select(translation => new TourItineraryDayTranslationInput(
+                                    translation.Locale,
+                                    translation.Title,
+                                    translation.Description,
+                                    translation.Accommodation))
+                                .ToArray()))
+                        .ToArray()));
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -128,7 +157,43 @@ public sealed record TourProductTranslationRequest(
     string Summary,
     string Description,
     string? SeoTitle = null,
-    string? SeoDescription = null);
+    string? SeoDescription = null,
+    string? MealsSummary = null,
+    string? IncludedServices = null,
+    string? ExcludedServices = null,
+    string? CancellationPolicy = null,
+    string? AdditionalInfo = null,
+    string? RequiredItems = null);
+
+/// <summary>
+/// HTTP request for one itinerary day translation.
+/// </summary>
+public sealed record TourItineraryDayTranslationRequest(
+    string Locale,
+    string Title,
+    string Description,
+    string? Accommodation = null);
+
+/// <summary>
+/// HTTP request for one itinerary day.
+/// </summary>
+public sealed record TourItineraryDayRequest(
+    int DayNumber,
+    bool Breakfast,
+    bool Lunch,
+    bool Dinner,
+    IReadOnlyList<TourItineraryDayTranslationRequest> Translations);
+
+/// <summary>
+/// HTTP request for tour overview and itinerary content.
+/// </summary>
+public sealed record TourProductContentRequest(
+    Guid? OriginDestinationId,
+    TourDifficulty Difficulty,
+    TourVehicleType VehicleType,
+    TourVehicleType LocalVehicleType,
+    TourAccommodationType AccommodationType,
+    IReadOnlyList<TourItineraryDayRequest> ItineraryDays);
 
 /// <summary>
 /// HTTP request contract.
@@ -155,4 +220,5 @@ public sealed record CreateTourProductRequest(
     int DurationDays,
     string TourType,
     IReadOnlyList<TourProductTranslationRequest> Translations,
-    IReadOnlyList<Guid> DestinationIds);
+    IReadOnlyList<Guid> DestinationIds,
+    TourProductContentRequest? Content = null);

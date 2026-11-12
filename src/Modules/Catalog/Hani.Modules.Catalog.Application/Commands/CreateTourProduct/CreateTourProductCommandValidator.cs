@@ -54,5 +54,42 @@ public sealed class CreateTourProductCommandValidator : AbstractValidator<Create
         RuleFor(command => command.DestinationIds)
             .NotEmpty()
             .WithErrorCode("HANI-CATALOG-1010");
+
+        When(command => command.Content is not null, () =>
+        {
+            RuleFor(command => command.Content!.ItineraryDays)
+                .Must(days => days.Select(day => day.DayNumber).Distinct().Count() == days.Count)
+                .WithErrorCode("HANI-CATALOG-1015");
+
+            RuleForEach(command => command.Content!.ItineraryDays)
+                .ChildRules(day =>
+                {
+                    day.RuleFor(item => item.DayNumber)
+                        .GreaterThan(0)
+                        .WithErrorCode("HANI-CATALOG-1016");
+
+                    day.RuleFor(item => item.Translations)
+                        .NotEmpty()
+                        .WithErrorCode("HANI-CATALOG-1017");
+
+                    day.RuleForEach(item => item.Translations)
+                        .ChildRules(translation =>
+                        {
+                            translation.RuleFor(item => item.Locale)
+                                .NotEmpty()
+                                .Must(locale => languages.IsSupported(locale))
+                                .WithErrorCode("HANI-CATALOG-1018");
+
+                            translation.RuleFor(item => item.Title)
+                                .NotEmpty()
+                                .MaximumLength(200)
+                                .WithErrorCode("HANI-CATALOG-1019");
+
+                            translation.RuleFor(item => item.Description)
+                                .NotEmpty()
+                                .WithErrorCode("HANI-CATALOG-1020");
+                        });
+                });
+        });
     }
 }

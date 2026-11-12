@@ -10,18 +10,23 @@
 
 | نوع | مسئولیت |
 |---|---|
-| `TourProduct` | محصول مشترک (مقصد، مدت، نوع تور، وضعیت) |
-| `TourProductTranslation` | عنوان/خلاصه/توضیح/SEO برای هر زبان |
+| `TourProduct` | محصول مشترک (مقصد، مدت، نوع تور، سختی، وسیله، اقامت، وضعیت) |
+| `TourProductTranslation` | عنوان/خلاصه/توضیح/SEO/وعده‌ها/خدمات/قوانین/لوازم برای هر زبان |
+| `TourItineraryDay` | روز برنامه سفر با وعده‌های غذایی |
+| `TourItineraryDayTranslation` | عنوان/توضیح/اقامت هر روز برای هر زبان |
 | `TourProductDestination` | اتصال محصول به مقاصد با ترتیب |
 | `Destination` | کشور/استان/شهر/منطقه |
 | `DestinationTranslation` | نام و توضیح مقصد در هر زبان |
 | `TourProductStatus` | Draft / Published / Archived |
+| `TourDifficulty` / `TourVehicleType` / `TourAccommodationType` | کدهای زبان‌مستقل برای نمایش چندزبانه |
 
 ## قواعد
 
 - انتشار محصول نیازمند حداقل یک ترجمه و یک مقصد است.
 - Slug محصول یکتاست.
 - ترجمه تکراری برای یک locale مجاز نیست.
+- هر روز برنامه سفر باید حداقل یک ترجمه داشته باشد.
+- روز تکراری در یک محصول مجاز نیست.
 - محصول منتشرشده توسط Offerهای آژانس‌ها مصرف می‌شود.
 
 ## APIها
@@ -36,5 +41,5 @@
 ## Persistence
 
 - Schema: `catalog`
-- جدول‌ها: `tour_products`, `tour_product_translations`, `tour_product_destinations`, `destinations`, `destination_translations`
-- Migration: `InitialCatalog`
+- جدول‌ها: `tour_products`, `tour_product_translations`, `tour_itinerary_days`, `tour_itinerary_day_translations`, `tour_product_destinations`, `destinations`, `destination_translations`
+- Migrationها: `InitialCatalog`, `AddTourContent`

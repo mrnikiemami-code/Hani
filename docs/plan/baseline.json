@@ -14,7 +14,7 @@
     { "id": 8, "name": "Hardening" }
   ],
   "gaps": [
-    { "id": "GAP-01", "title": "Tour Content Model", "priority": "P0", "gate": 1, "task": "TC-083", "status": "Planned", "evidence": [], "waiverAdr": null },
+    { "id": "GAP-01", "title": "Tour Content Model", "priority": "P0", "gate": 1, "task": "TC-083", "status": "Done", "evidence": ["tests/Hani.UnitTests/Catalog/TourProductTests.cs", "docs/api/marketplace-api-v1.openapi.yaml", "20261112012822_AddTourContent"], "waiverAdr": null },
     { "id": "GAP-02", "title": "Accommodation Options", "priority": "P0", "gate": 1, "task": "TC-084", "status": "Planned", "evidence": [], "waiverAdr": null },
     { "id": "GAP-03", "title": "Flight Details", "priority": "P0", "gate": 1, "task": "TC-084", "status": "Planned", "evidence": [], "waiverAdr": null },
     { "id": "GAP-04", "title": "Faceted Search", "priority": "P0", "gate": 2, "task": "TC-085", "status": "Planned", "evidence": [], "waiverAdr": null },

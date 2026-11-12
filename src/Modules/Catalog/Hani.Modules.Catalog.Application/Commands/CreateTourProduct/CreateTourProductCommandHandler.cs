@@ -24,11 +24,25 @@ internal sealed class CreateTourProductCommandHandler(
                 Error.Validation("HANI-CATALOG-1001", "One or more destinations were not found."));
         }
 
+        var content = request.Content;
+
+        if (content?.OriginDestinationId is { } originId &&
+            foundDestinations.All(destination => destination.Id != originId))
+        {
+            return Result<Guid>.Failure(
+                Error.Validation("HANI-CATALOG-1014", "Origin destination was not found."));
+        }
+
         var product = TourProduct.Create(
             ids,
             request.Slug,
             request.DurationDays,
-            request.TourType);
+            request.TourType,
+            content?.OriginDestinationId,
+            content?.Difficulty ?? TourDifficulty.Normal,
+            content?.VehicleType ?? TourVehicleType.None,
+            content?.LocalVehicleType ?? TourVehicleType.None,
+            content?.AccommodationType ?? TourAccommodationType.Hotel);
 
         foreach (var translation in request.Translations)
         {
@@ -39,7 +53,33 @@ internal sealed class CreateTourProductCommandHandler(
                 translation.Summary,
                 translation.Description,
                 translation.SeoTitle,
-                translation.SeoDescription);
+                translation.SeoDescription,
+                translation.MealsSummary,
+                translation.IncludedServices,
+                translation.ExcludedServices,
+                translation.CancellationPolicy,
+                translation.AdditionalInfo,
+                translation.RequiredItems);
+        }
+
+        if (content is not null)
+        {
+            foreach (var day in content.ItineraryDays)
+            {
+                product.AddItineraryDay(
+                    ids,
+                    day.DayNumber,
+                    day.Breakfast,
+                    day.Lunch,
+                    day.Dinner,
+                    day.Translations
+                        .Select(translation => new TourItineraryDayTranslationDetails(
+                            translation.Locale,
+                            translation.Title,
+                            translation.Description,
+                            translation.Accommodation))
+                        .ToArray());
+            }
         }
 
         var sortOrder = 0;
