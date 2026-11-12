@@ -2,7 +2,7 @@
   "version": 1,
   "reportPath": "docs/reports/lastsecond-gap-analysis-2026-11-12.md",
   "reportSha256": "ce9b198c4e399ac80cb3b911e37465d112397eae831eb8dfa15c99b16af192b9",
-  "currentGate": 1,
+  "currentGate": 2,
   "gates": [
     { "id": 1, "name": "Tour Experience & Pricing" },
     { "id": 2, "name": "Discovery & SEO" },

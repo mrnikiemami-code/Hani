@@ -4,7 +4,7 @@
 - **Report:** `docs/reports/lastsecond-gap-analysis-2026-11-12.md`
 - **Machine-readable:** `docs/plan/baseline.json`
 - **Status:** Locked for planning
-- **Current gate:** Gate 1 — Tour Experience & Pricing
+- **Current gate:** Gate 2 — Discovery & SEO (Gate 1 ✅ Passed)
 
 > این فایل مرجع برنامه‌ریزی است. هر GAP باید یک Gate، Task، وضعیت و Evidence داشته باشد.
 > ترتیب Gateها از گزارش Lastsecond و وابستگی‌های واقعی محصول پیروی می‌کند؛ هیچ GAP حذف نمی‌شود.

@@ -3,7 +3,7 @@
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 2 — Discovery/SEO
 > **آخرین commit کد:** `79daeb7`
-> **وضعیت Gate:** Gate 1 — Passed ✅ / Gate 2 — Planned
+> **وضعیت Gate:** Gate 1 — Passed ✅ / Gate 2 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **گزارش Gate:** [`../reports/baseline-gate-1.md`](../reports/baseline-gate-1.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
