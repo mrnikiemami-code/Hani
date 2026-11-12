@@ -101,7 +101,7 @@
 | D-84 | Lastsecond baseline lock | `BASELINE.md` + `baseline.json` + `BaselineCoverageTests` + `check-baseline.ps1` | `3a8992b` |
 | D-85 | Tour Content Model | Itinerary/meals/services/policies/required items + `AddTourContent` | `99d42ea` |
 | D-86 | Offer Accommodation + Flight Options | Hotel/room/MealPlan + flight details + `AddOfferOptions` | `68a4895` |
-| D-87 | Multi-currency + VAT/Duty + PaymentObligation | PriceComponent snapshot + OfferTaxRule + per-currency obligations/intents/commission | این تغییر |
+| D-87 | Multi-currency + VAT/Duty + PaymentObligation | PriceComponent snapshot + OfferTaxRule + per-currency obligations/intents/commission | `79daeb7` |
 
 ## ۳. مستندات
 
@@ -168,4 +168,5 @@
 | `3a8992b` | Lastsecond baseline lock and gate checks |
 | `99d42ea` | Multilingual tour content model (TC-083) |
 | `68a4895` | Offer accommodation and flight options (TC-084) |
+| `79daeb7` | Multi-currency pricing, taxes, obligations, settlement (TC-082) |
 | `7df2265` | Phase roadmap + status + tasks |

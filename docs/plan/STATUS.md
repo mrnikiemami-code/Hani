@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 2 — Discovery/SEO
-> **آخرین commit کد:** `68a4895`
+> **آخرین commit کد:** `79daeb7`
 > **وضعیت Gate:** Gate 1 — Passed ✅ / Gate 2 — Planned
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **گزارش Gate:** [`../reports/baseline-gate-1.md`](../reports/baseline-gate-1.md)
@@ -89,7 +89,7 @@
 | Lastsecond gap analysis | گزارش بررسی صفحات و اولویت‌بندی شکاف‌ها | `docs/reports/lastsecond-gap-analysis-2026-11-12.md` |
 | Tour Content Model | Itinerary/Meals/Services/Policies/RequiredItems چندزبانه (GAP-01) | `99d42ea` |
 | Offer Options | Accommodation + Flight + MealPlan (GAP-02/03) | `68a4895` |
-| Multi-currency Pricing | PriceComponent + VAT/Duty + PaymentObligation + per-currency Payment/Commission | این تغییر |
+| Multi-currency Pricing | PriceComponent + VAT/Duty + PaymentObligation + per-currency Payment/Commission | `79daeb7` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -216,3 +216,4 @@
 | `3a8992b` | Lastsecond baseline lock and gate checks |
 | `99d42ea` | Multilingual tour content model (TC-083) |
 | `68a4895` | Offer accommodation and flight options (TC-084) |
+| `79daeb7` | Multi-currency pricing, taxes, obligations, settlement (TC-082) |

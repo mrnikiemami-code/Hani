@@ -1,6 +1,7 @@
 # Baseline Gate 1 Report — Tour Experience & Pricing
 
 > **تاریخ:** ۱۲ نوامبر ۲۰۲۶
+> **کد commit:** `79daeb7`
 > **وضعیت:** ✅ **PASSED**
 > **Gate بعدی:** Gate 2 — Discovery/SEO
 
