@@ -23,6 +23,7 @@ public sealed class BaselineCoverageTests
         baseline.ShouldNotBeNull();
         baseline!.Version.ShouldBeGreaterThan(0);
         baseline.Gaps.Count.ShouldBe(34);
+        baseline.HaniBetter.ShouldNotBeEmpty("At least one Hani-Better capability is required.");
 
         var gateIds = baseline.Gates.Select(gate => gate.Id).ToHashSet();
         gateIds.ShouldContain(baseline.CurrentGate);
@@ -110,6 +111,17 @@ public sealed class BaselineCoverageTests
         public List<Gate> Gates { get; init; } = [];
 
         public List<Gap> Gaps { get; init; } = [];
+
+        public List<HaniBetter> HaniBetter { get; init; } = [];
+    }
+
+    private sealed class HaniBetter
+    {
+        public string Id { get; init; } = string.Empty;
+
+        public string Title { get; init; } = string.Empty;
+
+        public List<int> Gates { get; init; } = [];
     }
 
     private sealed class Gate

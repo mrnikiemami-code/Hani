@@ -48,5 +48,12 @@
     { "id": "GAP-32", "title": "Media/UGC", "priority": "P1", "gate": 3, "task": "TC-089", "status": "Planned", "evidence": [], "waiverAdr": null },
     { "id": "GAP-33", "title": "Notifications", "priority": "P1", "gate": 6, "task": "TC-096", "status": "Planned", "evidence": [], "waiverAdr": null },
     { "id": "GAP-34", "title": "Analytics", "priority": "P2", "gate": 6, "task": "TC-099", "status": "Planned", "evidence": [], "waiverAdr": null }
+  ],
+  "haniBetter": [
+    { "id": "HB-01", "title": "Multilingual content FA/EN/AR with locale-aware URLs and SEO", "gates": [1, 2, 3, 5, 6] },
+    { "id": "HB-02", "title": "Supplier API and Channel API", "gates": [7] },
+    { "id": "HB-03", "title": "Multi-currency + VAT/Duty breakdown", "gates": [1] },
+    { "id": "HB-04", "title": "ProblemDetails + CorrelationId", "gates": [1, 2, 3, 4, 5, 6] },
+    { "id": "HB-05", "title": "Config-driven languages and no hard-coded locale", "gates": [1, 2, 3, 5, 6] }
   ]
 }

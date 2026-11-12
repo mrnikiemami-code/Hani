@@ -85,13 +85,16 @@
 
 هر Gate باید حداقل یکی از این‌ها را اضافه کند:
 
-- Supplier/Channel API
-- Multi-tenant isolation
-- Multi-currency + Tax/Duty breakdown
-- Commission per currency
-- CollectionMode
-- FA/EN/AR config-driven
-- ProblemDetails + CorrelationId
-- Outbox/Idempotency
-- Architecture/Regression tests
-- Agency MoR برای ReservationRequest
+- HB-01: Multilingual content FA/EN/AR با URL و SEO locale-aware
+- HB-02: Supplier/Channel API
+- HB-03: Multi-currency + VAT/Duty breakdown
+- HB-04: ProblemDetails + CorrelationId
+- HB-05: Config-driven languages و بدون hard-code
+
+## ۶. اصلاح کارهای قبلی
+
+- مدل تک‌ارزی فعلی Booking/Payments/Settlement در Gate 1 بازکاری می‌شود؛ نسخه فعلی خروجی نهایی نیست.
+- هیچ مدل موازی تک‌ارزی/چندارزی ساخته نمی‌شود.
+- `TourProduct` فعلی فقط ورودی اولیه است؛ محتوای کامل تور در Gate 1 جایگزین/تکمیل می‌شود.
+- چندزبانگی از Gate 1 در مدل داده و API لحاظ می‌شود؛ ترجمه‌ها بعداً پر می‌شوند اما ساختار از ابتدا locale-aware است.
+
