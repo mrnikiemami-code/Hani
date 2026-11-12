@@ -45,6 +45,7 @@
 | TC-028 | PaymentIntent + Gateway | ✅ | TC-027 | idempotent initiate + Hani MoR | `dc76539` |
 | TC-029 | Payment Webhook | ✅ | TC-028 | dedupe + verify + Order.Paid | `7b85652` |
 | TC-030 | Settlement Ledger | ✅ | TC-028 | double-entry + commission accrual | `0dd6fbe` |
+| TC-082 | Multi-currency pricing + Tax/Duty + BookingMode + MoR | ⏳ | TC-030 | ADR-0024 + phased implementation | — |
 | TC-031 | Channel OAuth | ❌ | TC-017 | token + scope | — |
 | TC-032 | Channel Catalog/Availability | ❌ | TC-031, TC-021 | فقط Offer مجاز | — |
 | TC-033 | Channel Booking + Webhook | ❌ | TC-032, TC-026 | end-to-end | — |

@@ -82,6 +82,7 @@
 | Payments | PaymentIntent + Gateway Adapter + MerchantScope=Hani | `dc76539` |
 | Payment Webhook | HMAC verify + dedupe + Order.Paid | `7b85652` |
 | Settlement | Commission Rule + CommissionEntry + Double-entry Ledger | `0dd6fbe` |
+| Pricing architecture | ADR-0024: چندارزی + VAT/Duty + BookingMode + تفکیک MoR | docs only |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -150,7 +151,7 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** TC-031 — Channel OAuth + Scopes
+**تسک فعال:** TC-082 — Multi-currency Pricing + Tax/Duty + BookingMode + MoR (Phase A)
 **Phase 2:** در حال انجام
 
 ### ۵ تسک اول Phase 2 (پس از تأیید)

@@ -1,7 +1,9 @@
 # ADR-0011 — مرچنت Hani، تسویه با آژانس و کمیسیون داینامیک
 
-- **وضعیت:** Accepted (Locked)
+- **وضعیت:** Accepted (Locked) — با ADR-0024 تعدیل شده است
 - **تاریخ:** 2026-11-10
+
+> **تعدیل:** ADR-0024 مدل Merchant of Record را بر اساس `CollectionMode` تفکیک می‌کند؛ Online همچنان Hani-MoR است و ReservationRequest آژانس-MoR. متن تاریخی این ADR حفظ می‌شود.
 
 ## زمینه
 

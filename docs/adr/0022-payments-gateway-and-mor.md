@@ -1,8 +1,10 @@
 # ADR-0022 — ماژول Payments، انتزاع Gateway و Merchant of Record
 
-- **وضعیت:** Accepted
+- **وضعیت:** Accepted — با ADR-0024 تعدیل شده است
 - **تاریخ:** 2026-11-11
 - **تصمیم‌گیرندگان:** تیم Hani
+
+> **تعدیل:** ADR-0024 مدل `PaymentIntent`، `CollectionMode` و چندارزی/مالیات را تکمیل می‌کند.
 
 ## زمینه
 
