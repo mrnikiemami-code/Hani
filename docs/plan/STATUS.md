@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 2 — Discovery/SEO
-> **آخرین commit کد:** `13cf435`
+> **آخرین commit کد:** `a540530`
 > **وضعیت Gate:** Gate 1 — Passed ✅ / Gate 2 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
@@ -234,3 +234,4 @@
 | `68a4895` | Offer accommodation and flight options (TC-084) |
 | `79daeb7` | Multi-currency pricing, taxes, obligations, settlement (TC-082) |
 | `13cf435` | Lastsecond re-audit fixes |
+| `a540530` | Endpoint handler XML documentation guard |

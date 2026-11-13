@@ -103,7 +103,7 @@
 | D-86 | Offer Accommodation + Flight Options | Hotel/room/MealPlan + flight details + `AddOfferOptions` | `68a4895` |
 | D-87 | Multi-currency + VAT/Duty + PaymentObligation | PriceComponent snapshot + OfferTaxRule + per-currency obligations/intents/commission | `79daeb7` |
 | D-88 | Lastsecond Re-audit fixes | Per-currency minPrices + options/tax in compare + accommodation selection snapshot | `13cf435` |
-| D-89 | Endpoint handler XML docs | Summary on every `*Endpoints.cs` handler + `DocumentationTests` guard | این تغییر |
+| D-89 | Endpoint handler XML docs | Summary on every `*Endpoints.cs` handler + `DocumentationTests` guard | `a540530` |
 
 ## ۳. مستندات
 
@@ -172,4 +172,5 @@
 | `68a4895` | Offer accommodation and flight options (TC-084) |
 | `79daeb7` | Multi-currency pricing, taxes, obligations, settlement (TC-082) |
 | `13cf435` | Lastsecond re-audit fixes |
+| `a540530` | Endpoint handler XML documentation guard |
 | `7df2265` | Phase roadmap + status + tasks |
