@@ -1,5 +1,6 @@
 using Hani.Modules.Identity.Domain.Agencies;
 using Hani.Modules.Identity.Domain.ApiClients;
+using Hani.Modules.Identity.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Identity.Infrastructure.Persistence;
@@ -12,6 +13,8 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
     public DbSet<Agency> Agencies => Set<Agency>();
 
     public DbSet<ApiClient> ApiClients => Set<ApiClient>();
+
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

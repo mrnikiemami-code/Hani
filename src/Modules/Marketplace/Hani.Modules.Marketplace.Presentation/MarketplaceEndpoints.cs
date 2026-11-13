@@ -1,3 +1,4 @@
+using System.Text;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
@@ -7,7 +8,6 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using System.Text;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Modules.Marketplace.Presentation;

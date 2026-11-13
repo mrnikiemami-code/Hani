@@ -43,8 +43,8 @@
 | GAP-06 | Lead/RFQ | P0 | 4 | TC-088 | Planned |
 | GAP-07 | Multi-currency | P0 | 1 | TC-082 | Done |
 | GAP-08 | VAT/Duty | P0 | 1 | TC-082 | Done |
-| GAP-09 | User Auth/OTP | P0 | 3 | TC-086 | Planned |
-| GAP-10 | Profiles/Authors | P1 | 3 | TC-086 | Planned |
+| GAP-09 | User Auth/OTP | P0 | 3 | TC-086 | Done |
+| GAP-10 | Profiles/Authors | P1 | 3 | TC-086 | Done |
 | GAP-11 | Reviews/UGC | P0 | 3 | TC-089 | Planned |
 | GAP-12 | Content/Itineraries/Blog/Video | P1 | 6 | TC-093 | Planned |
 | GAP-13 | Attractions/Restaurants | P1 | 5 | TC-094 | Planned |

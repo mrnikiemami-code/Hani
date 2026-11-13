@@ -1,21 +1,47 @@
 # Identity Module
 
-> **مسئولیت:** هویت آژانس‌ها و کلاینت‌های API (Supplier/Channel) + احراز هویت API Key.
+> **مسئولیت:** هویت کاربران و آژانس‌ها، OTP/JWT، پروفایل نویسنده و کلاینت‌های API (Supplier/Channel).
 
 ## اجزای اصلی
 
 | نوع | مسئولیت |
 |---|---|
+| `User` | کاربر مارکت‌پلیس، موبایل، پروفایل و نقش |
+| `UserOtp` | OTP هش‌شده با TTL، attempt limit و consumption |
+| `RefreshToken` | Refresh token هش‌شده با rotation/revoke |
+| `UserStatus` | Pending / Active / Blocked / Deleted |
+| `UserRole` | Customer / Author / AgencyStaff / Admin |
 | `Agency` | آژانس، مجوز، شهر، وضعیت و اعتبار اشتراک |
 | `ApiClient` | کلاینت ماشین‌به‌ماشین برای هر آژانس |
-| `ApiClientStatus` | Active / Revoked |
 | `ISecretGenerator` | تولید ClientId و Secret |
 | `ISecretHasher` | هش SHA-256 برای ذخیره Secret |
 | `IApiKeyValidator` | اعتبارسنجی `X-Api-Key` + `X-Api-Secret` |
+| `IJwtTokenService` | صدور JWT access + opaque refresh |
+| `IOtpSender` | ارسال OTP (Log در توسعه، SMS در تولید) |
 | `ApiKeyAuthenticationHandler` | Scheme احراز هویت API Key |
 | `TenantMiddleware` | استخراج `agency_id` از claim |
 
 ## جریان احراز هویت
+
+### کاربر Marketplace
+
+```
+POST /market/v1/auth/otp/request
+  → OTP 6 رقمی + HMAC hash + TTL + cooldown/rate limit
+  → IOtpSender
+
+POST /market/v1/auth/otp/verify
+  → User.Activate + LastLoginAt
+  → JWT access (15m) + refresh (30d)
+
+POST /market/v1/auth/refresh
+  → rotation: revoke old + issue new
+
+GET/PUT /market/v1/auth/me
+GET /market/v1/authors/{username}
+```
+
+### Supplier API
 
 ```
 Client → X-Api-Key + X-Api-Secret
@@ -30,7 +56,11 @@ Client → X-Api-Key + X-Api-Secret
 
 - Secret فقط یک بار در پاسخ ایجاد برمی‌گردد.
 - در DB فقط hash ذخیره می‌شود.
+- OTP و Refresh Token با HMAC pepper هش می‌شوند.
 - مقایسه hash با `CryptographicOperations.FixedTimeEquals`.
+- OTP حداکثر ۵ تلاش و TTL ۲ دقیقه دارد.
+- Refresh token rotate می‌شود و token قدیمی revoke می‌شود.
+- JWT signing key باید حداقل ۳۲ بایت باشد.
 - کلاینت Revoked رد می‌شود.
 - Scope اجباری است (`supplier.write`).
 
@@ -38,6 +68,13 @@ Client → X-Api-Key + X-Api-Secret
 
 | متد | مسیر |
 |---|---|
+| POST | `/market/v1/auth/otp/request` |
+| POST | `/market/v1/auth/otp/verify` |
+| POST | `/market/v1/auth/refresh` |
+| POST | `/market/v1/auth/logout` |
+| GET/PUT | `/market/v1/auth/me` |
+| PUT | `/market/v1/auth/me/username` |
+| GET | `/market/v1/authors/{username}` |
 | POST | `/internal/v1/agencies` |
 | GET | `/internal/v1/agencies/{id}` |
 | POST | `/internal/v1/agencies/{id}/api-clients` |
@@ -45,5 +82,5 @@ Client → X-Api-Key + X-Api-Secret
 ## Persistence
 
 - Schema: `identity`
-- جدول‌ها: `agencies`, `api_clients`
-- Migration: `InitialIdentity`
+- جدول‌ها: `users`, `user_otp_codes`, `user_refresh_tokens`, `agencies`, `api_clients`
+- Migrationها: `InitialIdentity`, `AddUsersAndOtp`

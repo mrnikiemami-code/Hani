@@ -16,8 +16,13 @@ public static class DependencyInjection
     {
         services.AddScoped<IAgencyRepository, AgencyRepository>();
         services.AddScoped<IApiClientRepository, ApiClientRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddSingleton<ISecretGenerator, SecretGenerator>();
         services.AddSingleton<ISecretHasher, SecretHasher>();
+        services.AddSingleton<IOtpCodeGenerator, NumericOtpCodeGenerator>();
+        services.AddSingleton<IOtpCodeHasher, HmacOtpCodeHasher>();
+        services.AddSingleton<IOtpSender, LogOtpSender>();
+        services.AddSingleton<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
         services.AddScoped<IAgencyReadService, AgencyReadService>();
         return services;

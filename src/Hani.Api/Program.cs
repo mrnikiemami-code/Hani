@@ -1,5 +1,6 @@
 // Hani API composition root: wires modules, persistence, auth, messaging, caching, and observability.
 using System.Globalization;
+using System.Text;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using Hani.BuildingBlocks.Application;
@@ -29,6 +30,8 @@ using Hani.Modules.Catalog.Application.Queries.GetTourProductById;
 using Hani.Modules.Catalog.Infrastructure;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
 using Hani.Modules.Catalog.Presentation;
+using Hani.Modules.Identity.Application;
+using Hani.Modules.Identity.Application.Commands.Auth;
 using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Identity.Application.Commands.CreateApiClient;
 using Hani.Modules.Identity.Application.Queries.GetAgencyById;
@@ -71,8 +74,10 @@ using Hani.Modules.Supply.Infrastructure.Persistence;
 using Hani.Modules.Supply.Presentation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 
@@ -146,6 +151,8 @@ builder.Services.AddSettlementInfrastructure();
 builder.Services.Configure<PaymentOptions>(builder.Configuration.GetSection("Payments"));
 builder.Services.Configure<CommissionOptions>(builder.Configuration.GetSection("Commissions"));
 builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<OtpOptions>(builder.Configuration.GetSection("Otp"));
 
 // ---------------------------------------------------------------------------
 // Cross-cutting infrastructure: cache, messaging, tenant, idempotency, telemetry
@@ -195,6 +202,14 @@ builder.Services.AddScoped<IValidator<GetTourProductByIdQuery>, GetTourProductBy
 builder.Services.AddScoped<IValidator<CreateAgencyCommand>, CreateAgencyCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateApiClientCommand>, CreateApiClientCommandValidator>();
 builder.Services.AddScoped<IValidator<GetAgencyByIdQuery>, GetAgencyByIdQueryValidator>();
+builder.Services.AddScoped<IValidator<RequestOtpCommand>, RequestOtpCommandValidator>();
+builder.Services.AddScoped<IValidator<VerifyOtpCommand>, VerifyOtpCommandValidator>();
+builder.Services.AddScoped<IValidator<RefreshTokenCommand>, RefreshTokenCommandValidator>();
+builder.Services.AddScoped<IValidator<LogoutCommand>, LogoutCommandValidator>();
+builder.Services.AddScoped<IValidator<UpdateProfileCommand>, UpdateProfileCommandValidator>();
+builder.Services.AddScoped<IValidator<ChangeUsernameCommand>, ChangeUsernameCommandValidator>();
+builder.Services.AddScoped<IValidator<GetMeQuery>, GetMeQueryValidator>();
+builder.Services.AddScoped<IValidator<GetAuthorQuery>, GetAuthorQueryValidator>();
 builder.Services.AddScoped<IValidator<SearchProductsQuery>, SearchProductsQueryValidator>();
 builder.Services.AddScoped<IValidator<GetProductSeoQuery>, GetProductSeoQueryValidator>();
 builder.Services.AddScoped<IValidator<GetLandingSeoQuery>, GetLandingSeoQueryValidator>();
@@ -216,18 +231,48 @@ builder.Services.AddScoped<IValidator<GetCommissionQuery>, GetCommissionQueryVal
 builder.Services.AddScoped<IValidator<GetLedgerTransactionQuery>, GetLedgerTransactionQueryValidator>();
 
 // ---------------------------------------------------------------------------
-// Authentication: API key scheme for Supplier API + authorization policies
+// Authentication: JWT for marketplace users + API key scheme for Supplier API
 // ---------------------------------------------------------------------------
-builder.Services.AddAuthentication(ApiKeyAuthenticationHandler.SchemeName)
+var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? new JwtOptions();
+
+if (string.IsNullOrWhiteSpace(jwtOptions.SigningKey) ||
+    Encoding.UTF8.GetByteCount(jwtOptions.SigningKey) < 32)
+{
+    throw new InvalidOperationException("Jwt:SigningKey must be at least 32 bytes.");
+}
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(
         ApiKeyAuthenticationHandler.SchemeName,
-        _ => { });
+        _ => { })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtOptions.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtOptions.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(30)
+        };
+    });
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Supplier", policy => policy
+        .AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName)
         .RequireAuthenticatedUser()
         .RequireClaim("scope", "supplier.write"));
+
+    options.AddPolicy("User", policy => policy.RequireAuthenticatedUser());
 });
 
 // ---------------------------------------------------------------------------
@@ -289,6 +334,7 @@ app.MapHealthChecks("/health");
 app.MapSupplyEndpoints();
 app.MapCatalogEndpoints();
 app.MapIdentityEndpoints();
+app.MapIdentityAuthEndpoints();
 app.MapMarketplaceEndpoints();
 app.MapBookingEndpoints();
 app.MapPaymentEndpoints();

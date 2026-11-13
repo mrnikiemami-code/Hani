@@ -93,6 +93,7 @@
 | Multi-currency Pricing | PriceComponent + VAT/Duty + PaymentObligation + per-currency Payment/Commission | `79daeb7` |
 | Lastsecond Re-audit | تأیید صفحات + اصلاح minPrice چندارزی + هتل/پرواز/مالیات در compare + هتل در Quote/Order/Contract | `13cf435` |
 | Discovery & SEO | Faceted Search/Sort + Canonical/JSON-LD/Sitemap/Landing + robots | `d7921ac` |
+| Identity Core | User + OTP + JWT/refresh + profile + author | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -149,10 +150,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۹۹ passed |
+| Unit Tests | ۱۰۳ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۳۳ passed** |
-| Migrations | Supply (۵) / Catalog (۲) / Identity (۱) / Booking (۴) / Payments (۴) / Settlement (۲) |
+| Total | **۱۳۷ passed** |
+| Migrations | Supply (۵) / Catalog (۲) / Identity (۲) / Booking (۴) / Payments (۴) / Settlement (۲) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -164,9 +165,24 @@
 **تسک فعال:** Gate 3 — Identity, Trust & Agency
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04 (Faceted Search/Sort), GAP-28 (SEO/Landing/Sitemap)
-**GAPهای Gate 3 (باز):** GAP-09/10/26/27/31 و GAP-11/20/32
+**GAPهای Gate 3:** ✅ GAP-09/10 (Identity/Profile) — باز: GAP-26/27/31 (Agency/Trust) و GAP-11/20/32 (Reviews/Claims/Media)
 **Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای قبلی
 **قرارداد Gate 3:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
+
+### Gate 3 — Identity Core ✅ / Gate باز
+
+- [x] User + OTP + JWT + refresh rotation
+- [x] Profile + author endpoint
+- [x] OTP rate limit/cooldown/attempts + HMAC hash
+- [x] Migration `AddUsersAndOtp`
+- [x] OpenAPI + README
+- [ ] Agency onboarding + documents
+- [ ] Agency/Admin panel
+- [ ] Trust/Support
+- [ ] Reviews + Rating + Photos
+- [ ] Claims/Corrections
+- [ ] Media/UGC moderation
+- [ ] Gate 3 Deviation Audit + PASS report
 
 ### Gate 2 — Exit Checklist ✅
 

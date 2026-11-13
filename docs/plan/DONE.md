@@ -105,6 +105,7 @@
 | D-88 | Lastsecond Re-audit fixes | Per-currency minPrices + options/tax in compare + accommodation selection snapshot | `13cf435` |
 | D-89 | Endpoint handler XML docs | Summary on every `*Endpoints.cs` handler + `DocumentationTests` guard | `a540530` |
 | D-90 | Discovery & SEO | Faceted search/sort + canonical/hreflang + JSON-LD + landing + sitemap/robots | `d7921ac` |
+| D-91 | Identity Core | User + OTP + JWT/refresh + profile + author + `AddUsersAndOtp` | این تغییر |
 
 ## ۳. مستندات
 
@@ -124,9 +125,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۹۹ passed |
+| Unit Tests | ۱۰۳ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۳۳ passed** |
+| Total | **۱۳۷ passed** |
 | Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
 | Format | clean |
 | Vulnerable Packages | none |

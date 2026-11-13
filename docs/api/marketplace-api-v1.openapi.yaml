@@ -13,6 +13,7 @@ servers:
 
 tags:
   - name: Catalog
+  - name: Identity
   - name: Booking
   - name: Payment
 
@@ -163,6 +164,152 @@ paths:
           content:
             text/plain:
               schema: { type: string }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /auth/otp/request:
+    post:
+      tags: [Identity]
+      summary: Request a login OTP for a mobile number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RequestOtpRequest' }
+      responses:
+        '200':
+          description: OTP requested
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RequestOtpResult' }
+        '409':
+          description: Cooldown or rate limit
+        default: { $ref: '#/components/responses/Problem' }
+
+  /auth/otp/verify:
+    post:
+      tags: [Identity]
+      summary: Verify an OTP and issue JWT/refresh tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VerifyOtpRequest' }
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthResult' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /auth/refresh:
+    post:
+      tags: [Identity]
+      summary: Rotate a refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RefreshTokenRequest' }
+      responses:
+        '200':
+          description: Rotated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthResult' }
+        '401':
+          description: Invalid or expired refresh token
+        default: { $ref: '#/components/responses/Problem' }
+
+  /auth/logout:
+    post:
+      tags: [Identity]
+      summary: Revoke a refresh token
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LogoutRequest' }
+      responses:
+        '200':
+          description: Revoked
+          content:
+            application/json:
+              schema: { type: boolean }
+        '401':
+          description: Unauthorized
+        default: { $ref: '#/components/responses/Problem' }
+
+  /auth/me:
+    get:
+      tags: [Identity]
+      summary: Read the authenticated user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '401':
+          description: Unauthorized
+        default: { $ref: '#/components/responses/Problem' }
+    put:
+      tags: [Identity]
+      summary: Update the authenticated user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateProfileRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /auth/me/username:
+    put:
+      tags: [Identity]
+      summary: Change the public username
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChangeUsernameRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '409':
+          description: Username already used
+        default: { $ref: '#/components/responses/Problem' }
+
+  /authors/{username}:
+    get:
+      tags: [Identity]
+      summary: Read a public author profile
+      parameters:
+        - { name: username, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Author' }
+        '404':
+          description: Author not found
         default: { $ref: '#/components/responses/Problem' }
 
   /quotes:
@@ -824,3 +971,94 @@ components:
         itineraryDays:
           type: array
           items: { $ref: '#/components/schemas/TourItineraryDay' }
+
+    RequestOtpRequest:
+      type: object
+      required: [mobile]
+      properties:
+        mobile: { type: string, minLength: 8, maxLength: 20 }
+
+    RequestOtpResult:
+      type: object
+      properties:
+        expiresAt: { type: string, format: date-time }
+        retryAfterSeconds: { type: integer }
+        devCode: { type: [string, 'null'] }
+
+    VerifyOtpRequest:
+      type: object
+      required: [mobile, code]
+      properties:
+        mobile: { type: string }
+        code: { type: string, minLength: 6, maxLength: 6 }
+        firstName: { type: [string, 'null'] }
+        lastName: { type: [string, 'null'] }
+
+    RefreshTokenRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken: { type: string }
+
+    LogoutRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken: { type: string }
+
+    UpdateProfileRequest:
+      type: object
+      required: [firstName, lastName]
+      properties:
+        firstName: { type: string, maxLength: 100 }
+        lastName: { type: string, maxLength: 100 }
+        email: { type: [string, 'null'], format: email }
+        bio: { type: [string, 'null'], maxLength: 1000 }
+        avatarUrl: { type: [string, 'null'], format: uri }
+
+    ChangeUsernameRequest:
+      type: object
+      required: [username]
+      properties:
+        username: { type: string, minLength: 3, maxLength: 32 }
+
+    User:
+      type: object
+      properties:
+        userId: { type: string, format: uuid }
+        mobile: { type: string }
+        email: { type: [string, 'null'] }
+        firstName: { type: string }
+        lastName: { type: string }
+        username: { type: string }
+        bio: { type: [string, 'null'] }
+        avatarUrl: { type: [string, 'null'] }
+        role: { type: string, enum: [Customer, Author, AgencyStaff, Admin] }
+        status: { type: string, enum: [Pending, Active, Blocked, Deleted] }
+        createdAt: { type: string, format: date-time }
+        lastLoginAt: { type: [string, 'null'], format: date-time }
+
+    Author:
+      type: object
+      properties:
+        userId: { type: string, format: uuid }
+        username: { type: string }
+        displayName: { type: string }
+        bio: { type: [string, 'null'] }
+        avatarUrl: { type: [string, 'null'] }
+        memberSince: { type: string, format: date-time }
+
+    AuthResult:
+      type: object
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+        accessTokenExpiresAt: { type: string, format: date-time }
+        user: { $ref: '#/components/schemas/User' }
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+

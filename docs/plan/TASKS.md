@@ -14,7 +14,7 @@
 | 1 | TC-082 | PriceComponent + TaxStatus + Snapshot + PaymentObligation + Commission per currency | ✅ | GAP-07/08 | چندارزی/مالیات/دفتر |
 | 2 | TC-085 | Faceted Search + Sort | ✅ | GAP-04 | فیلترهای کامل |
 | 2 | TC-097 | SEO + Landing + Sitemap | ✅ | GAP-28 | Canonical/JSON-LD |
-| 3 | TC-086 | User Identity + OTP + Profile | ❌ | GAP-09/10 | auth/profile |
+| 3 | TC-086 | User Identity + OTP + Profile | ✅ | GAP-09/10 | auth/profile |
 | 3 | TC-087 | Agency Onboarding + Panel | ❌ | GAP-26/27/31 | مجوز/پنل |
 | 3 | TC-089 | Reviews + Photos + Claims | ❌ | GAP-11/20/32 | UGC/اعتماد |
 | 4 | TC-088 | BookingMode + Request/Lead + RFQ | ❌ | GAP-05/06/19 | Online + Request |
