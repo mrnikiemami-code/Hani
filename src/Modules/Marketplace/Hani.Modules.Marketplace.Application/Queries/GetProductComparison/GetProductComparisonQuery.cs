@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Application;
+using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 
 namespace Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
 
@@ -30,7 +31,51 @@ public sealed record OfferComparisonDto(
     string Title,
     decimal MinPrice,
     string Currency,
+    IReadOnlyList<CurrencyPriceDto> MinPrices,
+    IReadOnlyList<AccommodationOptionComparisonDto> AccommodationOptions,
+    IReadOnlyList<FlightOptionComparisonDto> FlightOptions,
+    IReadOnlyList<TaxRuleComparisonDto> TaxRules,
     IReadOnlyList<DepartureComparisonDto> Departures);
+
+/// <summary>
+/// Accommodation option shown on a tour detail page.
+/// </summary>
+public sealed record AccommodationOptionComparisonDto(
+    Guid OptionId,
+    string HotelName,
+    int HotelStars,
+    string RoomType,
+    string MealPlan,
+    decimal Amount,
+    string Currency,
+    string? Description);
+
+/// <summary>
+/// Flight option shown on a tour detail page.
+/// </summary>
+public sealed record FlightOptionComparisonDto(
+    Guid OptionId,
+    string Direction,
+    string Airline,
+    string FlightNumber,
+    string DepartureAirport,
+    string ArrivalAirport,
+    TimeOnly DepartureTime,
+    TimeOnly ArrivalTime,
+    int DurationMinutes,
+    string Cabin,
+    string BaggageAllowance);
+
+/// <summary>
+/// Tax rule shown on a tour detail page.
+/// </summary>
+public sealed record TaxRuleComparisonDto(
+    string Currency,
+    string VatStatus,
+    decimal VatRate,
+    string DutyStatus,
+    decimal DutyRate,
+    string? ExemptionReason);
 
 /// <summary>
 /// One departure option inside an offer.

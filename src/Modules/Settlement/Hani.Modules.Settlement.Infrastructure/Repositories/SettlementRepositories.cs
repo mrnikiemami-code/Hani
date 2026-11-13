@@ -56,11 +56,15 @@ internal sealed class CommissionEntryRepository(SettlementDbContext dbContext)
         Guid orderId,
         string currency,
         CancellationToken cancellationToken)
-        => dbContext.CommissionEntries.FirstOrDefaultAsync(
+    {
+        var normalizedCurrency = currency.ToUpperInvariant();
+
+        return dbContext.CommissionEntries.FirstOrDefaultAsync(
             entry =>
                 entry.OrderId == orderId &&
-                entry.Currency == currency.ToUpperInvariant(),
+                entry.Currency == normalizedCurrency,
             cancellationToken);
+    }
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)
         => dbContext.SaveChangesAsync(cancellationToken);

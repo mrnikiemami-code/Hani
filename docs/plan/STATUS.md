@@ -90,6 +90,7 @@
 | Tour Content Model | Itinerary/Meals/Services/Policies/RequiredItems چندزبانه (GAP-01) | `99d42ea` |
 | Offer Options | Accommodation + Flight + MealPlan (GAP-02/03) | `68a4895` |
 | Multi-currency Pricing | PriceComponent + VAT/Duty + PaymentObligation + per-currency Payment/Commission | `79daeb7` |
+| Lastsecond Re-audit | تأیید صفحات + اصلاح minPrice چندارزی + هتل/پرواز/مالیات در compare + هتل در Quote/Order/Contract | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -146,9 +147,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۹۱ passed |
+| Unit Tests | ۹۲ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۲۴ passed** |
+| Total | **۱۲۵ passed** |
 | Migrations | Supply (۵) / Catalog (۲) / Identity (۱) / Booking (۴) / Payments (۴) / Settlement (۲) |
 | Format | clean |
 | Vulnerable Packages | none |

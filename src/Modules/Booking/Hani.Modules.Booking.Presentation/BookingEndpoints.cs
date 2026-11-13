@@ -79,7 +79,8 @@ public static class BookingEndpoints
                 request.RoomType,
                 request.Adults,
                 request.Children,
-                request.Infants),
+                request.Infants,
+                request.AccommodationOptionId),
             cancellationToken);
 
         return result.IsSuccess
@@ -185,7 +186,8 @@ public sealed record CreateQuoteRequest(
     string RoomType,
     int Adults,
     int Children = 0,
-    int Infants = 0);
+    int Infants = 0,
+    Guid? AccommodationOptionId = null);
 
 /// <summary>
 /// HTTP request to create a hold.

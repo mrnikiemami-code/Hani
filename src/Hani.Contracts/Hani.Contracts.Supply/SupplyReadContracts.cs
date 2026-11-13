@@ -21,6 +21,46 @@ public sealed record DepartureSnapshot(
     IReadOnlyList<DeparturePriceSnapshot> Prices);
 
 /// <summary>
+/// Accommodation option snapshot.
+/// </summary>
+public sealed record AccommodationOptionSnapshot(
+    Guid OptionId,
+    string HotelName,
+    int HotelStars,
+    string RoomType,
+    string MealPlan,
+    decimal Amount,
+    string Currency,
+    string? Description);
+
+/// <summary>
+/// Flight option snapshot.
+/// </summary>
+public sealed record FlightOptionSnapshot(
+    Guid OptionId,
+    string Direction,
+    string Airline,
+    string FlightNumber,
+    string DepartureAirport,
+    string ArrivalAirport,
+    TimeOnly DepartureTime,
+    TimeOnly ArrivalTime,
+    int DurationMinutes,
+    string Cabin,
+    string BaggageAllowance);
+
+/// <summary>
+/// Tax and duty rule snapshot for an offer currency.
+/// </summary>
+public sealed record OfferTaxRuleSnapshot(
+    string Currency,
+    string VatStatus,
+    decimal VatRate,
+    string DutyStatus,
+    decimal DutyRate,
+    string? ExemptionReason);
+
+/// <summary>
 /// Approved agency offer snapshot for one shared product.
 /// </summary>
 public sealed record OfferSnapshot(
@@ -32,7 +72,10 @@ public sealed record OfferSnapshot(
     decimal BasePrice,
     string Currency,
     string Status,
-    IReadOnlyList<DepartureSnapshot> Departures);
+    IReadOnlyList<DepartureSnapshot> Departures,
+    IReadOnlyList<AccommodationOptionSnapshot> AccommodationOptions,
+    IReadOnlyList<FlightOptionSnapshot> FlightOptions,
+    IReadOnlyList<OfferTaxRuleSnapshot> TaxRules);
 
 /// <summary>
 /// Read-side contract exposed by the Supply module.
@@ -68,7 +111,8 @@ public sealed record DeparturePricingSnapshot(
     int Capacity,
     int SeatsLeft,
     IReadOnlyList<DeparturePriceSnapshot> Prices,
-    IReadOnlyList<DepartureTaxRuleSnapshot> TaxRules);
+    IReadOnlyList<DepartureTaxRuleSnapshot> TaxRules,
+    IReadOnlyList<AccommodationOptionSnapshot> AccommodationOptions);
 
 /// <summary>
 /// Read-side contract for departure pricing.

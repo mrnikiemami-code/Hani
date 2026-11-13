@@ -37,6 +37,33 @@ internal sealed class CreateQuoteCommandHandler(
                 Error.Validation("HANI-BOOKING-2002", "Room type is not available for this departure."));
         }
 
+        AccommodationOptionSnapshot? selectedAccommodation = null;
+
+        if (request.AccommodationOptionId is { } accommodationOptionId)
+        {
+            selectedAccommodation = departure.AccommodationOptions
+                .FirstOrDefault(option => option.OptionId == accommodationOptionId);
+
+            if (selectedAccommodation is null)
+            {
+                return Result<QuoteDto>.Failure(
+                    Error.Validation(
+                        "HANI-BOOKING-2004",
+                        "Accommodation option was not found for this departure."));
+            }
+
+            if (!string.Equals(
+                    selectedAccommodation.RoomType,
+                    roomType,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return Result<QuoteDto>.Failure(
+                    Error.Validation(
+                        "HANI-BOOKING-2005",
+                        "Accommodation room type does not match the requested room type."));
+            }
+        }
+
         var seats = request.Adults + request.Children;
 
         if (seats < 1 || seats > departure.SeatsLeft)
@@ -46,6 +73,8 @@ internal sealed class CreateQuoteCommandHandler(
         }
 
         var components = new List<PriceComponentSnapshot>(selectedPrices.Length);
+        var primaryCurrency = selectedPrices[0].Currency;
+        var primaryAdultPrice = selectedPrices[0].Amount;
 
         foreach (var selected in selectedPrices)
         {
@@ -54,7 +83,19 @@ internal sealed class CreateQuoteCommandHandler(
                 ?? 0m;
             var infantPrice = FindPrice(departure.Prices, "Infant", selected.Currency) ?? 0m;
 
-            var baseTotal = (request.Adults * selected.Amount) +
+            var adultPrice = selectedAccommodation is null
+                ? selected.Amount
+                : FindAccommodationPrice(
+                    departure.AccommodationOptions,
+                    selectedAccommodation,
+                    selected.Currency) ?? selected.Amount;
+
+            if (string.Equals(selected.Currency, primaryCurrency, StringComparison.OrdinalIgnoreCase))
+            {
+                primaryAdultPrice = adultPrice;
+            }
+
+            var baseTotal = (request.Adults * adultPrice) +
                             (request.Children * childPrice) +
                             (request.Infants * infantPrice);
 
@@ -78,7 +119,16 @@ internal sealed class CreateQuoteCommandHandler(
         }
 
         var primary = components[0];
-        var snapshot = new PricingSnapshot(components);
+        var accommodation = selectedAccommodation is null
+            ? null
+            : new AccommodationSelectionSnapshot(
+                selectedAccommodation.OptionId,
+                selectedAccommodation.HotelName,
+                selectedAccommodation.HotelStars,
+                selectedAccommodation.RoomType,
+                selectedAccommodation.MealPlan,
+                selectedAccommodation.Currency.ToUpperInvariant());
+        var snapshot = new PricingSnapshot(components, accommodation);
 
         var quote = Quote.Create(
             ids,
@@ -90,7 +140,7 @@ internal sealed class CreateQuoteCommandHandler(
             request.Children,
             request.Infants,
             seats,
-            selectedPrices[0].Amount,
+            primaryAdultPrice,
             primary.TotalAmount,
             primary.Currency,
             now: null,
@@ -110,6 +160,19 @@ internal sealed class CreateQuoteCommandHandler(
                 string.Equals(price.RoomType, roomType, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(price.Currency, currency, StringComparison.OrdinalIgnoreCase))
             ?.Amount;
+
+    private static decimal? FindAccommodationPrice(
+        IReadOnlyList<AccommodationOptionSnapshot> options,
+        AccommodationOptionSnapshot selected,
+        string currency)
+        => options
+            .Where(option =>
+                string.Equals(option.HotelName, selected.HotelName, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(option.RoomType, selected.RoomType, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(option.MealPlan, selected.MealPlan, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(option.Currency, currency, StringComparison.OrdinalIgnoreCase))
+            .Select(option => (decimal?)option.Amount)
+            .FirstOrDefault();
 
     private static TaxStatus ParseStatus(string? value)
         => Enum.TryParse<TaxStatus>(value, ignoreCase: true, out var status)
@@ -147,5 +210,14 @@ internal sealed class CreateQuoteCommandHandler(
                     component.Vat.Rate,
                     component.Vat.Amount,
                     component.TotalAmount))
-                .ToArray());
+                .ToArray(),
+            quote.EffectivePricing.Accommodation is { } accommodation
+                ? new AccommodationSelectionDto(
+                    accommodation.OptionId,
+                    accommodation.HotelName,
+                    accommodation.HotelStars,
+                    accommodation.RoomType,
+                    accommodation.MealPlan,
+                    accommodation.Currency)
+                : null);
 }

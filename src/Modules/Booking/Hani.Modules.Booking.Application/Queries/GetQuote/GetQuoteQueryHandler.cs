@@ -51,5 +51,14 @@ internal sealed class GetQuoteQueryHandler(IQuoteRepository quotes)
                     component.Vat.Rate,
                     component.Vat.Amount,
                     component.TotalAmount))
-                .ToArray());
+                .ToArray(),
+            quote.EffectivePricing.Accommodation is { } accommodation
+                ? new AccommodationSelectionDto(
+                    accommodation.OptionId,
+                    accommodation.HotelName,
+                    accommodation.HotelStars,
+                    accommodation.RoomType,
+                    accommodation.MealPlan,
+                    accommodation.Currency)
+                : null);
 }

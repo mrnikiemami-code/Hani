@@ -43,25 +43,40 @@ internal sealed class SearchProductsQueryHandler(
             .Select((product, index) =>
             {
                 var productOffers = offersByProduct[index];
-                var minPrice = productOffers
+                var departurePrices = productOffers
                     .SelectMany(offer => offer.Departures)
                     .SelectMany(departure => departure.Prices)
-                    .Select(price => (decimal?)price.Amount)
-                    .Min();
+                    .Where(price => IsAdultRoomType(price.RoomType))
+                    .ToArray();
 
-                if (minPrice is null)
+                if (departurePrices.Length == 0)
                 {
-                    minPrice = productOffers
-                        .Select(offer => (decimal?)offer.BasePrice)
-                        .Min();
+                    departurePrices = productOffers
+                        .SelectMany(offer => offer.Departures)
+                        .SelectMany(departure => departure.Prices)
+                        .ToArray();
                 }
 
-                var currency = productOffers
-                    .SelectMany(offer => offer.Departures)
-                    .SelectMany(departure => departure.Prices)
-                    .Select(price => price.Currency)
-                    .FirstOrDefault()
-                    ?? productOffers.Select(offer => offer.Currency).FirstOrDefault();
+                var minPrices = departurePrices
+                    .GroupBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
+                    .Select(group => new CurrencyPriceDto(
+                        group.Key,
+                        group.Min(price => price.Amount)))
+                    .OrderBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
+                    .ToArray();
+
+                if (minPrices.Length == 0)
+                {
+                    minPrices = productOffers
+                        .GroupBy(offer => offer.Currency, StringComparer.OrdinalIgnoreCase)
+                        .Select(group => new CurrencyPriceDto(
+                            group.Key,
+                            group.Min(offer => offer.BasePrice)))
+                        .OrderBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
+                        .ToArray();
+                }
+
+                var primaryPrice = minPrices.FirstOrDefault();
 
                 return new ProductSearchItemDto(
                     product.Id,
@@ -69,16 +84,20 @@ internal sealed class SearchProductsQueryHandler(
                     Resolve(product.Titles, locale, languages.DefaultLanguage),
                     product.DurationDays,
                     product.TourType,
-                    minPrice,
-                    currency,
+                    primaryPrice?.Amount,
+                    primaryPrice?.Currency,
                     productOffers.Count,
-                    product.DestinationIds);
+                    product.DestinationIds,
+                    minPrices);
             })
             .ToArray();
 
         return Result<PagedResult<ProductSearchItemDto>>.Success(
             new PagedResult<ProductSearchItemDto>(items, page, pageSize, total));
     }
+
+    private static bool IsAdultRoomType(string roomType)
+        => roomType is "Double" or "Single" or "Triple";
 
     private static string Resolve(
         IReadOnlyDictionary<string, string> values,

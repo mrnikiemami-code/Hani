@@ -15,7 +15,9 @@ internal sealed class DeparturePricingService(SupplyDbContext dbContext)
         var data = await (from departure in dbContext.TourDepartures.AsNoTracking()
                           join offer in dbContext.AgencyOffers
                               .AsNoTracking()
+                              .AsSplitQuery()
                               .Include(item => item.TaxRules)
+                              .Include(item => item.AccommodationOptions)
                               on departure.AgencyOfferId equals offer.Id
                           where departure.Id == departureId
                           select new { departure, offer })
@@ -47,6 +49,17 @@ internal sealed class DeparturePricingService(SupplyDbContext dbContext)
                     rule.DutyStatus.ToString(),
                     rule.DutyRate,
                     rule.ExemptionReason))
+                .ToArray(),
+            data.offer.AccommodationOptions
+                .Select(option => new AccommodationOptionSnapshot(
+                    option.Id,
+                    option.HotelName,
+                    option.HotelStars,
+                    option.RoomType.ToString(),
+                    option.MealPlan.ToString(),
+                    option.Amount,
+                    option.Currency,
+                    option.Description))
                 .ToArray());
     }
 }

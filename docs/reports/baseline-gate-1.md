@@ -55,9 +55,9 @@ Commission: IRR 2,750,000 / USD 53.50
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۹۱ passed |
+| Unit Tests | ۹۲ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۲۴ passed** |
+| Total | **۱۲۵ passed** |
 | Format | clean |
 | Migration drift | none (Supply/Booking/Payments/Settlement) |
 | Baseline gate | passed |
@@ -67,3 +67,5 @@ Commission: IRR 2,750,000 / USD 53.50
 ## ۵. تصمیم
 
 Gate 1 بسته شد. کار بعدی Gate 2 است: Faceted Search/Sort (GAP-04) و SEO/Landing/Sitemap (GAP-28).
+
+**بازبینی مستقل سایت Lastsecond:** [`lastsecond-reaudit-2026-11-13.md`](lastsecond-reaudit-2026-11-13.md).

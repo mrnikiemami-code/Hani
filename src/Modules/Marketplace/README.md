@@ -22,8 +22,8 @@ Marketplace.Application
 
 | متد | مسیر | توضیح |
 |---|---|---|
-| GET | `/market/v1/search?locale=fa&destinationSlug=&page=1&pageSize=20` | جستجوی محصولات + حداقل قیمت + تعداد Offer |
-| GET | `/market/v1/products/{id}/compare?locale=fa` | مقایسه Offerهای تاییدشده یک محصول |
+| GET | `/market/v1/search?locale=fa&destinationSlug=&page=1&pageSize=20` | جستجوی محصولات + حداقل قیمت هر ارز + تعداد Offer |
+| GET | `/market/v1/products/{id}/compare?locale=fa` | مقایسه Offerهای تاییدشده یک محصول + هتل/پرواز/مالیات |
 
 ## قواعد
 
@@ -31,6 +31,8 @@ Marketplace.Application
 - فقط `AgencyOffer` با وضعیت `Approved` دیده می‌شود.
 - فقط `TourDeparture` با وضعیت `Open` و پایان‌نگرفته دیده می‌شود.
 - قیمت مقایسه از قیمت سانس‌ها محاسبه می‌شود؛ در نبود سانس، `BasePrice`.
+- حداقل قیمت به تفکیک ارز (`minPrices`) محاسبه می‌شود؛ مقایسه عددی بین ارزها انجام نمی‌شود.
+- گزینه‌های اقامت، پرواز و قوانین VAT/Duty هر Offer در پاسخ compare برگردانده می‌شوند.
 - عنوان/خلاصه/توضیح بر اساس locale با fallback به زبان پیش‌فرض `Localization:DefaultCulture`.
 
 ## محدودیت فعلی

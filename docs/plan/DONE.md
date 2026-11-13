@@ -102,6 +102,7 @@
 | D-85 | Tour Content Model | Itinerary/meals/services/policies/required items + `AddTourContent` | `99d42ea` |
 | D-86 | Offer Accommodation + Flight Options | Hotel/room/MealPlan + flight details + `AddOfferOptions` | `68a4895` |
 | D-87 | Multi-currency + VAT/Duty + PaymentObligation | PriceComponent snapshot + OfferTaxRule + per-currency obligations/intents/commission | `79daeb7` |
+| D-88 | Lastsecond Re-audit fixes | Per-currency minPrices + options/tax in compare + accommodation selection snapshot | این تغییر |
 
 ## ۳. مستندات
 
@@ -121,9 +122,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۹۱ passed |
+| Unit Tests | ۹۲ passed |
 | Architecture Tests | ۳۳ passed |
-| Total | **۱۲۴ passed** |
+| Total | **۱۲۵ passed** |
 | Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
 | Format | clean |
 | Vulnerable Packages | none |

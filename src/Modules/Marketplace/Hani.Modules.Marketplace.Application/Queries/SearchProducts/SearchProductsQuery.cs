@@ -12,6 +12,13 @@ public sealed record SearchProductsQuery(
     int PageSize = 20) : IQuery<PagedResult<ProductSearchItemDto>>;
 
 /// <summary>
+/// Minimum price for one currency.
+/// </summary>
+public sealed record CurrencyPriceDto(
+    string Currency,
+    decimal Amount);
+
+/// <summary>
 /// Marketplace search result item.
 /// </summary>
 public sealed record ProductSearchItemDto(
@@ -23,4 +30,5 @@ public sealed record ProductSearchItemDto(
     decimal? MinPrice,
     string? Currency,
     int OfferCount,
-    IReadOnlyList<Guid> DestinationIds);
+    IReadOnlyList<Guid> DestinationIds,
+    IReadOnlyList<CurrencyPriceDto> MinPrices);

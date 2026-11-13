@@ -46,7 +46,8 @@ internal static class OrderMappings
                     line.Total,
                     line.Currency))
                 .ToArray(),
-            MapComponents(order.EffectivePricing));
+            MapComponents(order.EffectivePricing),
+            MapAccommodation(order.EffectivePricing));
 
     public static ContractDto ToContractDto(Order order)
     {
@@ -88,8 +89,20 @@ internal static class OrderMappings
                     line.Total,
                     line.Currency))
                 .ToArray(),
-            MapComponents(contract.EffectivePricing));
+            MapComponents(contract.EffectivePricing),
+            MapAccommodation(contract.EffectivePricing));
     }
+
+    private static AccommodationSelectionDto? MapAccommodation(PricingSnapshot pricing)
+        => pricing.Accommodation is { } accommodation
+            ? new AccommodationSelectionDto(
+                accommodation.OptionId,
+                accommodation.HotelName,
+                accommodation.HotelStars,
+                accommodation.RoomType,
+                accommodation.MealPlan,
+                accommodation.Currency)
+            : null;
 
     private static PriceComponentDto[] MapComponents(PricingSnapshot pricing)
         => pricing.Components

@@ -85,5 +85,8 @@ public sealed class ProductComparisonHandlerTests
                     5,
                     "Open",
                     [new DeparturePriceSnapshot("Double", price, "IRR")])
-            ]);
+            ],
+            [],
+            [],
+            []);
 }

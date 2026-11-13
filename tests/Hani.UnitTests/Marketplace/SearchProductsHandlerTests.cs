@@ -43,6 +43,64 @@ public sealed class SearchProductsHandlerTests
     }
 
     [Fact]
+    public async Task Search_Should_Group_Min_Price_By_Currency()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+        var productId = Guid.CreateVersion7();
+
+        catalog.Products.Add(new CatalogProductSummary(
+            productId,
+            "multi-currency",
+            4,
+            "city-break",
+            new Dictionary<string, string> { ["en"] = "Multi currency" },
+            [],
+            DateTimeOffset.UtcNow));
+
+        offers.OffersByProduct[productId] =
+        [
+            new OfferSnapshot(
+                Guid.CreateVersion7(),
+                Guid.CreateVersion7(),
+                productId,
+                "ext",
+                "Offer",
+                45_000_000m,
+                "IRR",
+                "Approved",
+                [
+                    new DepartureSnapshot(
+                        Guid.CreateVersion7(),
+                        new DateOnly(2026, 11, 16),
+                        new DateOnly(2026, 11, 19),
+                        10,
+                        5,
+                        "Open",
+                        [
+                            new DeparturePriceSnapshot("Double", 40_000_000m, "IRR"),
+                            new DeparturePriceSnapshot("Double", 200m, "USD")
+                        ])
+                ],
+                [],
+                [],
+                [])
+        ];
+
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+
+        var result = await handler.Handle(
+            new SearchProductsQuery("en", Page: 1, PageSize: 20),
+            CancellationToken.None);
+
+        var item = result.Value!.Items.Single();
+        item.MinPrices.Count.ShouldBe(2);
+        item.MinPrices.Single(price => price.Currency == "IRR").Amount.ShouldBe(40_000_000m);
+        item.MinPrices.Single(price => price.Currency == "USD").Amount.ShouldBe(200m);
+        item.MinPrice.ShouldBe(40_000_000m);
+    }
+
+    [Fact]
     public async Task Search_Should_Page_Items_And_Report_Total()
     {
         var catalog = new FakeCatalogReadService();
@@ -91,5 +149,8 @@ public sealed class SearchProductsHandlerTests
                     5,
                     "Open",
                     [new DeparturePriceSnapshot("Double", departurePrice, "IRR")])
-            ]);
+            ],
+            [],
+            [],
+            []);
 }

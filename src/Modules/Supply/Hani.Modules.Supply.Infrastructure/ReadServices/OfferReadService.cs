@@ -14,6 +14,10 @@ internal sealed class OfferReadService(SupplyDbContext dbContext) : IOfferReadSe
     {
         var offers = (await dbContext.AgencyOffers
                 .AsNoTracking()
+                .AsSplitQuery()
+                .Include(offer => offer.AccommodationOptions)
+                .Include(offer => offer.FlightOptions)
+                .Include(offer => offer.TaxRules)
                 .Where(offer =>
                     offer.TourProductId == tourProductId &&
                     offer.Status == AgencyOfferStatus.Approved)
@@ -54,7 +58,41 @@ internal sealed class OfferReadService(SupplyDbContext dbContext) : IOfferReadSe
                 offer.Status.ToString(),
                 departuresByOffer.TryGetValue(offer.Id, out var offerDepartures)
                     ? offerDepartures.Select(MapDeparture).ToArray()
-                    : []))
+                    : [],
+                offer.AccommodationOptions
+                    .Select(option => new AccommodationOptionSnapshot(
+                        option.Id,
+                        option.HotelName,
+                        option.HotelStars,
+                        option.RoomType.ToString(),
+                        option.MealPlan.ToString(),
+                        option.Amount,
+                        option.Currency,
+                        option.Description))
+                    .ToArray(),
+                offer.FlightOptions
+                    .Select(option => new FlightOptionSnapshot(
+                        option.Id,
+                        option.Direction.ToString(),
+                        option.Airline,
+                        option.FlightNumber,
+                        option.DepartureAirport,
+                        option.ArrivalAirport,
+                        option.DepartureTime,
+                        option.ArrivalTime,
+                        option.DurationMinutes,
+                        option.Cabin,
+                        option.BaggageAllowance))
+                    .ToArray(),
+                offer.TaxRules
+                    .Select(rule => new OfferTaxRuleSnapshot(
+                        rule.Currency,
+                        rule.VatStatus.ToString(),
+                        rule.VatRate,
+                        rule.DutyStatus.ToString(),
+                        rule.DutyRate,
+                        rule.ExemptionReason))
+                    .ToArray()))
             .ToArray();
     }
 

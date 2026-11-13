@@ -10,7 +10,8 @@ public sealed record CreateQuoteCommand(
     string RoomType,
     int Adults,
     int Children = 0,
-    int Infants = 0) : ICommand<QuoteDto>;
+    int Infants = 0,
+    Guid? AccommodationOptionId = null) : ICommand<QuoteDto>;
 
 /// <summary>
 /// Price component read model with VAT and duty details.
@@ -26,6 +27,17 @@ public sealed record PriceComponentDto(
     decimal VatRate,
     decimal VatAmount,
     decimal TotalAmount);
+
+/// <summary>
+/// Selected accommodation read model.
+/// </summary>
+public sealed record AccommodationSelectionDto(
+    Guid OptionId,
+    string HotelName,
+    int HotelStars,
+    string RoomType,
+    string MealPlan,
+    string Currency);
 
 /// <summary>
 /// Quote read model returned to marketplace clients.
@@ -45,4 +57,5 @@ public sealed record QuoteDto(
     string Currency,
     string Status,
     DateTimeOffset ExpiresAt,
-    IReadOnlyList<PriceComponentDto> Components);
+    IReadOnlyList<PriceComponentDto> Components,
+    AccommodationSelectionDto? Accommodation);

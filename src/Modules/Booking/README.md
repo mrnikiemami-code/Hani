@@ -26,6 +26,7 @@ Departure (Supply)
 
 - Quote فقط برای سانس با ظرفیت کافی ساخته می‌شود.
 - Quote می‌تواند هم‌زمان چند ارز داشته باشد؛ هر ارز یک `PriceComponent` با Base/Duty/VAT/Total جداگانه دارد.
+- انتخاب `AccommodationOptionId` باعث می‌شود قیمت بزرگسال از هتل/اتاق/MealPlan انتخابی (در هر ارز موجود) خوانده شود و در Quote/Order/Contract snapshot ثبت شود.
 - نرخ VAT و Duty از قوانین ارزی Offer خوانده می‌شود؛ فرمول: `Duty = Base × DutyRate`, `VAT = Base × VATRate`, `Total = Base + Duty + VAT`.
 - قیمت بزرگسال از `RoomType` انتخابی؛ کودک از `ChildWithBed` یا `ChildWithoutBed`؛ نوزاد از `Infant` (همه در همان ارز).
 - `Seats = Adults + Children` (نوزاد صندلی نمی‌گیرد).

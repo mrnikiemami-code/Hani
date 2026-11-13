@@ -45,9 +45,22 @@ public sealed record PriceComponentSnapshot(
     decimal TotalAmount);
 
 /// <summary>
+/// Selected hotel/room/board option captured with a quote.
+/// </summary>
+public sealed record AccommodationSelectionSnapshot(
+    Guid OptionId,
+    string HotelName,
+    int HotelStars,
+    string RoomType,
+    string MealPlan,
+    string Currency);
+
+/// <summary>
 /// Multi-currency pricing snapshot with per-currency tax and duty amounts.
 /// </summary>
-public sealed record PricingSnapshot(List<PriceComponentSnapshot> Components)
+public sealed record PricingSnapshot(
+    List<PriceComponentSnapshot> Components,
+    AccommodationSelectionSnapshot? Accommodation = null)
 {
     /// <summary>
     /// Creates a snapshot for a single currency with no applicable tax.
