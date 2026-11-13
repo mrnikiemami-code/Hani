@@ -35,6 +35,9 @@ public static class MarketplaceEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Searches published products and enriches them with offer price/count.
+    /// </summary>
     private static async Task<IResult> SearchAsync(
         string? locale,
         string? destinationSlug,
@@ -55,6 +58,9 @@ public static class MarketplaceEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns approved offers for one product with hotel, flight, tax, and departure details.
+    /// </summary>
     private static async Task<IResult> CompareAsync(
         Guid productId,
         string? locale,

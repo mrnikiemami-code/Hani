@@ -43,6 +43,9 @@ public static class PaymentEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Creates a per-currency payment intent for an order. Returns 201, 400, 404, or 409.
+    /// </summary>
     private static async Task<IResult> CreateIntentAsync(
         CreatePaymentIntentRequest request,
         HttpContext context,
@@ -67,6 +70,9 @@ public static class PaymentEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns one payment intent by id, or 404.
+    /// </summary>
     private static async Task<IResult> GetIntentAsync(
         Guid paymentIntentId,
         HttpContext context,
@@ -80,6 +86,9 @@ public static class PaymentEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Verifies and processes a payment provider webhook. Returns 200, 401, or 404.
+    /// </summary>
     private static async Task<IResult> HandleWebhookAsync(
         string provider,
         HttpContext context,

@@ -67,6 +67,11 @@ public static class BookingEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Creates a priced quote for a departure and passenger mix.
+    /// Returns <c>201</c> with the quote, <c>400</c> for invalid input,
+    /// and <c>409</c> when departure capacity is insufficient.
+    /// </summary>
     private static async Task<IResult> CreateQuoteAsync(
         CreateQuoteRequest request,
         HttpContext context,
@@ -88,6 +93,9 @@ public static class BookingEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns one quote by id, or <c>404</c> when it does not exist.
+    /// </summary>
     private static async Task<IResult> GetQuoteAsync(
         Guid quoteId,
         HttpContext context,
@@ -98,6 +106,10 @@ public static class BookingEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Reserves seats for a quote using the optional <c>Idempotency-Key</c> header.
+    /// Returns <c>201</c> with the hold or <c>409</c> when it cannot be created.
+    /// </summary>
     private static async Task<IResult> CreateHoldAsync(
         CreateHoldRequest request,
         HttpContext context,
@@ -116,6 +128,10 @@ public static class BookingEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Releases a hold and returns its reserved seats.
+    /// Returns <c>200</c> on success or <c>404</c> when the hold is missing.
+    /// </summary>
     private static async Task<IResult> ReleaseHoldAsync(
         Guid holdId,
         HttpContext context,
@@ -126,6 +142,11 @@ public static class BookingEndpoints
         return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Converts an active hold into an immutable order and contract.
+    /// Returns <c>201</c>, or <c>400</c>/<c>404</c>/<c>409</c> for invalid,
+    /// missing, or conflicting input.
+    /// </summary>
     private static async Task<IResult> CreateOrderAsync(
         CreateOrderRequest request,
         HttpContext context,
@@ -156,6 +177,9 @@ public static class BookingEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns one order by id, or <c>404</c> when it does not exist.
+    /// </summary>
     private static async Task<IResult> GetOrderAsync(
         Guid orderId,
         HttpContext context,
@@ -166,6 +190,9 @@ public static class BookingEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns the immutable contract issued for an order, or <c>404</c>.
+    /// </summary>
     private static async Task<IResult> GetContractAsync(
         Guid orderId,
         HttpContext context,

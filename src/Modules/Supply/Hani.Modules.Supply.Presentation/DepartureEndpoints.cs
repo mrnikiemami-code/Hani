@@ -49,6 +49,9 @@ public static class DepartureEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Creates a departure with per-room and per-currency prices. Returns 201 or 400.
+    /// </summary>
     private static async Task<IResult> CreateDepartureAsync(
         Guid offerId,
         CreateTourDepartureRequest request,
@@ -82,6 +85,9 @@ public static class DepartureEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Lists departures for an offer.
+    /// </summary>
     private static async Task<IResult> GetDeparturesAsync(
         Guid offerId,
         HttpContext context,
@@ -101,6 +107,9 @@ public static class DepartureEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Updates departure capacity using the expected concurrency version. Returns 200, 404, or 409.
+    /// </summary>
     private static async Task<IResult> UpdateAvailabilityAsync(
         Guid departureId,
         UpdateDepartureAvailabilityRequest request,
@@ -125,6 +134,9 @@ public static class DepartureEndpoints
         return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Updates or creates a departure price for a room and currency. Returns 200, 404, or 409.
+    /// </summary>
     private static async Task<IResult> UpdatePriceAsync(
         Guid departureId,
         UpdateDeparturePriceRequest request,

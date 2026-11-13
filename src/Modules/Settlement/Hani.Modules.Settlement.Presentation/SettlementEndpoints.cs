@@ -40,6 +40,9 @@ public static class SettlementEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Creates an agency commission rule. Returns 201 or 400.
+    /// </summary>
     private static async Task<IResult> CreateRuleAsync(
         CreateCommissionRuleRequest request,
         HttpContext context,
@@ -62,6 +65,9 @@ public static class SettlementEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns the commission accrued for an order and optional currency.
+    /// </summary>
     private static async Task<IResult> GetCommissionAsync(
         Guid orderId,
         string? currency,
@@ -75,6 +81,9 @@ public static class SettlementEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns a double-entry ledger transaction, or 404.
+    /// </summary>
     private static async Task<IResult> GetLedgerAsync(
         Guid transactionId,
         HttpContext context,

@@ -58,6 +58,59 @@ public sealed class DocumentationTests
     }
 
     [Fact]
+    public void Every_Endpoint_Handler_Should_Have_A_Summary()
+    {
+        var root = FindRepositoryRoot();
+        var files = Directory
+            .EnumerateFiles(Path.Combine(root, "src", "Modules"), "*Endpoints.cs", SearchOption.AllDirectories)
+            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
+            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"));
+
+        var handlerPattern = new Regex(
+            @"^\s*private\s+static\s+async\s+Task<IResult>\s+(?<name>[A-Za-z0-9_]+)\s*\(",
+            RegexOptions.Compiled);
+
+        var missing = new List<string>();
+
+        foreach (var file in files)
+        {
+            var lines = File.ReadAllLines(file);
+
+            for (var index = 0; index < lines.Length; index++)
+            {
+                var match = handlerPattern.Match(lines[index]);
+
+                if (!match.Success)
+                {
+                    continue;
+                }
+
+                var start = Math.Max(0, index - 8);
+                var hasSummary = false;
+
+                for (var probe = start; probe < index; probe++)
+                {
+                    if (lines[probe].Contains("<summary>", StringComparison.Ordinal))
+                    {
+                        hasSummary = true;
+                        break;
+                    }
+                }
+
+                if (!hasSummary)
+                {
+                    missing.Add(
+                        $"{Path.GetRelativePath(root, file)}:{index + 1} ({match.Groups["name"].Value})");
+                }
+            }
+        }
+
+        missing.ShouldBeEmpty(
+            "Every endpoint handler must have an XML <summary>. Missing: " +
+            string.Join(", ", missing));
+    }
+
+    [Fact]
     public void Required_Documentation_Files_Should_Exist()
     {
         var root = FindRepositoryRoot();

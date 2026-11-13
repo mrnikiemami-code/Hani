@@ -149,8 +149,8 @@
 |---|---|
 | Build | ۰ warning / ۰ error |
 | Unit Tests | ۹۲ passed |
-| Architecture Tests | ۳۳ passed |
-| Total | **۱۲۵ passed** |
+| Architecture Tests | ۳۴ passed |
+| Total | **۱۲۶ passed** |
 | Migrations | Supply (۵) / Catalog (۲) / Identity (۱) / Booking (۴) / Payments (۴) / Settlement (۲) |
 | Format | clean |
 | Vulnerable Packages | none |

@@ -37,6 +37,9 @@ public static class IdentityEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Creates an agency through the internal API. Returns 201 or 400.
+    /// </summary>
     private static async Task<IResult> CreateAgencyAsync(
         CreateAgencyRequest request,
         HttpContext context,
@@ -57,6 +60,9 @@ public static class IdentityEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns one agency by id, or 404.
+    /// </summary>
     private static async Task<IResult> GetAgencyAsync(
         Guid agencyId,
         HttpContext context,
@@ -67,6 +73,9 @@ public static class IdentityEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Creates an API client for an agency. Returns 201 or 404.
+    /// </summary>
     private static async Task<IResult> CreateApiClientAsync(
         Guid agencyId,
         CreateApiClientRequest request,

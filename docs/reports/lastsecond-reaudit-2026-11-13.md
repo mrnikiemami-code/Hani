@@ -100,8 +100,8 @@
 |---|---|
 | Build | ۰ warning / ۰ error |
 | Unit Tests | ۹۲ passed |
-| Architecture Tests | ۳۳ passed |
-| Total | **۱۲۵ passed** |
+| Architecture Tests | ۳۴ passed |
+| Total | **۱۲۶ passed** |
 | Smoke | compare/search چندارزی + Quote/Order/Contract با هتل انتخابی |
 | Migration drift | ندارد؛ تغییرات این بازبینی Migration جدید لازم نداشت |
 

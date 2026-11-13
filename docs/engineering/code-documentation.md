@@ -11,8 +11,9 @@
 | هر `public record` / DTO | معنای داده و مصرف‌کننده |
 | هر `public enum` | معنای وضعیت‌ها |
 | متدهای public اینترفیس | ورودی/خروجی/خطاها |
+| همه متدهای public کلاس‌ها | `/// <summary>`، حتی `Handle`/repository/read service |
+| همه handlerهای Endpoint (حتی `private static`) | `/// <summary>` + auth/خطاهای مهم |
 | منطق پیچیده | `//` کوتاه درباره «چرا»، نه «چه» |
-| Endpointها | resource، auth، خطاهای مهم |
 | Command/Query | use case و side effect |
 
 ## ۲. قالب
@@ -46,5 +47,7 @@
 
 ## ۵. اجرا
 
-`DocumentationTests` در `Hani.ArchitectureTests` بررسی می‌کند هر type عمومی
-در `src/` (به‌جز Migrations) حداقل یک `<summary>` داشته باشد.
+`DocumentationTests` در `Hani.ArchitectureTests` بررسی می‌کند:
+
+- هر type عمومی در `src/` (به‌جز Migrations) حداقل یک `<summary>` داشته باشد.
+- هر handler داخل `*Endpoints.cs` (حتی `private static async Task<IResult>`) `<summary>` داشته باشد.

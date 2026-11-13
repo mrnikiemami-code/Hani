@@ -103,6 +103,7 @@
 | D-86 | Offer Accommodation + Flight Options | Hotel/room/MealPlan + flight details + `AddOfferOptions` | `68a4895` |
 | D-87 | Multi-currency + VAT/Duty + PaymentObligation | PriceComponent snapshot + OfferTaxRule + per-currency obligations/intents/commission | `79daeb7` |
 | D-88 | Lastsecond Re-audit fixes | Per-currency minPrices + options/tax in compare + accommodation selection snapshot | `13cf435` |
+| D-89 | Endpoint handler XML docs | Summary on every `*Endpoints.cs` handler + `DocumentationTests` guard | این تغییر |
 
 ## ۳. مستندات
 
@@ -123,8 +124,8 @@
 |---|---|
 | Build | ۰ warning / ۰ error |
 | Unit Tests | ۹۲ passed |
-| Architecture Tests | ۳۳ passed |
-| Total | **۱۲۵ passed** |
+| Architecture Tests | ۳۴ passed |
+| Total | **۱۲۶ passed** |
 | Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
 | Format | clean |
 | Vulnerable Packages | none |

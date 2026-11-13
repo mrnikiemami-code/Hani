@@ -56,8 +56,8 @@ Commission: IRR 2,750,000 / USD 53.50
 |---|---|
 | Build | ۰ warning / ۰ error |
 | Unit Tests | ۹۲ passed |
-| Architecture Tests | ۳۳ passed |
-| Total | **۱۲۵ passed** |
+| Architecture Tests | ۳۴ passed |
+| Total | **۱۲۶ passed** |
 | Format | clean |
 | Migration drift | none (Supply/Booking/Payments/Settlement) |
 | Baseline gate | passed |

@@ -46,6 +46,9 @@ public static class CatalogEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Creates a destination with localized translations. Returns 201 or 400.
+    /// </summary>
     private static async Task<IResult> CreateDestinationAsync(
         CreateDestinationRequest request,
         HttpContext context,
@@ -70,6 +73,9 @@ public static class CatalogEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Creates a draft tour product with localized content and itinerary. Returns 201 or 400.
+    /// </summary>
     private static async Task<IResult> CreateProductAsync(
         CreateTourProductRequest request,
         HttpContext context,
@@ -126,6 +132,9 @@ public static class CatalogEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Publishes a draft tour product. Returns 200 or 404.
+    /// </summary>
     private static async Task<IResult> PublishProductAsync(
         Guid productId,
         HttpContext context,
@@ -136,6 +145,9 @@ public static class CatalogEndpoints
         return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns one published tour product with content and itinerary, or 404.
+    /// </summary>
     private static async Task<IResult> GetProductAsync(
         Guid productId,
         HttpContext context,

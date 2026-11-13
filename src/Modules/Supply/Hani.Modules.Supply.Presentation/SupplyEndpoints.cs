@@ -73,6 +73,9 @@ public static class SupplyEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Creates an agency offer with accommodation, flight, and tax options. Returns 201 or 400.
+    /// </summary>
     private static async Task<IResult> CreateOfferAsync(
         CreateAgencyOfferRequest request,
         HttpContext context,
@@ -131,6 +134,9 @@ public static class SupplyEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Idempotently creates or updates an agency offer by external id.
+    /// </summary>
     private static async Task<IResult> UpsertOfferAsync(
         string externalId,
         UpsertAgencyOfferRequest request,
@@ -197,6 +203,9 @@ public static class SupplyEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns one agency offer with options and tax rules, or 404.
+    /// </summary>
     private static async Task<IResult> GetOfferAsync(
         Guid offerId,
         HttpContext context,
@@ -218,6 +227,9 @@ public static class SupplyEndpoints
             : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Submits a draft offer for moderation. Returns 200 or 409.
+    /// </summary>
     private static async Task<IResult> SubmitOfferAsync(
         Guid offerId,
         HttpContext context,
@@ -237,6 +249,9 @@ public static class SupplyEndpoints
         return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Archives an agency offer. Returns 200 or 404.
+    /// </summary>
     private static async Task<IResult> ArchiveOfferAsync(
         Guid offerId,
         HttpContext context,
@@ -256,6 +271,9 @@ public static class SupplyEndpoints
         return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Approves a pending offer through the internal API. Returns 200 or 409.
+    /// </summary>
     private static async Task<IResult> ApproveOfferAsync(
         Guid offerId,
         HttpContext context,
@@ -266,6 +284,9 @@ public static class SupplyEndpoints
         return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Rejects a pending offer with a reason. Returns 200 or 409.
+    /// </summary>
     private static async Task<IResult> RejectOfferAsync(
         Guid offerId,
         RejectAgencyOfferRequest request,
