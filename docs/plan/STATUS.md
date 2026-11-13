@@ -5,6 +5,7 @@
 > **آخرین commit کد:** `13cf435`
 > **وضعیت Gate:** Gate 1 — Passed ✅ / Gate 2 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
+> **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 > **گزارش Gate:** [`../reports/baseline-gate-1.md`](../reports/baseline-gate-1.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
@@ -161,8 +162,22 @@
 
 **تسک فعال:** Gate 2 — Discovery/SEO
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
-**GAPهای Gate 2:** GAP-04 (Faceted Search), GAP-28 (SEO/Landing)
+**GAPهای Gate 2 (باز):** GAP-04 (Faceted Search/Sort), GAP-28 (SEO/Landing/Sitemap)
 **Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای قبلی
+**قرارداد Gate 2:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
+
+### Gate 2 — Exit Checklist
+
+- [ ] فیلترهای GAP-04 روی Offer/Departure/Hotel/Flight واقعی
+- [ ] Sort و Pagination بعد از فیلتر
+- [ ] تست برای هر فیلتر/Sort
+- [ ] Canonical + JSON-LD + Sitemap + Landing metadata
+- [ ] OpenAPI و README
+- [ ] Deviation Audit علیه Lastsecond
+- [ ] `verify.ps1` + `check-baseline.ps1` سبز
+- [ ] گزارش `baseline-gate-2.md`
+
+> تا تیک همه موارد بالا، Gate 2 **In Progress** است و Gate 3 شروع نمی‌شود.
 
 ### ۵ تسک اول Baseline Gate 1 — Done ✅
 
