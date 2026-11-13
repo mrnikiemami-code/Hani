@@ -104,7 +104,7 @@
 | D-87 | Multi-currency + VAT/Duty + PaymentObligation | PriceComponent snapshot + OfferTaxRule + per-currency obligations/intents/commission | `79daeb7` |
 | D-88 | Lastsecond Re-audit fixes | Per-currency minPrices + options/tax in compare + accommodation selection snapshot | `13cf435` |
 | D-89 | Endpoint handler XML docs | Summary on every `*Endpoints.cs` handler + `DocumentationTests` guard | `a540530` |
-| D-90 | Discovery & SEO | Faceted search/sort + canonical/hreflang + JSON-LD + landing + sitemap/robots | این تغییر |
+| D-90 | Discovery & SEO | Faceted search/sort + canonical/hreflang + JSON-LD + landing + sitemap/robots | `d7921ac` |
 
 ## ۳. مستندات
 
@@ -174,4 +174,5 @@
 | `79daeb7` | Multi-currency pricing, taxes, obligations, settlement (TC-082) |
 | `13cf435` | Lastsecond re-audit fixes |
 | `a540530` | Endpoint handler XML documentation guard |
+| `d7921ac` | Faceted search and SEO (Gate 2) |
 | `7df2265` | Phase roadmap + status + tasks |

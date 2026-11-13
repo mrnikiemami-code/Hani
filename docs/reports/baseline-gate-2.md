@@ -1,6 +1,7 @@
 # Baseline Gate 2 Report — Discovery & SEO
 
 > **تاریخ:** ۱۳ نوامبر ۲۰۲۶
+> **کد commit:** `d7921ac`
 > **وضعیت:** ✅ **PASSED**
 > **Gate بعدی:** Gate 3 — Identity, Trust & Agency
 
