@@ -35,8 +35,10 @@ using Hani.Modules.Identity.Application.Queries.GetAgencyById;
 using Hani.Modules.Identity.Infrastructure;
 using Hani.Modules.Identity.Infrastructure.Persistence;
 using Hani.Modules.Identity.Presentation;
+using Hani.Modules.Marketplace.Application;
 using Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
 using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
+using Hani.Modules.Marketplace.Application.Queries.Seo;
 using Hani.Modules.Marketplace.Infrastructure;
 using Hani.Modules.Marketplace.Presentation;
 using Hani.Modules.Payments.Application;
@@ -143,6 +145,7 @@ builder.Services.AddPaymentsInfrastructure();
 builder.Services.AddSettlementInfrastructure();
 builder.Services.Configure<PaymentOptions>(builder.Configuration.GetSection("Payments"));
 builder.Services.Configure<CommissionOptions>(builder.Configuration.GetSection("Commissions"));
+builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
 
 // ---------------------------------------------------------------------------
 // Cross-cutting infrastructure: cache, messaging, tenant, idempotency, telemetry
@@ -193,6 +196,10 @@ builder.Services.AddScoped<IValidator<CreateAgencyCommand>, CreateAgencyCommandV
 builder.Services.AddScoped<IValidator<CreateApiClientCommand>, CreateApiClientCommandValidator>();
 builder.Services.AddScoped<IValidator<GetAgencyByIdQuery>, GetAgencyByIdQueryValidator>();
 builder.Services.AddScoped<IValidator<SearchProductsQuery>, SearchProductsQueryValidator>();
+builder.Services.AddScoped<IValidator<GetProductSeoQuery>, GetProductSeoQueryValidator>();
+builder.Services.AddScoped<IValidator<GetLandingSeoQuery>, GetLandingSeoQueryValidator>();
+builder.Services.AddScoped<IValidator<GetSitemapQuery>, GetSitemapQueryValidator>();
+builder.Services.AddScoped<IValidator<GetRobotsQuery>, GetRobotsQueryValidator>();
 builder.Services.AddScoped<IValidator<GetProductComparisonQuery>, GetProductComparisonQueryValidator>();
 builder.Services.AddScoped<IValidator<CreateQuoteCommand>, CreateQuoteCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateHoldCommand>, CreateHoldCommandValidator>();

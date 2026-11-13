@@ -4,7 +4,7 @@
 - **Report:** `docs/reports/lastsecond-gap-analysis-2026-11-12.md`
 - **Machine-readable:** `docs/plan/baseline.json`
 - **Status:** Locked for planning
-- **Current gate:** Gate 2 — Discovery & SEO (Gate 1 ✅ Passed)
+- **Current gate:** Gate 3 — Identity, Trust & Agency (Gate 1/2 ✅ Passed)
 
 > این فایل مرجع برنامه‌ریزی است. هر GAP باید یک Gate، Task، وضعیت و Evidence داشته باشد.
 > ترتیب Gateها از گزارش Lastsecond و وابستگی‌های واقعی محصول پیروی می‌کند؛ هیچ GAP حذف نمی‌شود.
@@ -38,7 +38,7 @@
 | GAP-01 | Tour Content Model | P0 | 1 | TC-083 | Done |
 | GAP-02 | Accommodation Options | P0 | 1 | TC-084 | Done |
 | GAP-03 | Flight Details | P0 | 1 | TC-084 | Done |
-| GAP-04 | Faceted Search | P0 | 2 | TC-085 | Planned |
+| GAP-04 | Faceted Search | P0 | 2 | TC-085 | Done |
 | GAP-05 | Booking/Request Modes | P0 | 4 | TC-088 | Planned |
 | GAP-06 | Lead/RFQ | P0 | 4 | TC-088 | Planned |
 | GAP-07 | Multi-currency | P0 | 1 | TC-082 | Done |
@@ -62,7 +62,7 @@
 | GAP-25 | Geo/Maps | P1 | 5 | TC-094 | Planned |
 | GAP-26 | Agency Onboarding | P0 | 3 | TC-087 | Planned |
 | GAP-27 | Agency/Admin Panels | P1 | 3 | TC-087 | Planned |
-| GAP-28 | SEO | P0 | 2 | TC-097 | Planned |
+| GAP-28 | SEO | P0 | 2 | TC-097 | Done |
 | GAP-29 | Restaurant Reservation | P2 | 5 | TC-094 | Planned |
 | GAP-30 | Ads | P2 | 6 | TC-099 | Planned |
 | GAP-31 | Trust/Legal | P1 | 3 | TC-087 | Planned |

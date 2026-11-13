@@ -11,16 +11,44 @@ internal sealed class FakeCatalogReadService : ICatalogReadService
 
     public Dictionary<Guid, CatalogProductDetails> Details { get; } = [];
 
+    public List<CatalogDestinationSnapshot> Destinations { get; } = [];
+
     public Task<IReadOnlyList<CatalogProductSummary>> SearchPublishedAsync(
-        string? destinationSlug,
+        CatalogProductFilter filter,
         int skip,
         int take,
         CancellationToken cancellationToken)
-        => Task.FromResult<IReadOnlyList<CatalogProductSummary>>(
-            Products.Skip(skip).Take(take).ToArray());
+    {
+        var query = Products.AsEnumerable();
+
+        if (filter.MinDuration is { } minDuration)
+        {
+            query = query.Where(product => product.DurationDays >= minDuration);
+        }
+
+        if (filter.MaxDuration is { } maxDuration)
+        {
+            query = query.Where(product => product.DurationDays <= maxDuration);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.TourType))
+        {
+            query = query.Where(product => product.TourType == filter.TourType);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
+        {
+            var term = filter.SearchTerm;
+            query = query.Where(product => product.Titles.Values.Any(title =>
+                title.Contains(term, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        return Task.FromResult<IReadOnlyList<CatalogProductSummary>>(
+            query.Skip(skip).Take(take).ToArray());
+    }
 
     public Task<int> CountPublishedAsync(
-        string? destinationSlug,
+        CatalogProductFilter filter,
         CancellationToken cancellationToken)
         => Task.FromResult(Products.Count);
 
@@ -28,6 +56,17 @@ internal sealed class FakeCatalogReadService : ICatalogReadService
         Guid id,
         CancellationToken cancellationToken)
         => Task.FromResult(Details.TryGetValue(id, out var details) ? details : null);
+
+    public Task<IReadOnlyList<CatalogDestinationSnapshot>> GetDestinationsAsync(
+        IReadOnlyCollection<Guid> ids,
+        CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyList<CatalogDestinationSnapshot>>(
+            Destinations.Where(destination => ids.Contains(destination.Id)).ToArray());
+
+    public Task<CatalogDestinationSnapshot?> GetDestinationBySlugAsync(
+        string slug,
+        CancellationToken cancellationToken)
+        => Task.FromResult(Destinations.FirstOrDefault(destination => destination.Slug == slug));
 }
 
 internal sealed class FakeOfferReadService : IOfferReadService

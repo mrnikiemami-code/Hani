@@ -19,82 +19,249 @@ internal sealed class SearchProductsQueryHandler(
         var pageSize = Math.Clamp(request.PageSize, 1, 50);
         var skip = (page - 1) * pageSize;
 
-        var total = await catalog.CountPublishedAsync(
-            request.DestinationSlug,
-            cancellationToken);
-
         var products = await catalog.SearchPublishedAsync(
-            request.DestinationSlug,
-            skip,
-            pageSize,
+            new CatalogProductFilter(
+                request.DestinationSlug,
+                request.OriginSlug,
+                request.MinDuration,
+                request.MaxDuration,
+                request.TourType,
+                request.Difficulty,
+                request.VehicleType,
+                request.AccommodationType,
+                request.Q),
+            0,
+            int.MaxValue,
             cancellationToken);
 
-        // A scoped DbContext is not thread-safe; read offers sequentially for this MVP page size.
-        var offersByProduct = new List<IReadOnlyList<OfferSnapshot>>(products.Count);
+        var items = new List<SearchCandidate>(products.Count);
 
         foreach (var product in products)
         {
-            offersByProduct.Add(await offers.GetApprovedOffersAsync(
+            var productOffers = await offers.GetApprovedOffersAsync(
                 product.Id,
-                cancellationToken));
-        }
+                cancellationToken);
 
-        var items = products
-            .Select((product, index) =>
+            var filteredOffers = productOffers
+                .Select(offer => FilterOffer(offer, request))
+                .Where(offer => offer is not null)
+                .Cast<OfferSnapshot>()
+                .ToArray();
+
+            if (filteredOffers.Length == 0)
             {
-                var productOffers = offersByProduct[index];
-                var departurePrices = productOffers
-                    .SelectMany(offer => offer.Departures)
-                    .SelectMany(departure => departure.Prices)
-                    .Where(price => IsAdultRoomType(price.RoomType))
-                    .ToArray();
+                continue;
+            }
 
-                if (departurePrices.Length == 0)
-                {
-                    departurePrices = productOffers
-                        .SelectMany(offer => offer.Departures)
-                        .SelectMany(departure => departure.Prices)
-                        .ToArray();
-                }
+            var minPrices = ComputeMinPrices(filteredOffers, request.Currency);
 
-                var minPrices = departurePrices
-                    .GroupBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
-                    .Select(group => new CurrencyPriceDto(
-                        group.Key,
-                        group.Min(price => price.Amount)))
-                    .OrderBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
-                    .ToArray();
+            if (!MatchesPrice(minPrices, request))
+            {
+                continue;
+            }
 
-                if (minPrices.Length == 0)
-                {
-                    minPrices = productOffers
-                        .GroupBy(offer => offer.Currency, StringComparer.OrdinalIgnoreCase)
-                        .Select(group => new CurrencyPriceDto(
-                            group.Key,
-                            group.Min(offer => offer.BasePrice)))
-                        .OrderBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
-                        .ToArray();
-                }
+            var primary = minPrices[0];
 
-                var primaryPrice = minPrices.FirstOrDefault();
-
-                return new ProductSearchItemDto(
+            items.Add(new SearchCandidate(
+                new ProductSearchItemDto(
                     product.Id,
                     product.Slug,
                     Resolve(product.Titles, locale, languages.DefaultLanguage),
                     product.DurationDays,
                     product.TourType,
-                    primaryPrice?.Amount,
-                    primaryPrice?.Currency,
-                    productOffers.Count,
+                    primary.Amount,
+                    primary.Currency,
+                    filteredOffers.Length,
                     product.DestinationIds,
-                    minPrices);
-            })
+                    minPrices,
+                    product.OriginDestinationId,
+                    product.Difficulty,
+                    product.VehicleType,
+                    product.LocalVehicleType,
+                    product.AccommodationType),
+                product.UpdatedAt));
+        }
+
+        var sorted = Sort(items, request.Sort);
+        var total = sorted.Length;
+        var pageItems = sorted
+            .Skip(skip)
+            .Take(pageSize)
+            .Select(item => item.Dto)
             .ToArray();
 
         return Result<PagedResult<ProductSearchItemDto>>.Success(
-            new PagedResult<ProductSearchItemDto>(items, page, pageSize, total));
+            new PagedResult<ProductSearchItemDto>(pageItems, page, pageSize, total));
     }
+
+    private static OfferSnapshot? FilterOffer(OfferSnapshot offer, SearchProductsQuery request)
+    {
+        if (request.AgencyId is { } agencyId && offer.AgencyId != agencyId)
+        {
+            return null;
+        }
+
+        if (request.HotelStars is { } stars &&
+            offer.AccommodationOptions.All(option => option.HotelStars != stars))
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.MealPlan) &&
+            offer.AccommodationOptions.All(option =>
+                !string.Equals(option.MealPlan, request.MealPlan, StringComparison.OrdinalIgnoreCase)))
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Hotel) &&
+            offer.AccommodationOptions.All(option =>
+                !option.HotelName.Contains(request.Hotel, StringComparison.OrdinalIgnoreCase)))
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Airline) &&
+            offer.FlightOptions.All(option =>
+                !option.Airline.Contains(request.Airline, StringComparison.OrdinalIgnoreCase)))
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Cabin) &&
+            offer.FlightOptions.All(option =>
+                !option.Cabin.Contains(request.Cabin, StringComparison.OrdinalIgnoreCase)))
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.RoomType) &&
+            offer.Departures.All(departure => departure.Prices.All(price =>
+                !string.Equals(price.RoomType, request.RoomType, StringComparison.OrdinalIgnoreCase))) &&
+            offer.AccommodationOptions.All(option =>
+                !string.Equals(option.RoomType, request.RoomType, StringComparison.OrdinalIgnoreCase)))
+        {
+            return null;
+        }
+
+        var seats = request.Adults is { } adults
+            ? adults + (request.Children ?? 0)
+            : 0;
+
+        var departures = offer.Departures
+            .Where(departure => seats == 0 || departure.SeatsLeft >= seats)
+            .Where(departure =>
+                request.StartDate is null || departure.StartDate >= request.StartDate.Value)
+            .Where(departure =>
+                request.EndDate is null || departure.StartDate <= request.EndDate.Value)
+            .Select(departure =>
+            {
+                if (string.IsNullOrWhiteSpace(request.Currency))
+                {
+                    return departure;
+                }
+
+                var prices = departure.Prices
+                    .Where(price => string.Equals(
+                        price.Currency,
+                        request.Currency,
+                        StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+
+                return prices.Length == 0
+                    ? null
+                    : departure with { Prices = prices };
+            })
+            .Where(departure => departure is not null)
+            .Cast<DepartureSnapshot>()
+            .ToArray();
+
+        return departures.Length == 0
+            ? null
+            : offer with { Departures = departures };
+    }
+
+    private static CurrencyPriceDto[] ComputeMinPrices(
+        IReadOnlyList<OfferSnapshot> offers,
+        string? currency)
+    {
+        var prices = offers
+            .SelectMany(offer => offer.Departures)
+            .SelectMany(departure => departure.Prices)
+            .Where(price => IsAdultRoomType(price.RoomType))
+            .Where(price =>
+                string.IsNullOrWhiteSpace(currency) ||
+                string.Equals(price.Currency, currency, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+
+        if (prices.Length == 0)
+        {
+            prices = offers
+                .SelectMany(offer => offer.Departures)
+                .SelectMany(departure => departure.Prices)
+                .Where(price =>
+                    string.IsNullOrWhiteSpace(currency) ||
+                    string.Equals(price.Currency, currency, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+        }
+
+        var groups = prices
+            .GroupBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
+            .Select(group => new CurrencyPriceDto(
+                group.Key,
+                group.Min(price => price.Amount)))
+            .OrderBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        if (groups.Length > 0)
+        {
+            return groups;
+        }
+
+        return offers
+            .GroupBy(offer => offer.Currency, StringComparer.OrdinalIgnoreCase)
+            .Select(group => new CurrencyPriceDto(
+                group.Key,
+                group.Min(offer => offer.BasePrice)))
+            .OrderBy(price => price.Currency, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private static bool MatchesPrice(
+        CurrencyPriceDto[] prices,
+        SearchProductsQuery request)
+    {
+        if (prices.Length == 0)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Currency))
+        {
+            var price = prices[0];
+            return (request.MinPrice is null || price.Amount >= request.MinPrice) &&
+                   (request.MaxPrice is null || price.Amount <= request.MaxPrice);
+        }
+
+        return prices.Any(price =>
+            (request.MinPrice is null || price.Amount >= request.MinPrice) &&
+            (request.MaxPrice is null || price.Amount <= request.MaxPrice));
+    }
+
+    private static SearchCandidate[] Sort(
+        IReadOnlyList<SearchCandidate> items,
+        string? sort)
+        => sort?.Trim().ToLowerInvariant() switch
+        {
+            "price_asc" => items.OrderBy(item => item.Dto.MinPrice ?? 0m).ToArray(),
+            "price_desc" => items.OrderByDescending(item => item.Dto.MinPrice ?? 0m).ToArray(),
+            "duration_asc" => items.OrderBy(item => item.Dto.DurationDays).ToArray(),
+            "duration_desc" => items.OrderByDescending(item => item.Dto.DurationDays).ToArray(),
+            "title" => items
+                .OrderBy(item => item.Dto.Title, StringComparer.OrdinalIgnoreCase)
+                .ToArray(),
+            _ => items.OrderByDescending(item => item.UpdatedAt).ToArray()
+        };
 
     private static bool IsAdultRoomType(string roomType)
         => roomType is "Double" or "Single" or "Triple";
@@ -108,4 +275,8 @@ internal sealed class SearchProductsQueryHandler(
             : values.TryGetValue(defaultLanguage, out var fallback)
                 ? fallback
                 : values.Values.FirstOrDefault() ?? string.Empty;
+
+    private sealed record SearchCandidate(
+        ProductSearchItemDto Dto,
+        DateTimeOffset UpdatedAt);
 }

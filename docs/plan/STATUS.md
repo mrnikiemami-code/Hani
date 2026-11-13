@@ -1,12 +1,12 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
-> **فاز فعال:** Baseline Gate 2 — Discovery/SEO
+> **فاز فعال:** Baseline Gate 3 — Identity, Trust & Agency
 > **آخرین commit کد:** `a540530`
-> **وضعیت Gate:** Gate 1 — Passed ✅ / Gate 2 — In Progress
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
-> **گزارش Gate:** [`../reports/baseline-gate-1.md`](../reports/baseline-gate-1.md)
+> **گزارش Gate:** [`../reports/baseline-gate-2.md`](../reports/baseline-gate-2.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
 ---
@@ -92,6 +92,7 @@
 | Offer Options | Accommodation + Flight + MealPlan (GAP-02/03) | `68a4895` |
 | Multi-currency Pricing | PriceComponent + VAT/Duty + PaymentObligation + per-currency Payment/Commission | `79daeb7` |
 | Lastsecond Re-audit | تأیید صفحات + اصلاح minPrice چندارزی + هتل/پرواز/مالیات در compare + هتل در Quote/Order/Contract | `13cf435` |
+| Discovery & SEO | Faceted Search/Sort + Canonical/JSON-LD/Sitemap/Landing + robots | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -148,9 +149,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۹۲ passed |
+| Unit Tests | ۹۹ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۲۶ passed** |
+| Total | **۱۳۳ passed** |
 | Migrations | Supply (۵) / Catalog (۲) / Identity (۱) / Booking (۴) / Payments (۴) / Settlement (۲) |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -160,24 +161,25 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 2 — Discovery/SEO
+**تسک فعال:** Gate 3 — Identity, Trust & Agency
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
-**GAPهای Gate 2 (باز):** GAP-04 (Faceted Search/Sort), GAP-28 (SEO/Landing/Sitemap)
+**GAPهای Gate 2:** ✅ GAP-04 (Faceted Search/Sort), GAP-28 (SEO/Landing/Sitemap)
+**GAPهای Gate 3 (باز):** GAP-09/10/26/27/31 و GAP-11/20/32
 **Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای قبلی
-**قرارداد Gate 2:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
+**قرارداد Gate 3:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 
-### Gate 2 — Exit Checklist
+### Gate 2 — Exit Checklist ✅
 
-- [ ] فیلترهای GAP-04 روی Offer/Departure/Hotel/Flight واقعی
-- [ ] Sort و Pagination بعد از فیلتر
-- [ ] تست برای هر فیلتر/Sort
-- [ ] Canonical + JSON-LD + Sitemap + Landing metadata
-- [ ] OpenAPI و README
-- [ ] Deviation Audit علیه Lastsecond
-- [ ] `verify.ps1` + `check-baseline.ps1` سبز
-- [ ] گزارش `baseline-gate-2.md`
+- [x] فیلترهای GAP-04 روی Offer/Departure/Hotel/Flight واقعی
+- [x] Sort و Pagination بعد از فیلتر
+- [x] تست برای فیلترها و Sort
+- [x] Canonical + JSON-LD + Sitemap + Landing metadata
+- [x] OpenAPI و README
+- [x] Deviation Audit علیه Lastsecond
+- [x] `verify.ps1` + `check-baseline.ps1` سبز
+- [x] گزارش `baseline-gate-2.md`
 
-> تا تیک همه موارد بالا، Gate 2 **In Progress** است و Gate 3 شروع نمی‌شود.
+> Gate 2 **PASSED** شد. Gate 3 فقط پس از همین قرارداد و با GAPهای Identity/Trust/Agency شروع می‌شود.
 
 ### ۵ تسک اول Baseline Gate 1 — Done ✅
 

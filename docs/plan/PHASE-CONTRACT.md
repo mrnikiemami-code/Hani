@@ -24,8 +24,8 @@
 | Gate | نام | GAPها / Taskها | وضعیت |
 |---|---|---|---|
 | 1 | Tour Experience & Pricing | GAP-01/02/03/07/08 — TC-083/084/082 | ✅ PASSED |
-| 2 | Discovery & SEO | GAP-04 — TC-085، GAP-28 — TC-097 | 🚧 In Progress |
-| 3 | Identity, Trust & Agency | GAP-09/10/26/27/31 (TC-086/087)، GAP-11/20/32 (TC-089) | ⏳ |
+| 2 | Discovery & SEO | GAP-04 — TC-085، GAP-28 — TC-097 | ✅ PASSED |
+| 3 | Identity, Trust & Agency | GAP-09/10/26/27/31 (TC-086/087)، GAP-11/20/32 (TC-089) | 🚧 In Progress |
 | 4 | Booking, Request & Lead | GAP-05/06/19 (TC-088)، GAP-17/18 (TC-098) | ⏳ |
 | 5 | Verticals | GAP-13/25/29 (TC-094)، GAP-14 (TC-090)، GAP-15/21 (TC-091)، GAP-16 (TC-092) | ⏳ |
 | 6 | Content & Growth | GAP-12 (TC-093)، GAP-22/33 (TC-096)، GAP-23 (TC-100)، GAP-24/30/34 (TC-099) | ⏳ |
@@ -115,7 +115,47 @@
 
 ---
 
-## ۴. قاعده Deviation Audit
+## ۴. قرارداد Gate 3 — Identity, Trust & Agency
+
+### 4.1. هدف فاز
+
+هویت واقعی کاربر، OTP، پروفایل/نویسنده، نظرات چندمعیاره، Onboarding آژانس، پنل آژانس/ادمین و Trust.
+
+### 4.2. GAPها
+
+| GAP | تسک | محدوده |
+|---|---|---|
+| GAP-09 | TC-086 | User + OTP + JWT/refresh + rate limit |
+| GAP-10 | TC-086 | Profile + author profile (`/u/{username}`) |
+| GAP-11 | TC-089 | Reviews چندمعیاره + عکس + like/report |
+| GAP-20 | TC-089 | Ownership claim / correction request |
+| GAP-26 | TC-087 | Agency onboarding + documents + license status |
+| GAP-27 | TC-087 | Agency/Admin panel APIs |
+| GAP-31 | TC-087 | Trust/Support (Enamad، قوانین، تماس، وضعیت) |
+| GAP-32 | TC-089 | Media/UGC upload metadata + moderation |
+
+### 4.3. Acceptance
+
+- OTP با TTL، مصرف یک‌بار، rate limit و lockout.
+- JWT access + refresh با rotation و revoke.
+- Profile و author profile چندزبانه/عمومی.
+- Review فقط برای کاربر احرازشده و با moderation.
+- Claim/correction قابل پیگیری و idempotent.
+- Agency onboarding با مدارک و وضعیت.
+- همه endpointها OpenAPI + تست + README.
+- Deviation Audit علیه Lastsecond و `verify.ps1` سبز.
+
+### 4.4. Out of scope
+
+- BookingMode/Lead/RFQ → Gate 4
+- Hotels/Visa/Flights/Attractions/Restaurants → Gate 5
+- Blog/Itinerary/Video CMS → Gate 6
+- Channel/Billing → Gate 7
+- Hardening → Gate 8
+
+---
+
+## ۵. قاعده Deviation Audit
 
 قبل از PASS هر Gate:
 
@@ -130,5 +170,5 @@
 ## ۵. وضعیت فعلی
 
 - Gate 1: ✅ PASSED و Re-audit شده.
-- Gate 2: 🚧 In Progress — GAP-04/28 هنوز باز هستند.
-- Gate 3 (Identity): شروع نشده و تا PASS شدن Gate 2 وارد نمی‌شود.
+- Gate 2: ✅ PASSED — GAP-04/28 بسته شدند و گزارش `baseline-gate-2.md` ثبت شد.
+- Gate 3 (Identity): 🚧 In Progress — فقط GAPهای Identity/Trust/Agency.

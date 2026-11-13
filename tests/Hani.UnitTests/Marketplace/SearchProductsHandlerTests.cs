@@ -108,14 +108,20 @@ public sealed class SearchProductsHandlerTests
 
         for (var index = 0; index < 3; index++)
         {
+            var productId = Guid.CreateVersion7();
             catalog.Products.Add(new CatalogProductSummary(
-                Guid.CreateVersion7(),
+                productId,
                 $"product-{index}",
                 3,
                 "tour",
                 new Dictionary<string, string> { ["fa"] = $"تور {index}" },
                 [],
                 DateTimeOffset.UtcNow));
+
+            offers.OffersByProduct[productId] =
+            [
+                Offer(productId, 10_000_000m, 9_000_000m)
+            ];
         }
 
         var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
@@ -129,6 +135,230 @@ public sealed class SearchProductsHandlerTests
         result.Value.Items.Count.ShouldBe(1);
         result.Value.Page.ShouldBe(2);
     }
+
+    [Fact]
+    public async Task Search_Should_Apply_Hotel_Meal_Airline_And_Agency_Filters()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+        var productId = Guid.CreateVersion7();
+        var matchingAgency = Guid.CreateVersion7();
+        var otherAgency = Guid.CreateVersion7();
+
+        catalog.Products.Add(new CatalogProductSummary(
+            productId,
+            "istanbul",
+            4,
+            "city-break",
+            new Dictionary<string, string> { ["fa"] = "استانبول" },
+            [],
+            DateTimeOffset.UtcNow));
+
+        offers.OffersByProduct[productId] =
+        [
+            OfferWithDetails(
+                productId,
+                matchingAgency,
+                4,
+                "Breakfast",
+                "Iran Air",
+                20_000_000m,
+                "IRR",
+                new DateOnly(2026, 12, 20),
+                10),
+            OfferWithDetails(
+                productId,
+                otherAgency,
+                5,
+                "AllInclusive",
+                "Mahan Air",
+                30_000_000m,
+                "IRR",
+                new DateOnly(2026, 12, 20),
+                10)
+        ];
+
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+
+        var result = await handler.Handle(
+            new SearchProductsQuery(
+                "fa",
+                HotelStars: 4,
+                MealPlan: "Breakfast",
+                Airline: "Iran",
+                AgencyId: matchingAgency),
+            CancellationToken.None);
+
+        result.Value!.TotalCount.ShouldBe(1);
+        result.Value.Items.Single().OfferCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task Search_Should_Apply_Date_Seats_Price_Currency_And_Sort()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+        var productId = Guid.CreateVersion7();
+
+        catalog.Products.Add(new CatalogProductSummary(
+            productId,
+            "istanbul",
+            4,
+            "city-break",
+            new Dictionary<string, string> { ["fa"] = "استانبول" },
+            [],
+            DateTimeOffset.UtcNow));
+
+        offers.OffersByProduct[productId] =
+        [
+            OfferWithDetails(
+                productId,
+                Guid.CreateVersion7(),
+                4,
+                "Breakfast",
+                "Iran Air",
+                20_000_000m,
+                "IRR",
+                new DateOnly(2026, 12, 20),
+                10),
+            OfferWithDetails(
+                productId,
+                Guid.CreateVersion7(),
+                4,
+                "Breakfast",
+                "Iran Air",
+                21_000_000m,
+                "IRR",
+                new DateOnly(2026, 12, 25),
+                2)
+        ];
+
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+
+        var result = await handler.Handle(
+            new SearchProductsQuery(
+                "fa",
+                StartDate: new DateOnly(2026, 12, 19),
+                EndDate: new DateOnly(2026, 12, 21),
+                MinPrice: 15_000_000m,
+                MaxPrice: 25_000_000m,
+                Currency: "IRR",
+                Adults: 2,
+                Children: 1,
+                Sort: "price_desc"),
+            CancellationToken.None);
+
+        result.Value!.TotalCount.ShouldBe(1);
+        result.Value.Items.Single().MinPrice.ShouldBe(20_000_000m);
+        result.Value.Items.Single().Currency.ShouldBe("IRR");
+    }
+
+    [Fact]
+    public async Task Search_Should_Apply_Duration_And_TourType()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+
+        foreach (var (index, duration, tourType) in new[]
+                 {
+                     (0, 3, "city-break"),
+                     (1, 7, "beach"),
+                     (2, 7, "city-break")
+                 })
+        {
+            var productId = Guid.CreateVersion7();
+            catalog.Products.Add(new CatalogProductSummary(
+                productId,
+                $"product-{index}",
+                duration,
+                tourType,
+                new Dictionary<string, string> { ["fa"] = $"تور {index}" },
+                [],
+                DateTimeOffset.UtcNow));
+            offers.OffersByProduct[productId] =
+            [
+                OfferWithDetails(
+                    productId,
+                    Guid.CreateVersion7(),
+                    4,
+                    "Breakfast",
+                    "Iran Air",
+                    20_000_000m,
+                    "IRR",
+                    new DateOnly(2026, 12, 20),
+                    10)
+            ];
+        }
+
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+
+        var result = await handler.Handle(
+            new SearchProductsQuery(
+                "fa",
+                MinDuration: 7,
+                TourType: "city-break"),
+            CancellationToken.None);
+
+        result.Value!.TotalCount.ShouldBe(1);
+        result.Value.Items.Single().TourType.ShouldBe("city-break");
+        result.Value.Items.Single().DurationDays.ShouldBe(7);
+    }
+
+    private static OfferSnapshot OfferWithDetails(
+        Guid productId,
+        Guid agencyId,
+        int hotelStars,
+        string mealPlan,
+        string airline,
+        decimal price,
+        string currency,
+        DateOnly startDate,
+        int seatsLeft)
+        => new(
+            Guid.CreateVersion7(),
+            agencyId,
+            productId,
+            "ext",
+            "Offer",
+            price,
+            currency,
+            "Approved",
+            [
+                new DepartureSnapshot(
+                    Guid.CreateVersion7(),
+                    startDate,
+                    startDate.AddDays(3),
+                    seatsLeft,
+                    seatsLeft,
+                    "Open",
+                    [new DeparturePriceSnapshot("Double", price, currency)])
+            ],
+            [
+                new AccommodationOptionSnapshot(
+                    Guid.CreateVersion7(),
+                    "Hotel",
+                    hotelStars,
+                    "Double",
+                    mealPlan,
+                    price,
+                    currency,
+                    null)
+            ],
+            [
+                new FlightOptionSnapshot(
+                    Guid.CreateVersion7(),
+                    "Outbound",
+                    airline,
+                    "IR123",
+                    "IKA",
+                    "IST",
+                    new TimeOnly(10, 0),
+                    new TimeOnly(13, 0),
+                    180,
+                    "ECONOMY",
+                    "25kg")
+            ],
+            []);
 
     private static OfferSnapshot Offer(Guid productId, decimal basePrice, decimal departurePrice)
         => new(

@@ -22,8 +22,12 @@ Marketplace.Application
 
 | متد | مسیر | توضیح |
 |---|---|---|
-| GET | `/market/v1/search?locale=fa&destinationSlug=&page=1&pageSize=20` | جستجوی محصولات + حداقل قیمت هر ارز + تعداد Offer |
+| GET | `/market/v1/search?locale=fa&destinationSlug=&page=1&pageSize=20` | جستجوی faceted + حداقل قیمت هر ارز + تعداد Offer |
 | GET | `/market/v1/products/{id}/compare?locale=fa` | مقایسه Offerهای تاییدشده یک محصول + هتل/پرواز/مالیات |
+| GET | `/market/v1/products/{id}/seo?locale=fa` | Canonical + hreflang + JSON-LD محصول |
+| GET | `/market/v1/destinations/{slug}/landing?locale=fa` | Landing metadata مقصد + تعداد تور |
+| GET | `/market/v1/seo/sitemap.xml` | Sitemap چندزبانه |
+| GET | `/market/v1/seo/robots.txt` | robots policy |
 
 ## قواعد
 
@@ -34,6 +38,11 @@ Marketplace.Application
 - حداقل قیمت به تفکیک ارز (`minPrices`) محاسبه می‌شود؛ مقایسه عددی بین ارزها انجام نمی‌شود.
 - گزینه‌های اقامت، پرواز و قوانین VAT/Duty هر Offer در پاسخ compare برگردانده می‌شوند.
 - عنوان/خلاصه/توضیح بر اساس locale با fallback به زبان پیش‌فرض `Localization:DefaultCulture`.
+- فیلترهای جستجو: مقصد/مبدا، تاریخ، مدت، نوع تور، سختی، وسیله، اقامت، قیمت/ارز، ستاره هتل، MealPlan، ایرلاین، آژانس، مسافر، نام هتل، نوع اتاق، کابین، کلیدواژه (`q`) و `onlineOnly`.
+- Sortهای پشتیبانی‌شده: `price_asc`, `price_desc`, `duration_asc`, `duration_desc`, `newest`, `title`.
+- SEO: canonical و hreflang از `Seo:PublicBaseUrl` ساخته می‌شوند؛ JSON-LD با `System.Text.Json` سریالایز می‌شود.
+- Sitemap فقط محصولات منتشرشده و destination landingهای مرتبط را شامل می‌شود؛ query filterها در robots محدود شده‌اند.
+- `onlineOnly` در Hani فعلاً no-op است چون همه Offerها Online هستند؛ در Gate 4 با BookingMode واقعی می‌شود.
 
 ## محدودیت فعلی
 
