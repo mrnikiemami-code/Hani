@@ -105,7 +105,7 @@
 | D-88 | Lastsecond Re-audit fixes | Per-currency minPrices + options/tax in compare + accommodation selection snapshot | `13cf435` |
 | D-89 | Endpoint handler XML docs | Summary on every `*Endpoints.cs` handler + `DocumentationTests` guard | `a540530` |
 | D-90 | Discovery & SEO | Faceted search/sort + canonical/hreflang + JSON-LD + landing + sitemap/robots | `d7921ac` |
-| D-91 | Identity Core | User + OTP + JWT/refresh + profile + author + `AddUsersAndOtp` | این تغییر |
+| D-91 | Identity Core | User + OTP + JWT/refresh + profile + author + `AddUsersAndOtp` | `026724a` |
 
 ## ۳. مستندات
 
@@ -176,4 +176,5 @@
 | `13cf435` | Lastsecond re-audit fixes |
 | `a540530` | Endpoint handler XML documentation guard |
 | `d7921ac` | Faceted search and SEO (Gate 2) |
+| `026724a` | Identity core: OTP, JWT, profiles |
 | `7df2265` | Phase roadmap + status + tasks |

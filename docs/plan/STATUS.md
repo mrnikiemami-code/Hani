@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 3 — Identity, Trust & Agency
-> **آخرین commit کد:** `d7921ac`
+> **آخرین commit کد:** `026724a`
 > **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
@@ -93,7 +93,7 @@
 | Multi-currency Pricing | PriceComponent + VAT/Duty + PaymentObligation + per-currency Payment/Commission | `79daeb7` |
 | Lastsecond Re-audit | تأیید صفحات + اصلاح minPrice چندارزی + هتل/پرواز/مالیات در compare + هتل در Quote/Order/Contract | `13cf435` |
 | Discovery & SEO | Faceted Search/Sort + Canonical/JSON-LD/Sitemap/Landing + robots | `d7921ac` |
-| Identity Core | User + OTP + JWT/refresh + profile + author | این تغییر |
+| Identity Core | User + OTP + JWT/refresh + profile + author | `026724a` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -254,3 +254,4 @@
 | `13cf435` | Lastsecond re-audit fixes |
 | `a540530` | Endpoint handler XML documentation guard |
 | `d7921ac` | Faceted search and SEO (Gate 2) |
+| `026724a` | Identity core: OTP, JWT, profiles |
