@@ -144,4 +144,10 @@ internal sealed class FakeAgencyReadService : IAgencyReadService
 
     public Task<IReadOnlyList<Guid>> GetActiveAgencyIdsAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyList<Guid>>(ActiveAgencyIds);
+
+    public Task<ChannelSettingsSnapshot?> GetChannelSettingsAsync(
+        Guid agencyId,
+        CancellationToken cancellationToken)
+        => Task.FromResult<ChannelSettingsSnapshot?>(
+            new ChannelSettingsSnapshot("Standard", false, null, true, "marketplace"));
 }

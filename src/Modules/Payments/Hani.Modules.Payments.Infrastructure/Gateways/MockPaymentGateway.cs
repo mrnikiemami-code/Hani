@@ -38,6 +38,21 @@ public sealed class MockPaymentGateway(IOptions<PaymentOptions> options) : IPaym
     }
 
     /// <inheritdoc />
+    public Task<PaymentRefundResponse> RefundAsync(
+        PaymentRefundRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (request.Amount <= 0 || string.IsNullOrWhiteSpace(request.Currency))
+        {
+            throw new PaymentGatewayException("Invalid refund amount or currency.");
+        }
+
+        return Task.FromResult(new PaymentRefundResponse(
+            Provider,
+            $"mock_refund_{request.RefundId:N}"));
+    }
+
+    /// <inheritdoc />
     public PaymentWebhookMessage VerifyWebhook(PaymentWebhookRequest request)
     {
         if (!string.Equals(request.Provider, Provider, StringComparison.OrdinalIgnoreCase))

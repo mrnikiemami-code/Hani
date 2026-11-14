@@ -31,7 +31,7 @@
 
 > Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
-> **Gate 7 شروع شد.** Channel OAuth/API، Refund/Invoice و Settlement/Payout پایه پیاده‌سازی شد؛ webhook/dunning/white-label/dashboard باقی است.
+> **Gate 7 PASSED (Core) است.** Channel OAuth/API، Refund/Invoice، Settlement/Payout، Webhook/Dunning/Dashboard و Reconciliation/Chargeback پیاده شد. Gate 8 آماده است.
 
 ## Phase 0 — Foundation ✅
 
@@ -77,10 +77,10 @@
 | TC-030 | Settlement Ledger | ✅ | TC-028 | double-entry + commission accrual | `0dd6fbe` |
 | TC-031 | Channel OAuth | ✅ | TC-017 | token + scope | Gate 7 |
 | TC-032 | Channel Catalog/Availability | ✅ | TC-031, TC-021 | فقط Offer مجاز | Gate 7 |
-| TC-033 | Channel Booking + Webhook | 🚧 | TC-032, TC-026 | end-to-end | Gate 7 |
-| TC-034 | Agency Dashboard | ❌ | TC-020 | مدیریت Offer/Departure | — |
-| TC-035 | Admin Dashboard | ❌ | TC-023 | moderation/settlement | — |
-| TC-036 | Traveler Dashboard | ❌ | TC-027 | سفارش/لغو | — |
+| TC-033 | Channel Booking + Webhook | ✅ | TC-032, TC-026 | end-to-end | Gate 7 |
+| TC-034 | Agency Dashboard | ✅ | TC-020 | مدیریت Offer/Departure | Gate 7 |
+| TC-035 | Admin Dashboard | ✅ | TC-023 | moderation/settlement | Gate 7 |
+| TC-036 | Traveler Dashboard | ✅ | TC-027 | سفارش/لغو | Gate 7 |
 | TC-037 | Reviews | ❌ | TC-027 | نقد چندمعیاره | — |
 | TC-038 | Content | ❌ | — | بلاگ/سفرنامه | — |
 | TC-039 | SEO | ❌ | TC-018 | Slug/Sitemap/JSON-LD | — |
@@ -110,10 +110,10 @@
 | ID | تسک | وضعیت | وابستگی | DoD |
 |---|---|---|---|---|
 | TC-055 | OAuth2 + scopes | ✅ | TC-017 | token/scope |
-| TC-056 | Entitlements + plans | 🚧 | TC-055 | Standard/Pro |
-| TC-057 | White-label | ❌ | TC-056 | custom domain |
+| TC-056 | Entitlements + plans | ✅ | TC-055 | Standard/Pro |
+| TC-057 | White-label | ✅ | TC-056 | custom domain |
 | TC-058 | AgencyCommissionRule | ✅ | TC-015 | per agency/product |
-| TC-059 | Invoice + Dunning | 🚧 | TC-058 | فاکتور/یادآوری |
+| TC-059 | Invoice + Dunning | ✅ | TC-058 | فاکتور/یادآوری |
 | TC-060 | SettlementTerms + Ledger | ✅ | TC-058 | تسویه |
 
 ## Phase 4 — Flights

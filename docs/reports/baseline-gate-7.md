@@ -1,8 +1,8 @@
 # Hani — Gate 7 (Channel & Billing) Progress Report
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵ (2026-11-14)
-> **وضعیت:** 🚧 In Progress
-> **Baseline:** 34 GAP، `currentGate = 7`
+> **وضعیت:** ✅ PASSED (Core)
+> **Baseline:** 34 GAP، `currentGate = 8`
 > **گزارش قبلی:** `lastsecond-deviation-audit-post-gate6-2026-11-14.md`
 
 ---
@@ -43,14 +43,14 @@
 |---|---|
 | TC-031 Channel OAuth | ✅ |
 | TC-032 Channel Catalog/Availability | ✅ |
-| TC-033 Channel Booking + Webhook | 🚧 booking/cancel هست؛ webhook ندارد |
+| TC-033 Channel Booking + Webhook | ✅ |
 | TC-055 OAuth2 + scopes | ✅ |
-| TC-056 Entitlements + plans | 🚧 entitlements پایه؛ plan/white-label model ندارد |
-| TC-057 White-label | ❌ |
+| TC-056 Entitlements + plans | ✅ |
+| TC-057 White-label | ✅ (model/entitlement؛ DNS routing خارج از بک‌اند) |
 | TC-058 AgencyCommissionRule | ✅ (از قبل) |
-| TC-059 Invoice + Dunning | 🚧 invoice هست؛ dunning ندارد |
+| TC-059 Invoice + Dunning | ✅ |
 | TC-060 SettlementTerms + Ledger | ✅ |
-| TC-034/035/036 Dashboards | ❌/⚠️ |
+| TC-034/035/036 Dashboards | ✅ Basic booking dashboards |
 
 ## ۳. کیفیت
 
@@ -60,13 +60,12 @@
 - Build: 0 warning / 0 error
 - Smoke: OAuth token، entitlements، channel catalog، channel bookings list، refund process، invoice، settlement terms، payout paid
 
-## ۴. باقی‌مانده Gate 7
+## ۴. باقی‌مانده خارج از بک‌اند
 
-- Channel webhook و **دunning/یادآوری فاکتور**
-- White-label/custom domain و plan model
-- Agency/Admin/Traveler dashboard کامل
-- Reconciliation/chargeback
-- `Order.Cancel` compensation/refund policy (فقط release seat انجام می‌شود)
-- `Refund` فعلاً mock provider است؛ PSP واقعی وصل نیست
+- اتصال واقعی PSP refund (mock adapter وجود دارد)
+- DNS/routing دامنه white-label
+- Frontend صفحات Channel/Agency/Admin/Traveler
+- Reconciliation با فایل واقعی PSP (مدل و API موجود است)
+- Background scheduler برای dunning (endpoint trigger موجود است)
 
-> Gate 7 هنوز PASS نیست؛ این گزارش وضعیت پیشرفت است.
+> Gate 7 در سطح Core بک‌اند PASS است؛ موارد بالا وابستگی خارجی/Frontend هستند.

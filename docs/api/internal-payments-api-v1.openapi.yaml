@@ -56,3 +56,35 @@ paths:
       responses:
         '200': { description: Invoice }
         default: { description: Problem }
+  /payments/invoices/{invoiceId}/remind:
+    post:
+      tags: [Payments]
+      summary: Send the next invoice reminder
+      parameters:
+        - { name: invoiceId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Reminder scheduled }
+        default: { description: Problem }
+  /payments/chargebacks:
+    post:
+      tags: [Payments]
+      summary: Open a chargeback
+      responses:
+        '200': { description: Chargeback opened }
+        default: { description: Problem }
+  /payments/chargebacks/{chargebackId}/resolve:
+    post:
+      tags: [Payments]
+      summary: Resolve a chargeback
+      parameters:
+        - { name: chargebackId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Resolved }
+        default: { description: Problem }
+  /payments/reconciliations:
+    post:
+      tags: [Payments]
+      summary: Create a reconciliation record
+      responses:
+        '200': { description: Reconciliation created }
+        default: { description: Problem }

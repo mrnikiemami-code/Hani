@@ -32,6 +32,13 @@ internal sealed class AgencyConfiguration : IEntityTypeConfiguration<Agency>
         builder.Property(agency => agency.Address).HasColumnName("address").HasMaxLength(500);
         builder.Property(agency => agency.Province).HasColumnName("province").HasMaxLength(80);
         builder.Property(agency => agency.LicenseFileUrl).HasColumnName("license_file_url").HasMaxLength(1000);
+        builder.Property(agency => agency.ChannelPlan).HasColumnName("channel_plan").HasConversion<string>().HasMaxLength(32).IsRequired();
+        builder.Property(agency => agency.WhiteLabelEnabled).HasColumnName("white_label_enabled").IsRequired();
+        builder.Property(agency => agency.CustomDomain).HasColumnName("custom_domain").HasMaxLength(253);
+        builder.Property(agency => agency.AttributionRequired).HasColumnName("attribution_required").IsRequired();
+        builder.Property(agency => agency.CanonicalMode).HasColumnName("canonical_mode").HasMaxLength(32).IsRequired();
+        builder.Property(agency => agency.ChannelWebhookUrl).HasColumnName("channel_webhook_url").HasMaxLength(2000);
+        builder.Property(agency => agency.ChannelWebhookSecret).HasColumnName("channel_webhook_secret").HasMaxLength(500);
         builder.Property(agency => agency.SubmittedAt).HasColumnName("submitted_at");
         builder.Property(agency => agency.ReviewedAt).HasColumnName("reviewed_at");
         builder.Property(agency => agency.RejectionReason).HasColumnName("rejection_reason").HasMaxLength(1000);

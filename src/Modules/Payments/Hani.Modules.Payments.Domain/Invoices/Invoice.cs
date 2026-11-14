@@ -78,6 +78,15 @@ public sealed class Invoice : AggregateRoot<Guid>
     /// <summary>Issue time.</summary>
     public DateTimeOffset IssuedAt { get; private set; }
 
+    /// <summary>Number of reminders sent.</summary>
+    public int ReminderCount { get; private set; }
+
+    /// <summary>Last reminder time.</summary>
+    public DateTimeOffset? LastReminderAt { get; private set; }
+
+    /// <summary>Next reminder time.</summary>
+    public DateTimeOffset? NextReminderAt { get; private set; }
+
     /// <summary>Creates an invoice.</summary>
     public static Invoice Create(
         IIdGenerator ids,
@@ -114,6 +123,18 @@ public sealed class Invoice : AggregateRoot<Guid>
             total,
             currency,
             now ?? DateTimeOffset.UtcNow);
+    }
+
+    /// <summary>Schedules the first reminder.</summary>
+    public void ScheduleReminder(DateTimeOffset nextReminderAt)
+        => NextReminderAt = nextReminderAt.ToUniversalTime();
+
+    /// <summary>Marks a reminder sent and schedules the next one.</summary>
+    public void MarkReminderSent(DateTimeOffset nextReminderAt, DateTimeOffset? now = null)
+    {
+        ReminderCount++;
+        LastReminderAt = now ?? DateTimeOffset.UtcNow;
+        NextReminderAt = nextReminderAt.ToUniversalTime();
     }
 
     /// <summary>Marks the invoice paid.</summary>

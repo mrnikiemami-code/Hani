@@ -40,6 +40,32 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("address");
 
+                    b.Property<bool>("AttributionRequired")
+                        .HasColumnType("boolean")
+                        .HasColumnName("attribution_required");
+
+                    b.Property<string>("CanonicalMode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("canonical_mode");
+
+                    b.Property<string>("ChannelPlan")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("channel_plan");
+
+                    b.Property<string>("ChannelWebhookSecret")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("channel_webhook_secret");
+
+                    b.Property<string>("ChannelWebhookUrl")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("channel_webhook_url");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(80)
@@ -59,6 +85,11 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
+
+                    b.Property<string>("CustomDomain")
+                        .HasMaxLength(253)
+                        .HasColumnType("character varying(253)")
+                        .HasColumnName("custom_domain");
 
                     b.Property<string>("LicenseFileUrl")
                         .HasMaxLength(1000)
@@ -137,6 +168,10 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("website");
+
+                    b.Property<bool>("WhiteLabelEnabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("white_label_enabled");
 
                     b.HasKey("Id");
 

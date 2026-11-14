@@ -1,9 +1,9 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 7 — Channel & Billing (In Progress)
-> **آخرین commit کد:** `09712c0`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 🚧 In Progress
+> **فاز فعال:** Gate 8 — Hardening (Ready)
+> **آخرین commit کد:** `09712c0` + Gate 7
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ⏳ Ready
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 > **گزارش Gate:** [`../reports/baseline-gate-7.md`](../reports/baseline-gate-7.md)
@@ -189,10 +189,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۴۸ passed |
+| Unit Tests | ۱۴۹ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۸۲ passed** |
-| Migrations | Supply (۸) / Catalog (۶) / Content (۲) / Identity (۶) / Booking (۱۰) / Payments (۶) / Settlement (۳) |
+| Total | **۱۸۳ passed** |
+| Migrations | Supply (۸) / Catalog (۶) / Content (۲) / Identity (۶) / Booking (۱۰) / Payments (۸) / Settlement (۳) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -201,15 +201,15 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 7 — Channel & Billing (In Progress)
+**تسک فعال:** Gate 8 — Hardening (Ready)
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
 **GAPهای Gate 4:** ✅ GAP-05/06/19 (TC-088), GAP-17/18 (TC-098)
 **GAPهای Gate 5:** ✅ GAP-13/25/29 (TC-094), GAP-14 (TC-090), GAP-15/21 (TC-091), GAP-16 (TC-092)
 **GAPهای Gate 6:** ✅ GAP-12/22/23/24/30/33/34
-**Gate 7:** 🚧 OAuth/Channel API/Refund/Invoice/Payout آغاز شد
-**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 7`
+**Gate 7:** ✅ PASSED (Core) — OAuth/Channel API/Refund/Invoice/Payout/Webhook/Dunning/Dashboard/Reconciliation
+**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 8`
 
 ### Audit 2026-11-14 — Lastsecond Full Architecture
 
@@ -229,22 +229,20 @@
 
 **شکاف‌های اصلی Gate 6/7:** Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
 
-### Gate 7 — Progress Checklist 🚧
+### Gate 7 — Exit Checklist ✅ PASSED (Core)
 
 - [x] OAuth2 Client Credentials + channel scopes
 - [x] Channel catalog/offers/departures
 - [x] Channel quote/booking/list/detail/cancel
-- [x] Entitlements endpoint
-- [x] Refund requested/processed
-- [x] Invoice create/read
+- [x] Entitlements + plan + white-label settings
+- [x] Channel booking webhook + signature
+- [x] Refund requested/processed (provider abstraction; mock PSP)
+- [x] Invoice create/read + dunning reminder endpoint
 - [x] Settlement terms + payout create/paid
-- [x] Channel finance endpoints
-- [ ] Channel booking webhook
-- [ ] Invoice dunning/reminders
-- [ ] White-label/custom domain + plan model
-- [ ] Agency/Admin/Traveler dashboards
-- [ ] Reconciliation/chargeback
-- [ ] Real PSP refund integration
+- [x] Agency/Traveler/Admin booking dashboards
+- [x] Reconciliation + chargeback
+- [x] Channel finance/settlement endpoints
+- [ ] Real PSP credentials / DNS white-label routing / frontend (external)
 
 ### Gate 6 — Exit Checklist ✅ PASSED
 

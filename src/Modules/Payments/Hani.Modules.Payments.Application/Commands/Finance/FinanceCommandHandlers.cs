@@ -1,6 +1,9 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.Domain;
+using Hani.Modules.Payments.Application.Abstractions;
+using Hani.Modules.Payments.Domain.Chargebacks;
 using Hani.Modules.Payments.Domain.Invoices;
+using Hani.Modules.Payments.Domain.Reconciliation;
 using Hani.Modules.Payments.Domain.Refunds;
 
 namespace Hani.Modules.Payments.Application.Commands.Finance;
@@ -45,7 +48,9 @@ internal sealed class RequestRefundCommandHandler(IFinanceRepository finance, II
             refund.FailureReason);
 }
 
-internal sealed class ProcessRefundCommandHandler(IFinanceRepository finance)
+internal sealed class ProcessRefundCommandHandler(
+    IFinanceRepository finance,
+    IPaymentGateway gateway)
     : ICommandHandler<ProcessRefundCommand, RefundDto>
 {
     public async Task<Result<RefundDto>> Handle(
@@ -60,7 +65,23 @@ internal sealed class ProcessRefundCommandHandler(IFinanceRepository finance)
                 Error.NotFound("HANI-PAYMENT-3102", "Refund was not found."));
         }
 
-        refund.MarkProcessed($"mock-refund-{refund.Id:N}");
+        try
+        {
+            var response = await gateway.RefundAsync(
+                new PaymentRefundRequest(
+                    refund.Id,
+                    refund.OrderId,
+                    refund.Amount,
+                    refund.Currency,
+                    refund.PaymentIntentId?.ToString()),
+                cancellationToken);
+            refund.MarkProcessed(response.ProviderRef);
+        }
+        catch (PaymentGatewayException exception)
+        {
+            refund.MarkFailed(exception.Message);
+        }
+
         await finance.SaveChangesAsync(cancellationToken);
         return Result<RefundDto>.Success(RequestRefundCommandHandler.Map(refund));
     }
@@ -108,6 +129,134 @@ internal sealed class CreateInvoiceCommandHandler(IFinanceRepository finance, II
             invoice.Currency,
             invoice.Status.ToString(),
             invoice.IssuedAt);
+}
+
+internal sealed class SendInvoiceReminderCommandHandler(IFinanceRepository finance)
+    : ICommandHandler<SendInvoiceReminderCommand, InvoiceDto>
+{
+    public async Task<Result<InvoiceDto>> Handle(
+        SendInvoiceReminderCommand request,
+        CancellationToken cancellationToken)
+    {
+        var invoice = await finance.GetInvoiceAsync(request.InvoiceId, cancellationToken);
+
+        if (invoice is null)
+        {
+            return Result<InvoiceDto>.Failure(
+                Error.NotFound("HANI-PAYMENT-3104", "Invoice was not found."));
+        }
+
+        invoice.MarkReminderSent(DateTimeOffset.UtcNow.AddDays(3));
+        await finance.SaveChangesAsync(cancellationToken);
+        return Result<InvoiceDto>.Success(CreateInvoiceCommandHandler.Map(invoice));
+    }
+}
+
+internal sealed class OpenChargebackCommandHandler(IFinanceRepository finance, IIdGenerator ids)
+    : ICommandHandler<OpenChargebackCommand, ChargebackDto>
+{
+    public async Task<Result<ChargebackDto>> Handle(
+        OpenChargebackCommand request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var chargeback = Chargeback.Create(
+                ids,
+                request.OrderId,
+                request.PaymentIntentId,
+                request.Amount,
+                request.Currency,
+                request.Reason);
+            await finance.AddChargebackAsync(chargeback, cancellationToken);
+            return Result<ChargebackDto>.Success(Map(chargeback));
+        }
+        catch (ArgumentException exception)
+        {
+            return Result<ChargebackDto>.Failure(Error.Validation("HANI-PAYMENT-3201", exception.Message));
+        }
+    }
+
+    internal static ChargebackDto Map(Chargeback chargeback)
+        => new(
+            chargeback.Id,
+            chargeback.OrderId,
+            chargeback.PaymentIntentId,
+            chargeback.Amount,
+            chargeback.Currency,
+            chargeback.Reason,
+            chargeback.Status.ToString(),
+            chargeback.CreatedAt,
+            chargeback.ResolvedAt);
+}
+
+internal sealed class ResolveChargebackCommandHandler(IFinanceRepository finance)
+    : ICommandHandler<ResolveChargebackCommand, ChargebackDto>
+{
+    public async Task<Result<ChargebackDto>> Handle(
+        ResolveChargebackCommand request,
+        CancellationToken cancellationToken)
+    {
+        var chargeback = await finance.GetChargebackAsync(request.ChargebackId, cancellationToken);
+
+        if (chargeback is null)
+        {
+            return Result<ChargebackDto>.Failure(
+                Error.NotFound("HANI-PAYMENT-3202", "Chargeback was not found."));
+        }
+
+        if (request.Accept)
+        {
+            chargeback.Accept();
+        }
+        else
+        {
+            chargeback.Reject();
+        }
+
+        await finance.SaveChangesAsync(cancellationToken);
+        return Result<ChargebackDto>.Success(OpenChargebackCommandHandler.Map(chargeback));
+    }
+}
+
+internal sealed class CreateReconciliationCommandHandler(IFinanceRepository finance, IIdGenerator ids)
+    : ICommandHandler<CreateReconciliationCommand, ReconciliationDto>
+{
+    public async Task<Result<ReconciliationDto>> Handle(
+        CreateReconciliationCommand request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var record = ReconciliationRecord.Create(
+                ids,
+                request.Provider,
+                request.PeriodStart,
+                request.PeriodEnd,
+                request.Currency,
+                request.ExpectedAmount,
+                request.ActualAmount);
+            await finance.AddReconciliationAsync(record, cancellationToken);
+            return Result<ReconciliationDto>.Success(Map(record));
+        }
+        catch (ArgumentException exception)
+        {
+            return Result<ReconciliationDto>.Failure(Error.Validation("HANI-PAYMENT-3203", exception.Message));
+        }
+    }
+
+    internal static ReconciliationDto Map(ReconciliationRecord record)
+        => new(
+            record.Id,
+            record.Provider,
+            record.PeriodStart,
+            record.PeriodEnd,
+            record.Currency,
+            record.ExpectedAmount,
+            record.ActualAmount,
+            record.Difference,
+            record.Status.ToString(),
+            record.CreatedAt);
 }
 
 internal sealed class GetRefundQueryHandler(IFinanceRepository finance)

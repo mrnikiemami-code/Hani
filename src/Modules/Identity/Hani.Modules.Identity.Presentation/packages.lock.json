@@ -100,11 +100,15 @@
       "hani.buildingblocks.domain": {
         "type": "Project"
       },
+      "hani.contracts.identity": {
+        "type": "Project"
+      },
       "hani.modules.identity.application": {
         "type": "Project",
         "dependencies": {
           "FluentValidation": "[12.2.0, )",
           "Hani.BuildingBlocks.Application": "[1.0.0, )",
+          "Hani.Contracts.Identity": "[1.0.0, )",
           "Hani.Modules.Identity.Domain": "[1.0.0, )"
         }
       },

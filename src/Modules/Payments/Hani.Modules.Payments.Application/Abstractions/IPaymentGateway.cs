@@ -44,6 +44,23 @@ public sealed record PaymentWebhookMessage(
     string Payload);
 
 /// <summary>
+/// Refund request sent to a payment gateway.
+/// </summary>
+public sealed record PaymentRefundRequest(
+    Guid RefundId,
+    Guid OrderId,
+    decimal Amount,
+    string Currency,
+    string? PaymentIntentRef);
+
+/// <summary>
+/// Provider response for a refund.
+/// </summary>
+public sealed record PaymentRefundResponse(
+    string Provider,
+    string ProviderRef);
+
+/// <summary>
 /// Port for PSP adapters. Production adapters must never store card data.
 /// </summary>
 public interface IPaymentGateway
@@ -53,6 +70,13 @@ public interface IPaymentGateway
     /// </summary>
     Task<PaymentGatewayResponse> InitiateAsync(
         PaymentGatewayRequest request,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Requests a refund from the provider.
+    /// </summary>
+    Task<PaymentRefundResponse> RefundAsync(
+        PaymentRefundRequest request,
         CancellationToken cancellationToken);
 
     /// <summary>

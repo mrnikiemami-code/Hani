@@ -3,6 +3,7 @@ using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Contracts.Booking;
 using Hani.Contracts.Catalog;
+using Hani.Contracts.Identity;
 using Hani.Contracts.Supply;
 using Hani.Modules.Booking.Application.Commands.CancelOrder;
 using Hani.Modules.Booking.Application.Commands.CreateHold;
@@ -57,8 +58,10 @@ public static class ChannelEndpoints
         channel.MapPost("/bookings/{bookingId:guid}/cancel", CancelBookingAsync)
             .RequireAuthorization("ChannelBookingWrite")
             .WithName("Channel.CancelBooking");
-        channel.MapGet("/me/entitlements", GetEntitlements)
+        channel.MapGet("/me/entitlements", GetEntitlementsAsync)
             .WithName("Channel.GetEntitlements");
+        channel.MapGet("/me/dashboard", GetAgencyDashboardAsync)
+            .WithName("Channel.GetAgencyDashboard");
         channel.MapGet("/settlements", ListSettlementsAsync)
             .RequireAuthorization("ChannelFinance")
             .WithName("Channel.ListSettlements");
@@ -198,6 +201,7 @@ public static class ChannelEndpoints
         ChannelBookingRequest request,
         HttpContext context,
         ISender sender,
+        IChannelWebhookPublisher webhooks,
         CancellationToken cancellationToken)
     {
         var hold = await sender.Send(
@@ -224,8 +228,21 @@ public static class ChannelEndpoints
             cancellationToken);
 
         return order.IsSuccess
-            ? Results.Created($"/channel/v1/bookings/{order.Value!.OrderId}", order.Value)
+            ? await BookingCreatedAsync(order.Value!, webhooks, cancellationToken)
             : context.ToProblem(order.Error!);
+    }
+
+    private static async Task<IResult> BookingCreatedAsync(
+        Hani.Modules.Booking.Application.Commands.CreateOrder.OrderDto order,
+        IChannelWebhookPublisher webhooks,
+        CancellationToken cancellationToken)
+    {
+        await webhooks.PublishAsync(
+            order.AgencyId,
+            "booking.created",
+            new { orderId = order.OrderId, order.OrderNumber, order.Status },
+            cancellationToken);
+        return Results.Created($"/channel/v1/bookings/{order.OrderId}", order);
     }
 
     /// <summary>
@@ -292,31 +309,76 @@ public static class ChannelEndpoints
         CancelBookingRequest request,
         HttpContext context,
         ISender sender,
+        IChannelWebhookPublisher webhooks,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(
             new CancelOrderCommand(bookingId, request.Reason),
             cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            var agencyId = GetAgencyId(context);
+            if (agencyId is not null)
+            {
+                await webhooks.PublishAsync(
+                    agencyId.Value,
+                    "booking.cancelled",
+                    new { bookingId, status = "Cancelled" },
+                    cancellationToken);
+            }
+        }
+
         return result.IsSuccess ? Results.Ok(new { status = "Cancelled" }) : context.ToProblem(result.Error!);
     }
 
     /// <summary>
     /// Returns entitlement and scope information for the current channel client.
     /// </summary>
-    private static IResult GetEntitlements(HttpContext context)
+    private static async Task<IResult> GetEntitlementsAsync(
+        HttpContext context,
+        IAgencyReadService agencies,
+        CancellationToken cancellationToken)
     {
-        var scopes = context.User.FindAll("scope").Select(claim => claim.Value).ToArray();
+        var agencyId = GetAgencyId(context);
+
+        if (agencyId is null)
+        {
+            return context.ToProblem(Error.Unauthorized("HANI-CHANNEL-1103", "Agency claim is missing."));
+        }
+
+        var settings = await agencies.GetChannelSettingsAsync(agencyId.Value, cancellationToken);
+
         return Results.Ok(new
         {
-            agencyId = GetAgencyId(context),
+            agencyId,
             apiClientId = context.User.FindFirst("api_client_id")?.Value,
-            plan = "Standard",
-            whiteLabel = false,
-            attributionRequired = true,
+            plan = settings?.Plan ?? "Standard",
+            whiteLabel = settings?.WhiteLabelEnabled ?? false,
+            customDomain = settings?.CustomDomain,
+            attributionRequired = settings?.AttributionRequired ?? true,
             commissionProfileId = (string?)null,
-            seoCanonicalMode = "channel",
-            scopes
+            seoCanonicalMode = settings?.CanonicalMode ?? "channel",
+            scopes = context.User.FindAll("scope").Select(claim => claim.Value).ToArray()
         });
+    }
+
+    /// <summary>
+    /// Returns agency booking dashboard totals.
+    /// </summary>
+    private static async Task<IResult> GetAgencyDashboardAsync(
+        HttpContext context,
+        IChannelOrderReadService orders,
+        CancellationToken cancellationToken)
+    {
+        var agencyId = GetAgencyId(context);
+
+        if (agencyId is null)
+        {
+            return context.ToProblem(Error.Unauthorized("HANI-CHANNEL-1103", "Agency claim is missing."));
+        }
+
+        return Results.Ok(await orders.GetAgencyDashboardAsync(agencyId.Value, cancellationToken));
     }
 
     /// <summary>

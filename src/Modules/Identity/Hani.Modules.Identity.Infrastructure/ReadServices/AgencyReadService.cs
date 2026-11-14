@@ -32,4 +32,22 @@ internal sealed class AgencyReadService(IdentityDbContext dbContext) : IAgencyRe
             .OrderBy(agency => agency.Id)
             .Select(agency => agency.Id)
             .ToArrayAsync(cancellationToken);
+
+    public async Task<ChannelSettingsSnapshot?> GetChannelSettingsAsync(
+        Guid agencyId,
+        CancellationToken cancellationToken)
+    {
+        var agency = await dbContext.Agencies
+            .AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == agencyId, cancellationToken);
+
+        return agency is null
+            ? null
+            : new ChannelSettingsSnapshot(
+                agency.ChannelPlan.ToString(),
+                agency.WhiteLabelEnabled,
+                agency.CustomDomain,
+                agency.AttributionRequired,
+                agency.CanonicalMode);
+    }
 }

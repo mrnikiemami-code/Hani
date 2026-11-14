@@ -223,6 +223,26 @@ paths:
             application/json:
               schema: { type: boolean }
 
+  /internal/v1/agencies/{agencyId}/channel-settings:
+    post:
+      tags: [Identity]
+      summary: Configure channel plan and white-label settings
+      parameters:
+        - { name: agencyId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated }
+        default: { description: Problem }
+
+  /internal/v1/agencies/{agencyId}/channel-webhook:
+    post:
+      tags: [Identity]
+      summary: Configure channel webhook
+      parameters:
+        - { name: agencyId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated }
+        default: { description: Problem }
+
 components:
   schemas:
     ModerationRequest:

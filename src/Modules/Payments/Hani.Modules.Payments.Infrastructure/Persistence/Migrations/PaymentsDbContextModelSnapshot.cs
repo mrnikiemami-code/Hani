@@ -23,6 +23,60 @@ namespace Hani.Modules.Payments.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Hani.Modules.Payments.Domain.Chargebacks.Chargeback", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("order_id");
+
+                    b.Property<Guid?>("PaymentIntentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("payment_intent_id");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("reason");
+
+                    b.Property<DateTimeOffset?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("resolved_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("ix_chargebacks_order_id");
+
+                    b.ToTable("chargebacks", "payment");
+                });
+
             modelBuilder.Entity("Hani.Modules.Payments.Domain.Invoices.Invoice", b =>
                 {
                     b.Property<Guid>("Id")
@@ -58,9 +112,21 @@ namespace Hani.Modules.Payments.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(80)")
                         .HasColumnName("issuer");
 
+                    b.Property<DateTimeOffset?>("LastReminderAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_reminder_at");
+
+                    b.Property<DateTimeOffset?>("NextReminderAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_reminder_at");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid")
                         .HasColumnName("order_id");
+
+                    b.Property<int>("ReminderCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("reminder_count");
 
                     b.Property<string>("SellerOfRecord")
                         .IsRequired()
@@ -326,6 +392,66 @@ namespace Hani.Modules.Payments.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ux_payment_webhook_events_provider_event");
 
                     b.ToTable("payment_webhook_events", "payment");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Payments.Domain.Reconciliation.ReconciliationRecord", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("ActualAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("actual_amount");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency");
+
+                    b.Property<decimal>("Difference")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("difference");
+
+                    b.Property<decimal>("ExpectedAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("expected_amount");
+
+                    b.Property<DateOnly>("PeriodEnd")
+                        .HasColumnType("date")
+                        .HasColumnName("period_end");
+
+                    b.Property<DateOnly>("PeriodStart")
+                        .HasColumnType("date")
+                        .HasColumnName("period_start");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("provider");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Provider", "PeriodStart", "Currency")
+                        .HasDatabaseName("ix_reconciliations_provider_period_currency");
+
+                    b.ToTable("reconciliations", "payment");
                 });
 
             modelBuilder.Entity("Hani.Modules.Payments.Domain.Refunds.Refund", b =>

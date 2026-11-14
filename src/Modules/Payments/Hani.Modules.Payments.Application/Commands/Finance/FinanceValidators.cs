@@ -37,6 +37,48 @@ public sealed class CreateInvoiceCommandValidator : AbstractValidator<CreateInvo
     }
 }
 
+/// <summary>Validation rules for invoice reminders.</summary>
+public sealed class SendInvoiceReminderCommandValidator : AbstractValidator<SendInvoiceReminderCommand>
+{
+    /// <summary>Creates validation rules.</summary>
+    public SendInvoiceReminderCommandValidator()
+    {
+        RuleFor(command => command.InvoiceId).NotEmpty().WithErrorCode("HANI-PAYMENT-3118");
+    }
+}
+
+/// <summary>Validation rules for chargebacks.</summary>
+public sealed class OpenChargebackCommandValidator : AbstractValidator<OpenChargebackCommand>
+{
+    /// <summary>Creates validation rules.</summary>
+    public OpenChargebackCommandValidator()
+    {
+        RuleFor(command => command.OrderId).NotEmpty().WithErrorCode("HANI-PAYMENT-3211");
+        RuleFor(command => command.Amount).GreaterThan(0).WithErrorCode("HANI-PAYMENT-3212");
+    }
+}
+
+/// <summary>Validation rules for chargeback resolution.</summary>
+public sealed class ResolveChargebackCommandValidator : AbstractValidator<ResolveChargebackCommand>
+{
+    /// <summary>Creates validation rules.</summary>
+    public ResolveChargebackCommandValidator()
+    {
+        RuleFor(command => command.ChargebackId).NotEmpty().WithErrorCode("HANI-PAYMENT-3213");
+    }
+}
+
+/// <summary>Validation rules for reconciliation.</summary>
+public sealed class CreateReconciliationCommandValidator : AbstractValidator<CreateReconciliationCommand>
+{
+    /// <summary>Creates validation rules.</summary>
+    public CreateReconciliationCommandValidator()
+    {
+        RuleFor(command => command.Provider).NotEmpty().WithErrorCode("HANI-PAYMENT-3214");
+        RuleFor(command => command.Currency).NotEmpty().Length(3).WithErrorCode("HANI-PAYMENT-3215");
+    }
+}
+
 /// <summary>Validation rules for finance reads.</summary>
 public sealed class GetRefundQueryValidator : AbstractValidator<GetRefundQuery>
 {

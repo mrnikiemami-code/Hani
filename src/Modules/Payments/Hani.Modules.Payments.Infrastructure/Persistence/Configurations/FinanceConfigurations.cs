@@ -44,6 +44,9 @@ internal sealed class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.Property(item => item.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
         builder.Property(item => item.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(item => item.IssuedAt).HasColumnName("issued_at").IsRequired();
+        builder.Property(item => item.ReminderCount).HasColumnName("reminder_count").IsRequired();
+        builder.Property(item => item.LastReminderAt).HasColumnName("last_reminder_at");
+        builder.Property(item => item.NextReminderAt).HasColumnName("next_reminder_at");
         builder.HasIndex(item => item.InvoiceNumber).IsUnique().HasDatabaseName("ux_invoices_number");
         builder.HasIndex(item => item.OrderId).HasDatabaseName("ix_invoices_order_id");
     }

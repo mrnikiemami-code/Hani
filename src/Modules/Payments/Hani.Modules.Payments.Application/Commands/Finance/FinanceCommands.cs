@@ -1,5 +1,7 @@
 using Hani.BuildingBlocks.Application;
+using Hani.Modules.Payments.Domain.Chargebacks;
 using Hani.Modules.Payments.Domain.Invoices;
+using Hani.Modules.Payments.Domain.Reconciliation;
 using Hani.Modules.Payments.Domain.Refunds;
 
 namespace Hani.Modules.Payments.Application.Commands.Finance;
@@ -25,6 +27,9 @@ public sealed record CreateInvoiceCommand(
     decimal Tax,
     decimal Total,
     string Currency) : ICommand<InvoiceDto>;
+
+/// <summary>Send the next invoice reminder.</summary>
+public sealed record SendInvoiceReminderCommand(Guid InvoiceId) : ICommand<InvoiceDto>;
 
 /// <summary>Read a refund.</summary>
 public sealed record GetRefundQuery(Guid RefundId) : IQuery<RefundDto>;
@@ -77,6 +82,59 @@ public interface IFinanceRepository
     Task AddInvoiceAsync(Invoice invoice, CancellationToken cancellationToken);
     /// <summary>Returns an invoice by id.</summary>
     Task<Invoice?> GetInvoiceAsync(Guid id, CancellationToken cancellationToken);
+    /// <summary>Adds a chargeback.</summary>
+    Task AddChargebackAsync(Chargeback chargeback, CancellationToken cancellationToken);
+    /// <summary>Returns a chargeback by id.</summary>
+    Task<Chargeback?> GetChargebackAsync(Guid id, CancellationToken cancellationToken);
+    /// <summary>Adds a reconciliation record.</summary>
+    Task AddReconciliationAsync(ReconciliationRecord record, CancellationToken cancellationToken);
+    /// <summary>Returns a reconciliation record by id.</summary>
+    Task<ReconciliationRecord?> GetReconciliationAsync(Guid id, CancellationToken cancellationToken);
     /// <summary>Persists pending changes.</summary>
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }
+
+/// <summary>Open a chargeback.</summary>
+public sealed record OpenChargebackCommand(
+    Guid OrderId,
+    Guid? PaymentIntentId,
+    decimal Amount,
+    string Currency,
+    string Reason) : ICommand<ChargebackDto>;
+
+/// <summary>Accept or reject a chargeback.</summary>
+public sealed record ResolveChargebackCommand(Guid ChargebackId, bool Accept) : ICommand<ChargebackDto>;
+
+/// <summary>Create a reconciliation record.</summary>
+public sealed record CreateReconciliationCommand(
+    string Provider,
+    DateOnly PeriodStart,
+    DateOnly PeriodEnd,
+    string Currency,
+    decimal ExpectedAmount,
+    decimal ActualAmount) : ICommand<ReconciliationDto>;
+
+/// <summary>Chargeback read model.</summary>
+public sealed record ChargebackDto(
+    Guid ChargebackId,
+    Guid OrderId,
+    Guid? PaymentIntentId,
+    decimal Amount,
+    string Currency,
+    string Reason,
+    string Status,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset? ResolvedAt);
+
+/// <summary>Reconciliation read model.</summary>
+public sealed record ReconciliationDto(
+    Guid ReconciliationId,
+    string Provider,
+    DateOnly PeriodStart,
+    DateOnly PeriodEnd,
+    string Currency,
+    decimal ExpectedAmount,
+    decimal ActualAmount,
+    decimal Difference,
+    string Status,
+    DateTimeOffset CreatedAt);

@@ -4,9 +4,10 @@
 - **Report:** `docs/reports/lastsecond-gap-analysis-2026-11-12.md`
 - **Machine-readable:** `docs/plan/baseline.json`
 - **Status:** Locked for planning
-- **Current gate:** Gate 7 — Channel & Billing (Gate 1/2/3 ✅ Passed, Gate 4 ✅ Remediated, Gate 5/5.1 ✅ Passed, Gate 6 ✅ Passed)
+- **Current gate:** Gate 8 — Hardening (Gate 1/2/3 ✅ Passed, Gate 4 ✅ Remediated, Gate 5/5.1 ✅ Passed, Gate 6 ✅ Passed, Gate 7 ✅ Passed Core)
 - **Gate 5 status:** ✅ Passed — GAP-13/14/15/16/21/25/29 + B-01..B-08 Done
 - **Gate 6 status:** ✅ Passed — GAP-12/22/23/24/30/33/34 + C-01..C-08 Done
+- **Gate 7 status:** ✅ Passed Core — Channel OAuth/API, Refund/Invoice, Settlement/Payout, dashboard, webhook, dunning, chargeback/reconciliation; external PSP/DNS/frontend pending
 
 > این فایل مرجع برنامه‌ریزی است. هر GAP باید یک Gate، Task، وضعیت و Evidence داشته باشد.
 > ترتیب Gateها از گزارش Lastsecond و وابستگی‌های واقعی محصول پیروی می‌کند؛ هیچ GAP حذف نمی‌شود.

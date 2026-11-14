@@ -300,6 +300,20 @@ paths:
                   status: { type: string }
                   ticketingDeadline: { type: [string, 'null'], format: date-time }
 
+  /me/dashboard:
+    get:
+      tags: [Finance]
+      summary: Agency booking dashboard totals
+      responses:
+        '200': { description: Dashboard totals }
+
+  /me/settlements:
+    get:
+      tags: [Finance]
+      summary: Settlement terms
+      responses:
+        '200': { description: Settlement terms }
+
   /settlements:
     get:
       tags: [Finance]

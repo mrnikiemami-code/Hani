@@ -60,6 +60,9 @@ public static class PaymentEndpoints
         internalApi.MapPost("/invoices", CreateInvoiceAsync)
             .WithName("Internal.CreateInvoice")
             .Produces<InvoiceDto>();
+        internalApi.MapPost("/invoices/{invoiceId:guid}/remind", SendInvoiceReminderAsync)
+            .WithName("Internal.SendInvoiceReminder")
+            .Produces<InvoiceDto>();
         internalApi.MapGet("/refunds/{refundId:guid}", GetRefundAsync)
             .WithName("Internal.GetRefund")
             .Produces<RefundDto>();
@@ -69,6 +72,15 @@ public static class PaymentEndpoints
         internalApi.MapGet("/orders/{orderId:guid}/refunds", ListRefundsAsync)
             .WithName("Internal.ListOrderRefunds")
             .Produces<IReadOnlyList<RefundDto>>();
+        internalApi.MapPost("/chargebacks", OpenChargebackAsync)
+            .WithName("Internal.OpenChargeback")
+            .Produces<ChargebackDto>();
+        internalApi.MapPost("/chargebacks/{chargebackId:guid}/resolve", ResolveChargebackAsync)
+            .WithName("Internal.ResolveChargeback")
+            .Produces<ChargebackDto>();
+        internalApi.MapPost("/reconciliations", CreateReconciliationAsync)
+            .WithName("Internal.CreateReconciliation")
+            .Produces<ReconciliationDto>();
 
         return app;
     }
@@ -156,6 +168,19 @@ public static class PaymentEndpoints
     }
 
     /// <summary>
+    /// Sends the next invoice reminder.
+    /// </summary>
+    private static async Task<IResult> SendInvoiceReminderAsync(
+        Guid invoiceId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new SendInvoiceReminderCommand(invoiceId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
     /// Lists refunds for an order.
     /// </summary>
     private static async Task<IResult> ListRefundsAsync(
@@ -165,6 +190,57 @@ public static class PaymentEndpoints
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new ListRefundsQuery(orderId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Opens a chargeback case.</summary>
+    private static async Task<IResult> OpenChargebackAsync(
+        OpenChargebackRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new OpenChargebackCommand(
+                request.OrderId,
+                request.PaymentIntentId,
+                request.Amount,
+                request.Currency,
+                request.Reason),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Resolves a chargeback case.</summary>
+    private static async Task<IResult> ResolveChargebackAsync(
+        Guid chargebackId,
+        ResolveChargebackRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new ResolveChargebackCommand(chargebackId, request.Accept),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Creates a reconciliation record.</summary>
+    private static async Task<IResult> CreateReconciliationAsync(
+        CreateReconciliationRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateReconciliationCommand(
+                request.Provider,
+                request.PeriodStart,
+                request.PeriodEnd,
+                request.Currency,
+                request.ExpectedAmount,
+                request.ActualAmount),
+            cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
@@ -292,3 +368,23 @@ public sealed record CreateInvoiceRequest(
     decimal Tax,
     decimal Total,
     string Currency);
+
+/// <summary>Chargeback request.</summary>
+public sealed record OpenChargebackRequest(
+    Guid OrderId,
+    Guid? PaymentIntentId,
+    decimal Amount,
+    string Currency,
+    string Reason);
+
+/// <summary>Chargeback resolution request.</summary>
+public sealed record ResolveChargebackRequest(bool Accept);
+
+/// <summary>Reconciliation request.</summary>
+public sealed record CreateReconciliationRequest(
+    string Provider,
+    DateOnly PeriodStart,
+    DateOnly PeriodEnd,
+    string Currency,
+    decimal ExpectedAmount,
+    decimal ActualAmount);

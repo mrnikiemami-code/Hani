@@ -1,5 +1,6 @@
 using Hani.Contracts.Identity;
 using Hani.Modules.Identity.Application.Abstractions;
+using Hani.Modules.Identity.Infrastructure.Integrations;
 using Hani.Modules.Identity.Infrastructure.ReadServices;
 using Hani.Modules.Identity.Infrastructure.Repositories;
 using Hani.Modules.Identity.Infrastructure.Security;
@@ -32,6 +33,8 @@ public static class DependencyInjection
         services.AddScoped<IAgencyReadService, AgencyReadService>();
         services.AddScoped<IReviewSummaryReadService, ReviewSummaryReadService>();
         services.AddScoped<IReviewMediaReadService, ReviewMediaReadService>();
+        services.AddSingleton<HttpClient>();
+        services.AddScoped<IChannelWebhookPublisher, ChannelWebhookPublisher>();
         return services;
     }
 }

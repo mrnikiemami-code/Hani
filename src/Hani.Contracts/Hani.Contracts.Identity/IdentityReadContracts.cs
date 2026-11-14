@@ -59,4 +59,34 @@ public interface IAgencyReadService
     /// Returns ids of agencies that are active and eligible to receive platform leads.
     /// </summary>
     Task<IReadOnlyList<Guid>> GetActiveAgencyIdsAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns channel settings for an agency, or <c>null</c>.
+    /// </summary>
+    Task<ChannelSettingsSnapshot?> GetChannelSettingsAsync(
+        Guid agencyId,
+        CancellationToken cancellationToken);
+}
+
+/// <summary>Channel plan and white-label settings.</summary>
+public sealed record ChannelSettingsSnapshot(
+    string Plan,
+    bool WhiteLabelEnabled,
+    string? CustomDomain,
+    bool AttributionRequired,
+    string CanonicalMode);
+
+/// <summary>
+/// Publishes booking events to the agency channel webhook.
+/// </summary>
+public interface IChannelWebhookPublisher
+{
+    /// <summary>
+    /// Sends an event to the agency webhook when configured; delivery errors are logged and not surfaced.
+    /// </summary>
+    Task PublishAsync(
+        Guid agencyId,
+        string eventType,
+        object payload,
+        CancellationToken cancellationToken);
 }

@@ -3,6 +3,13 @@ using Hani.Modules.Identity.Domain.Agencies.Events;
 
 namespace Hani.Modules.Identity.Domain.Agencies;
 
+/// <summary>Channel subscription plan.</summary>
+public enum ChannelPlan
+{
+    Standard = 0,
+    Pro = 1
+}
+
 /// <summary>
 /// Travel agency tenant with license, city, status, and subscription validity.
 /// </summary>
@@ -52,6 +59,9 @@ public sealed class Agency : AggregateRoot<Guid>
         Province = province;
         LicenseFileUrl = licenseFileUrl;
         Status = AgencyStatus.Active;
+        ChannelPlan = ChannelPlan.Standard;
+        AttributionRequired = true;
+        CanonicalMode = "marketplace";
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
@@ -128,6 +138,66 @@ public sealed class Agency : AggregateRoot<Guid>
     /// Public license file URL.
     /// </summary>
     public string? LicenseFileUrl { get; private set; }
+
+    /// <summary>Channel subscription plan.</summary>
+    public ChannelPlan ChannelPlan { get; private set; }
+
+    /// <summary>Whether white-label channel mode is enabled.</summary>
+    public bool WhiteLabelEnabled { get; private set; }
+
+    /// <summary>Optional white-label custom domain.</summary>
+    public string? CustomDomain { get; private set; }
+
+    /// <summary>Whether channel attribution is required.</summary>
+    public bool AttributionRequired { get; private set; }
+
+    /// <summary>Canonical URL mode for channel pages.</summary>
+    public string CanonicalMode { get; private set; } = "marketplace";
+
+    /// <summary>Optional channel webhook URL.</summary>
+    public string? ChannelWebhookUrl { get; private set; }
+
+    /// <summary>Optional channel webhook secret.</summary>
+    public string? ChannelWebhookSecret { get; private set; }
+
+    /// <summary>Updates channel plan and white-label settings.</summary>
+    public void ConfigureChannel(
+        ChannelPlan plan,
+        bool whiteLabelEnabled,
+        string? customDomain,
+        bool attributionRequired,
+        string canonicalMode)
+    {
+        if (whiteLabelEnabled && string.IsNullOrWhiteSpace(customDomain))
+        {
+            throw new ArgumentException("Custom domain is required for white-label mode.");
+        }
+
+        ChannelPlan = plan;
+        WhiteLabelEnabled = whiteLabelEnabled;
+        CustomDomain = string.IsNullOrWhiteSpace(customDomain) ? null : customDomain.Trim().ToLowerInvariant();
+        AttributionRequired = attributionRequired;
+        CanonicalMode = string.IsNullOrWhiteSpace(canonicalMode) ? "marketplace" : canonicalMode.Trim();
+    }
+
+    /// <summary>Updates channel webhook settings.</summary>
+    public void ConfigureWebhook(string? url, string? secret)
+    {
+        if (string.IsNullOrWhiteSpace(url) && string.IsNullOrWhiteSpace(secret))
+        {
+            ChannelWebhookUrl = null;
+            ChannelWebhookSecret = null;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(secret))
+        {
+            throw new ArgumentException("Both webhook URL and secret are required.");
+        }
+
+        ChannelWebhookUrl = url.Trim();
+        ChannelWebhookSecret = secret.Trim();
+    }
 
     /// <summary>
     /// Onboarding submission time.

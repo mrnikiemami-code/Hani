@@ -1,7 +1,9 @@
+using Hani.Modules.Payments.Domain.Chargebacks;
 using Hani.Modules.Payments.Domain.Invoices;
 using Hani.Modules.Payments.Domain.OfflinePayments;
 using Hani.Modules.Payments.Domain.PaymentIntents;
 using Hani.Modules.Payments.Domain.PaymentWebhooks;
+using Hani.Modules.Payments.Domain.Reconciliation;
 using Hani.Modules.Payments.Domain.Refunds;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +32,10 @@ public sealed class PaymentsDbContext(DbContextOptions<PaymentsDbContext> option
     public DbSet<Refund> Refunds => Set<Refund>();
 
     public DbSet<Invoice> Invoices => Set<Invoice>();
+
+    public DbSet<Chargeback> Chargebacks => Set<Chargeback>();
+
+    public DbSet<ReconciliationRecord> Reconciliations => Set<ReconciliationRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

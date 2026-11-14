@@ -5,6 +5,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Hani.Modules.Identity.Domain\Hani.Modules.Identity.Domain.csproj" />
     <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Application\Hani.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Identity\Hani.Contracts.Identity.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" />

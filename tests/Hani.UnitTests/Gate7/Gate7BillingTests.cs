@@ -1,4 +1,6 @@
+using Hani.Modules.Payments.Domain.Chargebacks;
 using Hani.Modules.Payments.Domain.Invoices;
+using Hani.Modules.Payments.Domain.Reconciliation;
 using Hani.Modules.Payments.Domain.Refunds;
 using Hani.Modules.Settlement.Domain.Payouts;
 using Shouldly;
@@ -41,6 +43,31 @@ public sealed class Gate7BillingTests
         invoice.InvoiceNumber.ShouldStartWith("INV-");
         invoice.Status.ShouldBe(InvoiceStatus.Issued);
         invoice.Total.ShouldBe(10_900_000m);
+    }
+
+    [Fact]
+    public void Chargeback_Should_Resolve_And_Reconciliation_Should_Detect_Mismatch()
+    {
+        var chargeback = Chargeback.Create(
+            TestIds.Generator,
+            Guid.CreateVersion7(),
+            Guid.CreateVersion7(),
+            1_000_000m,
+            "IRR",
+            "Fraud claim");
+        chargeback.Accept();
+        chargeback.Status.ShouldBe(ChargebackStatus.Accepted);
+
+        var reconciliation = ReconciliationRecord.Create(
+            TestIds.Generator,
+            "Mock",
+            new DateOnly(2026, 11, 1),
+            new DateOnly(2026, 11, 7),
+            "IRR",
+            10_000_000m,
+            9_900_000m);
+        reconciliation.Status.ShouldBe(ReconciliationStatus.Mismatched);
+        reconciliation.Difference.ShouldBe(-100_000m);
     }
 
     [Fact]
