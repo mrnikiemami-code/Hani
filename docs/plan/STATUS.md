@@ -7,6 +7,7 @@
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 > **گزارش Gate:** [`../reports/baseline-gate-8.md`](../reports/baseline-gate-8.md)
+> **بازبینی دوباره Lastsecond:** [`../reports/lastsecond-reaudit-post-gate8-2026-11-14.md`](../reports/lastsecond-reaudit-post-gate8-2026-11-14.md)
 > **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **برنامه Remediation:** [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md)
 > **Deviation Audit پس از Gate 6:** [`../reports/lastsecond-deviation-audit-post-gate6-2026-11-14.md`](../reports/lastsecond-deviation-audit-post-gate6-2026-11-14.md)
@@ -202,6 +203,8 @@
 ## ۶. تسک فعال / بعدی
 
 **تسک فعال:** Gate 8 — Hardening (PASSED Core)
+
+> **Post-Gate 8 Re-audit (2026-11-14):** بازبینی دوباره Lastsecond نشان داد Baseline ۳۴ GAP بسته است، اما ۱۰ انحراف E-01..E-10 و ۳ انحراف تکمیلی (Agency directory/profile، Review aggregate criteria، Blog related/tags) هنوز باز یا خارجی هستند. جزئیات: [`lastsecond-reaudit-post-gate8-2026-11-14.md`](../reports/lastsecond-reaudit-post-gate8-2026-11-14.md). Gate 8.1 پیشنهاد می‌شود؛ Gate 9 شروع نشود تا درباره این residuals تصمیم گرفته شود.
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32

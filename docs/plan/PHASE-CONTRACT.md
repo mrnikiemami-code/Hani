@@ -263,4 +263,5 @@
 - Gate 6: ✅ PASSED — Content/Gamification/Ads/Newsletter/Campaign/Analytics/Recommendation/Notification/Dashboard بسته شدند.
 - Gate 7: ✅ PASSED (Core) — Channel OAuth/API، Refund/Invoice، Settlement/Payout، Webhook/Dunning/Dashboard/Reconciliation.
 - Gate 8: ✅ PASSED (Core) — Search hardening, sitemap, Testcontainers, load/SLO, DR, security, observability, ADR-0029. Contract: [`GATE-8-CONTRACT.md`](GATE-8-CONTRACT.md).
+- Post-Gate 8 re-audit: 10 Lastsecond parity deviations (E-01..E-10) and 3 supplementary gaps remain open/external. See [`../reports/lastsecond-reaudit-post-gate8-2026-11-14.md`](../reports/lastsecond-reaudit-post-gate8-2026-11-14.md). Gate 8.1 is proposed; Gate 9 is blocked on the residual decision.
 - Audit: [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
