@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 4 — Booking, Request & Lead
-> **آخرین commit کد:** `026724a`
+> **آخرین commit کد:** `fc26e43`
 > **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
@@ -94,7 +94,7 @@
 | Lastsecond Re-audit | تأیید صفحات + اصلاح minPrice چندارزی + هتل/پرواز/مالیات در compare + هتل در Quote/Order/Contract | `13cf435` |
 | Discovery & SEO | Faceted Search/Sort + Canonical/JSON-LD/Sitemap/Landing + robots | `d7921ac` |
 | Identity Core | User + OTP + JWT/refresh + profile + author | `026724a` |
-| Trust & Agency | Onboarding/documents/admin panel/trust + reviews/claims/media | این تغییر |
+| Trust & Agency | Onboarding/documents/admin panel/trust + reviews/claims/media | `fc26e43` |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -258,3 +258,4 @@
 | `a540530` | Endpoint handler XML documentation guard |
 | `d7921ac` | Faceted search and SEO (Gate 2) |
 | `026724a` | Identity core: OTP, JWT, profiles |
+| `fc26e43` | Trust, agency, reviews, claims, media (Gate 3) |

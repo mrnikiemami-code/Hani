@@ -1,6 +1,7 @@
 # Baseline Gate 3 Report — Identity, Trust & Agency
 
 > **تاریخ:** ۱۴ نوامبر ۲۰۲۶
+> **کد commit:** `fc26e43`
 > **وضعیت:** ✅ **PASSED**
 > **Gate بعدی:** Gate 4 — Booking, Request & Lead
 
