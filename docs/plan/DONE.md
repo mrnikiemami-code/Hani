@@ -141,6 +141,8 @@
 | D-124 | Recommendations | Product recommendations + trending content | Gate 6 |
 | D-125 | Notification dispatcher | queue + retry + provider abstraction | Gate 6 |
 | D-126 | Dashboard C-08 | UserMessage/UserDocument + summary/list APIs | Gate 6 |
+| D-127 | Channel OAuth/API | client credentials + scopes + catalog/booking/cancel | Gate 7 |
+| D-128 | Billing | Refund/Invoice + settlement terms/payout | Gate 7 |
 
 ## ۳. مستندات
 
@@ -160,10 +162,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | 145 passed |
+| Unit Tests | 148 passed |
 | Architecture Tests | 34 passed |
-| Total | **179 passed** |
-| Migrations | Supply (8) + Catalog (6) + Content (2) + Identity (6) + Booking (9) + Payments (6) + Settlement (3) |
+| Total | **182 passed** |
+| Migrations | Supply (8) + Catalog (6) + Content (2) + Identity (6) + Booking (10) + Payments (6) + Settlement (3) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API `/health` | Healthy |
@@ -219,4 +221,5 @@
 | `f6d65ce` | Gate 5.1 vertical depth and parity residuals |
 | `1a35e3c` | Gate 6 content, growth, and gamification foundation |
 | `26e3b3a` | Gate 6 recommendation, notification dispatcher, dashboard |
+| `pending` | Gate 7 channel OAuth, refunds, invoices, settlement payouts |
 | `7df2265` | Phase roadmap + status + tasks |

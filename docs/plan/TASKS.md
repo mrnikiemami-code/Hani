@@ -31,7 +31,7 @@
 
 > Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
-> **Gate 6 PASSED است.** Content/Growth/Gamification/Recommendation/Notification/Dashboard کامل شد. Gate 7 (Channel & Billing) آماده شروع است.
+> **Gate 7 شروع شد.** Channel OAuth/API، Refund/Invoice و Settlement/Payout پایه پیاده‌سازی شد؛ webhook/dunning/white-label/dashboard باقی است.
 
 ## Phase 0 — Foundation ✅
 
@@ -75,9 +75,9 @@
 | TC-028 | PaymentIntent + Gateway | ✅ | TC-027 | idempotent initiate + Hani MoR | `dc76539` |
 | TC-029 | Payment Webhook | ✅ | TC-028 | dedupe + verify + Order.Paid | `7b85652` |
 | TC-030 | Settlement Ledger | ✅ | TC-028 | double-entry + commission accrual | `0dd6fbe` |
-| TC-031 | Channel OAuth | ❌ | TC-017 | token + scope | — |
-| TC-032 | Channel Catalog/Availability | ❌ | TC-031, TC-021 | فقط Offer مجاز | — |
-| TC-033 | Channel Booking + Webhook | ❌ | TC-032, TC-026 | end-to-end | — |
+| TC-031 | Channel OAuth | ✅ | TC-017 | token + scope | Gate 7 |
+| TC-032 | Channel Catalog/Availability | ✅ | TC-031, TC-021 | فقط Offer مجاز | Gate 7 |
+| TC-033 | Channel Booking + Webhook | 🚧 | TC-032, TC-026 | end-to-end | Gate 7 |
 | TC-034 | Agency Dashboard | ❌ | TC-020 | مدیریت Offer/Departure | — |
 | TC-035 | Admin Dashboard | ❌ | TC-023 | moderation/settlement | — |
 | TC-036 | Traveler Dashboard | ❌ | TC-027 | سفارش/لغو | — |
@@ -109,12 +109,12 @@
 
 | ID | تسک | وضعیت | وابستگی | DoD |
 |---|---|---|---|---|
-| TC-055 | OAuth2 + scopes | ❌ | TC-017 | token/scope |
-| TC-056 | Entitlements + plans | ❌ | TC-055 | Standard/Pro |
+| TC-055 | OAuth2 + scopes | ✅ | TC-017 | token/scope |
+| TC-056 | Entitlements + plans | 🚧 | TC-055 | Standard/Pro |
 | TC-057 | White-label | ❌ | TC-056 | custom domain |
-| TC-058 | AgencyCommissionRule | ❌ | TC-015 | per agency/product |
-| TC-059 | Invoice + Dunning | ❌ | TC-058 | فاکتور/یادآوری |
-| TC-060 | SettlementTerms + Ledger | ❌ | TC-058 | تسویه |
+| TC-058 | AgencyCommissionRule | ✅ | TC-015 | per agency/product |
+| TC-059 | Invoice + Dunning | 🚧 | TC-058 | فاکتور/یادآوری |
+| TC-060 | SettlementTerms + Ledger | ✅ | TC-058 | تسویه |
 
 ## Phase 4 — Flights
 

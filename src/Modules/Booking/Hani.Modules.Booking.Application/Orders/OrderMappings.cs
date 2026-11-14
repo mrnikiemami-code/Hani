@@ -51,7 +51,9 @@ internal static class OrderMappings
             order.EffectivePricing.BookingMode,
             order.EffectivePricing.CollectionMode,
             order.EffectivePricing.SellerOfRecord,
-            order.EffectivePricing.InvoiceIssuer);
+            order.EffectivePricing.InvoiceIssuer,
+            order.CancelledAt,
+            order.CancellationReason);
 
     public static ContractDto ToContractDto(Order order)
     {

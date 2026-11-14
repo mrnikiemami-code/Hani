@@ -1,0 +1,58 @@
+openapi: 3.1.0
+info:
+  title: Hani Internal Payments API — Draft v1
+  version: 1.0.0
+  description: Internal refund and invoice operations for Hani MoR.
+servers:
+  - url: https://api.hani.ir/internal/v1
+paths:
+  /payments/refunds:
+    post:
+      tags: [Payments]
+      summary: Request a refund
+      responses:
+        '200': { description: Refund requested }
+        default: { description: Problem }
+  /payments/refunds/{refundId}/process:
+    post:
+      tags: [Payments]
+      summary: Process a refund
+      parameters:
+        - { name: refundId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Refund processed }
+        default: { description: Problem }
+  /payments/refunds/{refundId}:
+    get:
+      tags: [Payments]
+      summary: Read a refund
+      parameters:
+        - { name: refundId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Refund }
+        default: { description: Problem }
+  /payments/orders/{orderId}/refunds:
+    get:
+      tags: [Payments]
+      summary: List refunds for an order
+      parameters:
+        - { name: orderId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Refunds }
+        default: { description: Problem }
+  /payments/invoices:
+    post:
+      tags: [Payments]
+      summary: Create an invoice
+      responses:
+        '200': { description: Invoice created }
+        default: { description: Problem }
+  /payments/invoices/{invoiceId}:
+    get:
+      tags: [Payments]
+      summary: Read an invoice
+      parameters:
+        - { name: invoiceId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Invoice }
+        default: { description: Problem }

@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
+using Hani.Modules.Payments.Application.Commands.Finance;
 using Hani.Modules.Payments.Application.Commands.HandlePaymentWebhook;
 using Hani.Modules.Payments.Application.Commands.RecordOfflinePayment;
 using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
@@ -50,7 +51,121 @@ public static class PaymentEndpoints
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status409Conflict);
 
+        internalApi.MapPost("/refunds", RequestRefundAsync)
+            .WithName("Internal.RequestRefund")
+            .Produces<RefundDto>();
+        internalApi.MapPost("/refunds/{refundId:guid}/process", ProcessRefundAsync)
+            .WithName("Internal.ProcessRefund")
+            .Produces<RefundDto>();
+        internalApi.MapPost("/invoices", CreateInvoiceAsync)
+            .WithName("Internal.CreateInvoice")
+            .Produces<InvoiceDto>();
+        internalApi.MapGet("/refunds/{refundId:guid}", GetRefundAsync)
+            .WithName("Internal.GetRefund")
+            .Produces<RefundDto>();
+        internalApi.MapGet("/invoices/{invoiceId:guid}", GetInvoiceAsync)
+            .WithName("Internal.GetInvoice")
+            .Produces<InvoiceDto>();
+        internalApi.MapGet("/orders/{orderId:guid}/refunds", ListRefundsAsync)
+            .WithName("Internal.ListOrderRefunds")
+            .Produces<IReadOnlyList<RefundDto>>();
+
         return app;
+    }
+
+    /// <summary>
+    /// Requests a refund for an order.
+    /// </summary>
+    private static async Task<IResult> RequestRefundAsync(
+        RequestRefundRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new RequestRefundCommand(
+                request.OrderId,
+                request.PaymentIntentId,
+                request.Amount,
+                request.Currency,
+                request.Reason),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Processes a refund request.
+    /// </summary>
+    private static async Task<IResult> ProcessRefundAsync(
+        Guid refundId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new ProcessRefundCommand(refundId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Creates an invoice for an order.
+    /// </summary>
+    private static async Task<IResult> CreateInvoiceAsync(
+        CreateInvoiceRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateInvoiceCommand(
+                request.OrderId,
+                request.Issuer,
+                request.SellerOfRecord,
+                request.BuyerEmail,
+                request.Subtotal,
+                request.Tax,
+                request.Total,
+                request.Currency),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns one refund.
+    /// </summary>
+    private static async Task<IResult> GetRefundAsync(
+        Guid refundId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetRefundQuery(refundId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns one invoice.
+    /// </summary>
+    private static async Task<IResult> GetInvoiceAsync(
+        Guid invoiceId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetInvoiceQuery(invoiceId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Lists refunds for an order.
+    /// </summary>
+    private static async Task<IResult> ListRefundsAsync(
+        Guid orderId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new ListRefundsQuery(orderId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     /// <summary>
@@ -158,3 +273,22 @@ public sealed record RecordOfflinePaymentRequest(
     OfflinePaymentMethod Method,
     string? Reference,
     string RecordedBy);
+
+/// <summary>Refund request.</summary>
+public sealed record RequestRefundRequest(
+    Guid OrderId,
+    Guid? PaymentIntentId,
+    decimal Amount,
+    string Currency,
+    string Reason);
+
+/// <summary>Invoice request.</summary>
+public sealed record CreateInvoiceRequest(
+    Guid OrderId,
+    string Issuer,
+    string SellerOfRecord,
+    string BuyerEmail,
+    decimal Subtotal,
+    decimal Tax,
+    decimal Total,
+    string Currency);

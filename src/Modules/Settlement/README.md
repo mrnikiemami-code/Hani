@@ -34,12 +34,17 @@ Order.Paid (Booking)
 | POST | `/internal/v1/settlements/commission-rules` | داخلی |
 | GET | `/internal/v1/settlements/commissions/{orderId}` | داخلی |
 | GET | `/internal/v1/settlements/ledger/{transactionId}` | داخلی |
+| POST | `/internal/v1/settlements/terms` | داخلی |
+| GET | `/internal/v1/settlements/terms/{agencyId}` | داخلی |
+| POST | `/internal/v1/settlements/payouts` | داخلی |
+| POST | `/internal/v1/settlements/payouts/{payoutId}/paid` | داخلی |
+| GET | `/internal/v1/settlements/payouts/{agencyId}` | داخلی |
 
 ## Persistence
 
 - Schema: `settlement`
 - جدول‌ها: `commission_rules`, `commission_entries`, `ledger_transactions`, `ledger_entries`
-- Migrationها: `InitialSettlement`, `AddCommissionPerCurrency`
+- Migrationها: `InitialSettlement`, `AddCommissionPerCurrency`, `AddGate7SettlementTermsAndPayouts`
 
 ## پیکربندی
 

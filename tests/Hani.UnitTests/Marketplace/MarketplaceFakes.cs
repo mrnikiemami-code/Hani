@@ -102,6 +102,14 @@ internal sealed class FakeOfferReadService : IOfferReadService
             OffersByProduct.TryGetValue(tourProductId, out var offers)
                 ? offers
                 : (IReadOnlyList<OfferSnapshot>)[]);
+
+    public Task<OfferSnapshot?> GetApprovedOfferByIdAsync(
+        Guid offerId,
+        CancellationToken cancellationToken)
+        => Task.FromResult(
+            OffersByProduct.Values
+                .SelectMany(offers => offers)
+                .FirstOrDefault(offer => offer.OfferId == offerId));
 }
 
 internal sealed class FakeLanguageCatalog : ILanguageCatalog

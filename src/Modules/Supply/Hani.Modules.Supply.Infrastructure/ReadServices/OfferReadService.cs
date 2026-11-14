@@ -45,6 +45,29 @@ internal sealed class OfferReadService(SupplyDbContext dbContext)
         return await MapAsync(offers, cancellationToken);
     }
 
+    public async Task<OfferSnapshot?> GetApprovedOfferByIdAsync(
+        Guid offerId,
+        CancellationToken cancellationToken)
+    {
+        var offer = await dbContext.AgencyOffers
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(item => item.AccommodationOptions)
+            .Include(item => item.FlightOptions)
+            .Include(item => item.TaxRules)
+            .FirstOrDefaultAsync(
+                item => item.Id == offerId && item.Status == AgencyOfferStatus.Approved,
+                cancellationToken);
+
+        if (offer is null)
+        {
+            return null;
+        }
+
+        var mapped = await MapAsync([offer], cancellationToken);
+        return mapped.Count == 0 ? null : mapped[0];
+    }
+
     private async Task<IReadOnlyList<OfferSnapshot>> MapAsync(
         AgencyOffer[] offers,
         CancellationToken cancellationToken)

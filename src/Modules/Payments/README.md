@@ -36,7 +36,8 @@ Order (Booking, PendingPayment)
 - `RecordOfflinePayment` فقط برای `CollectionMode=AgencyOffline` مجاز است.
 - پرداخت آفلاین باید دقیقاً با مبلغ obligation همان ارز برابر باشد و یک `OfflinePaymentReceipt` با اپراتور/مرجع ثبت می‌کند.
 - Gateway پیش‌فرض `MockPaymentGateway` است و برای توسعه/تست قابل جایگزینی با PSP واقعی است.
-- Refund و Reconciliation در تسک‌های بعدی اضافه می‌شوند.
+- Refund و Invoice با مدل `Refund`/`Invoice` اضافه شدند؛ Reconciliation/Payout در Settlement است.
+- Refund از `Requested` به `Processed` می‌رود و `Invoice` شامل Issuer/SellerOfRecord است.
 
 ## APIها
 
@@ -46,13 +47,19 @@ Order (Booking, PendingPayment)
 | GET | `/market/v1/payments/intents/{id}` | عمومی |
 | POST | `/market/v1/payments/webhook/{provider}` | HMAC signature |
 | POST | `/internal/v1/payments/offline` | Internal |
+| POST | `/internal/v1/payments/refunds` | Internal |
+| POST | `/internal/v1/payments/refunds/{id}/process` | Internal |
+| GET | `/internal/v1/payments/refunds/{id}` | Internal |
+| GET | `/internal/v1/payments/orders/{orderId}/refunds` | Internal |
+| POST | `/internal/v1/payments/invoices` | Internal |
+| GET | `/internal/v1/payments/invoices/{id}` | Internal |
 
 ## Persistence
 
 - Schema: `payment`
 - جدول‌ها: `payment_intents`, `payment_webhook_events`, `offline_payment_receipts`
 - ایندکس یکتای `payment_intents`: `(order_id, currency)`
-- Migrationها: `InitialPayments`, `AddPaymentWebhookEvents`, `AddMultipleIntentsPerOrder`, `AddPaymentObligationReference`, `AddOfflinePayments`
+- Migrationها: `InitialPayments`, `AddPaymentWebhookEvents`, `AddMultipleIntentsPerOrder`, `AddPaymentObligationReference`, `AddOfflinePayments`, `AddGate7RefundsAndInvoices`
 
 ## پیکربندی
 

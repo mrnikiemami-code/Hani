@@ -1,12 +1,12 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 7 — Channel & Billing (Ready)
-> **آخرین commit کد:** `26e3b3a`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ⏳ Ready
+> **فاز فعال:** Gate 7 — Channel & Billing (In Progress)
+> **آخرین commit کد:** `26e3b3a` + Gate 7
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 🚧 In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
-> **گزارش Gate:** [`../reports/baseline-gate-6.md`](../reports/baseline-gate-6.md)
+> **گزارش Gate:** [`../reports/baseline-gate-7.md`](../reports/baseline-gate-7.md)
 > **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **برنامه Remediation:** [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md)
 > **Deviation Audit پس از Gate 6:** [`../reports/lastsecond-deviation-audit-post-gate6-2026-11-14.md`](../reports/lastsecond-deviation-audit-post-gate6-2026-11-14.md)
@@ -189,10 +189,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۴۵ passed |
+| Unit Tests | ۱۴۸ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۷۹ passed** |
-| Migrations | Supply (۸) / Catalog (۶) / Content (۲) / Identity (۶) / Booking (۹) / Payments (۶) / Settlement (۳) |
+| Total | **۱۸۲ passed** |
+| Migrations | Supply (۸) / Catalog (۶) / Content (۲) / Identity (۶) / Booking (۱۰) / Payments (۶) / Settlement (۳) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -201,14 +201,15 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 7 — Channel & Billing (Ready)
+**تسک فعال:** Gate 7 — Channel & Billing (In Progress)
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
 **GAPهای Gate 4:** ✅ GAP-05/06/19 (TC-088), GAP-17/18 (TC-098)
 **GAPهای Gate 5:** ✅ GAP-13/25/29 (TC-094), GAP-14 (TC-090), GAP-15/21 (TC-091), GAP-16 (TC-092)
 **GAPهای Gate 6:** ✅ GAP-12/22/23/24/30/33/34
-**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 7`؛ Audit Remediation A/B/C-01..C-08 کامل شد
+**Gate 7:** 🚧 OAuth/Channel API/Refund/Invoice/Payout آغاز شد
+**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 7`
 
 ### Audit 2026-11-14 — Lastsecond Full Architecture
 
@@ -227,6 +228,23 @@
 - [x] A-08 — `TourCategory` + `TravelType` + search filters
 
 **شکاف‌های اصلی Gate 6/7:** Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
+
+### Gate 7 — Progress Checklist 🚧
+
+- [x] OAuth2 Client Credentials + channel scopes
+- [x] Channel catalog/offers/departures
+- [x] Channel quote/booking/list/detail/cancel
+- [x] Entitlements endpoint
+- [x] Refund requested/processed
+- [x] Invoice create/read
+- [x] Settlement terms + payout create/paid
+- [x] Channel finance endpoints
+- [ ] Channel booking webhook
+- [ ] Invoice dunning/reminders
+- [ ] White-label/custom domain + plan model
+- [ ] Agency/Admin/Traveler dashboards
+- [ ] Reconciliation/chargeback
+- [ ] Real PSP refund integration
 
 ### Gate 6 — Exit Checklist ✅ PASSED
 

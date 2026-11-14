@@ -200,6 +200,16 @@ public sealed class Order : AggregateRoot<Guid>
     public DateTimeOffset PaymentDueAt { get; private set; }
 
     /// <summary>
+    /// Cancellation time.
+    /// </summary>
+    public DateTimeOffset? CancelledAt { get; private set; }
+
+    /// <summary>
+    /// Cancellation reason.
+    /// </summary>
+    public string? CancellationReason { get; private set; }
+
+    /// <summary>
     /// Immutable contract issued with this order.
     /// </summary>
     public Contract Contract { get; private set; } = null!;
@@ -359,6 +369,26 @@ public sealed class Order : AggregateRoot<Guid>
         {
             Status = OrderStatus.Paid;
         }
+    }
+
+    /// <summary>
+    /// Cancels the order with a reason.
+    /// </summary>
+    public void Cancel(string reason, DateTimeOffset? now = null)
+    {
+        if (Status is OrderStatus.Cancelled or OrderStatus.Expired)
+        {
+            throw new InvalidOperationException("Order is already closed.");
+        }
+
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+            throw new ArgumentException("Cancellation reason is required.", nameof(reason));
+        }
+
+        Status = OrderStatus.Cancelled;
+        CancellationReason = reason.Trim();
+        CancelledAt = now ?? DateTimeOffset.UtcNow;
     }
 
     /// <summary>

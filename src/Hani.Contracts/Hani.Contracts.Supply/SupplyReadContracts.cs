@@ -104,6 +104,13 @@ public interface IOfferReadService
     Task<IReadOnlyList<OfferSnapshot>> GetApprovedOffersAsync(
         Guid tourProductId,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns one approved offer by id, or <c>null</c>.
+    /// </summary>
+    Task<OfferSnapshot?> GetApprovedOfferByIdAsync(
+        Guid offerId,
+        CancellationToken cancellationToken);
 }
 
 /// <summary>

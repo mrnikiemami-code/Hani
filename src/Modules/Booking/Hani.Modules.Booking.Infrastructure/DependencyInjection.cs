@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<IInstallmentPlanRepository, InstallmentPlanRepository>();
         services.AddScoped<IOrderPaymentReadService, OrderPaymentReadService>();
         services.AddScoped<IOrderPaymentWriteService, OrderPaymentWriteService>();
+        services.AddScoped<IChannelOrderReadService, ChannelOrderReadService>();
         return services;
     }
 }

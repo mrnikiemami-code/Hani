@@ -1,6 +1,8 @@
+using Hani.Modules.Payments.Domain.Invoices;
 using Hani.Modules.Payments.Domain.OfflinePayments;
 using Hani.Modules.Payments.Domain.PaymentIntents;
 using Hani.Modules.Payments.Domain.PaymentWebhooks;
+using Hani.Modules.Payments.Domain.Refunds;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Payments.Infrastructure.Persistence;
@@ -24,6 +26,10 @@ public sealed class PaymentsDbContext(DbContextOptions<PaymentsDbContext> option
     /// Offline payment receipts.
     /// </summary>
     public DbSet<OfflinePaymentReceipt> OfflinePaymentReceipts => Set<OfflinePaymentReceipt>();
+
+    public DbSet<Refund> Refunds => Set<Refund>();
+
+    public DbSet<Invoice> Invoices => Set<Invoice>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

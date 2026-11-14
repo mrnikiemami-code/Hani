@@ -1,5 +1,6 @@
 using Hani.Modules.Settlement.Domain.Commissions;
 using Hani.Modules.Settlement.Domain.Ledger;
+using Hani.Modules.Settlement.Domain.Payouts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Settlement.Infrastructure.Persistence;
@@ -24,6 +25,10 @@ public sealed class SettlementDbContext(DbContextOptions<SettlementDbContext> op
     /// Double-entry ledger transactions.
     /// </summary>
     public DbSet<LedgerTransaction> LedgerTransactions => Set<LedgerTransaction>();
+
+    public DbSet<AgencySettlementTerms> AgencySettlementTerms => Set<AgencySettlementTerms>();
+
+    public DbSet<Payout> Payouts => Set<Payout>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

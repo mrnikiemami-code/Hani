@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json.Serialization;
 using FluentValidation;
+using Hani.Api;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.BuildingBlocks.Domain;
@@ -13,6 +14,7 @@ using Hani.BuildingBlocks.Infrastructure.Localization;
 using Hani.BuildingBlocks.Infrastructure.Messaging;
 using Hani.BuildingBlocks.Infrastructure.Observability;
 using Hani.BuildingBlocks.Infrastructure.Tenancy;
+using Hani.Modules.Booking.Application.Commands.CancelOrder;
 using Hani.Modules.Booking.Application.Commands.CreateHold;
 using Hani.Modules.Booking.Application.Commands.CreateOrder;
 using Hani.Modules.Booking.Application.Commands.CreateQuote;
@@ -69,6 +71,7 @@ using Hani.Modules.Marketplace.Infrastructure;
 using Hani.Modules.Marketplace.Presentation;
 using Hani.Modules.Payments.Application;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
+using Hani.Modules.Payments.Application.Commands.Finance;
 using Hani.Modules.Payments.Application.Commands.HandlePaymentWebhook;
 using Hani.Modules.Payments.Application.Commands.RecordOfflinePayment;
 using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
@@ -77,6 +80,7 @@ using Hani.Modules.Payments.Infrastructure.Persistence;
 using Hani.Modules.Payments.Presentation;
 using Hani.Modules.Settlement.Application;
 using Hani.Modules.Settlement.Application.Commands.CreateCommissionRule;
+using Hani.Modules.Settlement.Application.Payouts;
 using Hani.Modules.Settlement.Application.Queries.GetCommission;
 using Hani.Modules.Settlement.Application.Queries.GetLedgerTransaction;
 using Hani.Modules.Settlement.Infrastructure;
@@ -298,6 +302,7 @@ builder.Services.AddScoped<IValidator<GetProductComparisonQuery>, GetProductComp
 builder.Services.AddScoped<IValidator<GetProductRecommendationsQuery>, GetProductRecommendationsQueryValidator>();
 builder.Services.AddScoped<IValidator<CreateQuoteCommand>, CreateQuoteCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateHoldCommand>, CreateHoldCommandValidator>();
+builder.Services.AddScoped<IValidator<CancelOrderCommand>, CancelOrderCommandValidator>();
 builder.Services.AddScoped<IValidator<ReleaseHoldCommand>, ReleaseHoldCommandValidator>();
 builder.Services.AddScoped<IValidator<GetQuoteQuery>, GetQuoteQueryValidator>();
 builder.Services.AddScoped<IValidator<CreateOrderCommand>, CreateOrderCommandValidator>();
@@ -338,9 +343,20 @@ builder.Services.AddScoped<IValidator<CreatePaymentIntentCommand>, CreatePayment
 builder.Services.AddScoped<IValidator<GetPaymentIntentQuery>, GetPaymentIntentQueryValidator>();
 builder.Services.AddScoped<IValidator<HandlePaymentWebhookCommand>, HandlePaymentWebhookCommandValidator>();
 builder.Services.AddScoped<IValidator<RecordOfflinePaymentCommand>, RecordOfflinePaymentCommandValidator>();
+builder.Services.AddScoped<IValidator<RequestRefundCommand>, RequestRefundCommandValidator>();
+builder.Services.AddScoped<IValidator<ProcessRefundCommand>, ProcessRefundCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateInvoiceCommand>, CreateInvoiceCommandValidator>();
+builder.Services.AddScoped<IValidator<GetRefundQuery>, GetRefundQueryValidator>();
+builder.Services.AddScoped<IValidator<GetInvoiceQuery>, GetInvoiceQueryValidator>();
+builder.Services.AddScoped<IValidator<ListRefundsQuery>, ListRefundsQueryValidator>();
 builder.Services.AddScoped<IValidator<CreateCommissionRuleCommand>, CreateCommissionRuleCommandValidator>();
 builder.Services.AddScoped<IValidator<GetCommissionQuery>, GetCommissionQueryValidator>();
 builder.Services.AddScoped<IValidator<GetLedgerTransactionQuery>, GetLedgerTransactionQueryValidator>();
+builder.Services.AddScoped<IValidator<CreateSettlementTermsCommand>, CreateSettlementTermsCommandValidator>();
+builder.Services.AddScoped<IValidator<CreatePayoutCommand>, CreatePayoutCommandValidator>();
+builder.Services.AddScoped<IValidator<MarkPayoutPaidCommand>, MarkPayoutPaidCommandValidator>();
+builder.Services.AddScoped<IValidator<GetSettlementTermsQuery>, GetSettlementTermsQueryValidator>();
+builder.Services.AddScoped<IValidator<ListPayoutsQuery>, ListPayoutsQueryValidator>();
 
 // Content module validators are registered by convention from the module assembly.
 foreach (var validatorType in typeof(CreateCategoryCommand).Assembly
@@ -405,6 +421,33 @@ builder.Services.AddAuthorization(options =>
         .RequireClaim("scope", "supplier.write"));
 
     options.AddPolicy("User", policy => policy.RequireAuthenticatedUser());
+
+    options.AddPolicy("Channel", policy => policy
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .RequireAssertion(context => context.User
+            .FindAll("scope")
+            .Any(claim => claim.Value.StartsWith("channel.", StringComparison.OrdinalIgnoreCase))));
+
+    options.AddPolicy("ChannelFinance", policy => policy
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .RequireClaim("scope", "channel.finance.read"));
+
+    options.AddPolicy("ChannelCatalog", policy => policy
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .RequireClaim("scope", "channel.catalog.read"));
+
+    options.AddPolicy("ChannelBookingRead", policy => policy
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .RequireClaim("scope", "channel.booking.read"));
+
+    options.AddPolicy("ChannelBookingWrite", policy => policy
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .RequireClaim("scope", "channel.booking.write"));
 });
 
 // ---------------------------------------------------------------------------
@@ -469,10 +512,12 @@ app.MapContentEndpoints();
 app.MapIdentityEndpoints();
 app.MapGamificationEndpoints();
 app.MapIdentityAuthEndpoints();
+app.MapChannelAuthEndpoints();
 app.MapAgencyOnboardingEndpoints();
 app.MapEngagementEndpoints();
 app.MapTrustEndpoints();
 app.MapMarketplaceEndpoints();
+app.MapChannelEndpoints();
 app.MapBookingEndpoints();
 app.MapRequestEndpoints();
 app.MapPaymentEndpoints();

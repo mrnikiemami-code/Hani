@@ -59,6 +59,57 @@ paths:
               schema: { $ref: '#/components/schemas/LedgerTransaction' }
         default: { $ref: '#/components/responses/Problem' }
 
+  /settlements/terms:
+    post:
+      tags: [Settlement]
+      summary: Create agency settlement terms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateSettlementTermsRequest' }
+      responses:
+        '201': { description: Created }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /settlements/terms/{agencyId}:
+    get:
+      tags: [Settlement]
+      summary: Read agency settlement terms
+      parameters:
+        - { name: agencyId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: OK }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /settlements/payouts:
+    post:
+      tags: [Settlement]
+      summary: Create a payout
+      responses:
+        '200': { description: Created }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /settlements/payouts/{payoutId}/paid:
+    post:
+      tags: [Settlement]
+      summary: Mark a payout paid
+      parameters:
+        - { name: payoutId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Paid }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /settlements/payouts/{agencyId}:
+    get:
+      tags: [Settlement]
+      summary: List payouts for an agency
+      parameters:
+        - { name: agencyId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: OK }
+        default: { $ref: '#/components/responses/Problem' }
+
 components:
   responses:
     Problem:

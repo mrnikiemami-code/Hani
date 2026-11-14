@@ -9,6 +9,7 @@
 | `marketplace-api-v1.openapi.yaml` | Marketplace | `/market/v1` | مشتری نهایی |
 | `content-api-v1.openapi.yaml` | Content & Growth | `/market/v1/content`, `/market/v1/growth` | مشتری نهایی |
 | `internal-content-api-v1.openapi.yaml` | Internal Content & Growth | `/internal/v1/content`, `/internal/v1/growth` | ادمین |
+| `internal-payments-api-v1.openapi.yaml` | Internal Payments | `/internal/v1/payments` | ادمین مالی |
 | `internal-booking-api-v1.openapi.yaml` | Internal Booking | `/internal/v1` | آژانس/ادمین |
 
 ## قواعد مشترک

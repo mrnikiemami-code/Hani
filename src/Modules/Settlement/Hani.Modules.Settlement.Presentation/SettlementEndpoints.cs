@@ -1,7 +1,9 @@
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Settlement.Application.Commands.CreateCommissionRule;
+using Hani.Modules.Settlement.Application.Payouts;
 using Hani.Modules.Settlement.Application.Queries.GetCommission;
 using Hani.Modules.Settlement.Application.Queries.GetLedgerTransaction;
+using Hani.Modules.Settlement.Domain.Payouts;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +39,99 @@ public static class SettlementEndpoints
             .Produces<LedgerTransactionDto>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 
+        group.MapPost("/terms", CreateTermsAsync)
+            .WithName("Internal.CreateSettlementTerms");
+        group.MapGet("/terms/{agencyId:guid}", GetTermsAsync)
+            .WithName("Internal.GetSettlementTerms");
+        group.MapPost("/payouts", CreatePayoutAsync)
+            .WithName("Internal.CreatePayout");
+        group.MapPost("/payouts/{payoutId:guid}/paid", MarkPayoutPaidAsync)
+            .WithName("Internal.MarkPayoutPaid");
+        group.MapGet("/payouts/{agencyId:guid}", ListPayoutsAsync)
+            .WithName("Internal.ListPayouts");
+
         return app;
+    }
+
+    /// <summary>
+    /// Creates agency settlement terms.
+    /// </summary>
+    private static async Task<IResult> CreateTermsAsync(
+        CreateSettlementTermsRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateSettlementTermsCommand(
+                request.AgencyId,
+                request.Cycle,
+                request.MinimumPayout,
+                request.Currency,
+                request.BankAccountRef),
+            cancellationToken);
+        return result.IsSuccess
+            ? Results.Created($"/internal/v1/settlements/terms/{request.AgencyId}", result.Value)
+            : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns agency settlement terms.
+    /// </summary>
+    private static async Task<IResult> GetTermsAsync(
+        Guid agencyId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetSettlementTermsQuery(agencyId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Creates a payout.
+    /// </summary>
+    private static async Task<IResult> CreatePayoutAsync(
+        CreatePayoutRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreatePayoutCommand(
+                request.AgencyId,
+                request.PeriodStart,
+                request.PeriodEnd,
+                request.Amount,
+                request.Currency),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Marks a payout paid.
+    /// </summary>
+    private static async Task<IResult> MarkPayoutPaidAsync(
+        Guid payoutId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new MarkPayoutPaidCommand(payoutId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Lists payouts for an agency.
+    /// </summary>
+    private static async Task<IResult> ListPayoutsAsync(
+        Guid agencyId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new ListPayoutsQuery(agencyId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     /// <summary>
@@ -109,3 +203,19 @@ public sealed record CreateCommissionRuleRequest(
     decimal? MaxAmount,
     DateTimeOffset EffectiveFrom,
     DateTimeOffset? EffectiveTo);
+
+/// <summary>Settlement terms request.</summary>
+public sealed record CreateSettlementTermsRequest(
+    Guid AgencyId,
+    SettlementCycle Cycle,
+    decimal MinimumPayout,
+    string Currency,
+    string BankAccountRef);
+
+/// <summary>Payout creation request.</summary>
+public sealed record CreatePayoutRequest(
+    Guid AgencyId,
+    DateOnly PeriodStart,
+    DateOnly PeriodEnd,
+    decimal Amount,
+    string Currency);

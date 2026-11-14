@@ -56,7 +56,9 @@ public sealed record OrderDto(
     string BookingMode,
     string CollectionMode,
     string SellerOfRecord,
-    string InvoiceIssuer);
+    string InvoiceIssuer,
+    DateTimeOffset? CancelledAt = null,
+    string? CancellationReason = null);
 
 /// <summary>
 /// Traveler snapshot returned with orders and contracts.

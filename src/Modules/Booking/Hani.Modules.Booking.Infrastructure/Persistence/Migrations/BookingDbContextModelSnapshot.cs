@@ -370,6 +370,15 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("agency_offer_id");
 
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("cancellation_reason");
+
+                    b.Property<DateTimeOffset?>("CancelledAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("cancelled_at");
+
                     b.Property<int>("Children")
                         .HasColumnType("integer")
                         .HasColumnName("children");

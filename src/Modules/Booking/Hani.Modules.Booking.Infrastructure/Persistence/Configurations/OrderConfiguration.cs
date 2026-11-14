@@ -36,6 +36,8 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(order => order.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(order => order.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(order => order.PaymentDueAt).HasColumnName("payment_due_at").IsRequired();
+        builder.Property(order => order.CancelledAt).HasColumnName("cancelled_at");
+        builder.Property(order => order.CancellationReason).HasColumnName("cancellation_reason").HasMaxLength(500);
 
         builder.HasIndex(order => order.OrderNumber)
             .IsUnique()

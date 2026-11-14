@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddSingleton<IOtpCodeHasher, HmacOtpCodeHasher>();
         services.AddSingleton<IOtpSender, LogOtpSender>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
+        services.AddSingleton<IChannelTokenService, ChannelTokenService>();
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
         services.AddScoped<IAgencyReadService, AgencyReadService>();
         services.AddScoped<IReviewSummaryReadService, ReviewSummaryReadService>();
