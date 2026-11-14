@@ -185,5 +185,5 @@
 | `d7921ac` | Faceted search and SEO (Gate 2) |
 | `026724a` | Identity core: OTP, JWT, profiles |
 | `fc26e43` | Trust, agency, reviews, claims, media (Gate 3) |
-| `Gate4` | Booking modes, reservation/lead, installments, offline payment |
+| `f91e461` | Booking modes, reservation/lead, installments, offline payment |
 | `7df2265` | Phase roadmap + status + tasks |

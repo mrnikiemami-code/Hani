@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
 > **فاز فعال:** Baseline Gate 5 — Verticals
-> **آخرین commit کد:** `Gate4` (پس از commit نهایی جایگزین می‌شود)
+> **آخرین commit کد:** `f91e461`
 > **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
@@ -297,4 +297,4 @@
 | `d7921ac` | Faceted search and SEO (Gate 2) |
 | `026724a` | Identity core: OTP, JWT, profiles |
 | `fc26e43` | Trust, agency, reviews, claims, media (Gate 3) |
-| `Gate4` | Booking modes, reservation/lead, installments, offline payment (Gate 4) |
+| `f91e461` | Booking modes, reservation/lead, installments, offline payment (Gate 4) |
