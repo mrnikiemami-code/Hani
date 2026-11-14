@@ -221,5 +221,5 @@
 | `f6d65ce` | Gate 5.1 vertical depth and parity residuals |
 | `1a35e3c` | Gate 6 content, growth, and gamification foundation |
 | `26e3b3a` | Gate 6 recommendation, notification dispatcher, dashboard |
-| `pending` | Gate 7 channel OAuth, refunds, invoices, settlement payouts |
+| `09712c0` | Gate 7 channel OAuth, refunds, invoices, settlement payouts |
 | `7df2265` | Phase roadmap + status + tasks |
