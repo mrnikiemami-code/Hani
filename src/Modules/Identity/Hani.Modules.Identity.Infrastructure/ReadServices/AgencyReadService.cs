@@ -50,4 +50,25 @@ internal sealed class AgencyReadService(IdentityDbContext dbContext) : IAgencyRe
                 agency.AttributionRequired,
                 agency.CanonicalMode);
     }
+
+    public async Task<AgencyDomainSnapshot?> GetAgencyByDomainAsync(
+        string domain,
+        CancellationToken cancellationToken)
+    {
+        var normalized = domain.Trim().ToLowerInvariant();
+        var agency = await dbContext.Agencies
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                item => item.CustomDomain == normalized && item.WhiteLabelEnabled,
+                cancellationToken);
+
+        return agency is null
+            ? null
+            : new AgencyDomainSnapshot(
+                agency.Id,
+                agency.Name,
+                agency.CustomDomain!,
+                agency.ChannelPlan.ToString(),
+                agency.WhiteLabelEnabled);
+    }
 }

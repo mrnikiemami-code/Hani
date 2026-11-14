@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.Domain;
+using Hani.Contracts.Settlement;
 using Hani.Modules.Payments.Application.Abstractions;
 using Hani.Modules.Payments.Domain.Chargebacks;
 using Hani.Modules.Payments.Domain.Invoices;
@@ -50,7 +51,8 @@ internal sealed class RequestRefundCommandHandler(IFinanceRepository finance, II
 
 internal sealed class ProcessRefundCommandHandler(
     IFinanceRepository finance,
-    IPaymentGateway gateway)
+    IPaymentGateway gateway,
+    IRefundLedgerService ledger)
     : ICommandHandler<ProcessRefundCommand, RefundDto>
 {
     public async Task<Result<RefundDto>> Handle(
@@ -76,6 +78,12 @@ internal sealed class ProcessRefundCommandHandler(
                     refund.PaymentIntentId?.ToString()),
                 cancellationToken);
             refund.MarkProcessed(response.ProviderRef);
+            await ledger.RecordRefundAsync(
+                refund.OrderId,
+                refund.Id,
+                refund.Amount,
+                refund.Currency,
+                cancellationToken);
         }
         catch (PaymentGatewayException exception)
         {
@@ -106,6 +114,7 @@ internal sealed class CreateInvoiceCommandHandler(IFinanceRepository finance, II
                 request.Tax,
                 request.Total,
                 request.Currency);
+            invoice.ScheduleReminder(DateTimeOffset.UtcNow.AddDays(3));
             await finance.AddInvoiceAsync(invoice, cancellationToken);
             return Result<InvoiceDto>.Success(Map(invoice));
         }
@@ -128,7 +137,10 @@ internal sealed class CreateInvoiceCommandHandler(IFinanceRepository finance, II
             invoice.Total,
             invoice.Currency,
             invoice.Status.ToString(),
-            invoice.IssuedAt);
+            invoice.IssuedAt,
+            invoice.ReminderCount,
+            invoice.LastReminderAt,
+            invoice.NextReminderAt);
 }
 
 internal sealed class SendInvoiceReminderCommandHandler(IFinanceRepository finance)

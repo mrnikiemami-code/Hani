@@ -1,4 +1,6 @@
+using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
+using Hani.Contracts.Identity;
 using Hani.Modules.Identity.Application.Commands.ChannelSettings;
 using Hani.Modules.Identity.Domain.Agencies;
 using MediatR;
@@ -27,6 +29,11 @@ public static class ChannelSettingsEndpoints
                 ConfigureWebhookAsync)
             .WithTags("Internal.Identity")
             .WithName("Internal.ConfigureChannelWebhook");
+
+        app.MapGet("/market/v1/white-label/resolve", ResolveDomainAsync)
+            .WithTags("Marketplace.Identity")
+            .AllowAnonymous()
+            .WithName("Marketplace.ResolveWhiteLabelDomain");
         return app;
     }
 
@@ -62,6 +69,19 @@ public static class ChannelSettingsEndpoints
             new ConfigureChannelWebhookCommand(agencyId, request.Url, request.Secret),
             cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Resolves a white-label custom domain to its agency.</summary>
+    private static async Task<IResult> ResolveDomainAsync(
+        string domain,
+        HttpContext context,
+        IAgencyReadService agencies,
+        CancellationToken cancellationToken)
+    {
+        var result = await agencies.GetAgencyByDomainAsync(domain, cancellationToken);
+        return result is null
+            ? context.ToProblem(Error.NotFound("HANI-IDENTITY-1820", "White-label domain was not found."))
+            : Results.Ok(result);
     }
 }
 

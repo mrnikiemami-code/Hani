@@ -77,4 +77,10 @@ internal sealed class LedgerTransactionRepository(SettlementDbContext dbContext)
         => dbContext.LedgerTransactions
             .Include(transaction => transaction.Entries)
             .FirstOrDefaultAsync(transaction => transaction.Id == id, cancellationToken);
+
+    public async Task AddAsync(LedgerTransaction transaction, CancellationToken cancellationToken)
+    {
+        await dbContext.LedgerTransactions.AddAsync(transaction, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

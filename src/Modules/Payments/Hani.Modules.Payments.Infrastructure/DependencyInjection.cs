@@ -1,6 +1,8 @@
 using Hani.Modules.Payments.Application.Abstractions;
 using Hani.Modules.Payments.Application.Commands.Finance;
+using Hani.Modules.Payments.Application.Invoices;
 using Hani.Modules.Payments.Infrastructure.Gateways;
+using Hani.Modules.Payments.Infrastructure.Notifications;
 using Hani.Modules.Payments.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +22,9 @@ public static class DependencyInjection
         services.AddScoped<IPaymentWebhookEventRepository, PaymentWebhookEventRepository>();
         services.AddScoped<IOfflinePaymentRepository, OfflinePaymentRepository>();
         services.AddScoped<IFinanceRepository, FinanceRepository>();
+        services.AddScoped<IInvoicePdfGenerator, InvoicePdfGenerator>();
+        services.AddScoped<IInvoiceReminderSender, LoggingInvoiceReminderSender>();
+        services.AddHostedService<InvoiceDunningService>();
         services.AddSingleton<IPaymentGateway, MockPaymentGateway>();
         return services;
     }

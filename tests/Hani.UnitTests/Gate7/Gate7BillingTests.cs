@@ -43,6 +43,8 @@ public sealed class Gate7BillingTests
         invoice.InvoiceNumber.ShouldStartWith("INV-");
         invoice.Status.ShouldBe(InvoiceStatus.Issued);
         invoice.Total.ShouldBe(10_900_000m);
+        invoice.MarkReminderSent(DateTimeOffset.UtcNow.AddDays(3));
+        invoice.ReminderCount.ShouldBe(1);
     }
 
     [Fact]

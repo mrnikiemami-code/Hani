@@ -35,6 +35,19 @@ internal sealed class FinanceRepository(PaymentsDbContext dbContext) : IFinanceR
     public Task<Invoice?> GetInvoiceAsync(Guid id, CancellationToken cancellationToken)
         => dbContext.Invoices.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
+    public async Task<IReadOnlyList<Invoice>> ListDueInvoicesAsync(
+        DateTimeOffset dueBefore,
+        int take,
+        CancellationToken cancellationToken)
+        => await dbContext.Invoices
+            .Where(item =>
+                item.Status == InvoiceStatus.Issued &&
+                item.NextReminderAt != null &&
+                item.NextReminderAt <= dueBefore)
+            .OrderBy(item => item.NextReminderAt)
+            .Take(take)
+            .ToArrayAsync(cancellationToken);
+
     public async Task AddChargebackAsync(Chargeback chargeback, CancellationToken cancellationToken)
     {
         await dbContext.Chargebacks.AddAsync(chargeback, cancellationToken);

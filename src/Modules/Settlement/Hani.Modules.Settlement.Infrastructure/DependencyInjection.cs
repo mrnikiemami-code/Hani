@@ -2,6 +2,7 @@ using Hani.Contracts.Settlement;
 using Hani.Modules.Settlement.Application.Abstractions;
 using Hani.Modules.Settlement.Application.Commissions;
 using Hani.Modules.Settlement.Application.Payouts;
+using Hani.Modules.Settlement.Infrastructure.Integrations;
 using Hani.Modules.Settlement.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,7 @@ public static class DependencyInjection
     {
         services.AddScoped<ICommissionRuleRepository, CommissionRuleRepository>();
         services.AddScoped<IPayoutRepository, PayoutRepository>();
+        services.AddScoped<IRefundLedgerService, RefundLedgerService>();
         services.AddScoped<ICommissionEntryRepository, CommissionEntryRepository>();
         services.AddScoped<ILedgerTransactionRepository, LedgerTransactionRepository>();
         services.AddScoped<ICommissionAccrualService, CommissionAccrualService>();

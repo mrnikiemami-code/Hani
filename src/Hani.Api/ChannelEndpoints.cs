@@ -12,6 +12,7 @@ using Hani.Modules.Booking.Application.Commands.CreateQuote;
 using Hani.Modules.Booking.Application.Queries.GetOrder;
 using Hani.Modules.Catalog.Application.Queries.SearchFlights;
 using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
+using Hani.Modules.Payments.Application.Commands.Finance;
 using MediatR;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
@@ -312,19 +313,43 @@ public static class ChannelEndpoints
         IChannelWebhookPublisher webhooks,
         CancellationToken cancellationToken)
     {
+        var existing = await sender.Send(new GetOrderQuery(bookingId), cancellationToken);
+        var wasPaid = existing.IsSuccess && existing.Value!.Status == "Paid";
+        var total = existing.IsSuccess ? existing.Value!.Total : 0m;
+        var currency = existing.IsSuccess ? existing.Value!.Currency : string.Empty;
+
         var result = await sender.Send(
             new CancelOrderCommand(bookingId, request.Reason),
             cancellationToken);
 
         if (result.IsSuccess)
         {
+            if (wasPaid)
+            {
+                var refund = await sender.Send(
+                    new RequestRefundCommand(
+                        bookingId,
+                        null,
+                        total,
+                        currency,
+                        $"Order cancelled: {request.Reason}"),
+                    cancellationToken);
+
+                if (refund.IsSuccess)
+                {
+                    await sender.Send(
+                        new ProcessRefundCommand(refund.Value!.RefundId),
+                        cancellationToken);
+                }
+            }
+
             var agencyId = GetAgencyId(context);
             if (agencyId is not null)
             {
                 await webhooks.PublishAsync(
                     agencyId.Value,
                     "booking.cancelled",
-                    new { bookingId, status = "Cancelled" },
+                    new { bookingId, status = "Cancelled", refunded = wasPaid },
                     cancellationToken);
             }
         }

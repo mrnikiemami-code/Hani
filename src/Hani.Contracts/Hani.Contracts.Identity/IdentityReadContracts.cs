@@ -66,7 +66,22 @@ public interface IAgencyReadService
     Task<ChannelSettingsSnapshot?> GetChannelSettingsAsync(
         Guid agencyId,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Resolves an agency by its white-label custom domain.
+    /// </summary>
+    Task<AgencyDomainSnapshot?> GetAgencyByDomainAsync(
+        string domain,
+        CancellationToken cancellationToken);
 }
+
+/// <summary>White-label domain resolution result.</summary>
+public sealed record AgencyDomainSnapshot(
+    Guid AgencyId,
+    string Name,
+    string CustomDomain,
+    string Plan,
+    bool WhiteLabelEnabled);
 
 /// <summary>Channel plan and white-label settings.</summary>
 public sealed record ChannelSettingsSnapshot(

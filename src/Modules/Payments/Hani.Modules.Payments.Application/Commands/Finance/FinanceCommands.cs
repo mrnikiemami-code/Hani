@@ -67,7 +67,10 @@ public sealed record InvoiceDto(
     decimal Total,
     string Currency,
     string Status,
-    DateTimeOffset IssuedAt);
+    DateTimeOffset IssuedAt,
+    int ReminderCount = 0,
+    DateTimeOffset? LastReminderAt = null,
+    DateTimeOffset? NextReminderAt = null);
 
 /// <summary>Persistence abstraction for refunds and invoices.</summary>
 public interface IFinanceRepository
@@ -82,6 +85,11 @@ public interface IFinanceRepository
     Task AddInvoiceAsync(Invoice invoice, CancellationToken cancellationToken);
     /// <summary>Returns an invoice by id.</summary>
     Task<Invoice?> GetInvoiceAsync(Guid id, CancellationToken cancellationToken);
+    /// <summary>Lists invoices whose next reminder is due.</summary>
+    Task<IReadOnlyList<Invoice>> ListDueInvoicesAsync(
+        DateTimeOffset dueBefore,
+        int take,
+        CancellationToken cancellationToken);
     /// <summary>Adds a chargeback.</summary>
     Task AddChargebackAsync(Chargeback chargeback, CancellationToken cancellationToken);
     /// <summary>Returns a chargeback by id.</summary>

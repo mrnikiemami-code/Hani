@@ -150,4 +150,9 @@ internal sealed class FakeAgencyReadService : IAgencyReadService
         CancellationToken cancellationToken)
         => Task.FromResult<ChannelSettingsSnapshot?>(
             new ChannelSettingsSnapshot("Standard", false, null, true, "marketplace"));
+
+    public Task<AgencyDomainSnapshot?> GetAgencyByDomainAsync(
+        string domain,
+        CancellationToken cancellationToken)
+        => Task.FromResult<AgencyDomainSnapshot?>(null);
 }

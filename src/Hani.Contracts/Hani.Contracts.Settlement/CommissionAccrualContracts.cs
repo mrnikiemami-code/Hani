@@ -24,3 +24,19 @@ public interface ICommissionAccrualService
         CommissionAccrualRequest request,
         CancellationToken cancellationToken);
 }
+
+/// <summary>
+/// Cross-module contract that reverses ledger revenue for a processed refund.
+/// </summary>
+public interface IRefundLedgerService
+{
+    /// <summary>
+    /// Posts the refund reversal for an order and currency.
+    /// </summary>
+    Task RecordRefundAsync(
+        Guid orderId,
+        Guid refundId,
+        decimal amount,
+        string currency,
+        CancellationToken cancellationToken);
+}

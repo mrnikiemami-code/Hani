@@ -64,4 +64,9 @@ public interface ILedgerTransactionRepository
     /// Returns a ledger transaction with lines, or <c>null</c>.
     /// </summary>
     Task<LedgerTransaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Adds a ledger transaction and saves changes.
+    /// </summary>
+    Task AddAsync(LedgerTransaction transaction, CancellationToken cancellationToken);
 }

@@ -3,6 +3,7 @@ using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
 using Hani.Modules.Payments.Application.Commands.Finance;
 using Hani.Modules.Payments.Application.Commands.HandlePaymentWebhook;
 using Hani.Modules.Payments.Application.Commands.RecordOfflinePayment;
+using Hani.Modules.Payments.Application.Invoices;
 using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
 using Hani.Modules.Payments.Domain.OfflinePayments;
 using MediatR;
@@ -69,6 +70,9 @@ public static class PaymentEndpoints
         internalApi.MapGet("/invoices/{invoiceId:guid}", GetInvoiceAsync)
             .WithName("Internal.GetInvoice")
             .Produces<InvoiceDto>();
+        internalApi.MapGet("/invoices/{invoiceId:guid}/pdf", GetInvoicePdfAsync)
+            .WithName("Internal.GetInvoicePdf")
+            .Produces(StatusCodes.Status200OK, contentType: "application/pdf");
         internalApi.MapGet("/orders/{orderId:guid}/refunds", ListRefundsAsync)
             .WithName("Internal.ListOrderRefunds")
             .Produces<IReadOnlyList<RefundDto>>();
@@ -178,6 +182,39 @@ public static class PaymentEndpoints
     {
         var result = await sender.Send(new SendInvoiceReminderCommand(invoiceId), cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns an invoice PDF.
+    /// </summary>
+    private static async Task<IResult> GetInvoicePdfAsync(
+        Guid invoiceId,
+        HttpContext context,
+        ISender sender,
+        IInvoicePdfGenerator pdf,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetInvoiceQuery(invoiceId), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        var invoice = result.Value!;
+        var bytes = pdf.Generate(
+            invoice.InvoiceNumber,
+            invoice.OrderId,
+            invoice.Issuer,
+            invoice.SellerOfRecord,
+            invoice.BuyerEmail,
+            invoice.Subtotal,
+            invoice.Tax,
+            invoice.Total,
+            invoice.Currency,
+            invoice.Status,
+            invoice.IssuedAt);
+        return Results.File(bytes, "application/pdf", $"{invoice.InvoiceNumber}.pdf");
     }
 
     /// <summary>
