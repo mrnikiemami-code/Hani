@@ -235,4 +235,5 @@
 | `09712c0` | Gate 7 channel OAuth, refunds, invoices, settlement payouts |
 | `a532531` | Gate 7 webhooks, dunning, dashboards, chargebacks, reconciliation |
 | `ddcb9f5` | Gate 7 PSP refund abstraction, PDF invoice, dunning scheduler, white-label resolver, dashboards |
+| `18ea8bd` | Gate 8 search hardening, sitemap, Testcontainers, k6/SLO, DR, security, observability |
 | `7df2265` | Phase roadmap + status + tasks |
