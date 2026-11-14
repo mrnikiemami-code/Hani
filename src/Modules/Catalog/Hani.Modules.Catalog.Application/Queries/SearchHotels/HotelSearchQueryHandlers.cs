@@ -22,6 +22,7 @@ internal sealed class SearchHotelsQueryHandler(
             request.MinStars,
             request.Amenity,
             request.Q);
+        var sort = request.SortBy?.Trim().ToLowerInvariant();
 
         var items = await hotels.SearchAsync(
             filter,
@@ -35,41 +36,115 @@ internal sealed class SearchHotelsQueryHandler(
             items.Select(hotel => hotel.Id).ToArray(),
             cancellationToken);
 
-        if (string.Equals(request.SortBy, "rating", StringComparison.OrdinalIgnoreCase))
+        if (sort is "rating" or "reviews" or "newest" or "alphabetical" or "rank")
         {
-            items = await hotels.SearchAsync(filter, 0, 200, cancellationToken);
+            items = await hotels.SearchAsync(filter, 0, 500, cancellationToken);
             summaries = await reviewSummaries.GetSummariesAsync(
                 "Hotel",
                 items.Select(hotel => hotel.Id).ToArray(),
                 cancellationToken);
-            items = items
-                .OrderByDescending(hotel => summaries.TryGetValue(hotel.Id, out var value)
-                    ? value.AverageRating
-                    : 0m)
-                .ThenByDescending(hotel => hotel.Stars)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToArray();
+
+            var ranked = sort == "rank"
+                ? await BuildRanksAsync(items, cancellationToken)
+                : new Dictionary<Guid, int>();
+
+            items = sort switch
+            {
+                "rating" => items
+                    .OrderByDescending(hotel => GetRating(hotel.Id, summaries))
+                    .ThenByDescending(hotel => hotel.Stars)
+                    .ThenBy(hotel => hotel.Slug)
+                    .ToArray(),
+                "reviews" => items
+                    .OrderByDescending(hotel => GetReviewCount(hotel.Id, summaries))
+                    .ThenByDescending(hotel => hotel.Stars)
+                    .ThenBy(hotel => hotel.Slug)
+                    .ToArray(),
+                "newest" => items
+                    .OrderByDescending(hotel => hotel.CreatedAt)
+                    .ThenBy(hotel => hotel.Slug)
+                    .ToArray(),
+                "alphabetical" => items
+                    .OrderBy(hotel => ResolveName(hotel, locale, languages), StringComparer.OrdinalIgnoreCase)
+                    .ToArray(),
+                _ => items
+                    .OrderBy(hotel => ranked.TryGetValue(hotel.Id, out var rank) ? rank : int.MaxValue)
+                    .ThenByDescending(hotel => hotel.Stars)
+                    .ToArray()
+            };
+
+            items = items.Skip((page - 1) * pageSize).Take(pageSize).ToArray();
         }
 
+        var ranks = await BuildRanksAsync(items, cancellationToken);
         return Result<PagedResult<HotelSummaryDto>>.Success(
             new PagedResult<HotelSummaryDto>(
-                items.Select(hotel => Map(hotel, locale, languages, summaries)).ToArray(),
+                items.Select(hotel => Map(
+                    hotel,
+                    locale,
+                    languages,
+                    summaries,
+                    ranks.TryGetValue(hotel.Id, out var rank) ? rank : null)).ToArray(),
                 page,
                 pageSize,
                 total));
     }
 
+    private async Task<IReadOnlyDictionary<Guid, int>> BuildRanksAsync(
+        IReadOnlyList<Hotel> items,
+        CancellationToken cancellationToken)
+    {
+        var destinationIds = items
+            .Select(hotel => hotel.DestinationId)
+            .Distinct()
+            .ToArray();
+        if (destinationIds.Length == 0)
+        {
+            return new Dictionary<Guid, int>();
+        }
+
+        var peers = await hotels.ListByDestinationsAsync(destinationIds, cancellationToken);
+        var peerSummaries = await reviewSummaries.GetSummariesAsync(
+            "Hotel",
+            peers.Select(hotel => hotel.Id).ToArray(),
+            cancellationToken);
+
+        return peers
+            .GroupBy(hotel => hotel.DestinationId)
+            .SelectMany(group => group
+                .OrderByDescending(hotel => GetRating(hotel.Id, peerSummaries))
+                .ThenByDescending(hotel => hotel.Stars)
+                .Select((hotel, index) => new { hotel.Id, Rank = index + 1 }))
+            .ToDictionary(item => item.Id, item => item.Rank);
+    }
+
+    private static decimal GetRating(
+        Guid hotelId,
+        IReadOnlyDictionary<Guid, ReviewSummary> summaries)
+        => summaries.TryGetValue(hotelId, out var summary) ? summary.AverageRating : 0m;
+
+    private static int GetReviewCount(
+        Guid hotelId,
+        IReadOnlyDictionary<Guid, ReviewSummary> summaries)
+        => summaries.TryGetValue(hotelId, out var summary) ? summary.ReviewCount : 0;
+
+    private static string ResolveName(
+        Hotel hotel,
+        string locale,
+        ILanguageCatalog languages)
+        => hotel.Translations.FirstOrDefault(item => item.Locale == locale)?.Name
+            ?? hotel.Translations.FirstOrDefault(item => item.Locale == languages.DefaultLanguage)?.Name
+            ?? hotel.Translations.FirstOrDefault()?.Name
+            ?? hotel.Slug;
+
     private static HotelSummaryDto Map(
         Hotel hotel,
         string locale,
         ILanguageCatalog languages,
-        IReadOnlyDictionary<Guid, ReviewSummary> summaries)
+        IReadOnlyDictionary<Guid, ReviewSummary> summaries,
+        int? rankInCity = null)
     {
-        var name = hotel.Translations.FirstOrDefault(item => item.Locale == locale)?.Name
-            ?? hotel.Translations.FirstOrDefault(item => item.Locale == languages.DefaultLanguage)?.Name
-            ?? hotel.Translations.FirstOrDefault()?.Name
-            ?? hotel.Slug;
+        var name = ResolveName(hotel, locale, languages);
 
         summaries.TryGetValue(hotel.Id, out var summary);
 
@@ -85,7 +160,9 @@ internal sealed class SearchHotelsQueryHandler(
             summary?.AverageRating,
             summary?.ReviewCount ?? 0,
             RecommendedPercent(summary),
-            null);
+            rankInCity,
+            hotel.DestinationId,
+            hotel.CreatedAt);
     }
 
     private static decimal? RecommendedPercent(ReviewSummary? summary)
@@ -134,16 +211,23 @@ internal sealed class GetNearbyHotelsQueryHandler(
         return Result<IReadOnlyList<NearbyHotelDto>>.Success(results);
     }
 
+    private static string ResolveName(
+        Hotel hotel,
+        string locale,
+        ILanguageCatalog languages)
+        => hotel.Translations.FirstOrDefault(item => item.Locale == locale)?.Name
+            ?? hotel.Translations.FirstOrDefault(item => item.Locale == languages.DefaultLanguage)?.Name
+            ?? hotel.Translations.FirstOrDefault()?.Name
+            ?? hotel.Slug;
+
     private static HotelSummaryDto Map(
         Hotel hotel,
         string locale,
         ILanguageCatalog languages,
-        IReadOnlyDictionary<Guid, ReviewSummary> summaries)
+        IReadOnlyDictionary<Guid, ReviewSummary> summaries,
+        int? rankInCity = null)
     {
-        var name = hotel.Translations.FirstOrDefault(item => item.Locale == locale)?.Name
-            ?? hotel.Translations.FirstOrDefault(item => item.Locale == languages.DefaultLanguage)?.Name
-            ?? hotel.Translations.FirstOrDefault()?.Name
-            ?? hotel.Slug;
+        var name = ResolveName(hotel, locale, languages);
 
         summaries.TryGetValue(hotel.Id, out var summary);
 
@@ -159,7 +243,9 @@ internal sealed class GetNearbyHotelsQueryHandler(
             summary?.AverageRating,
             summary?.ReviewCount ?? 0,
             RecommendedPercent(summary),
-            null);
+            rankInCity,
+            hotel.DestinationId,
+            hotel.CreatedAt);
     }
 
     private static decimal? RecommendedPercent(ReviewSummary? summary)

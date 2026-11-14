@@ -39,7 +39,8 @@ public sealed record VisaTypeDto(
     string Currency,
     IReadOnlyList<VisaDocumentDto> Documents,
     IReadOnlyList<string> Steps,
-    IReadOnlyList<VisaFaqDto> Faqs);
+    IReadOnlyList<VisaFaqDto> Faqs,
+    IReadOnlyList<string>? RelatedArticleSlugs = null);
 
 /// <summary>
 /// Visa required-document read model.

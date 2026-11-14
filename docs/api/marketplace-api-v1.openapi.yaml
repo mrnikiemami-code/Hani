@@ -368,6 +368,19 @@ paths:
           description: Author not found
         default: { $ref: '#/components/responses/Problem' }
 
+  /authors/{username}/profile:
+    get:
+      tags: [Identity]
+      summary: Read an aggregated author profile with content, gamification, badges, and review count
+      parameters:
+        - { name: username, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Author not found
+        default: { $ref: '#/components/responses/Problem' }
+
   /agencies/onboarding:
     post:
       tags: [Identity]
@@ -423,6 +436,45 @@ paths:
           description: Agency not found
         default: { $ref: '#/components/responses/Problem' }
 
+  /agencies:
+    get:
+      tags: [Identity]
+      summary: List approved agencies with rating, review count, and approved tour count
+      parameters:
+        - { name: city, in: query, schema: { type: [string, 'null'] } }
+        - { name: province, in: query, schema: { type: [string, 'null'] } }
+        - { name: q, in: query, schema: { type: [string, 'null'] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: Paged agency directory
+        default: { $ref: '#/components/responses/Problem' }
+
+  /agencies/{slug}/profile:
+    get:
+      tags: [Identity]
+      summary: Read a public agency profile with approved tour count
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Agency not found
+        default: { $ref: '#/components/responses/Problem' }
+
+  /home:
+    get:
+      tags: [Marketplace]
+      summary: Home page BFF with featured tours, visas, itineraries, blog, and campaigns
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+      responses:
+        '200':
+          description: Aggregated home feed
+        default: { $ref: '#/components/responses/Problem' }
+
   /trust:
     get:
       tags: [Identity]
@@ -433,6 +485,18 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Trust' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /reviews/criteria:
+    get:
+      tags: [Identity]
+      summary: Read average scores per review criterion
+      parameters:
+        - { name: targetType, in: query, required: true, schema: { type: string, enum: [Tour, Hotel, Agency, Attraction, Restaurant] } }
+        - { name: targetId, in: query, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Criterion averages
         default: { $ref: '#/components/responses/Problem' }
 
   /reviews:
@@ -546,6 +610,32 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Media' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /media/upload:
+    post:
+      tags: [Identity]
+      summary: Upload an image and register a pending media asset
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, kind]
+              properties:
+                file: { type: string, format: binary }
+                kind: { type: string, enum: [ReviewPhoto, ClaimEvidence, Avatar, Other] }
+      responses:
+        '200':
+          description: Pending media
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Media' }
+        '400':
+          description: Invalid file type or size
         default: { $ref: '#/components/responses/Problem' }
 
   /quotes:
@@ -944,7 +1034,7 @@ paths:
         - { name: q, in: query, schema: { type: [string, 'null'] } }
         - { name: page, in: query, schema: { type: integer, default: 1 } }
         - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
-        - { name: sortBy, in: query, schema: { type: [string, 'null'], enum: [rating, null] } }
+        - { name: sortBy, in: query, schema: { type: [string, 'null'], enum: [rating, reviews, newest, alphabetical, rank, null] } }
       responses:
         '200':
           description: Paged hotels
@@ -1925,6 +2015,8 @@ components:
         reviewCount: { type: integer }
         recommendationPercent: { type: [number, 'null'] }
         rankInCity: { type: [integer, 'null'] }
+        destinationId: { type: string, format: uuid }
+        createdAt: { type: [string, 'null'], format: date-time }
 
     GeoNearbyItem:
       type: object
@@ -2016,6 +2108,9 @@ components:
             properties:
               question: { type: string }
               answer: { type: string }
+        relatedArticleSlugs:
+          type: array
+          items: { type: string }
 
     FlightRoute:
       type: object

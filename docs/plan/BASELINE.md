@@ -4,11 +4,12 @@
 - **Report:** `docs/reports/lastsecond-gap-analysis-2026-11-12.md`
 - **Machine-readable:** `docs/plan/baseline.json`
 - **Status:** Locked for planning
-- **Current gate:** Gate 8 — Hardening PASSED (Core) (Gate 1/2/3 ✅ Passed, Gate 4 ✅ Remediated, Gate 5/5.1 ✅ Passed, Gate 6 ✅ Passed, Gate 7 ✅ Passed Core, Gate 8 ✅ Passed Core)
+- **Current gate:** Gate 8.1 — Lastsecond Parity Closure PASSED (Core) (Gate 1/2/3 ✅ Passed, Gate 4 ✅ Remediated, Gate 5/5.1 ✅ Passed, Gate 6 ✅ Passed, Gate 7 ✅ Passed Core, Gate 8 ✅ Passed Core, Gate 8.1 ✅ Passed Core)
 - **Gate 5 status:** ✅ Passed — GAP-13/14/15/16/21/25/29 + B-01..B-08 Done
 - **Gate 6 status:** ✅ Passed — GAP-12/22/23/24/30/33/34 + C-01..C-08 Done
 - **Gate 7 status:** ✅ Passed Core — Channel OAuth/API, Refund/Invoice, Settlement/Payout, dashboard, webhook, dunning, chargeback/reconciliation; external PSP/DNS/frontend pending
 - **Gate 8 status:** ✅ Passed Core — search read model/indexes/batch/cache, content sitemap, Testcontainers, k6/SLO, DR, security, observability, ADR-0029; external deployment residuals tracked
+- **Gate 8.1 status:** ✅ Passed Core — Lastsecond parity closure for continent/hierarchy, hotel sort/rank, agency directory/profile, author aggregate, Home BFF, content JSON-LD, review criteria, blog tags/related, visa related articles, media upload, HTTP notification sender; frontend/flight credentials/Lastgram remain external
 
 > این فایل مرجع برنامه‌ریزی است. هر GAP باید یک Gate، Task، وضعیت و Evidence داشته باشد.
 > ترتیب Gateها از گزارش Lastsecond و وابستگی‌های واقعی محصول پیروی می‌کند؛ هیچ GAP حذف نمی‌شود.

@@ -69,6 +69,36 @@ public sealed class GetReviewsQueryValidator : AbstractValidator<GetReviewsQuery
 }
 
 /// <summary>
+/// Validation rules for the review criteria summary.
+/// </summary>
+public sealed class GetReviewCriteriaSummaryQueryValidator
+    : AbstractValidator<GetReviewCriteriaSummaryQuery>
+{
+    /// <summary>
+    /// Creates target-id validation rules.
+    /// </summary>
+    public GetReviewCriteriaSummaryQueryValidator()
+    {
+        RuleFor(query => query.TargetId).NotEmpty().WithErrorCode("HANI-IDENTITY-1511");
+    }
+}
+
+/// <summary>
+/// Validation rules for author review counts.
+/// </summary>
+public sealed class GetAuthorReviewCountQueryValidator
+    : AbstractValidator<GetAuthorReviewCountQuery>
+{
+    /// <summary>
+    /// Creates user-id validation rules.
+    /// </summary>
+    public GetAuthorReviewCountQueryValidator()
+    {
+        RuleFor(query => query.UserId).NotEmpty().WithErrorCode("HANI-IDENTITY-1511");
+    }
+}
+
+/// <summary>
 /// Validation rules for pending review lists.
 /// </summary>
 public sealed class GetPendingReviewsQueryValidator : AbstractValidator<GetPendingReviewsQuery>

@@ -39,7 +39,9 @@ public sealed record HotelSummaryDto(
     decimal? AverageRating = null,
     int ReviewCount = 0,
     decimal? RecommendationPercent = null,
-    int? RankInCity = null);
+    int? RankInCity = null,
+    Guid DestinationId = default,
+    DateTimeOffset? CreatedAt = null);
 
 /// <summary>
 /// Nearby hotel result with distance in kilometres.

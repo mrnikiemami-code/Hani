@@ -17,6 +17,12 @@ public sealed class SearchHotelsQueryValidator : AbstractValidator<SearchHotelsQ
             .WithErrorCode("HANI-CATALOG-1610");
         RuleFor(query => query.Page).GreaterThanOrEqualTo(1).WithErrorCode("HANI-CATALOG-1611");
         RuleFor(query => query.PageSize).InclusiveBetween(1, 50).WithErrorCode("HANI-CATALOG-1612");
+        RuleFor(query => query.SortBy)
+            .Must(sort => string.IsNullOrWhiteSpace(sort) ||
+                new[] { "rating", "reviews", "newest", "alphabetical", "rank" }
+                    .Contains(sort.Trim().ToLowerInvariant()))
+            .WithErrorCode("HANI-CATALOG-1617")
+            .WithMessage("Sort must be one of rating, reviews, newest, alphabetical, or rank.");
     }
 }
 

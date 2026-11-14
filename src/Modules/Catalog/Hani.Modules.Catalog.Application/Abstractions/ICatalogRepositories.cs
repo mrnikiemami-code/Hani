@@ -86,6 +86,13 @@ public interface IHotelRepository
     Task<IReadOnlyList<Hotel>> ListByDestinationAsync(
         Guid destinationId,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Lists hotels in multiple destinations for city ranking.
+    /// </summary>
+    Task<IReadOnlyList<Hotel>> ListByDestinationsAsync(
+        IReadOnlyCollection<Guid> destinationIds,
+        CancellationToken cancellationToken);
 }
 
 /// <summary>

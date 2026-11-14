@@ -78,3 +78,10 @@ Marketplace.Application
 - Search tolerates indexed `ILIKE` filters through `pg_trgm`.
 - Content discovery is served by `/content-sitemap.xml` and linked from `robots.txt`.
 - ADR-0028 records the query-side read model and the scale trigger.
+
+
+## Gate 8.1 ? Home and directory BFF
+
+- `GET /market/v1/home` aggregates featured tours, visas, travelogues, blog,
+  and campaigns.
+- Public agency directory/profile BFF adds approved tour counts.

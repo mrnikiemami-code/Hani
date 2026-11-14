@@ -56,6 +56,49 @@ internal sealed class AgencyRepository(IdentityDbContext dbContext) : IAgencyRep
     public Task SaveChangesAsync(CancellationToken cancellationToken)
         => dbContext.SaveChangesAsync(cancellationToken);
 
+    public async Task<(IReadOnlyList<Agency> Items, int Total)> SearchPublicAsync(
+        string? city,
+        string? province,
+        string? query,
+        int skip,
+        int take,
+        CancellationToken cancellationToken)
+    {
+        var source = dbContext.Agencies
+            .AsNoTracking()
+            .Where(agency => agency.Status == AgencyStatus.Active);
+
+        if (!string.IsNullOrWhiteSpace(city))
+        {
+            var normalizedCity = city.Trim();
+            source = source.Where(agency => agency.City == normalizedCity);
+        }
+
+        if (!string.IsNullOrWhiteSpace(province))
+        {
+            var normalizedProvince = province.Trim();
+            source = source.Where(agency => agency.Province == normalizedProvince);
+        }
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            var term = query.Trim();
+            source = source.Where(agency =>
+                agency.Name.Contains(term) ||
+                agency.Slug.Contains(term) ||
+                agency.City.Contains(term));
+        }
+
+        var total = await source.CountAsync(cancellationToken);
+        var items = await source
+            .OrderByDescending(agency => agency.CreatedAt)
+            .Skip(skip)
+            .Take(take)
+            .ToArrayAsync(cancellationToken);
+
+        return (items, total);
+    }
+
     public Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken)
         => dbContext.Agencies.AnyAsync(agency => agency.Slug == slug, cancellationToken);
 }

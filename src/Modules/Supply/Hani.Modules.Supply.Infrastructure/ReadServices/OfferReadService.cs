@@ -56,6 +56,28 @@ internal sealed class OfferReadService(SupplyDbContext dbContext)
                 group => (IReadOnlyList<OfferSnapshot>)group.ToArray());
     }
 
+    public async Task<IReadOnlyDictionary<Guid, int>> GetApprovedOfferCountsByAgencyIdsAsync(
+        IReadOnlyCollection<Guid> agencyIds,
+        CancellationToken cancellationToken)
+    {
+        if (agencyIds.Count == 0)
+        {
+            return new Dictionary<Guid, int>();
+        }
+
+        var ids = agencyIds.Distinct().ToArray();
+        var counts = await dbContext.AgencyOffers
+            .AsNoTracking()
+            .Where(offer =>
+                ids.Contains(offer.AgencyId) &&
+                offer.Status == AgencyOfferStatus.Approved)
+            .GroupBy(offer => offer.AgencyId)
+            .Select(group => new { AgencyId = group.Key, Count = group.Count() })
+            .ToArrayAsync(cancellationToken);
+
+        return counts.ToDictionary(item => item.AgencyId, item => item.Count);
+    }
+
     public async Task<IReadOnlyList<OfferSnapshot>> GetApprovedOffersByHotelAsync(
         Guid hotelId,
         CancellationToken cancellationToken)

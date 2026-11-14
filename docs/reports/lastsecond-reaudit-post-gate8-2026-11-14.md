@@ -139,3 +139,29 @@ Gate 8.1 یا با Waiver/ADR ثبت شوند.
 - `src/Modules/Content/Hani.Modules.Content.Application/Queries/Editorial/EditorialQueries.cs`
 - `src/Modules/Content/Hani.Modules.Content.Domain/Content/EditorialContent.cs`
 - `src/Hani.Contracts/Hani.Contracts.Identity/IdentityReadContracts.cs`
+
+
+## ??. Gate 8.1 Closure Update (2026-11-14)
+
+The backend residuals in this report were closed in Gate 8.1. The external
+deliverables are still outside this repository.
+
+| ID | Final status | Evidence |
+|---|---|---|
+| E-01 | External | Next.js frontend |
+| E-02 | ? Closed (adapter) | `HttpNotificationSender` + logging fallback |
+| E-03 | ? Closed | Blog/Travelogue/Video JSON-LD endpoints |
+| E-04 | ? Closed | `/market/v1/authors/{username}/profile` |
+| E-05 | ? Closed | `/market/v1/home` |
+| E-06 | ? Closed | `DestinationType.Continent` + hierarchy resolver |
+| E-07 | External | Flight provider credentials/contract |
+| E-08 | ? Closed | `/market/v1/media/upload` + `IFileStorage` |
+| E-09 | ? Closed | `VisaType.RelatedArticleSlugs` |
+| E-10 | ? Closed | Hotel sort/rank + `RankInCity` |
+| A-11 | ? Closed | Public agency directory |
+| A-12 | ? Closed | Agency rating/review + tour count BFF |
+| A-13 | ? Closed | `/market/v1/reviews/criteria` |
+| A-14 | ? Closed | Blog destination tags + related endpoint |
+| A-15 | External | Lastgram SSO/Competition ecosystem |
+
+Contract: [`../plan/GATE-8.1-CONTRACT.md`](../plan/GATE-8.1-CONTRACT.md).

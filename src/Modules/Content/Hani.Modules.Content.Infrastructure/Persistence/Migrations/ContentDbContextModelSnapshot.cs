@@ -756,6 +756,31 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Hani.Modules.Content.Domain.Content.BlogPost", b =>
                 {
+                    b.OwnsMany("Hani.Modules.Content.Domain.Content.BlogPostDestination", "Destinations", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("DestinationId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("destination_id");
+
+                            b1.Property<Guid>("PostId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("post_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("PostId", "DestinationId")
+                                .IsUnique();
+
+                            b1.ToTable("blog_post_destinations", "content");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PostId");
+                        });
+
                     b.OwnsMany("Hani.Modules.Content.Domain.Content.BlogPostTranslation", "Translations", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -808,6 +833,8 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("PostId");
                         });
+
+                    b.Navigation("Destinations");
 
                     b.Navigation("Translations");
                 });

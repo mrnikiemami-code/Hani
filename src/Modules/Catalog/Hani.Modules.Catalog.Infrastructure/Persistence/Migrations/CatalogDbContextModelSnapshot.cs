@@ -1326,6 +1326,11 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("integer")
                                 .HasColumnName("processing_days_min");
 
+                            b1.Property<string>("RelatedArticleSlugsRaw")
+                                .HasMaxLength(1000)
+                                .HasColumnType("character varying(1000)")
+                                .HasColumnName("related_article_slugs");
+
                             b1.Property<int>("ValidityDays")
                                 .HasColumnType("integer")
                                 .HasColumnName("validity_days");

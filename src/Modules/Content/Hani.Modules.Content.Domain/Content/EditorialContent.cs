@@ -8,6 +8,7 @@ namespace Hani.Modules.Content.Domain.Content;
 public sealed class BlogPost : AggregateRoot<Guid>
 {
     private readonly List<BlogPostTranslation> _translations = [];
+    private readonly List<BlogPostDestination> _destinations = [];
 
     private BlogPost()
     {
@@ -62,6 +63,9 @@ public sealed class BlogPost : AggregateRoot<Guid>
 
     /// <summary>Localized content.</summary>
     public IReadOnlyCollection<BlogPostTranslation> Translations => _translations;
+
+    /// <summary>Destination tags.</summary>
+    public IReadOnlyCollection<BlogPostDestination> Destinations => _destinations;
 
     /// <summary>Creates a draft post.</summary>
     public static BlogPost Create(
@@ -128,6 +132,21 @@ public sealed class BlogPost : AggregateRoot<Guid>
         Touch();
     }
 
+    /// <summary>Replaces destination tags.</summary>
+    public void ReplaceDestinations(IIdGenerator ids, IEnumerable<Guid> destinationIds)
+    {
+        _destinations.Clear();
+        foreach (var destinationId in destinationIds.Distinct())
+        {
+            if (destinationId != Guid.Empty)
+            {
+                _destinations.Add(new BlogPostDestination(ids.NewId(), Id, destinationId));
+            }
+        }
+
+        Touch();
+    }
+
     /// <summary>Increments the view counter.</summary>
     public void IncrementView() => ViewCount++;
 
@@ -187,6 +206,26 @@ public sealed class BlogPostTranslation : Entity<Guid>
 
     /// <summary>Optional SEO description.</summary>
     public string? SeoDescription { get; private set; }
+}
+
+/// <summary>Destination tag on a blog post.</summary>
+public sealed class BlogPostDestination : Entity<Guid>
+{
+    private BlogPostDestination()
+    {
+    }
+
+    internal BlogPostDestination(Guid id, Guid postId, Guid destinationId) : base(id)
+    {
+        PostId = postId;
+        DestinationId = destinationId;
+    }
+
+    /// <summary>Parent blog post.</summary>
+    public Guid PostId { get; private set; }
+
+    /// <summary>Destination id.</summary>
+    public Guid DestinationId { get; private set; }
 }
 
 /// <summary>

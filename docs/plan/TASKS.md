@@ -149,3 +149,23 @@
 | TC-076 | Security review | ✅ | TC-055 | رفع High |
 | TC-077 | Observability dashboards | ✅ | TC-009 | SLO |
 | TC-078 | Microservice extraction | ✅ | TC-048 | ADR |
+
+## Phase 6.1 — Lastsecond Parity (Gate 8.1)
+
+| ID | تسک | وضعیت | وابستگی | DoD |
+|---|---|---|---|---|
+| G81-01 | Continent + hierarchy | ✅ | TC-094 | DestinationType.Continent + descendant filters |
+| G81-02 | Hotel sort/rank | ✅ | TC-090 | newest/reviews/alphabetical/rating/rank |
+| G81-03 | Agency directory | ✅ | TC-087 | public list/filter + rating/review |
+| G81-04 | Agency profile enrichment | ✅ | G81-03 | profile + approved tour count |
+| G81-05 | Author aggregate | ✅ | TC-086/093 | profile + stats + gamification + reviews |
+| G81-06 | Home BFF | ✅ | TC-085/093 | tours/visas/itineraries/blog/campaigns |
+| G81-07 | Content JSON-LD | ✅ | TC-093 | BlogPosting/Article/VideoObject |
+| G81-08 | Review criteria aggregate | ✅ | TC-089 | per-criterion averages |
+| G81-09 | Blog tags/related | ✅ | TC-093 | destination tags + related posts |
+| G81-10 | Visa related articles | ✅ | TC-091 | related article slugs |
+| G81-11 | Media upload | ✅ | TC-089 | multipart upload + storage |
+| G81-12 | HTTP Email/SMS sender | ✅ | TC-096 | provider adapter + fallback |
+| G81-13 | Frontend | ⏳ External | G81-06 | Next.js app |
+| G81-14 | Real flight provider | ⏳ External | TC-092 | credentials/contract |
+| G81-15 | Lastgram SSO/Competition | ⏳ External | TC-103 | external ecosystem |

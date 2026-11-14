@@ -4,6 +4,7 @@ using Hani.Modules.Identity.Infrastructure.Integrations;
 using Hani.Modules.Identity.Infrastructure.ReadServices;
 using Hani.Modules.Identity.Infrastructure.Repositories;
 using Hani.Modules.Identity.Infrastructure.Security;
+using Hani.Modules.Identity.Infrastructure.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hani.Modules.Identity.Infrastructure;
@@ -22,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IClaimRepository, ClaimRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IGamificationRepository, GamificationRepository>();
+        services.AddScoped<IFileStorage, LocalFileStorage>();
         services.AddSingleton<ISecretGenerator, SecretGenerator>();
         services.AddSingleton<ISecretHasher, SecretHasher>();
         services.AddSingleton<IOtpCodeGenerator, NumericOtpCodeGenerator>();

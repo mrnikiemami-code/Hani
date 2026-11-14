@@ -38,7 +38,10 @@ internal sealed class ContentRepository(ContentDbContext dbContext) : IContentRe
     {
         var normalized = slug.Trim().ToLowerInvariant();
         return dbContext.BlogPosts
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(item => item.Translations)
+            .Include(item => item.Destinations)
             .FirstOrDefaultAsync(item => item.Slug == normalized, cancellationToken);
     }
 

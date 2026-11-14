@@ -91,7 +91,8 @@ public sealed class VisaCountry : AggregateRoot<Guid>
             input.ValidityDays,
             input.PriceAdult,
             input.PriceChild,
-            input.Currency);
+            input.Currency,
+            input.RelatedArticleSlugs);
 
         foreach (var document in input.Documents)
         {
@@ -168,7 +169,8 @@ public sealed class VisaType : Entity<Guid>
         int validityDays,
         decimal priceAdult,
         decimal? priceChild,
-        string currency) : base(id)
+        string currency,
+        IReadOnlyList<string>? relatedArticleSlugs = null) : base(id)
     {
         CountryId = countryId;
         Code = code.Trim();
@@ -180,6 +182,12 @@ public sealed class VisaType : Entity<Guid>
         PriceAdult = priceAdult;
         PriceChild = priceChild;
         Currency = currency.Trim().ToUpperInvariant();
+        RelatedArticleSlugsRaw = relatedArticleSlugs is null || relatedArticleSlugs.Count == 0
+            ? null
+            : string.Join(',', relatedArticleSlugs
+                .Where(slug => !string.IsNullOrWhiteSpace(slug))
+                .Select(slug => slug.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase));
     }
 
     /// <summary>Parent country.</summary>
@@ -211,6 +219,14 @@ public sealed class VisaType : Entity<Guid>
 
     /// <summary>Price currency.</summary>
     public string Currency { get; private set; } = string.Empty;
+
+    /// <summary>Comma-separated related article slugs used for public visa guides.</summary>
+    public string? RelatedArticleSlugsRaw { get; private set; }
+
+    /// <summary>Related blog article slugs.</summary>
+    public IReadOnlyList<string> RelatedArticleSlugs => string.IsNullOrWhiteSpace(RelatedArticleSlugsRaw)
+        ? []
+        : RelatedArticleSlugsRaw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
     /// <summary>Required documents.</summary>
     public IReadOnlyCollection<VisaDocument> Documents => _documents;
@@ -316,7 +332,8 @@ public sealed record VisaTypeInput(
     string Currency,
     IReadOnlyList<VisaDocumentInput> Documents,
     IReadOnlyList<string> Steps,
-    IReadOnlyList<VisaFaqInput> Faqs);
+    IReadOnlyList<VisaFaqInput> Faqs,
+    IReadOnlyList<string>? RelatedArticleSlugs = null);
 
 /// <summary>Visa required-document input.</summary>
 public sealed record VisaDocumentInput(string Name, string Category);

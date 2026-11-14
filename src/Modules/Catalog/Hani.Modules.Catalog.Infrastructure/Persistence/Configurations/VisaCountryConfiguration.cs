@@ -48,6 +48,9 @@ internal sealed class VisaCountryConfiguration : IEntityTypeConfiguration<VisaCo
             types.Property(type => type.PriceAdult).HasColumnName("price_adult").HasPrecision(18, 2).IsRequired();
             types.Property(type => type.PriceChild).HasColumnName("price_child").HasPrecision(18, 2);
             types.Property(type => type.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+            types.Property(type => type.RelatedArticleSlugsRaw)
+                .HasColumnName("related_article_slugs")
+                .HasMaxLength(1000);
             types.HasIndex(type => new { type.CountryId, type.Code })
                 .IsUnique()
                 .HasDatabaseName("ux_visa_types_country_code");

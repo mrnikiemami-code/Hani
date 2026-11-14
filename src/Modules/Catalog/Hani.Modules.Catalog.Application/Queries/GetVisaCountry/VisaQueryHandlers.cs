@@ -88,7 +88,8 @@ internal sealed class GetVisaCountryQueryHandler(
                     .Select(document => new VisaDocumentDto(document.Name, document.Category))
                     .ToArray(),
                 type.Steps.OrderBy(step => step.Sequence).Select(step => step.Description).ToArray(),
-                type.Faqs.Select(faq => new VisaFaqDto(faq.Question, faq.Answer)).ToArray()))
+                type.Faqs.Select(faq => new VisaFaqDto(faq.Question, faq.Answer)).ToArray(),
+                type.RelatedArticleSlugs.ToArray()))
                 .ToArray()));
     }
 }

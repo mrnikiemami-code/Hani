@@ -85,3 +85,13 @@
 - Destination link index for `(destination_id, tour_product_id)`.
 - Migration: `AddGate8SearchIndexes`.
 - Search queries use `AsSplitQuery()` to avoid collection cartesian explosion.
+
+
+## Gate 8.1 ? Lastsecond parity
+
+- `DestinationType.Continent` was added.
+- Hotel, restaurant/attraction, and tour destination filters resolve the full
+  `Continent -> Country -> Province -> City -> Region` subtree.
+- Hotel search supports `rating`, `reviews`, `newest`, `alphabetical`, and
+  `rank`; `RankInCity` is populated for list results.
+- Visa types expose `RelatedArticleSlugs` for guide links.

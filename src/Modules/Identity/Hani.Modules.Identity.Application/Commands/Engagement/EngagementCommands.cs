@@ -47,6 +47,27 @@ public sealed record GetReviewsQuery(
     int PageSize = 20) : IQuery<PagedResult<ReviewDto>>;
 
 /// <summary>
+/// Query that returns average scores for each review criterion.
+/// </summary>
+public sealed record GetReviewCriteriaSummaryQuery(
+    ReviewTargetType TargetType,
+    Guid TargetId) : IQuery<ReviewCriteriaSummaryDto>;
+
+/// <summary>
+/// Average score per review criterion for one target.
+/// </summary>
+public sealed record ReviewCriteriaSummaryDto(
+    Guid TargetId,
+    string TargetType,
+    int ReviewCount,
+    IReadOnlyDictionary<string, decimal> Averages);
+
+/// <summary>
+/// Query that counts published reviews authored by a user.
+/// </summary>
+public sealed record GetAuthorReviewCountQuery(Guid UserId) : IQuery<int>;
+
+/// <summary>
 /// Query that returns reviews awaiting moderation.
 /// </summary>
 public sealed record GetPendingReviewsQuery(int Page = 1, int PageSize = 20)

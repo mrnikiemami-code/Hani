@@ -68,6 +68,11 @@ internal sealed class CreateBlogPostCommandHandler(
                     translation.SeoDescription);
             }
 
+            if (request.DestinationIds is not null)
+            {
+                post.ReplaceDestinations(ids, request.DestinationIds);
+            }
+
             await repository.AddBlogAsync(post, cancellationToken);
             return Result<Guid>.Success(post.Id);
         }

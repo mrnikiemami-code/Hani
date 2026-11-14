@@ -73,3 +73,11 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 - Includes published blog posts, travelogues, and videos.
 - Emits hreflang alternates for every language in `ILanguageCatalog`.
 - `robots.txt` advertises both the marketplace and content sitemaps.
+
+
+## Gate 8.1 ? Lastsecond parity
+
+- JSON-LD endpoints for BlogPosting, Travelogue Article, and VideoObject.
+- Blog destination tags and related-post endpoint.
+- HTTP email/SMS notification sender; missing provider configuration falls back
+  to structured logging.

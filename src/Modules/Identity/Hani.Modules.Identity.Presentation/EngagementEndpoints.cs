@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
+using Hani.Modules.Identity.Application.Abstractions;
 using Hani.Modules.Identity.Application.Commands.Engagement;
 using Hani.Modules.Identity.Domain.Claims;
 using Hani.Modules.Identity.Domain.Media;
@@ -35,6 +36,10 @@ public static class EngagementEndpoints
             .WithName("Marketplace.GetReviews")
             .Produces<PagedResult<ReviewDto>>();
 
+        market.MapGet("/reviews/criteria", GetReviewCriteriaAsync)
+            .WithName("Marketplace.GetReviewCriteria")
+            .Produces<ReviewCriteriaSummaryDto>();
+
         market.MapPost("/reviews/{reviewId:guid}/helpful", MarkHelpfulAsync)
             .WithName("Marketplace.MarkReviewHelpful")
             .RequireAuthorization("User")
@@ -54,6 +59,13 @@ public static class EngagementEndpoints
         market.MapPost("/media", RegisterMediaAsync)
             .WithName("Marketplace.RegisterMedia")
             .RequireAuthorization("User")
+            .Produces<MediaDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        market.MapPost("/media/upload", UploadMediaAsync)
+            .WithName("Marketplace.UploadMedia")
+            .RequireAuthorization("User")
+            .DisableAntiforgery()
             .Produces<MediaDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
 
@@ -174,6 +186,23 @@ public static class EngagementEndpoints
     }
 
     /// <summary>
+    /// Returns average scores for each review criterion.
+    /// </summary>
+    private static async Task<IResult> GetReviewCriteriaAsync(
+        ReviewTargetType targetType,
+        Guid targetId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetReviewCriteriaSummaryQuery(targetType, targetId),
+            cancellationToken);
+
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
     /// Marks a review helpful for the authenticated user.
     /// </summary>
     private static async Task<IResult> MarkHelpfulAsync(
@@ -269,6 +298,53 @@ public static class EngagementEndpoints
                 request.ContentType,
                 request.SizeBytes,
                 request.Kind),
+            cancellationToken);
+
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Accepts a multipart image upload, stores it, and registers a pending media asset.
+    /// </summary>
+    private static async Task<IResult> UploadMediaAsync(
+        IFormFile file,
+        MediaKind kind,
+        HttpContext context,
+        ISender sender,
+        IFileStorage storage,
+        CancellationToken cancellationToken)
+    {
+        if (!context.User.TryGetUserId(out var userId))
+        {
+            return context.ToProblem(
+                Error.Unauthorized("HANI-IDENTITY-1700", "Authenticated user is required."));
+        }
+
+        if (file.Length is <= 0 or > 10 * 1024 * 1024)
+        {
+            return context.ToProblem(
+                Error.Validation("HANI-IDENTITY-1720", "Media size must be between 1 byte and 10 MB."));
+        }
+
+        var contentType = file.ContentType.Trim().ToLowerInvariant();
+        var extension = contentType switch
+        {
+            "image/jpeg" => ".jpg",
+            "image/png" => ".png",
+            "image/webp" => ".webp",
+            _ => null
+        };
+
+        if (extension is null)
+        {
+            return context.ToProblem(
+                Error.Validation("HANI-IDENTITY-1721", "Only JPEG, PNG, and WebP images are allowed."));
+        }
+
+        await using var stream = file.OpenReadStream();
+        var url = await storage.SaveAsync(stream, contentType, extension, cancellationToken);
+        var result = await sender.Send(
+            new RegisterMediaCommand(userId, url, contentType, file.Length, kind),
             cancellationToken);
 
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);

@@ -186,6 +186,10 @@ builder.Services.Configure<CommissionOptions>(builder.Configuration.GetSection("
 builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
 builder.Services.Configure<Hani.Modules.Content.Application.Queries.Sitemap.ContentSitemapOptions>(
     builder.Configuration.GetSection("Seo"));
+builder.Services.Configure<Hani.Modules.Content.Application.Notifications.NotificationProviderOptions>(
+    builder.Configuration.GetSection("Notifications"));
+builder.Services.Configure<Hani.Modules.Identity.Infrastructure.Storage.MediaStorageOptions>(
+    builder.Configuration.GetSection("Storage"));
 builder.Services.Configure<FlightProviderOptions>(
     builder.Configuration.GetSection("FlightProvider"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
@@ -272,6 +276,7 @@ builder.Services.AddScoped<IValidator<CreateAgencyOnboardingCommand>, CreateAgen
 builder.Services.AddScoped<IValidator<GetMyAgencyQuery>, GetMyAgencyQueryValidator>();
 builder.Services.AddScoped<IValidator<GetPublicAgencyQuery>, GetPublicAgencyQueryValidator>();
 builder.Services.AddScoped<IValidator<ListAgenciesQuery>, ListAgenciesQueryValidator>();
+builder.Services.AddScoped<IValidator<ListPublicAgenciesQuery>, ListPublicAgenciesQueryValidator>();
 builder.Services.AddScoped<IValidator<ApproveAgencyCommand>, ApproveAgencyCommandValidator>();
 builder.Services.AddScoped<IValidator<RejectAgencyCommand>, RejectAgencyCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateReviewCommand>, CreateReviewCommandValidator>();
@@ -285,6 +290,8 @@ builder.Services.AddScoped<IValidator<GetUserGamificationQuery>, GetUserGamifica
 builder.Services.AddScoped<IValidator<ListBadgeDefinitionsQuery>, ListBadgeDefinitionsQueryValidator>();
 builder.Services.AddScoped<IValidator<ReplyToReviewCommand>, ReplyToReviewCommandValidator>();
 builder.Services.AddScoped<IValidator<GetReviewsQuery>, GetReviewsQueryValidator>();
+builder.Services.AddScoped<IValidator<GetReviewCriteriaSummaryQuery>, GetReviewCriteriaSummaryQueryValidator>();
+builder.Services.AddScoped<IValidator<GetAuthorReviewCountQuery>, GetAuthorReviewCountQueryValidator>();
 builder.Services.AddScoped<IValidator<GetPendingReviewsQuery>, GetPendingReviewsQueryValidator>();
 builder.Services.AddScoped<IValidator<PublishReviewCommand>, PublishReviewCommandValidator>();
 builder.Services.AddScoped<IValidator<RejectReviewCommand>, RejectReviewCommandValidator>();
@@ -527,6 +534,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseRequestLocalization();
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseMiddleware<TenantMiddleware>();
 app.UseStatusCodePages(async context =>
@@ -566,6 +574,7 @@ app.MapTrustEndpoints();
 app.MapMarketplaceEndpoints();
 app.MapChannelEndpoints();
 app.MapDashboardEndpoints();
+app.MapLastsecondParityEndpoints();
 app.MapBookingEndpoints();
 app.MapRequestEndpoints();
 app.MapPaymentEndpoints();

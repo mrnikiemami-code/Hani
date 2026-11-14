@@ -61,6 +61,19 @@ public interface IReviewRepository
     /// Counts reviews awaiting moderation.
     /// </summary>
     Task<int> CountPendingAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns published criterion maps for one target.
+    /// </summary>
+    Task<IReadOnlyList<IReadOnlyDictionary<string, int>>> ListCriteriaAsync(
+        ReviewTargetType targetType,
+        Guid targetId,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Counts published reviews authored by one user.
+    /// </summary>
+    Task<int> CountByUserAsync(Guid userId, CancellationToken cancellationToken);
 }
 
 /// <summary>

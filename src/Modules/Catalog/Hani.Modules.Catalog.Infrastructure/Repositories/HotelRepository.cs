@@ -32,15 +32,25 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
         int skip,
         int take,
         CancellationToken cancellationToken)
-        => await ApplyFilter(filter)
+    {
+        var destinationIds = await ResolveDestinationIdsAsync(
+            filter.DestinationSlug,
+            cancellationToken);
+        return await ApplyFilter(filter, destinationIds)
             .OrderByDescending(hotel => hotel.Stars)
             .ThenBy(hotel => hotel.Slug)
             .Skip(skip)
             .Take(take)
             .ToArrayAsync(cancellationToken);
+    }
 
-    public Task<int> CountAsync(HotelFilter filter, CancellationToken cancellationToken)
-        => ApplyFilter(filter).CountAsync(cancellationToken);
+    public async Task<int> CountAsync(HotelFilter filter, CancellationToken cancellationToken)
+    {
+        var destinationIds = await ResolveDestinationIdsAsync(
+            filter.DestinationSlug,
+            cancellationToken);
+        return await ApplyFilter(filter, destinationIds).CountAsync(cancellationToken);
+    }
 
     public async Task<IReadOnlyList<Hotel>> ListWithCoordinatesAsync(
         CancellationToken cancellationToken)
@@ -62,7 +72,37 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
             .Where(hotel => hotel.DestinationId == destinationId)
             .ToArrayAsync(cancellationToken);
 
-    private IQueryable<Hotel> ApplyFilter(HotelFilter filter)
+    public async Task<IReadOnlyList<Hotel>> ListByDestinationsAsync(
+        IReadOnlyCollection<Guid> destinationIds,
+        CancellationToken cancellationToken)
+    {
+        if (destinationIds.Count == 0)
+        {
+            return [];
+        }
+
+        var ids = destinationIds.Distinct().ToArray();
+        return await dbContext.Hotels
+            .AsNoTracking()
+            .Where(hotel => ids.Contains(hotel.DestinationId))
+            .ToArrayAsync(cancellationToken);
+    }
+
+    private async Task<IReadOnlyCollection<Guid>?> ResolveDestinationIdsAsync(
+        string? slug,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+        {
+            return null;
+        }
+
+        return await DestinationHierarchy.ResolveIdsAsync(dbContext, slug, cancellationToken);
+    }
+
+    private IQueryable<Hotel> ApplyFilter(
+        HotelFilter filter,
+        IReadOnlyCollection<Guid>? destinationIds)
     {
         var query = dbContext.Hotels
             .AsNoTracking()
@@ -73,13 +113,8 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
             .Include(hotel => hotel.Rooms)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(filter.DestinationSlug))
+        if (destinationIds is not null)
         {
-            var slug = filter.DestinationSlug.Trim();
-            var destinationIds = dbContext.Destinations
-                .Where(destination => destination.Slug == slug)
-                .Select(destination => destination.Id);
-
             query = query.Where(hotel => destinationIds.Contains(hotel.DestinationId));
         }
 

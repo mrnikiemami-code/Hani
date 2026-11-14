@@ -154,6 +154,18 @@
 | D-137 | Security | response headers + configurable rate limiting + review | Gate 8 |
 | D-138 | Observability | live/ready health + SLO + dashboard + alerts | Gate 8 |
 | D-139 | Architecture decision | ADR-0028 read model + ADR-0029 modular monolith | Gate 8 |
+| D-140 | Continent hierarchy | Continent type + descendant destination filtering | Gate 8.1 |
+| D-141 | Hotel sort/rank | newest/reviews/alphabetical/rating/rank + rank in city | Gate 8.1 |
+| D-142 | Agency directory | public list/filter + rating/review/tour count | Gate 8.1 |
+| D-143 | Author aggregate | author + content + gamification + review count BFF | Gate 8.1 |
+| D-144 | Home BFF | tours/visas/itineraries/blog/campaigns aggregation | Gate 8.1 |
+| D-145 | Content JSON-LD | BlogPosting/Article/VideoObject | Gate 8.1 |
+| D-146 | Review criteria | per-criterion average endpoint | Gate 8.1 |
+| D-147 | Blog tags/related | destination tags + related posts | Gate 8.1 |
+| D-148 | Visa related guides | related article slugs on visa types | Gate 8.1 |
+| D-149 | Media upload | multipart upload + storage abstraction | Gate 8.1 |
+| D-150 | Notification provider | HTTP Email/SMS sender + logging fallback | Gate 8.1 |
+| D-151 | External boundary | frontend, flight credentials, Lastgram SSO/competition | Gate 8.1 |
 
 ## ۳. مستندات
 

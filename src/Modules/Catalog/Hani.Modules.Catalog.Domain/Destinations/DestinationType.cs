@@ -8,5 +8,6 @@ public enum DestinationType
     Country = 0,
     Province = 1,
     City = 2,
-    Region = 3
+    Region = 3,
+    Continent = 4
 }

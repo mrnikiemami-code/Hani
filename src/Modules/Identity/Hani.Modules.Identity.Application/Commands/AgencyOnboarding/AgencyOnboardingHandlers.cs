@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.Domain;
+using Hani.Contracts.Identity;
 using Hani.Modules.Identity.Application.Abstractions;
 using Hani.Modules.Identity.Application.Queries;
 using Hani.Modules.Identity.Application.Queries.GetAgencyById;
@@ -97,24 +98,44 @@ internal sealed class ListAgenciesQueryHandler(IAgencyRepository agencies)
     }
 }
 
-internal sealed class GetPublicAgencyQueryHandler(IAgencyRepository agencies)
-    : IQueryHandler<GetPublicAgencyQuery, PublicAgencyDto>
+internal sealed class ListPublicAgenciesQueryHandler(
+    IAgencyRepository agencies,
+    IReviewSummaryReadService reviewSummaries)
+    : IQueryHandler<ListPublicAgenciesQuery, PagedResult<PublicAgencyDto>>
 {
-    public async Task<Result<PublicAgencyDto>> Handle(
-        GetPublicAgencyQuery request,
+    public async Task<Result<PagedResult<PublicAgencyDto>>> Handle(
+        ListPublicAgenciesQuery request,
         CancellationToken cancellationToken)
     {
-        var agency = await agencies.GetBySlugAsync(
-            request.Slug.Trim().ToLowerInvariant(),
+        var page = Math.Max(1, request.Page);
+        var pageSize = Math.Clamp(request.PageSize, 1, 50);
+        var (items, total) = await agencies.SearchPublicAsync(
+            request.City,
+            request.Province,
+            request.Q,
+            (page - 1) * pageSize,
+            pageSize,
             cancellationToken);
 
-        if (agency is null || agency.Status != AgencyStatus.Active)
-        {
-            return Result<PublicAgencyDto>.Failure(
-                Error.NotFound("HANI-IDENTITY-1404", "Agency was not found."));
-        }
+        var summaries = await reviewSummaries.GetSummariesAsync(
+            "Agency",
+            items.Select(agency => agency.Id).ToArray(),
+            cancellationToken);
 
-        return Result<PublicAgencyDto>.Success(new PublicAgencyDto(
+        return Result<PagedResult<PublicAgencyDto>>.Success(
+            new PagedResult<PublicAgencyDto>(
+                items.Select(agency => ToPublicDto(agency, summaries)).ToArray(),
+                page,
+                pageSize,
+                total));
+    }
+
+    internal static PublicAgencyDto ToPublicDto(
+        Agency agency,
+        IReadOnlyDictionary<Guid, ReviewSummary> summaries)
+    {
+        summaries.TryGetValue(agency.Id, out var summary);
+        return new PublicAgencyDto(
             agency.Id,
             agency.Slug,
             agency.Name,
@@ -131,7 +152,37 @@ internal sealed class GetPublicAgencyQueryHandler(IAgencyRepository agencies)
             agency.StaffCount,
             agency.Address,
             agency.Province,
-            agency.LicenseFileUrl));
+            agency.LicenseFileUrl,
+            summary?.AverageRating,
+            summary?.ReviewCount ?? 0);
+    }
+}
+
+internal sealed class GetPublicAgencyQueryHandler(
+    IAgencyRepository agencies,
+    IReviewSummaryReadService reviewSummaries)
+    : IQueryHandler<GetPublicAgencyQuery, PublicAgencyDto>
+{
+    public async Task<Result<PublicAgencyDto>> Handle(
+        GetPublicAgencyQuery request,
+        CancellationToken cancellationToken)
+    {
+        var agency = await agencies.GetBySlugAsync(
+            request.Slug.Trim().ToLowerInvariant(),
+            cancellationToken);
+
+        if (agency is null || agency.Status != AgencyStatus.Active)
+        {
+            return Result<PublicAgencyDto>.Failure(
+                Error.NotFound("HANI-IDENTITY-1404", "Agency was not found."));
+        }
+
+        var summaries = await reviewSummaries.GetSummariesAsync(
+            "Agency",
+            [agency.Id],
+            cancellationToken);
+        return Result<PublicAgencyDto>.Success(
+            ListPublicAgenciesQueryHandler.ToPublicDto(agency, summaries));
     }
 }
 

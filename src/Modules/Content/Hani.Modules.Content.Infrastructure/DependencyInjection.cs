@@ -11,12 +11,12 @@ namespace Hani.Modules.Content.Infrastructure;
 public static class DependencyInjection
 {
     /// <summary>
-    /// Adds content repositories.
+    /// Adds content repositories and the notification dispatcher.
     /// </summary>
     public static IServiceCollection AddContentInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IContentRepository, ContentRepository>();
-        services.AddScoped<INotificationSender, LoggingNotificationSender>();
+        services.AddScoped<INotificationSender, HttpNotificationSender>();
         services.AddHostedService<NotificationDispatcher>();
         return services;
     }

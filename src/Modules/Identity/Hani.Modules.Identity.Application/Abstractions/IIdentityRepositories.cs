@@ -37,6 +37,17 @@ public interface IAgencyRepository
         CancellationToken cancellationToken);
 
     /// <summary>
+    /// Searches active agencies for the public directory.
+    /// </summary>
+    Task<(IReadOnlyList<Agency> Items, int Total)> SearchPublicAsync(
+        string? city,
+        string? province,
+        string? query,
+        int skip,
+        int take,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Persists pending changes.
     /// </summary>
     Task SaveChangesAsync(CancellationToken cancellationToken);

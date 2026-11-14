@@ -117,3 +117,14 @@ Client → X-Api-Key + X-Api-Secret
 - Schema: `identity`
 - جدول‌ها: `users`, `user_otp_codes`, `user_refresh_tokens`, `agencies`, `agency_documents`, `api_clients`, `reviews`, `review_photos`, `review_helpful_votes`, `review_reports`, `ownership_claims`, `media_assets`
 - Migrationها: `InitialIdentity`, `AddUsersAndOtp`, `AddTrustAgencyAndEngagement`, `AddAuditRemediationIdentityFields`
+
+
+## Gate 8.1 ? Lastsecond parity
+
+- Public agency directory: `GET /market/v1/agencies` with city/province/q/paging.
+- Agency profiles now expose rating/review count; the BFF adds approved tour count.
+- Author aggregate profile: `GET /market/v1/authors/{username}/profile` composes
+  profile, content counts, gamification, badges, travel style, and review count.
+- Review criteria aggregate: `GET /market/v1/reviews/criteria`.
+- Multipart media upload: `POST /market/v1/media/upload` with local storage
+  abstraction (`IFileStorage`) and moderation registration.

@@ -444,7 +444,8 @@ public static class CatalogEndpoints
                         type.Steps,
                         type.Faqs
                             .Select(faq => new VisaFaqInput(faq.Question, faq.Answer))
-                            .ToArray()))
+                            .ToArray(),
+                        type.RelatedArticleSlugs))
                     .ToArray()),
             cancellationToken);
 
@@ -998,7 +999,8 @@ public sealed record VisaTypeRequest(
     string Currency,
     IReadOnlyList<VisaDocumentRequest> Documents,
     IReadOnlyList<string> Steps,
-    IReadOnlyList<VisaFaqRequest> Faqs);
+    IReadOnlyList<VisaFaqRequest> Faqs,
+    IReadOnlyList<string>? RelatedArticleSlugs = null);
 
 /// <summary>Visa country creation request.</summary>
 public sealed record CreateVisaCountryRequest(

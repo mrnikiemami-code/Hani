@@ -1,12 +1,13 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 8 — Hardening (PASSED Core)
+> **فاز فعال:** Gate 8.1 — Lastsecond Parity Closure (PASSED Core)
 > **آخرین commit کد:** `18ea8bd`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core)
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core) / Gate 8.1 ✅ PASSED (Core)
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 > **گزارش Gate:** [`../reports/baseline-gate-8.md`](../reports/baseline-gate-8.md)
+> **قرارداد Gate 8.1:** [`GATE-8.1-CONTRACT.md`](GATE-8.1-CONTRACT.md)
 > **بازبینی دوباره Lastsecond:** [`../reports/lastsecond-reaudit-post-gate8-2026-11-14.md`](../reports/lastsecond-reaudit-post-gate8-2026-11-14.md)
 > **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **برنامه Remediation:** [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md)
@@ -25,7 +26,7 @@
 | 3 | Channel + Billing + Settlement | ✅ Gate 7 PASSED (Core) | 100% |
 | 4 | Flights | ✅ Gate 5 | 100% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ✅ Gate 5/5.1 + Gate 6 | 100% |
-| 6 | Hardening & Scale | ✅ Gate 8 PASSED (Core) | 100% |
+| 6 | Hardening & Scale | ✅ Gate 8 + 8.1 PASSED (Core) | 100% |
 
 > از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۱ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 1 به‌عنوان وضعیت تاریخی باقی می‌ماند.
 
@@ -192,7 +193,7 @@
 | Build | ۰ warning / ۰ error |
 | Unit Tests | 150 passed |
 | Architecture Tests | 34 passed |
-| Total | **187 passed** (150 unit + 34 architecture + 3 integration) |
+| Total | **190 passed** (150 unit + 34 architecture + 6 integration) |
 | Migrations | Supply (۸) / Catalog (۶) / Content (۲) / Identity (۶) / Booking (۱۰) / Payments (۸) / Settlement (۳) |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -202,9 +203,9 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 8 — Hardening (PASSED Core)
+**تسک فعال:** Gate 8.1 — Lastsecond Parity Closure (PASSED Core)
 
-> **Post-Gate 8 Re-audit (2026-11-14):** بازبینی دوباره Lastsecond نشان داد Baseline ۳۴ GAP بسته است، اما ۱۰ انحراف E-01..E-10 و ۳ انحراف تکمیلی (Agency directory/profile، Review aggregate criteria، Blog related/tags) هنوز باز یا خارجی هستند. جزئیات: [`lastsecond-reaudit-post-gate8-2026-11-14.md`](../reports/lastsecond-reaudit-post-gate8-2026-11-14.md). Gate 8.1 پیشنهاد می‌شود؛ Gate 9 شروع نشود تا درباره این residuals تصمیم گرفته شود.
+> **Gate 8.1 (2026-11-14):** ۱۲ انحراف Backend بسته شد (Continent/هیبرارشی، Hotel sort/rank، Agency directory/profile، Author aggregate، Home BFF، Content JSON-LD، Review criteria، Blog tags/related، Visa related articles، Media upload، HTTP Email/SMS). E-01 (Frontend)، E-07 (credential پرووایدر پرواز) و A-15 (Lastgram SSO/Competition) به‌عنوان تحویل خارجی باقی ماندند. قرارداد: [`GATE-8.1-CONTRACT.md`](GATE-8.1-CONTRACT.md).
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
@@ -232,6 +233,21 @@
 - [x] A-08 — `TourCategory` + `TravelType` + search filters
 
 **شکاف‌های اصلی Gate 6/7:** Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
+
+### Gate 8.1 — Exit Checklist ✅ PASSED (Core)
+
+- [x] Continent taxonomy + hierarchical destination filtering
+- [x] Hotel sort `newest/reviews/alphabetical/rating/rank` + `RankInCity`
+- [x] Public agency directory + agency profile tour count
+- [x] Author aggregate profile endpoint
+- [x] Home page BFF endpoint
+- [x] Blog/Travelogue/Video JSON-LD
+- [x] Review criteria aggregate endpoint
+- [x] Blog destination tags + related posts
+- [x] Visa related article slugs
+- [x] Multipart media upload + storage abstraction
+- [x] HTTP Email/SMS sender with logging fallback
+- [ ] Next.js frontend / real Flight Provider credentials / Lastgram SSO + Competition (external)
 
 ### Gate 8 — Exit Checklist ✅ PASSED (Core)
 

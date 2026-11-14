@@ -15,7 +15,8 @@ public sealed record CreateBlogPostCommand(
     Guid AuthorUserId,
     string? CategorySlug,
     string? CoverUrl,
-    IReadOnlyList<BlogTranslationInput> Translations) : ICommand<Guid>;
+    IReadOnlyList<BlogTranslationInput> Translations,
+    IReadOnlyList<Guid>? DestinationIds = null) : ICommand<Guid>;
 
 /// <summary>Publish a blog post.</summary>
 public sealed record PublishBlogPostCommand(string Slug) : ICommand<bool>;

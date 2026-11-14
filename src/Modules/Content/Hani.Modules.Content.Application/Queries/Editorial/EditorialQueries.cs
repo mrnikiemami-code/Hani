@@ -14,6 +14,12 @@ public sealed record SearchBlogQuery(
 /// <summary>Read one blog post.</summary>
 public sealed record GetBlogQuery(string Slug, string? Locale = null) : IQuery<BlogDetailDto>;
 
+/// <summary>Read related blog posts.</summary>
+public sealed record GetRelatedBlogQuery(
+    string Slug,
+    string? Locale = null,
+    int Limit = 4) : IQuery<IReadOnlyList<BlogSummaryDto>>;
+
 /// <summary>Search published travelogues.</summary>
 public sealed record SearchTraveloguesQuery(
     string? Locale = null,
@@ -76,7 +82,8 @@ public sealed record BlogDetailDto(
     DateTimeOffset? PublishedAt,
     int ViewCount,
     int LikeCount,
-    int CommentCount);
+    int CommentCount,
+    IReadOnlyList<Guid>? DestinationIds = null);
 
 /// <summary>Travelogue summary read model.</summary>
 public sealed record TravelogueSummaryDto(

@@ -89,6 +89,29 @@ public sealed class ListAgenciesQueryValidator : AbstractValidator<ListAgenciesQ
 }
 
 /// <summary>
+/// Validation rules for the public agency directory.
+/// </summary>
+public sealed class ListPublicAgenciesQueryValidator : AbstractValidator<ListPublicAgenciesQuery>
+{
+    /// <summary>
+    /// Creates paging and text-length rules.
+    /// </summary>
+    public ListPublicAgenciesQueryValidator()
+    {
+        RuleFor(query => query.Page).GreaterThanOrEqualTo(1)
+            .WithErrorCode("HANI-IDENTITY-1417");
+        RuleFor(query => query.PageSize).InclusiveBetween(1, 50)
+            .WithErrorCode("HANI-IDENTITY-1418");
+        RuleFor(query => query.City).MaximumLength(80)
+            .WithErrorCode("HANI-IDENTITY-1419");
+        RuleFor(query => query.Province).MaximumLength(80)
+            .WithErrorCode("HANI-IDENTITY-1420");
+        RuleFor(query => query.Q).MaximumLength(120)
+            .WithErrorCode("HANI-IDENTITY-1421");
+    }
+}
+
+/// <summary>
 /// Validation rules for approving an agency.
 /// </summary>
 public sealed class ApproveAgencyCommandValidator : AbstractValidator<ApproveAgencyCommand>

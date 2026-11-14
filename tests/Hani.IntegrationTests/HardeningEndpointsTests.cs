@@ -2,10 +2,15 @@ using System.Net;
 using Hani.BuildingBlocks.Domain;
 using Hani.Contracts.Catalog;
 using Hani.Contracts.Supply;
+using Hani.Modules.Catalog.Domain.Destinations;
+using Hani.Modules.Catalog.Domain.Hotels;
 using Hani.Modules.Catalog.Domain.TourProducts;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
 using Hani.Modules.Content.Domain.Content;
 using Hani.Modules.Content.Infrastructure.Persistence;
+using Hani.Modules.Identity.Domain.Agencies;
+using Hani.Modules.Identity.Domain.Reviews;
+using Hani.Modules.Identity.Infrastructure.Persistence;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 using Hani.Modules.Supply.Domain.Departures;
 using Hani.Modules.Supply.Infrastructure.Persistence;
@@ -69,6 +74,13 @@ public sealed class HardeningEndpointsTests(PostgresFixture fixture)
         xml.ShouldContain($"<loc>https://hani.test/fa/blog/{blogSlug}</loc>");
         xml.ShouldContain("hreflang=\"en\"");
         xml.ShouldContain("hreflang=\"ar\"");
+
+        var seo = await client.GetAsync($"/market/v1/content/blog/{blogSlug}/seo?locale=en");
+        seo.StatusCode.ShouldBe(HttpStatusCode.OK);
+        seo.Content.Headers.ContentType!.MediaType.ShouldBe("application/ld+json");
+
+        var related = await client.GetAsync($"/market/v1/content/blog/{blogSlug}/related?locale=en");
+        related.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -176,4 +188,123 @@ public sealed class HardeningEndpointsTests(PostgresFixture fixture)
         string Slug,
         string Title,
         int OfferCount);
+
+    [Fact]
+    public async Task Agency_Directory_And_Profile_Should_Be_Available()
+    {
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+        var slug = $"gate81-agency-{suffix}";
+        Guid agencyId;
+
+        using (var scope = fixture.Factory.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
+            var agency = Agency.Create(
+                fixture.Factory.Ids,
+                slug,
+                "Gate 8.1 Agency",
+                "G81-001",
+                "Tehran");
+            agencyId = agency.Id;
+            await db.Agencies.AddAsync(agency);
+            await db.SaveChangesAsync();
+        }
+
+        using var client = fixture.Factory.CreateClient();
+        var directory = await client.GetStringAsync($"/market/v1/agencies?q={suffix}&pageSize=10");
+        directory.ShouldContain(agencyId.ToString());
+        directory.ShouldContain("approvedTourCount");
+
+        var profile = await client.GetAsync($"/market/v1/agencies/{slug}/profile");
+        profile.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Home_Criteria_And_Hotel_Sort_Should_Be_Available()
+    {
+        using var client = fixture.Factory.CreateClient();
+
+        (await client.GetAsync("/market/v1/home?locale=en")).StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await client.GetAsync("/market/v1/hotels?sortBy=newest&pageSize=3")).StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await client.GetAsync("/market/v1/reviews/criteria?targetType=Hotel&targetId=" +
+            Guid.CreateVersion7())).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Continent_Destination_Should_Filter_Descendant_Hotels()
+    {
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+        var continentSlug = $"continent-{suffix}";
+        Guid hotelId;
+
+        using (var scope = fixture.Factory.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
+            var continent = Destination.Create(
+                fixture.Factory.Ids,
+                continentSlug,
+                DestinationType.Continent);
+            var country = Destination.Create(
+                fixture.Factory.Ids,
+                $"country-{suffix}",
+                DestinationType.Country,
+                continent.Id);
+            var city = Destination.Create(
+                fixture.Factory.Ids,
+                $"city-{suffix}",
+                DestinationType.City,
+                country.Id);
+            var hotel = Hotel.Create(
+                fixture.Factory.Ids,
+                $"gate81-hotel-{suffix}",
+                city.Id,
+                4);
+            hotelId = hotel.Id;
+
+            await db.Destinations.AddRangeAsync(continent, country, city);
+            await db.Hotels.AddAsync(hotel);
+            await db.SaveChangesAsync();
+
+            var identity = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
+            var review = Review.Create(
+                fixture.Factory.Ids,
+                Guid.CreateVersion7(),
+                ReviewTargetType.Hotel,
+                hotel.Id,
+                5,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "Excellent",
+                "Great stay",
+                Hani.Modules.Identity.Domain.Reviews.TravelType.Couple,
+                null,
+                [],
+                criteria: new Dictionary<string, int>
+                {
+                    ["Food"] = 5,
+                    ["Cleanliness"] = 5,
+                    ["Staff"] = 4,
+                    ["Entertainment"] = 4,
+                    ["Location"] = 5,
+                    ["Value"] = 4
+                });
+            review.Publish();
+            await identity.Reviews.AddAsync(review);
+            await identity.SaveChangesAsync();
+        }
+
+        using var client = fixture.Factory.CreateClient();
+        var body = await client.GetStringAsync(
+            $"/market/v1/hotels?destinationSlug={continentSlug}&pageSize=20");
+        body.ShouldContain(hotelId.ToString());
+
+        var criteria = await client.GetStringAsync(
+            $"/market/v1/reviews/criteria?targetType=Hotel&targetId={hotelId}");
+        criteria.ShouldContain("\"Food\":5");
+        criteria.ShouldContain("\"ReviewCount\":1");
+    }
 }

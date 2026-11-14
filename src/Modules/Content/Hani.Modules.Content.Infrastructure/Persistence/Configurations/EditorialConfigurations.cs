@@ -66,6 +66,18 @@ internal sealed class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
             translations.HasIndex(item => new { item.PostId, item.Locale }).IsUnique();
             translations.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
+
+        builder.OwnsMany(item => item.Destinations, destinations =>
+        {
+            destinations.ToTable("blog_post_destinations");
+            destinations.WithOwner().HasForeignKey(item => item.PostId);
+            destinations.HasKey(item => item.Id);
+            destinations.Property(item => item.Id).HasColumnName("id").ValueGeneratedNever();
+            destinations.Property(item => item.PostId).HasColumnName("post_id");
+            destinations.Property(item => item.DestinationId).HasColumnName("destination_id").IsRequired();
+            destinations.HasIndex(item => new { item.PostId, item.DestinationId }).IsUnique();
+            destinations.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
     }
 }
 

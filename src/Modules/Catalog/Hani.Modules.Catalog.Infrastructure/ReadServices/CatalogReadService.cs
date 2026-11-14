@@ -163,20 +163,20 @@ internal sealed class CatalogReadService(
         CancellationToken cancellationToken)
     {
         var normalizedType = type.Trim().ToLowerInvariant();
-        var destinationId = await ResolveDestinationIdAsync(destinationSlug, cancellationToken);
+        var destinationIds = await ResolveDestinationIdsAsync(destinationSlug, cancellationToken);
 
         return normalizedType switch
         {
             "hotel" => await dbContext.Hotels.CountAsync(
-                hotel => destinationId == null || hotel.DestinationId == destinationId,
+                hotel => destinationIds == null || destinationIds.Contains(hotel.DestinationId),
                 cancellationToken),
             "restaurant" => await dbContext.Places.CountAsync(
                 place => place.Type == PlaceType.Restaurant &&
-                    (destinationId == null || place.DestinationId == destinationId),
+                    (destinationIds == null || destinationIds.Contains(place.DestinationId)),
                 cancellationToken),
             "attraction" => await dbContext.Places.CountAsync(
                 place => place.Type == PlaceType.Attraction &&
-                    (destinationId == null || place.DestinationId == destinationId),
+                    (destinationIds == null || destinationIds.Contains(place.DestinationId)),
                 cancellationToken),
             "visa" => await dbContext.VisaCountries.CountAsync(cancellationToken),
             "flight" => await dbContext.FlightRoutes.CountAsync(
@@ -347,29 +347,31 @@ internal sealed class CatalogReadService(
         CatalogProductFilter filter,
         CancellationToken cancellationToken)
     {
-        var destinationId = await ResolveDestinationIdAsync(
+        var destinationIds = await ResolveDestinationIdsAsync(
             filter.DestinationSlug,
             cancellationToken);
-        var originId = await ResolveDestinationIdAsync(
+        var originIds = await ResolveDestinationIdsAsync(
             filter.OriginSlug,
             cancellationToken);
 
         var query = dbContext.TourProducts
             .Where(product => product.Status == TourProductStatus.Published);
 
-        if (destinationId is not null)
+        if (destinationIds is not null)
         {
-            query = destinationId == Guid.Empty
+            query = destinationIds.Count == 0
                 ? query.Where(_ => false)
                 : query.Where(product =>
-                    product.Destinations.Any(link => link.DestinationId == destinationId));
+                    product.Destinations.Any(link => destinationIds.Contains(link.DestinationId)));
         }
 
-        if (originId is not null)
+        if (originIds is not null)
         {
-            query = originId == Guid.Empty
+            query = originIds.Count == 0
                 ? query.Where(_ => false)
-                : query.Where(product => product.OriginDestinationId == originId);
+                : query.Where(product =>
+                    product.OriginDestinationId != null &&
+                    originIds.Contains(product.OriginDestinationId.Value));
         }
 
         if (filter.MinDuration is { } minDuration)
@@ -446,7 +448,7 @@ internal sealed class CatalogReadService(
         return query;
     }
 
-    private async Task<Guid?> ResolveDestinationIdAsync(
+    private async Task<IReadOnlyCollection<Guid>?> ResolveDestinationIdsAsync(
         string? destinationSlug,
         CancellationToken cancellationToken)
     {
@@ -455,13 +457,10 @@ internal sealed class CatalogReadService(
             return null;
         }
 
-        var slug = destinationSlug.Trim();
-        var id = await dbContext.Destinations
-            .Where(destination => destination.Slug == slug)
-            .Select(destination => destination.Id)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        return id == Guid.Empty ? Guid.Empty : id;
+        return await DestinationHierarchy.ResolveIdsAsync(
+            dbContext,
+            destinationSlug,
+            cancellationToken);
     }
 
     private static CatalogProductSummary MapSummary(TourProduct product)

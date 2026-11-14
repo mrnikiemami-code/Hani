@@ -131,6 +131,18 @@ internal sealed class FakeOfferReadService : IOfferReadService
                 id => (IReadOnlyList<OfferSnapshot>)OffersByProduct[id]);
         return Task.FromResult<IReadOnlyDictionary<Guid, IReadOnlyList<OfferSnapshot>>>(result);
     }
+
+    public Task<IReadOnlyDictionary<Guid, int>> GetApprovedOfferCountsByAgencyIdsAsync(
+        IReadOnlyCollection<Guid> agencyIds,
+        CancellationToken cancellationToken)
+    {
+        var result = OffersByProduct.Values
+            .SelectMany(offers => offers)
+            .Where(offer => agencyIds.Contains(offer.AgencyId))
+            .GroupBy(offer => offer.AgencyId)
+            .ToDictionary(group => group.Key, group => group.Count());
+        return Task.FromResult<IReadOnlyDictionary<Guid, int>>(result);
+    }
 }
 
 internal sealed class FakeCacheService : ICacheService

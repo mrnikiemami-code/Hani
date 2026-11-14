@@ -55,15 +55,25 @@ internal sealed class PlaceRepository(CatalogDbContext dbContext) : IPlaceReposi
         int skip,
         int take,
         CancellationToken cancellationToken)
-        => await ApplyFilter(filter)
+    {
+        var destinationIds = await ResolveDestinationIdsAsync(
+            filter.DestinationSlug,
+            cancellationToken);
+        return await ApplyFilter(filter, destinationIds)
             .OrderBy(place => place.Category)
             .ThenBy(place => place.Slug)
             .Skip(skip)
             .Take(take)
             .ToArrayAsync(cancellationToken);
+    }
 
-    public Task<int> CountAsync(PlaceFilter filter, CancellationToken cancellationToken)
-        => ApplyFilter(filter).CountAsync(cancellationToken);
+    public async Task<int> CountAsync(PlaceFilter filter, CancellationToken cancellationToken)
+    {
+        var destinationIds = await ResolveDestinationIdsAsync(
+            filter.DestinationSlug,
+            cancellationToken);
+        return await ApplyFilter(filter, destinationIds).CountAsync(cancellationToken);
+    }
 
     public async Task<IReadOnlyList<Place>> ListByDestinationAsync(
         Guid destinationId,
@@ -82,7 +92,21 @@ internal sealed class PlaceRepository(CatalogDbContext dbContext) : IPlaceReposi
         return await query.ToArrayAsync(cancellationToken);
     }
 
-    private IQueryable<Place> ApplyFilter(PlaceFilter filter)
+    private async Task<IReadOnlyCollection<Guid>?> ResolveDestinationIdsAsync(
+        string? slug,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+        {
+            return null;
+        }
+
+        return await DestinationHierarchy.ResolveIdsAsync(dbContext, slug, cancellationToken);
+    }
+
+    private IQueryable<Place> ApplyFilter(
+        PlaceFilter filter,
+        IReadOnlyCollection<Guid>? destinationIds)
     {
         var query = dbContext.Places
             .AsNoTracking()
@@ -96,13 +120,8 @@ internal sealed class PlaceRepository(CatalogDbContext dbContext) : IPlaceReposi
             query = query.Where(place => place.Type == filter.Type);
         }
 
-        if (!string.IsNullOrWhiteSpace(filter.DestinationSlug))
+        if (destinationIds is not null)
         {
-            var slug = filter.DestinationSlug.Trim();
-            var destinationIds = dbContext.Destinations
-                .Where(destination => destination.Slug == slug)
-                .Select(destination => destination.Id);
-
             query = query.Where(place => destinationIds.Contains(place.DestinationId));
         }
 

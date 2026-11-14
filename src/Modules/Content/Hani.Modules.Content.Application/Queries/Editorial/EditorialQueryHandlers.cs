@@ -94,7 +94,43 @@ internal sealed class GetBlogQueryHandler(
             post.PublishedAt,
             post.ViewCount,
             post.LikeCount,
-            commentCount));
+            commentCount,
+            post.Destinations.Select(item => item.DestinationId).ToArray()));
+    }
+}
+
+internal sealed class GetRelatedBlogQueryHandler(
+    IContentRepository repository,
+    ILanguageCatalog languages)
+    : IQueryHandler<GetRelatedBlogQuery, IReadOnlyList<BlogSummaryDto>>
+{
+    public async Task<Result<IReadOnlyList<BlogSummaryDto>>> Handle(
+        GetRelatedBlogQuery request,
+        CancellationToken cancellationToken)
+    {
+        var post = await repository.GetBlogBySlugAsync(request.Slug, cancellationToken);
+        if (post is null || post.Status != ContentStatus.Published)
+        {
+            return Result<IReadOnlyList<BlogSummaryDto>>.Failure(
+                Error.NotFound("HANI-CONTENT-1003", "Blog post was not found."));
+        }
+
+        var limit = Math.Clamp(request.Limit, 1, 12);
+        var items = await repository.ListBlogAsync(
+            request.Locale,
+            post.CategoryId,
+            null,
+            0,
+            limit + 1,
+            cancellationToken);
+        var locale = languages.Normalize(request.Locale);
+
+        return Result<IReadOnlyList<BlogSummaryDto>>.Success(
+            items
+                .Where(item => item.Id != post.Id)
+                .Take(limit)
+                .Select(item => SearchBlogQueryHandler.Map(item, locale, languages))
+                .ToArray());
     }
 }
 

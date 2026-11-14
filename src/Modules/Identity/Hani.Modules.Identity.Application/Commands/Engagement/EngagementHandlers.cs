@@ -153,6 +153,46 @@ internal sealed class GetReviewsQueryHandler(
     }
 }
 
+internal sealed class GetAuthorReviewCountQueryHandler(IReviewRepository reviews)
+    : IQueryHandler<GetAuthorReviewCountQuery, int>
+{
+    public async Task<Result<int>> Handle(
+        GetAuthorReviewCountQuery request,
+        CancellationToken cancellationToken)
+        => Result<int>.Success(await reviews.CountByUserAsync(
+            request.UserId,
+            cancellationToken));
+}
+
+internal sealed class GetReviewCriteriaSummaryQueryHandler(IReviewRepository reviews)
+    : IQueryHandler<GetReviewCriteriaSummaryQuery, ReviewCriteriaSummaryDto>
+{
+    public async Task<Result<ReviewCriteriaSummaryDto>> Handle(
+        GetReviewCriteriaSummaryQuery request,
+        CancellationToken cancellationToken)
+    {
+        var maps = await reviews.ListCriteriaAsync(
+            request.TargetType,
+            request.TargetId,
+            cancellationToken);
+
+        var averages = maps
+            .SelectMany(map => map)
+            .GroupBy(item => item.Key, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(
+                group => group.Key,
+                group => Math.Round(group.Average(item => (decimal)item.Value), 2),
+                StringComparer.OrdinalIgnoreCase);
+
+        return Result<ReviewCriteriaSummaryDto>.Success(
+            new ReviewCriteriaSummaryDto(
+                request.TargetId,
+                request.TargetType.ToString(),
+                maps.Count,
+                averages));
+    }
+}
+
 internal sealed class GetPendingReviewsQueryHandler(
     IReviewRepository reviews,
     IUserRepository users)

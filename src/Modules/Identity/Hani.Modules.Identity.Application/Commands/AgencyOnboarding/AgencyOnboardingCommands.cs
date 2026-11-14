@@ -37,6 +37,16 @@ public sealed record GetMyAgencyQuery(Guid UserId) : IQuery<AgencyDto>;
 public sealed record ListAgenciesQuery(string? Status) : IQuery<IReadOnlyList<AgencyDto>>;
 
 /// <summary>
+/// Public agency directory query with city/province/search filters.
+/// </summary>
+public sealed record ListPublicAgenciesQuery(
+    string? City = null,
+    string? Province = null,
+    string? Q = null,
+    int Page = 1,
+    int PageSize = 20) : IQuery<PagedResult<PublicAgencyDto>>;
+
+/// <summary>
 /// Query that returns a public approved agency profile.
 /// </summary>
 public sealed record GetPublicAgencyQuery(string Slug) : IQuery<PublicAgencyDto>;
@@ -71,4 +81,6 @@ public sealed record PublicAgencyDto(
     int? StaffCount,
     string? Address,
     string? Province,
-    string? LicenseFileUrl);
+    string? LicenseFileUrl,
+    decimal? AverageRating = null,
+    int ReviewCount = 0);

@@ -6,6 +6,7 @@ using Hani.Modules.Content.Application.Commands.Growth;
 using Hani.Modules.Content.Application.Queries.Dashboard;
 using Hani.Modules.Content.Application.Queries.Editorial;
 using Hani.Modules.Content.Application.Queries.Growth;
+using Hani.Modules.Content.Application.Queries.Seo;
 using Hani.Modules.Content.Application.Queries.Sitemap;
 using Hani.Modules.Content.Domain.Content;
 using Hani.Modules.Content.Domain.Dashboard;
@@ -37,14 +38,18 @@ public static class ContentEndpoints
 
         content.MapGet("/blog", SearchBlogAsync).WithName("Marketplace.SearchBlog");
         content.MapGet("/blog/{slug}", GetBlogAsync).WithName("Marketplace.GetBlog");
+        content.MapGet("/blog/{slug}/related", GetRelatedBlogAsync).WithName("Marketplace.GetRelatedBlog");
+        content.MapGet("/blog/{slug}/seo", GetBlogSeoAsync).WithName("Marketplace.GetBlogSeo");
         content.MapPost("/blog/{slug}/comments", CreateBlogCommentAsync).WithName("Marketplace.CreateBlogComment");
         content.MapPost("/blog/{slug}/like", LikeBlogAsync).WithName("Marketplace.LikeBlog");
         content.MapGet("/travelogues", SearchTraveloguesAsync).WithName("Marketplace.SearchTravelogues");
         content.MapGet("/travelogues/{slug}", GetTravelogueAsync).WithName("Marketplace.GetTravelogue");
+        content.MapGet("/travelogues/{slug}/seo", GetTravelogueSeoAsync).WithName("Marketplace.GetTravelogueSeo");
         content.MapPost("/travelogues/{slug}/comments", CreateTravelogueCommentAsync).WithName("Marketplace.CreateTravelogueComment");
         content.MapPost("/travelogues/{slug}/like", LikeTravelogueAsync).WithName("Marketplace.LikeTravelogue");
         content.MapGet("/videos", SearchVideosAsync).WithName("Marketplace.SearchVideos");
         content.MapGet("/videos/{slug}", GetVideoAsync).WithName("Marketplace.GetVideo");
+        content.MapGet("/videos/{slug}/seo", GetVideoSeoAsync).WithName("Marketplace.GetVideoSeo");
         content.MapPost("/videos/{slug}/comments", CreateVideoCommentAsync).WithName("Marketplace.CreateVideoComment");
         content.MapPost("/videos/{slug}/like", LikeVideoAsync).WithName("Marketplace.LikeVideo");
         content.MapGet("/authors/{userId:guid}/stats", GetAuthorStatsAsync).WithName("Marketplace.GetAuthorContentStats");
@@ -122,6 +127,35 @@ public static class ContentEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>Reads related blog posts.</summary>
+    private static async Task<IResult> GetRelatedBlogAsync(
+        string slug,
+        string? locale,
+        int? limit,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetRelatedBlogQuery(slug, locale, limit is null or 0 ? 4 : limit.Value),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Returns BlogPosting JSON-LD.</summary>
+    private static async Task<IResult> GetBlogSeoAsync(
+        string slug,
+        string? locale,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetBlogSeoQuery(slug, locale), cancellationToken);
+        return result.IsSuccess
+            ? Results.Content(result.Value!, "application/ld+json")
+            : context.ToProblem(result.Error!);
+    }
+
     /// <summary>Creates a pending blog comment.</summary>
     private static Task<IResult> CreateBlogCommentAsync(
         string slug,
@@ -167,6 +201,20 @@ public static class ContentEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>Returns Article JSON-LD for a travelogue.</summary>
+    private static async Task<IResult> GetTravelogueSeoAsync(
+        string slug,
+        string? locale,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetTravelogueSeoQuery(slug, locale), cancellationToken);
+        return result.IsSuccess
+            ? Results.Content(result.Value!, "application/ld+json")
+            : context.ToProblem(result.Error!);
+    }
+
     /// <summary>Creates a pending travelogue comment.</summary>
     private static Task<IResult> CreateTravelogueCommentAsync(
         string slug,
@@ -210,6 +258,20 @@ public static class ContentEndpoints
     {
         var result = await sender.Send(new GetVideoQuery(slug, locale), cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Returns VideoObject JSON-LD for a video.</summary>
+    private static async Task<IResult> GetVideoSeoAsync(
+        string slug,
+        string? locale,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetVideoSeoQuery(slug, locale), cancellationToken);
+        return result.IsSuccess
+            ? Results.Content(result.Value!, "application/ld+json")
+            : context.ToProblem(result.Error!);
     }
 
     /// <summary>Creates a pending video comment.</summary>
@@ -395,7 +457,8 @@ public static class ContentEndpoints
                 item.Excerpt,
                 item.Body,
                 item.SeoTitle,
-                item.SeoDescription)).ToArray()), cancellationToken);
+                item.SeoDescription)).ToArray(),
+            request.DestinationIds), cancellationToken);
         return result.IsSuccess ? Results.Created("/internal/v1/content/blog", result.Value) : context.ToProblem(result.Error!);
     }
 
@@ -821,7 +884,8 @@ public sealed record CreateBlogRequest(
     Guid AuthorUserId,
     string? CategorySlug,
     string? CoverUrl,
-    IReadOnlyList<BlogTranslationRequest> Translations);
+    IReadOnlyList<BlogTranslationRequest> Translations,
+    IReadOnlyList<Guid>? DestinationIds = null);
 
 /// <summary>Blog translation request.</summary>
 public sealed record BlogTranslationRequest(

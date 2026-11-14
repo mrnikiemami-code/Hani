@@ -127,6 +127,24 @@ internal sealed class ReviewRepository(IdentityDbContext dbContext) : IReviewRep
         => dbContext.Reviews.CountAsync(
             review => review.Status == ReviewStatus.Pending,
             cancellationToken);
+
+    public async Task<IReadOnlyList<IReadOnlyDictionary<string, int>>> ListCriteriaAsync(
+        ReviewTargetType targetType,
+        Guid targetId,
+        CancellationToken cancellationToken)
+        => await dbContext.Reviews
+            .AsNoTracking()
+            .Where(review =>
+                review.TargetType == targetType &&
+                review.TargetId == targetId &&
+                review.Status == ReviewStatus.Published)
+            .Select(review => review.Criteria)
+            .ToArrayAsync(cancellationToken);
+
+    public Task<int> CountByUserAsync(Guid userId, CancellationToken cancellationToken)
+        => dbContext.Reviews.CountAsync(
+            review => review.UserId == userId && review.Status == ReviewStatus.Published,
+            cancellationToken);
 }
 
 internal sealed class ClaimRepository(IdentityDbContext dbContext) : IClaimRepository
