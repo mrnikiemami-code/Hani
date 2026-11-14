@@ -210,5 +210,5 @@
 | `f91e461` | Booking modes, reservation/lead, installments, offline payment |
 | `7083b45` | Audit remediation A-01..A-08 (CollectionMode v2, installments, reviews, hotel/place, taxonomy) |
 | `1c202bd` | Gate 5 verticals, geo, vertical SEO, review aggregation |
-| `pending` | Gate 5.1 vertical depth and parity residuals |
+| `f6d65ce` | Gate 5.1 vertical depth and parity residuals |
 | `7df2265` | Phase roadmap + status + tasks |
