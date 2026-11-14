@@ -194,4 +194,5 @@
 | `026724a` | Identity core: OTP, JWT, profiles |
 | `fc26e43` | Trust, agency, reviews, claims, media (Gate 3) |
 | `f91e461` | Booking modes, reservation/lead, installments, offline payment |
+| `7083b45` | Audit remediation A-01..A-08 (CollectionMode v2, installments, reviews, hotel/place, taxonomy) |
 | `7df2265` | Phase roadmap + status + tasks |

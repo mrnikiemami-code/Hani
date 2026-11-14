@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
 > **فاز فعال:** Gate 5 — Verticals (Ready)
-> **آخرین commit کد:** `AuditRemediation` (پس از commit نهایی جایگزین می‌شود)
+> **آخرین commit کد:** `7083b45`
 > **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ Ready
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
