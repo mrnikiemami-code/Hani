@@ -28,7 +28,10 @@
 - `Order.Cancel` + آزادسازی صندلی
 - `Refund` Requested → Processed با provider ref
 - `Invoice` با Issuer/SellerOfRecord و شماره یکتا
+- PDF فاکتور بدون وابستگی خارجی
+- dunning scheduler + reminder provider abstraction
 - `AgencySettlementTerms` + `Payout` (Pending/Paid)
+- Chargeback + Reconciliation
 - Internal APIs برای refund/invoice/payout/terms
 
 ### Migrationها
@@ -62,10 +65,8 @@
 
 ## ۴. باقی‌مانده خارج از بک‌اند
 
-- اتصال واقعی PSP refund (mock adapter وجود دارد)
-- DNS/routing دامنه white-label
+- اتصال credential واقعی PSP (adapter و mock وجود دارد)
+- DNS/routing دامنه در لبه شبکه/CDN (resolver بک‌اند موجود است)
 - Frontend صفحات Channel/Agency/Admin/Traveler
-- Reconciliation با فایل واقعی PSP (مدل و API موجود است)
-- Background scheduler برای dunning (endpoint trigger موجود است)
 
 > Gate 7 در سطح Core بک‌اند PASS است؛ موارد بالا وابستگی خارجی/Frontend هستند.
