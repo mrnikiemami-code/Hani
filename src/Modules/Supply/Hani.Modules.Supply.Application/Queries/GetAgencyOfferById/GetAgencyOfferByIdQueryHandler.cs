@@ -66,7 +66,9 @@ internal sealed class GetAgencyOfferByIdQueryHandler(
                     rule.DutyStatus.ToString(),
                     rule.DutyRate,
                     rule.ExemptionReason))
-                .ToArray());
+                .ToArray(),
+            offer.BookingMode.ToString(),
+            offer.CollectionMode.ToString());
 
         return Result<AgencyOfferDto>.Success(dto);
     }

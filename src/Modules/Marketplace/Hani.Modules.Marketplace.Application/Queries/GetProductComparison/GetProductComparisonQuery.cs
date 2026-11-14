@@ -35,7 +35,9 @@ public sealed record OfferComparisonDto(
     IReadOnlyList<AccommodationOptionComparisonDto> AccommodationOptions,
     IReadOnlyList<FlightOptionComparisonDto> FlightOptions,
     IReadOnlyList<TaxRuleComparisonDto> TaxRules,
-    IReadOnlyList<DepartureComparisonDto> Departures);
+    IReadOnlyList<DepartureComparisonDto> Departures,
+    string BookingMode,
+    string CollectionMode);
 
 /// <summary>
 /// Accommodation option shown on a tour detail page.

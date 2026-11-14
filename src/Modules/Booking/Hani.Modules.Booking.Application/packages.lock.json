@@ -41,6 +41,9 @@
       "hani.buildingblocks.domain": {
         "type": "Project"
       },
+      "hani.contracts.identity": {
+        "type": "Project"
+      },
       "hani.contracts.supply": {
         "type": "Project"
       },

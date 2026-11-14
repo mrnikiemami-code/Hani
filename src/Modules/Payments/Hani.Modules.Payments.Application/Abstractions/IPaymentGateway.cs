@@ -1,3 +1,4 @@
+using Hani.Modules.Payments.Domain.OfflinePayments;
 using Hani.Modules.Payments.Domain.PaymentIntents;
 using Hani.Modules.Payments.Domain.PaymentWebhooks;
 
@@ -64,10 +65,9 @@ public interface IPaymentGateway
 /// Persistence abstraction for payment intents.
 /// </summary>
 public interface IPaymentIntentRepository
-{
-    /// <summary>
-    /// Adds an intent and saves changes.
-    /// </summary>
+{    /// <summary>
+     /// Adds an intent and saves changes.
+     /// </summary>
     Task AddAsync(PaymentIntent intent, CancellationToken cancellationToken);
 
     /// <summary>
@@ -118,6 +118,17 @@ public interface IPaymentWebhookEventRepository
     /// Persists pending changes.
     /// </summary>
     Task SaveChangesAsync(CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Persistence abstraction for offline payment receipts.
+/// </summary>
+public interface IOfflinePaymentRepository
+{
+    /// <summary>
+    /// Adds an offline receipt and saves changes.
+    /// </summary>
+    Task AddAsync(OfflinePaymentReceipt receipt, CancellationToken cancellationToken);
 }
 
 /// <summary>

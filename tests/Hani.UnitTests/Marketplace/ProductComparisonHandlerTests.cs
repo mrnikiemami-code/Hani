@@ -33,7 +33,12 @@ public sealed class ProductComparisonHandlerTests
         offers.OffersByProduct[productId] =
         [
             Offer(productId, agencyA, 60_000_000m),
-            Offer(productId, agencyB, 45_000_000m)
+            Offer(
+                productId,
+                agencyB,
+                45_000_000m,
+                bookingMode: "ReservationRequest",
+                collectionMode: "Offline")
         ];
 
         var handler = new GetProductComparisonQueryHandler(catalog, offers, agencies, new FakeLanguageCatalog());
@@ -46,6 +51,8 @@ public sealed class ProductComparisonHandlerTests
         result.Value!.Offers.Count.ShouldBe(2);
         result.Value.Offers[0].MinPrice.ShouldBe(45_000_000m);
         result.Value.Offers[0].AgencyName.ShouldBe("Agency B");
+        result.Value.Offers[0].BookingMode.ShouldBe("ReservationRequest");
+        result.Value.Offers[0].CollectionMode.ShouldBe("Offline");
         result.Value.Title.ShouldBe("استانبول");
     }
 
@@ -66,7 +73,12 @@ public sealed class ProductComparisonHandlerTests
         result.Error!.Type.ShouldBe(Hani.BuildingBlocks.Application.ErrorType.NotFound);
     }
 
-    private static OfferSnapshot Offer(Guid productId, Guid agencyId, decimal price)
+    private static OfferSnapshot Offer(
+        Guid productId,
+        Guid agencyId,
+        decimal price,
+        string bookingMode = "Online",
+        string collectionMode = "Online")
         => new(
             Guid.CreateVersion7(),
             agencyId,
@@ -88,5 +100,7 @@ public sealed class ProductComparisonHandlerTests
             ],
             [],
             [],
-            []);
+            [],
+            bookingMode,
+            collectionMode);
 }

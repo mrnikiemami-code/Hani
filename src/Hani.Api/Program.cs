@@ -17,6 +17,7 @@ using Hani.Modules.Booking.Application.Commands.CreateHold;
 using Hani.Modules.Booking.Application.Commands.CreateOrder;
 using Hani.Modules.Booking.Application.Commands.CreateQuote;
 using Hani.Modules.Booking.Application.Commands.ReleaseHold;
+using Hani.Modules.Booking.Application.Commands.Requests;
 using Hani.Modules.Booking.Application.Queries.GetContract;
 using Hani.Modules.Booking.Application.Queries.GetOrder;
 using Hani.Modules.Booking.Application.Queries.GetQuote;
@@ -49,6 +50,7 @@ using Hani.Modules.Marketplace.Presentation;
 using Hani.Modules.Payments.Application;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
 using Hani.Modules.Payments.Application.Commands.HandlePaymentWebhook;
+using Hani.Modules.Payments.Application.Commands.RecordOfflinePayment;
 using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
 using Hani.Modules.Payments.Infrastructure;
 using Hani.Modules.Payments.Infrastructure.Persistence;
@@ -247,9 +249,28 @@ builder.Services.AddScoped<IValidator<GetQuoteQuery>, GetQuoteQueryValidator>();
 builder.Services.AddScoped<IValidator<CreateOrderCommand>, CreateOrderCommandValidator>();
 builder.Services.AddScoped<IValidator<GetOrderQuery>, GetOrderQueryValidator>();
 builder.Services.AddScoped<IValidator<GetContractQuery>, GetContractQueryValidator>();
+builder.Services.AddScoped<IValidator<CreateReservationRequestCommand>, CreateReservationRequestCommandValidator>();
+builder.Services.AddScoped<IValidator<GetReservationRequestQuery>, GetReservationRequestQueryValidator>();
+builder.Services.AddScoped<IValidator<ListReservationRequestsQuery>, ListReservationRequestsQueryValidator>();
+builder.Services.AddScoped<IValidator<ConfirmReservationRequestCommand>, ConfirmReservationRequestCommandValidator>();
+builder.Services.AddScoped<IValidator<RejectReservationRequestCommand>, RejectReservationRequestCommandValidator>();
+builder.Services.AddScoped<IValidator<AcceptReservationRequestCommand>, AcceptReservationRequestCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateLeadCommand>, CreateLeadCommandValidator>();
+builder.Services.AddScoped<IValidator<GetLeadQuery>, GetLeadQueryValidator>();
+builder.Services.AddScoped<IValidator<ListLeadsQuery>, ListLeadsQueryValidator>();
+builder.Services.AddScoped<IValidator<MatchLeadCommand>, MatchLeadCommandValidator>();
+builder.Services.AddScoped<IValidator<DistributeLeadCommand>, DistributeLeadCommandValidator>();
+builder.Services.AddScoped<IValidator<CloseLeadCommand>, CloseLeadCommandValidator>();
+builder.Services.AddScoped<IValidator<CreatePriceDiscrepancyCommand>, CreatePriceDiscrepancyCommandValidator>();
+builder.Services.AddScoped<IValidator<ListPriceDiscrepanciesQuery>, ListPriceDiscrepanciesQueryValidator>();
+builder.Services.AddScoped<IValidator<ResolvePriceDiscrepancyCommand>, ResolvePriceDiscrepancyCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateInstallmentPlanCommand>, CreateInstallmentPlanCommandValidator>();
+builder.Services.AddScoped<IValidator<GetInstallmentPlanQuery>, GetInstallmentPlanQueryValidator>();
+builder.Services.AddScoped<IValidator<PayInstallmentCommand>, PayInstallmentCommandValidator>();
 builder.Services.AddScoped<IValidator<CreatePaymentIntentCommand>, CreatePaymentIntentCommandValidator>();
 builder.Services.AddScoped<IValidator<GetPaymentIntentQuery>, GetPaymentIntentQueryValidator>();
 builder.Services.AddScoped<IValidator<HandlePaymentWebhookCommand>, HandlePaymentWebhookCommandValidator>();
+builder.Services.AddScoped<IValidator<RecordOfflinePaymentCommand>, RecordOfflinePaymentCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateCommissionRuleCommand>, CreateCommissionRuleCommandValidator>();
 builder.Services.AddScoped<IValidator<GetCommissionQuery>, GetCommissionQueryValidator>();
 builder.Services.AddScoped<IValidator<GetLedgerTransactionQuery>, GetLedgerTransactionQueryValidator>();
@@ -267,8 +288,15 @@ if (string.IsNullOrWhiteSpace(jwtOptions.SigningKey) ||
 
 builder.Services.AddAuthentication(options =>
     {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme = "HaniAuth";
+        options.DefaultChallengeScheme = "HaniAuth";
+    })
+    .AddPolicyScheme("HaniAuth", "HaniAuth", options =>
+    {
+        options.ForwardDefaultSelector = context =>
+            context.Request.Headers.ContainsKey("X-Api-Key")
+                ? ApiKeyAuthenticationHandler.SchemeName
+                : JwtBearerDefaults.AuthenticationScheme;
     })
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(
         ApiKeyAuthenticationHandler.SchemeName,
@@ -364,6 +392,7 @@ app.MapEngagementEndpoints();
 app.MapTrustEndpoints();
 app.MapMarketplaceEndpoints();
 app.MapBookingEndpoints();
+app.MapRequestEndpoints();
 app.MapPaymentEndpoints();
 app.MapSettlementEndpoints();
 

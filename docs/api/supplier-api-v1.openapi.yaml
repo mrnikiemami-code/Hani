@@ -163,6 +163,72 @@ paths:
               schema: { $ref: '#/components/schemas/Departure' }
         '409': { $ref: '#/components/responses/Conflict' }
 
+  /reservation-requests:
+    get:
+      tags: [ReservationRequests]
+      summary: لیست درخواست‌های رزرو آژانس
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [PendingAgencyReview, Confirmed, Rejected, CustomerAccepted, Expired, Cancelled] } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ReservationRequest' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /reservation-requests/{requestId}/confirm:
+    post:
+      tags: [ReservationRequests]
+      summary: تایید درخواست رزرو
+      parameters:
+        - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                agencyNote: { type: [string, 'null'], maxLength: 1000 }
+      responses:
+        '200':
+          description: تایید شد
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /reservation-requests/{requestId}/reject:
+    post:
+      tags: [ReservationRequests]
+      summary: رد درخواست رزرو
+      parameters:
+        - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 1, maxLength: 500 }
+      responses:
+        '200':
+          description: رد شد
+          content:
+            application/json:
+              schema: { type: boolean }
+        '400': { $ref: '#/components/responses/Unprocessable' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        default: { $ref: '#/components/responses/Problem' }
+
 components:
   securitySchemes:
     supplierKey:
@@ -332,3 +398,28 @@ components:
         status: { type: string, enum: [DRAFT, PENDING, APPROVED, REJECTED] }
         reason: { type: [string, 'null'] }
         reviewedAt: { type: [string, 'null'], format: date-time }
+
+    ReservationRequest:
+      type: object
+      properties:
+        requestId: { type: string, format: uuid }
+        requestNumber: { type: string }
+        quoteId: { type: string, format: uuid }
+        agencyOfferId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        departureId: { type: string, format: uuid }
+        roomType: { type: string }
+        adults: { type: integer }
+        children: { type: integer }
+        infants: { type: integer }
+        total: { type: number }
+        currency: { type: string }
+        status:
+          type: string
+          enum: [PendingAgencyReview, Confirmed, Rejected, CustomerAccepted, Expired, Cancelled]
+        agencyNote: { type: [string, 'null'] }
+        rejectionReason: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+        decidedAt: { type: [string, 'null'], format: date-time }
+        acceptedAt: { type: [string, 'null'], format: date-time }

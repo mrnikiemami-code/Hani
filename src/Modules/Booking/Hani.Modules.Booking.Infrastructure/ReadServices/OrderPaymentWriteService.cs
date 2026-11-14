@@ -37,7 +37,7 @@ internal sealed class OrderPaymentWriteService(BookingDbContext dbContext)
         Guid orderId,
         Guid? paymentObligationId,
         string currency,
-        Guid paymentIntentId,
+        Guid? paymentIntentId,
         DateTimeOffset paidAt,
         CancellationToken cancellationToken)
     {

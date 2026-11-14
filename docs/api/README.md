@@ -7,6 +7,7 @@
 | `channel-api-v1.openapi.yaml` | Channel | `/channel/v1` | سایت/اپ آژانس |
 | `supplier-api-v1.openapi.yaml` | Supplier | `/supplier/v1` | سیستم آژانس |
 | `marketplace-api-v1.openapi.yaml` | Marketplace | `/market/v1` | مشتری نهایی |
+| `internal-booking-api-v1.openapi.yaml` | Internal Booking | `/internal/v1` | آژانس/ادمین |
 
 ## قواعد مشترک
 
@@ -39,3 +40,12 @@
 - JWT کاربر یا مهمان برای جستجو.
 - BFF نازک روی Next.js.
 - رزرو نیازمند احراز هویت و پذیرش قرارداد.
+- `BookingMode` روی Offer تعیین می‌کند کاربر مستقیم رزرو کند یا `ReservationRequest` بفرستد.
+- `CollectionMode=Offline` پرداخت آنلاین را رد می‌کند و فقط رسید آفلاین داخلی می‌پذیرد.
+
+## Internal Booking
+
+- تأیید/رد `ReservationRequest` توسط آژانس.
+- صف `Lead/RFQ` (Safarsaz، تور سفارشی، هتل، ویزا) + Match/Close.
+- صف `PriceDiscrepancy` + Resolve.
+- ثبت پرداخت اقساط و پرداخت آفلاین (Cash/BankTransfer/Cheque) با رسید.

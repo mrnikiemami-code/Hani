@@ -60,7 +60,9 @@ public sealed record AccommodationSelectionSnapshot(
 /// </summary>
 public sealed record PricingSnapshot(
     List<PriceComponentSnapshot> Components,
-    AccommodationSelectionSnapshot? Accommodation = null)
+    AccommodationSelectionSnapshot? Accommodation = null,
+    string BookingMode = "Online",
+    string CollectionMode = "Online")
 {
     /// <summary>
     /// Creates a snapshot for a single currency with no applicable tax.

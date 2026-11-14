@@ -1,7 +1,9 @@
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
 using Hani.Modules.Payments.Application.Commands.HandlePaymentWebhook;
+using Hani.Modules.Payments.Application.Commands.RecordOfflinePayment;
 using Hani.Modules.Payments.Application.Queries.GetPaymentIntent;
+using Hani.Modules.Payments.Domain.OfflinePayments;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +41,14 @@ public static class PaymentEndpoints
             .Produces<PaymentWebhookResultDto>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound);
+
+        var internalApi = app.MapGroup("/internal/v1/payments").WithTags("Internal.Payments");
+
+        internalApi.MapPost("/offline", RecordOfflineAsync)
+            .WithName("Internal.RecordOfflinePayment")
+            .Produces<OfflinePaymentDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status409Conflict);
 
         return app;
     }
@@ -106,6 +116,28 @@ public static class PaymentEndpoints
 
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
+
+    /// <summary>
+    /// Records an offline payment for an order currency.
+    /// </summary>
+    private static async Task<IResult> RecordOfflineAsync(
+        RecordOfflinePaymentRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new RecordOfflinePaymentCommand(
+                request.OrderId,
+                request.Amount,
+                request.Currency,
+                request.Method,
+                request.Reference,
+                request.RecordedBy),
+            cancellationToken);
+
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
 }
 
 /// <summary>
@@ -115,3 +147,14 @@ public sealed record CreatePaymentIntentRequest(
     Guid OrderId,
     string? Currency = null,
     Guid? PaymentObligationId = null);
+
+/// <summary>
+/// HTTP request to record an offline payment.
+/// </summary>
+public sealed record RecordOfflinePaymentRequest(
+    Guid OrderId,
+    decimal Amount,
+    string Currency,
+    OfflinePaymentMethod Method,
+    string? Reference,
+    string RecordedBy);

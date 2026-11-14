@@ -26,7 +26,7 @@
 | 1 | Tour Experience & Pricing | GAP-01/02/03/07/08 — TC-083/084/082 | ✅ PASSED |
 | 2 | Discovery & SEO | GAP-04 — TC-085، GAP-28 — TC-097 | ✅ PASSED |
 | 3 | Identity, Trust & Agency | GAP-09/10/26/27/31 (TC-086/087)، GAP-11/20/32 (TC-089) | ✅ PASSED |
-| 4 | Booking, Request & Lead | GAP-05/06/19 (TC-088)، GAP-17/18 (TC-098) | 🚧 In Progress |
+| 4 | Booking, Request & Lead | GAP-05/06/19 (TC-088)، GAP-17/18 (TC-098) | ✅ PASSED |
 | 5 | Verticals | GAP-13/25/29 (TC-094)، GAP-14 (TC-090)، GAP-15/21 (TC-091)، GAP-16 (TC-092) | ⏳ |
 | 6 | Content & Growth | GAP-12 (TC-093)، GAP-22/33 (TC-096)، GAP-23 (TC-100)، GAP-24/30/34 (TC-099) | ⏳ |
 | 7 | Channel & Billing | HB-02 — Supplier/Channel OAuth + contracts (بدون GAP در baseline) | ⏳ |
@@ -155,7 +155,49 @@
 
 ---
 
-## ۵. قاعده Deviation Audit
+## ۵. قرارداد Gate 4 — Booking, Request & Lead
+
+### 5.1. هدف فاز
+
+پشتیبانی کامل از مسیرهای واقعی Lastsecond: رزرو آنلاین، درخواست رزرو آژانس، Lead/RFQ تور سفارشی، مغایرت قیمت، اقساط و دریافت آفلاین.
+
+### 5.2. GAPها
+
+| GAP | تسک | محدوده |
+|---|---|---|
+| GAP-05 | TC-088 | `BookingMode` روی Offer + انتشار در Quote/Order/Contract/Search/Compare + `ReservationRequest` |
+| GAP-06 | TC-088 | `LeadRequest` برای Safarsaz/هتل/پرواز/ویزا/طراحی/سفارشی + Match/Close |
+| GAP-19 | TC-088 | `PriceDiscrepancyReport` + صف بررسی + Resolve |
+| GAP-17 | TC-098 | `InstallmentPlan` به تفکیک ارز + پرداخت قسط داخلی |
+| GAP-18 | TC-098 | `CollectionMode=Offline` + رد PaymentIntent آنلاین + رسید Cash/Transfer/Cheque + کمیسیون |
+
+### 5.3. Acceptance
+
+- `BookingMode`/`CollectionMode` روی `AgencyOffer` ذخیره و در snapshot بی‌تغییر Quote/Order/Contract کپی شود.
+- Search و Compare حالت رزرو را افشا کنند؛ `onlineOnly` فقط Offerهای Online را برگرداند.
+- `ReservationRequest` بدون Hold/پرداخت ساخته شود، TTL داشته باشد، و Confirm/Reject/Accept با کنترل مالکیت آژانس کار کند.
+- Lead/RFQ برای همه نوع‌های سرویس ساخته شود؛ Match تک‌آژانس و Distribute به همه آژانس‌های Active (بدون تکرار) کار کند و Close شود.
+- مغایرت قیمت با ارز و قیمت گزارش‌شده ثبت و قابل Resolve باشد.
+- InstallmentPlan برای هر ارز یکتا باشد، جمع اقساط دقیقاً برابر مبلغ باشد و اقساط قابل پرداخت/پیگیری باشند.
+- سفارش Offline هرگز PaymentIntent آنلاین نسازد؛ رسید آفلاین obligation را Paid کند و کمیسیون/دفتر کل به‌روز شود.
+- همه endpointها XML summary، OpenAPI، README و تست داشته باشند.
+- Migration drift صفر، `verify.ps1` و `check-baseline.ps1` سبز، و Deviation Audit ثبت شود.
+
+### 5.4. خروجی‌های اجباری Gate 4
+
+| خروجی | محل |
+|---|---|
+| BookingMode/CollectionMode | `Supply.Domain/AgencyOffers` + snapshot |
+| Reservation/Lead/Discrepancy/Installment | `Booking.Domain` + `Booking.Application/Commands/Requests` |
+| Offline payment | `Payments.Domain/OfflinePayments` + internal endpoint |
+| OpenAPI | `docs/api/marketplace-api-v1.openapi.yaml` + `supplier-api-v1.openapi.yaml` + `internal-booking-api-v1.openapi.yaml` |
+| ADR | `docs/adr/0025-booking-modes-requests-leads-installments-offline.md` |
+| Tests | `tests/Hani.UnitTests/Booking/Gate4Tests.cs` + Marketplace tests |
+| Gate report | `docs/reports/baseline-gate-4.md` |
+
+---
+
+## ۶. قاعده Deviation Audit
 
 قبل از PASS هر Gate:
 
@@ -167,9 +209,10 @@
 
 ---
 
-## ۵. وضعیت فعلی
+## ۷. وضعیت فعلی
 
 - Gate 1: ✅ PASSED و Re-audit شده.
 - Gate 2: ✅ PASSED — GAP-04/28 بسته شدند و گزارش `baseline-gate-2.md` ثبت شد.
 - Gate 3: ✅ PASSED — GAP-09/10/26/27/31/11/20/32 بسته شدند.
-- Gate 4 (Booking, Request & Lead): 🚧 In Progress — فقط GAPهای BookingMode/Lead/RFQ/Installments.
+- Gate 4: ✅ PASSED — GAP-05/06/19/17/18 بسته شدند و گزارش `baseline-gate-4.md` ثبت شد.
+- Gate 5: ⏳ Next — Hotels/Visa/Flights/Places.

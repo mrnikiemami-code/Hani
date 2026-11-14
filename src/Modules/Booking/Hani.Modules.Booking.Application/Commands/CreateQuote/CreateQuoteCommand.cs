@@ -58,4 +58,6 @@ public sealed record QuoteDto(
     string Status,
     DateTimeOffset ExpiresAt,
     IReadOnlyList<PriceComponentDto> Components,
-    AccommodationSelectionDto? Accommodation);
+    AccommodationSelectionDto? Accommodation,
+    string BookingMode,
+    string CollectionMode);

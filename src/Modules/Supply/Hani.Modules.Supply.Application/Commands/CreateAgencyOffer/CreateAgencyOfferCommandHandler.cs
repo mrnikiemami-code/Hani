@@ -21,7 +21,9 @@ internal sealed class CreateAgencyOfferCommandHandler(
             request.AgencyId,
             request.TourProductId,
             request.Title,
-            price);
+            price,
+            bookingMode: request.BookingMode,
+            collectionMode: request.CollectionMode);
 
         try
         {

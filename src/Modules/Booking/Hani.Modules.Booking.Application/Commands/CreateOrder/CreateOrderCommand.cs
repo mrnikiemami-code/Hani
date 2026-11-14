@@ -52,7 +52,9 @@ public sealed record OrderDto(
     IReadOnlyList<OrderTravelerDto> Travelers,
     IReadOnlyList<OrderLineDto> Lines,
     IReadOnlyList<PriceComponentDto> Components,
-    AccommodationSelectionDto? Accommodation);
+    AccommodationSelectionDto? Accommodation,
+    string BookingMode,
+    string CollectionMode);
 
 /// <summary>
 /// Traveler snapshot returned with orders and contracts.
@@ -100,4 +102,6 @@ public sealed record ContractDto(
     IReadOnlyList<OrderTravelerDto> Travelers,
     IReadOnlyList<OrderLineDto> Lines,
     IReadOnlyList<PriceComponentDto> Components,
-    AccommodationSelectionDto? Accommodation);
+    AccommodationSelectionDto? Accommodation,
+    string BookingMode,
+    string CollectionMode);

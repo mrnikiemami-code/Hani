@@ -19,7 +19,8 @@ public sealed record OrderPaymentSnapshot(
     string Currency,
     string Status,
     DateTimeOffset PaymentDueAt,
-    IReadOnlyList<OrderPaymentObligationSnapshot> Obligations);
+    IReadOnlyList<OrderPaymentObligationSnapshot> Obligations,
+    string CollectionMode = "Online");
 
 /// <summary>
 /// Read-side contract exposed by Booking for payment initiation.
@@ -53,7 +54,7 @@ public interface IOrderPaymentWriteService
         Guid orderId,
         Guid? paymentObligationId,
         string currency,
-        Guid paymentIntentId,
+        Guid? paymentIntentId,
         DateTimeOffset paidAt,
         CancellationToken cancellationToken);
 }

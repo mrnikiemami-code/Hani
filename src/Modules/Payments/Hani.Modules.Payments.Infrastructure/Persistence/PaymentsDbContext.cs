@@ -1,3 +1,4 @@
+using Hani.Modules.Payments.Domain.OfflinePayments;
 using Hani.Modules.Payments.Domain.PaymentIntents;
 using Hani.Modules.Payments.Domain.PaymentWebhooks;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,11 @@ public sealed class PaymentsDbContext(DbContextOptions<PaymentsDbContext> option
     /// Deduplicated provider webhooks.
     /// </summary>
     public DbSet<PaymentWebhookEvent> PaymentWebhookEvents => Set<PaymentWebhookEvent>();
+
+    /// <summary>
+    /// Offline payment receipts.
+    /// </summary>
+    public DbSet<OfflinePaymentReceipt> OfflinePaymentReceipts => Set<OfflinePaymentReceipt>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

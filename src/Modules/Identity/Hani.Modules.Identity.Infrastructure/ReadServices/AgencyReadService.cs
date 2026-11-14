@@ -23,4 +23,13 @@ internal sealed class AgencyReadService(IdentityDbContext dbContext) : IAgencyRe
                 agency => agency.Name,
                 cancellationToken);
     }
+
+    public async Task<IReadOnlyList<Guid>> GetActiveAgencyIdsAsync(
+        CancellationToken cancellationToken)
+        => await dbContext.Agencies
+            .AsNoTracking()
+            .Where(agency => agency.Status == Hani.Modules.Identity.Domain.Agencies.AgencyStatus.Active)
+            .OrderBy(agency => agency.Id)
+            .Select(agency => agency.Id)
+            .ToArrayAsync(cancellationToken);
 }

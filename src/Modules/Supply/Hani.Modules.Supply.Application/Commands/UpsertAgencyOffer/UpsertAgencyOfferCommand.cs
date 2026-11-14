@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.Application;
 using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
+using Hani.Modules.Supply.Domain.AgencyOffers;
 
 namespace Hani.Modules.Supply.Application.Commands.UpsertAgencyOffer;
 
@@ -16,7 +17,9 @@ public sealed record UpsertAgencyOfferCommand(
     string IdempotencyKey = "",
     IReadOnlyList<AccommodationOptionInput>? AccommodationOptions = null,
     IReadOnlyList<FlightOptionInput>? FlightOptions = null,
-    IReadOnlyList<TaxRuleInput>? TaxRules = null) : ICommand<UpsertAgencyOfferResult>, IIdempotentCommand
+    IReadOnlyList<TaxRuleInput>? TaxRules = null,
+    BookingMode BookingMode = BookingMode.Online,
+    CollectionMode CollectionMode = CollectionMode.Online) : ICommand<UpsertAgencyOfferResult>, IIdempotentCommand
 {
     string IIdempotentCommand.IdempotencyKey => IdempotencyKey;
 }

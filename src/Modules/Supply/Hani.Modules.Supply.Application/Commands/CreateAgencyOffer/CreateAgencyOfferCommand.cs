@@ -54,4 +54,6 @@ public sealed record CreateAgencyOfferCommand(
     string Currency,
     IReadOnlyList<AccommodationOptionInput>? AccommodationOptions = null,
     IReadOnlyList<FlightOptionInput>? FlightOptions = null,
-    IReadOnlyList<TaxRuleInput>? TaxRules = null) : ICommand<Guid>;
+    IReadOnlyList<TaxRuleInput>? TaxRules = null,
+    BookingMode BookingMode = BookingMode.Online,
+    CollectionMode CollectionMode = CollectionMode.Online) : ICommand<Guid>;

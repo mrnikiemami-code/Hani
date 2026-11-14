@@ -11,6 +11,8 @@
 | `OfferAccommodationOption` | هتل/اتاق/MealPlan/قیمت |
 | `OfferFlightOption` | پرواز رفت/برگشت با ایرلاین/فرودگاه/ساعت/بار |
 | `OfferTaxRule` | VAT/Duty هر ارز با نرخ و وضعیت مالیاتی |
+| `BookingMode` | Online / ReservationRequest |
+| `CollectionMode` | Online / Offline |
 | `TourDeparture` | یک تاریخ اجرای مشخص با ظرفیت و قیمت |
 | `DeparturePrice` | قیمت هر نوع اتاق/مسافر برای یک سانس |
 | `RoomType` | Double / Single / Triple / Child / Infant |
@@ -25,6 +27,8 @@
 - قیمت و ظرفیت روی `TourDeparture` است، نه `TourProduct`.
 - هر Offer می‌تواند چند گزینه اقامت و چند پرواز داشته باشد.
 - هر Offer می‌تواند برای هر ارز یک `OfferTaxRule` داشته باشد؛ نرخ‌ها کسری بین ۰ و ۱ هستند.
+- `BookingMode=ReservationRequest` یعنی رزرو مستقیم ممنوع است و کاربر فقط درخواست رزرو می‌فرستد.
+- `CollectionMode=Offline` یعنی پرداخت آنلاین برای این Offer مجاز نیست و دریافت آفلاین ثبت می‌شود.
 - یک سانس می‌تواند برای یک RoomType چند قیمت ارزی داشته باشد؛ یکتایی `(departure, roomType, currency)` است.
 - ویرایش Offer در وضعیت Approved مجاز نیست.
 - کاهش/افزایش ظرفیت با `Version` کنترل می‌شود.
@@ -58,4 +62,4 @@ Presentation    → Minimal API endpoints
 
 - Schema: `supply`
 - جدول‌ها: `agency_offers`, `agency_offer_accommodations`, `agency_offer_flights`, `agency_offer_tax_rules`, `tour_departures`, `tour_departure_prices`, Outbox/Inbox
-- Migrationها: `InitialSupply`, `AddTourDepartures`, `AddOfferLifecycle`, `AddOfferOptions`, `AddTaxRulesAndCurrencyPrices`
+- Migrationها: `InitialSupply`, `AddTourDepartures`, `AddOfferLifecycle`, `AddOfferOptions`, `AddTaxRulesAndCurrencyPrices`, `AddBookingModes`

@@ -60,7 +60,9 @@ internal sealed class DeparturePricingService(SupplyDbContext dbContext)
                     option.Amount,
                     option.Currency,
                     option.Description))
-                .ToArray());
+                .ToArray(),
+            data.offer.BookingMode.ToString(),
+            data.offer.CollectionMode.ToString());
     }
 }
 

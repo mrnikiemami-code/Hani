@@ -75,7 +75,9 @@ public sealed record OfferSnapshot(
     IReadOnlyList<DepartureSnapshot> Departures,
     IReadOnlyList<AccommodationOptionSnapshot> AccommodationOptions,
     IReadOnlyList<FlightOptionSnapshot> FlightOptions,
-    IReadOnlyList<OfferTaxRuleSnapshot> TaxRules);
+    IReadOnlyList<OfferTaxRuleSnapshot> TaxRules,
+    string BookingMode = "Online",
+    string CollectionMode = "Online");
 
 /// <summary>
 /// Read-side contract exposed by the Supply module.
@@ -112,7 +114,9 @@ public sealed record DeparturePricingSnapshot(
     int SeatsLeft,
     IReadOnlyList<DeparturePriceSnapshot> Prices,
     IReadOnlyList<DepartureTaxRuleSnapshot> TaxRules,
-    IReadOnlyList<AccommodationOptionSnapshot> AccommodationOptions);
+    IReadOnlyList<AccommodationOptionSnapshot> AccommodationOptions,
+    string BookingMode = "Online",
+    string CollectionMode = "Online");
 
 /// <summary>
 /// Read-side contract for departure pricing.

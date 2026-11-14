@@ -3,7 +3,7 @@
 > وضعیت‌ها: ✅ Done | 🚧 In Progress | ⚠️ Partial | ⏳ Next | ❌ Not Started
 > هر تسک باید حداکثر ۱ روز کاری باشد.
 
-> **Baseline:** از این لحظه هر تسک باید به یک `GAP-xx` در [`baseline.json`](baseline.json) متصل باشد. Gate 1 فعال است: GAP-01، GAP-02، GAP-03، GAP-07، GAP-08.
+> **Baseline:** از این لحظه هر تسک باید به یک `GAP-xx` در [`baseline.json`](baseline.json) متصل باشد. Gate 5 فعال است: GAP-13/14/15/16/21/25/29.
 
 ## Baseline Task Index
 
@@ -17,8 +17,8 @@
 | 3 | TC-086 | User Identity + OTP + Profile | ✅ | GAP-09/10 | auth/profile |
 | 3 | TC-087 | Agency Onboarding + Panel | ✅ | GAP-26/27/31 | مجوز/پنل |
 | 3 | TC-089 | Reviews + Photos + Claims | ✅ | GAP-11/20/32 | UGC/اعتماد |
-| 4 | TC-088 | BookingMode + Request/Lead + RFQ | ❌ | GAP-05/06/19 | Online + Request |
-| 4 | TC-098 | Installments + Offline Payment | ❌ | GAP-17/18 | اقساط/آفلاین |
+| 4 | TC-088 | BookingMode + Request/Lead + RFQ | ✅ | GAP-05/06/19 | Online + Request + Lead |
+| 4 | TC-098 | Installments + Offline Payment | ✅ | GAP-17/18 | اقساط/آفلاین |
 | 5 | TC-090 | Hotels + Inquiry | ❌ | GAP-14 | هتل/استعلام |
 | 5 | TC-091 | Visa + Documents | ❌ | GAP-15/21 | ویزا/مدارک |
 | 5 | TC-092 | Flights Metasearch | ❌ | GAP-16 | جستجو/ارجاع |

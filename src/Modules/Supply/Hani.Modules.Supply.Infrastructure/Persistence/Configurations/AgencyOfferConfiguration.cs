@@ -64,6 +64,18 @@ internal sealed class AgencyOfferConfiguration : IEntityTypeConfiguration<Agency
                 .IsRequired();
         });
 
+        builder.Property(offer => offer.BookingMode)
+            .HasColumnName("booking_mode")
+            .HasConversion<string>()
+            .HasMaxLength(32)
+            .IsRequired();
+
+        builder.Property(offer => offer.CollectionMode)
+            .HasColumnName("collection_mode")
+            .HasConversion<string>()
+            .HasMaxLength(32)
+            .IsRequired();
+
         builder.HasIndex(offer => offer.AgencyId)
             .HasDatabaseName("ix_agency_offers_agency_id");
 

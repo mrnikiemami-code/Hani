@@ -1,12 +1,12 @@
 # Hani — STATUS (وضعیت زنده)
 
-> **تاریخ:** ۲۱ آبان ۱۴۰۵
-> **فاز فعال:** Baseline Gate 4 — Booking, Request & Lead
-> **آخرین commit کد:** `fc26e43`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 — In Progress
+> **تاریخ:** ۲۳ آبان ۱۴۰۵
+> **فاز فعال:** Baseline Gate 5 — Verticals
+> **آخرین commit کد:** `Gate4` (پس از commit نهایی جایگزین می‌شود)
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
-> **گزارش Gate:** [`../reports/baseline-gate-3.md`](../reports/baseline-gate-3.md)
+> **گزارش Gate:** [`../reports/baseline-gate-4.md`](../reports/baseline-gate-4.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
 ---
@@ -17,7 +17,7 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | ✅ Baseline Gate 1 Passed | ~95% |
+| 2 | Marketplace Read + Booking | ✅ Baseline Gate 4 Passed | 100% |
 | 3 | Channel + Billing + Settlement | ⏳ Gate 7 | 0% |
 | 4 | Flights | ⏳ Gate 5 | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Gate 1/5/6 | 0% |
@@ -95,6 +95,11 @@
 | Discovery & SEO | Faceted Search/Sort + Canonical/JSON-LD/Sitemap/Landing + robots | `d7921ac` |
 | Identity Core | User + OTP + JWT/refresh + profile + author | `026724a` |
 | Trust & Agency | Onboarding/documents/admin panel/trust + reviews/claims/media | `fc26e43` |
+| Booking/Request Modes | BookingMode/CollectionMode + ReservationRequest + search/compare exposure | Gate 4 |
+| Lead/RFQ | LeadRequest + توزیع به همه آژانس‌های فعال + Match/Close برای تور سفارشی/هتل/پرواز/ویزا | Gate 4 |
+| Price Discrepancy | گزارش مغایرت قیمت + صف بررسی + Resolve | Gate 4 |
+| Installments | InstallmentPlan به تفکیک ارز + پرداخت قسط | Gate 4 |
+| Offline Payment | CollectionMode=Offline + رسید Cash/Transfer/Cheque + کمیسیون | Gate 4 |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -134,6 +139,26 @@
 | POST | `/market/v1/orders` | ✅ (Idempotent) |
 | GET | `/market/v1/orders/{id}` | ✅ |
 | GET | `/market/v1/orders/{id}/contract` | ✅ |
+| POST | `/market/v1/reservation-requests` | ✅ |
+| GET | `/market/v1/reservation-requests/{id}` | ✅ |
+| POST | `/market/v1/reservation-requests/{id}/accept` | ✅ |
+| POST | `/market/v1/leads` | ✅ |
+| GET | `/market/v1/leads/{id}` | ✅ |
+| POST | `/market/v1/price-discrepancies` | ✅ |
+| POST | `/market/v1/orders/{id}/installments` | ✅ |
+| GET | `/market/v1/orders/{id}/installments?currency=IRR` | ✅ |
+| GET | `/supplier/v1/reservation-requests` | ✅ (Supplier) |
+| POST | `/supplier/v1/reservation-requests/{id}/confirm` | ✅ (Supplier) |
+| POST | `/supplier/v1/reservation-requests/{id}/reject` | ✅ (Supplier) |
+| POST | `/internal/v1/reservation-requests/{id}/confirm` | ✅ |
+| POST | `/internal/v1/reservation-requests/{id}/reject` | ✅ |
+| GET | `/internal/v1/leads` | ✅ |
+| POST | `/internal/v1/leads/{id}/match` | ✅ |
+| POST | `/internal/v1/leads/{id}/close` | ✅ |
+| GET | `/internal/v1/price-discrepancies` | ✅ |
+| POST | `/internal/v1/price-discrepancies/{id}/resolve` | ✅ |
+| POST | `/internal/v1/installments/pay` | ✅ |
+| POST | `/internal/v1/payments/offline` | ✅ |
 | POST | `/market/v1/payments/intents` | ✅ (Idempotent) |
 | GET | `/market/v1/payments/intents/{id}` | ✅ |
 | POST | `/market/v1/payments/webhook/{provider}` | ✅ (HMAC) |
@@ -151,10 +176,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۰۷ passed |
+| Unit Tests | ۱۱۵ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۴۱ passed** |
-| Migrations | Supply (۵) / Catalog (۲) / Identity (۳) / Booking (۴) / Payments (۴) / Settlement (۲) |
+| Total | **۱۴۹ passed** |
+| Migrations | Supply (۶) / Catalog (۲) / Identity (۳) / Booking (۶) / Payments (۵) / Settlement (۲) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -163,13 +188,26 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 4 — Booking, Request & Lead
+**تسک فعال:** Gate 5 — Verticals
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
-**GAPهای Gate 4 (باز):** GAP-05 (BookingMode), GAP-06 (Lead/RFQ), GAP-19 (Price discrepancy), GAP-17/18 (Installments/Offline)
-**Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای قبلی
+**GAPهای Gate 4:** ✅ GAP-05/06/19 (TC-088), GAP-17/18 (TC-098)
+**Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای ۱ تا ۴؛ `currentGate = 5`
 **قرارداد Gate 4:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
+
+### Gate 4 — Exit Checklist ✅
+
+- [x] `BookingMode`/`CollectionMode` روی Offer + snapshot
+- [x] `ReservationRequest` + تایید/رد/پذیرش + پنل آژانس
+- [x] `LeadRequest` + Match/Close
+- [x] `PriceDiscrepancyReport` + Resolve
+- [x] `InstallmentPlan` به تفکیک ارز
+- [x] پرداخت آفلاین + رد PaymentIntent آنلاین + کمیسیون
+- [x] Search/Compare افشای BookingMode + `onlineOnly` واقعی
+- [x] Migrationها + OpenAPI + README + ADR-0025
+- [x] Gate 4 Deviation Audit + PASS report
+- [x] `verify.ps1` + `check-baseline.ps1` سبز
 
 ### Gate 3 — Exit Checklist ✅
 
@@ -259,3 +297,4 @@
 | `d7921ac` | Faceted search and SEO (Gate 2) |
 | `026724a` | Identity core: OTP, JWT, profiles |
 | `fc26e43` | Trust, agency, reviews, claims, media (Gate 3) |
+| `Gate4` | Booking modes, reservation/lead, installments, offline payment (Gate 4) |

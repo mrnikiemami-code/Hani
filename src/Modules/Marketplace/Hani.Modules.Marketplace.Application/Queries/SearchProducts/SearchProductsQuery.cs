@@ -61,4 +61,5 @@ public sealed record ProductSearchItemDto(
     string Difficulty,
     string VehicleType,
     string LocalVehicleType,
-    string AccommodationType);
+    string AccommodationType,
+    IReadOnlyList<string> BookingModes);

@@ -107,6 +107,12 @@
 | D-90 | Discovery & SEO | Faceted search/sort + canonical/hreflang + JSON-LD + landing + sitemap/robots | `d7921ac` |
 | D-91 | Identity Core | User + OTP + JWT/refresh + profile + author + `AddUsersAndOtp` | `026724a` |
 | D-92 | Trust, Agency & UGC | Onboarding/panel/trust + reviews/claims/media + `AddTrustAgencyAndEngagement` | `fc26e43` |
+| D-93 | BookingMode/CollectionMode | Offer + Quote/Order/Contract snapshot + Search/Compare exposure + `AddBookingModes` | Gate 4 |
+| D-94 | ReservationRequest | Domain + market/supplier/internal endpoints + TTL + ownership | Gate 4 |
+| D-95 | Lead/RFQ | LeadRequest + Create/Get/List/Match/Distribute/Close + `AddLeadDistributions` | Gate 4 |
+| D-96 | PriceDiscrepancy | Report + admin queue + Resolve | Gate 4 |
+| D-97 | Installments | InstallmentPlan per currency + pay endpoint + `AddRequestsLeadsDiscrepanciesInstallments` | Gate 4 |
+| D-98 | Offline Payment | Receipt Cash/Transfer/Cheque + Paid + commission + `AddOfflinePayments` | Gate 4 |
 
 ## ۳. مستندات
 
@@ -126,10 +132,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۰۷ passed |
+| Unit Tests | ۱۱۵ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۴۱ passed** |
-| Migrations | Supply + Catalog + Identity + Booking + Payments + Settlement |
+| Total | **۱۴۹ passed** |
+| Migrations | Supply (۶) + Catalog (۲) + Identity (۳) + Booking (۶) + Payments (۵) + Settlement (۲) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API `/health` | Healthy |
@@ -179,4 +185,5 @@
 | `d7921ac` | Faceted search and SEO (Gate 2) |
 | `026724a` | Identity core: OTP, JWT, profiles |
 | `fc26e43` | Trust, agency, reviews, claims, media (Gate 3) |
+| `Gate4` | Booking modes, reservation/lead, installments, offline payment |
 | `7df2265` | Phase roadmap + status + tasks |

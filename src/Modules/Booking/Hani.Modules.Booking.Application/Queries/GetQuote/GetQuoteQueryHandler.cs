@@ -60,5 +60,7 @@ internal sealed class GetQuoteQueryHandler(IQuoteRepository quotes)
                     accommodation.RoomType,
                     accommodation.MealPlan,
                     accommodation.Currency)
-                : null);
+                : null,
+            quote.EffectivePricing.BookingMode,
+            quote.EffectivePricing.CollectionMode);
 }

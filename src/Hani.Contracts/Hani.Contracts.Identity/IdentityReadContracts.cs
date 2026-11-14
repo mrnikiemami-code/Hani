@@ -11,4 +11,9 @@ public interface IAgencyReadService
     Task<IReadOnlyDictionary<Guid, string>> GetNamesAsync(
         IReadOnlyCollection<Guid> ids,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns ids of agencies that are active and eligible to receive platform leads.
+    /// </summary>
+    Task<IReadOnlyList<Guid>> GetActiveAgencyIdsAsync(CancellationToken cancellationToken);
 }

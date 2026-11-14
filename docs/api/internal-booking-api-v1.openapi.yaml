@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+  title: Hani Internal Booking & Payment API
+  version: 1.0.0
+  description: |
+    Admin/supplier operations for reservation requests, Safarsaz/RFQ leads,
+    price-discrepancy review, installment collection, and offline payments.
+servers:
+  - url: https://api.hani.ir
+    description: Production
+  - url: http://localhost:5099
+    description: Local development
+
+paths:
+  /internal/v1/reservation-requests/{requestId}/confirm:
+    post:
+      tags: [ReservationRequests]
+      summary: Agency confirms a pending reservation request
+      parameters:
+        - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                agencyNote: { type: [string, 'null'], maxLength: 1000 }
+      responses:
+        '200':
+          description: Confirmed
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { description: Not found }
+        '409': { description: Request is not pending }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/reservation-requests/{requestId}/reject:
+    post:
+      tags: [ReservationRequests]
+      summary: Agency rejects a pending reservation request
+      parameters:
+        - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 1, maxLength: 500 }
+      responses:
+        '200':
+          description: Rejected
+          content:
+            application/json:
+              schema: { type: boolean }
+        '400': { description: Reason is required }
+        '404': { description: Not found }
+        '409': { description: Request is not pending }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/leads:
+    get:
+      tags: [Leads]
+      summary: List leads for matching and follow-up
+      parameters:
+        - { name: status, in: query, required: false, schema: { type: string, enum: [Open, Matched, Closed, Cancelled] } }
+        - { name: page, in: query, required: false, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+      responses:
+        '200':
+          description: Paged leads
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LeadPage' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/leads/{leadId}/match:
+    post:
+      tags: [Leads]
+      summary: Match an open lead to an agency
+      parameters:
+        - { name: leadId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [agencyId]
+              properties:
+                agencyId: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Matched
+          content:
+            application/json:
+              schema: { type: boolean }
+        '400': { description: Invalid agency }
+        '404': { description: Lead not found }
+        '409': { description: Lead is not open }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/leads/{leadId}/distribute:
+    post:
+      tags: [Leads]
+      summary: Distribute a lead to every active agency
+      parameters:
+        - { name: leadId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Number of newly added agency invitations
+          content:
+            application/json:
+              schema: { type: integer }
+        '404': { description: Lead not found }
+        '409': { description: No active agency or lead is closed }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/leads/{leadId}/close:
+    post:
+      tags: [Leads]
+      summary: Close a lead
+      parameters:
+        - { name: leadId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Closed
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { description: Lead not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/price-discrepancies:
+    get:
+      tags: [PriceDiscrepancies]
+      summary: List price-discrepancy reports
+      parameters:
+        - { name: status, in: query, required: false, schema: { type: string, enum: [Open, Reviewed, Resolved] } }
+        - { name: page, in: query, required: false, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+      responses:
+        '200':
+          description: Paged reports
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PriceDiscrepancyPage' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/price-discrepancies/{reportId}/resolve:
+    post:
+      tags: [PriceDiscrepancies]
+      summary: Resolve a price-discrepancy report
+      parameters:
+        - { name: reportId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [resolution]
+              properties:
+                resolution: { type: string, minLength: 1, maxLength: 1000 }
+      responses:
+        '200':
+          description: Resolved
+          content:
+            application/json:
+              schema: { type: boolean }
+        '400': { description: Resolution is required }
+        '404': { description: Report not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/installments/pay:
+    post:
+      tags: [Installments]
+      summary: Record one installment as paid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orderId, currency, sequence]
+              properties:
+                orderId: { type: string, format: uuid }
+                currency: { type: string, minLength: 3, maxLength: 3 }
+                sequence: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Installment marked paid
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { description: Plan not found }
+        '409': { description: Plan is not active }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/payments/offline:
+    post:
+      tags: [OfflinePayments]
+      summary: Record an offline cash, transfer, or cheque collection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orderId, amount, currency, method, recordedBy]
+              properties:
+                orderId: { type: string, format: uuid }
+                amount: { type: number, exclusiveMinimum: 0 }
+                currency: { type: string, minLength: 3, maxLength: 3 }
+                method: { type: string, enum: [Cash, BankTransfer, Cheque] }
+                reference: { type: [string, 'null'], maxLength: 200 }
+                recordedBy: { type: string, maxLength: 200 }
+      responses:
+        '200':
+          description: Offline payment recorded
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OfflinePayment' }
+        '400': { description: Invalid amount or order currency }
+        '404': { description: Order not found }
+        '409': { description: Order is not configured for offline collection }
+        default: { $ref: '#/components/responses/Problem' }
+
+components:
+  responses:
+    Problem:
+      description: RFC 7807 problem details with code, correlationId, traceId, locale, and optional field errors
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, code, correlationId, traceId]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        code: { type: string }
+        detail: { type: string }
+        instance: { type: string }
+        correlationId: { type: string }
+        traceId: { type: string }
+        locale: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+
+    Lead:
+      type: object
+      properties:
+        leadId: { type: string, format: uuid }
+        requestNumber: { type: string }
+        serviceType: { type: string, enum: [Tour, Hotel, Flight, Visa, Design, Custom] }
+        destination: { type: [string, 'null'] }
+        startDate: { type: [string, 'null'], format: date }
+        endDate: { type: [string, 'null'], format: date }
+        adults: { type: integer }
+        children: { type: integer }
+        infants: { type: integer }
+        budgetAmount: { type: [number, 'null'] }
+        currency: { type: [string, 'null'] }
+        contactName: { type: string }
+        contactEmail: { type: string }
+        contactPhone: { type: string }
+        notes: { type: [string, 'null'] }
+        status: { type: string, enum: [Open, Matched, Closed, Cancelled] }
+        matchedAgencyId: { type: [string, 'null'], format: uuid }
+        createdAt: { type: string, format: date-time }
+        matchedAt: { type: [string, 'null'], format: date-time }
+        closedAt: { type: [string, 'null'], format: date-time }
+        invitedAgencyIds:
+          type: array
+          items: { type: string, format: uuid }
+
+    LeadPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Lead' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalCount: { type: integer }
+        totalPages: { type: integer }
+
+    PriceDiscrepancy:
+      type: object
+      properties:
+        reportId: { type: string, format: uuid }
+        agencyOfferId: { type: string, format: uuid }
+        departureId: { type: [string, 'null'], format: uuid }
+        contactEmail: { type: [string, 'null'] }
+        reportedPrice: { type: number }
+        currency: { type: string }
+        note: { type: string }
+        status: { type: string, enum: [Open, Reviewed, Resolved] }
+        createdAt: { type: string, format: date-time }
+        reviewedAt: { type: [string, 'null'], format: date-time }
+        resolution: { type: [string, 'null'] }
+
+    PriceDiscrepancyPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/PriceDiscrepancy' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalCount: { type: integer }
+        totalPages: { type: integer }
+
+    OfflinePayment:
+      type: object
+      properties:
+        receiptId: { type: string, format: uuid }
+        orderId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        amount: { type: number }
+        currency: { type: string }
+        method: { type: string, enum: [Cash, BankTransfer, Cheque] }
+        reference: { type: [string, 'null'] }
+        recordedBy: { type: string }
+        recordedAt: { type: string, format: date-time }

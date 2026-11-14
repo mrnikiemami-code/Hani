@@ -67,6 +67,165 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                     b.ToTable("holds", "booking");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Booking.Domain.Installments.InstallmentPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency");
+
+                    b.Property<int>("InstallmentCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("installment_count");
+
+                    b.Property<int>("IntervalDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("interval_days");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("order_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_amount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId", "Currency")
+                        .IsUnique()
+                        .HasDatabaseName("ux_installment_plans_order_currency");
+
+                    b.ToTable("installment_plans", "booking");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Booking.Domain.Leads.LeadRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Adults")
+                        .HasColumnType("integer")
+                        .HasColumnName("adults");
+
+                    b.Property<decimal?>("BudgetAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("budget_amount");
+
+                    b.Property<int>("Children")
+                        .HasColumnType("integer")
+                        .HasColumnName("children");
+
+                    b.Property<DateTimeOffset?>("ClosedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("closed_at");
+
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("contact_email");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("contact_name");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("contact_phone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Currency")
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency");
+
+                    b.Property<string>("Destination")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("destination");
+
+                    b.Property<DateOnly?>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<int>("Infants")
+                        .HasColumnType("integer")
+                        .HasColumnName("infants");
+
+                    b.Property<Guid?>("MatchedAgencyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("matched_agency_id");
+
+                    b.Property<DateTimeOffset?>("MatchedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("matched_at");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
+
+                    b.Property<string>("RequestNumber")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("request_number");
+
+                    b.Property<string>("ServiceType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("service_type");
+
+                    b.Property<DateOnly?>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_lead_requests_number");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_lead_requests_status");
+
+                    b.ToTable("lead_requests", "booking");
+                });
+
             modelBuilder.Entity("Hani.Modules.Booking.Domain.Orders.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -183,6 +342,72 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                     b.ToTable("orders", "booking");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Booking.Domain.PriceDiscrepancies.PriceDiscrepancyReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("AgencyOfferId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("agency_offer_id");
+
+                    b.Property<string>("ContactEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("contact_email");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency");
+
+                    b.Property<Guid?>("DepartureId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("departure_id");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<decimal>("ReportedPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("reported_price");
+
+                    b.Property<string>("Resolution")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("resolution");
+
+                    b.Property<DateTimeOffset?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reviewed_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgencyOfferId")
+                        .HasDatabaseName("ix_price_discrepancies_offer");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_price_discrepancies_status");
+
+                    b.ToTable("price_discrepancy_reports", "booking");
+                });
+
             modelBuilder.Entity("Hani.Modules.Booking.Domain.Quotes.Quote", b =>
                 {
                     b.Property<Guid>("Id")
@@ -267,6 +492,219 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_quotes_expires_at");
 
                     b.ToTable("quotes", "booking");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Booking.Domain.ReservationRequests.ReservationRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset?>("AcceptedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("accepted_at");
+
+                    b.Property<int>("Adults")
+                        .HasColumnType("integer")
+                        .HasColumnName("adults");
+
+                    b.Property<Guid>("AgencyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("agency_id");
+
+                    b.Property<string>("AgencyNote")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("agency_note");
+
+                    b.Property<Guid>("AgencyOfferId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("agency_offer_id");
+
+                    b.Property<int>("Children")
+                        .HasColumnType("integer")
+                        .HasColumnName("children");
+
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("contact_email");
+
+                    b.Property<string>("ContactPhone")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("contact_phone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency");
+
+                    b.Property<DateTimeOffset?>("DecidedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("decided_at");
+
+                    b.Property<Guid>("DepartureId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("departure_id");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<int>("Infants")
+                        .HasColumnType("integer")
+                        .HasColumnName("infants");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
+
+                    b.Property<string>("Pricing")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("pricing");
+
+                    b.Property<Guid>("QuoteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("quote_id");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("rejection_reason");
+
+                    b.Property<string>("RequestNumber")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("request_number");
+
+                    b.Property<string>("RoomType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("room_type");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_reservation_requests_number");
+
+                    b.HasIndex("AgencyId", "Status")
+                        .HasDatabaseName("ix_reservation_requests_agency_status");
+
+                    b.ToTable("reservation_requests", "booking");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Booking.Domain.Installments.InstallmentPlan", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Booking.Domain.Installments.Installment", "Installments", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("amount");
+
+                            b1.Property<DateOnly>("DueDate")
+                                .HasColumnType("date")
+                                .HasColumnName("due_date");
+
+                            b1.Property<DateTimeOffset?>("PaidAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("paid_at");
+
+                            b1.Property<Guid>("PlanId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("plan_id");
+
+                            b1.Property<int>("Sequence")
+                                .HasColumnType("integer")
+                                .HasColumnName("sequence");
+
+                            b1.Property<string>("Status")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("status");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("PlanId", "Sequence")
+                                .IsUnique()
+                                .HasDatabaseName("ux_installments_plan_sequence");
+
+                            b1.ToTable("installments", "booking");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlanId");
+                        });
+
+                    b.Navigation("Installments");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Booking.Domain.Leads.LeadRequest", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Booking.Domain.Leads.LeadAgencyInvitation", "Invitations", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("AgencyId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("agency_id");
+
+                            b1.Property<DateTimeOffset>("InvitedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("invited_at");
+
+                            b1.Property<Guid>("LeadId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("lead_id");
+
+                            b1.Property<string>("Status")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("status");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("LeadId", "AgencyId")
+                                .IsUnique()
+                                .HasDatabaseName("ux_lead_invitations_lead_agency");
+
+                            b1.ToTable("lead_agency_invitations", "booking");
+
+                            b1.WithOwner()
+                                .HasForeignKey("LeadId");
+                        });
+
+                    b.Navigation("Invitations");
                 });
 
             modelBuilder.Entity("Hani.Modules.Booking.Domain.Orders.Order", b =>

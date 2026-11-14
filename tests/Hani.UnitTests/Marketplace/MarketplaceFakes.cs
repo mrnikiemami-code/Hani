@@ -103,10 +103,15 @@ internal sealed class FakeAgencyReadService : IAgencyReadService
 {
     public Dictionary<Guid, string> Names { get; } = [];
 
+    public List<Guid> ActiveAgencyIds { get; } = [];
+
     public Task<IReadOnlyDictionary<Guid, string>> GetNamesAsync(
         IReadOnlyCollection<Guid> ids,
         CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<Guid, string>>(
             ids.Where(Names.ContainsKey)
                 .ToDictionary(id => id, id => Names[id]));
+
+    public Task<IReadOnlyList<Guid>> GetActiveAgencyIdsAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyList<Guid>>(ActiveAgencyIds);
 }

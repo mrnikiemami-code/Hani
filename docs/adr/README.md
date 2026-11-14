@@ -26,6 +26,7 @@
 | [0022](0022-payments-gateway-and-mor.md) | Payments، Gateway و Merchant of Record | Accepted |
 | [0023](0023-settlement-ledger-and-commission.md) | Settlement Ledger و Accrual کمیسیون | Accepted |
 | [0024](0024-multicurrency-taxes-booking-and-mor.md) | چندارزی، مالیات/عوارض، مدل‌های رزرو و تفکیک MoR | Accepted (Locked for implementation) |
+| [0025](0025-booking-modes-requests-leads-installments-offline.md) | BookingMode/ReservationRequest، Lead/RFQ، اقساط و پرداخت آفلاین | Accepted |
 
 ## قالب ADR جدید
 

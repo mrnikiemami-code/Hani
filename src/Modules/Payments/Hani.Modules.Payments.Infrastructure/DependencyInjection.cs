@@ -17,6 +17,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IPaymentIntentRepository, PaymentIntentRepository>();
         services.AddScoped<IPaymentWebhookEventRepository, PaymentWebhookEventRepository>();
+        services.AddScoped<IOfflinePaymentRepository, OfflinePaymentRepository>();
         services.AddSingleton<IPaymentGateway, MockPaymentGateway>();
         return services;
     }

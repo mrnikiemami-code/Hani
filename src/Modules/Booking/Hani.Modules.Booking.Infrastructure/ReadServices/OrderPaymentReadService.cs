@@ -47,6 +47,7 @@ internal sealed class OrderPaymentReadService(BookingDbContext dbContext)
             order.Currency,
             order.Status.ToString(),
             order.PaymentDueAt,
-            obligations);
+            obligations,
+            order.EffectivePricing.CollectionMode);
     }
 }

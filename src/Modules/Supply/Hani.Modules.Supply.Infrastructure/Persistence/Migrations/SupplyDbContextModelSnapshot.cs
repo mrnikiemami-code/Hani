@@ -35,6 +35,18 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("agency_id");
 
+                    b.Property<string>("BookingMode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("booking_mode");
+
+                    b.Property<string>("CollectionMode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("collection_mode");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");

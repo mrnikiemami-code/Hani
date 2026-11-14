@@ -23,13 +23,17 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
         string externalId,
         Guid tourProductId,
         string title,
-        Money basePrice) : base(id)
+        Money basePrice,
+        BookingMode bookingMode = BookingMode.Online,
+        CollectionMode collectionMode = CollectionMode.Online) : base(id)
     {
         AgencyId = agencyId;
         ExternalId = externalId;
         TourProductId = tourProductId;
         Title = title;
         BasePrice = basePrice;
+        BookingMode = bookingMode;
+        CollectionMode = collectionMode;
         Status = AgencyOfferStatus.Draft;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = CreatedAt;
@@ -44,6 +48,16 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
     public string Title { get; private set; } = string.Empty;
 
     public Money BasePrice { get; private set; }
+
+    /// <summary>
+    /// Online booking or agency reservation request.
+    /// </summary>
+    public BookingMode BookingMode { get; private set; }
+
+    /// <summary>
+    /// Online or offline payment collection.
+    /// </summary>
+    public CollectionMode CollectionMode { get; private set; }
 
     /// <summary>
     /// Hotel/room/board options.
@@ -74,7 +88,9 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
         Guid tourProductId,
         string title,
         Money basePrice,
-        string externalId = "")
+        string externalId = "",
+        BookingMode bookingMode = BookingMode.Online,
+        CollectionMode collectionMode = CollectionMode.Online)
     {
         if (agencyId == Guid.Empty)
         {
@@ -97,11 +113,24 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
             externalId.Trim(),
             tourProductId,
             title.Trim(),
-            basePrice);
+            basePrice,
+            bookingMode,
+            collectionMode);
 
         offer.AddDomainEvent(new AgencyOfferCreatedDomainEvent(ids.NewId(), offer.Id, agencyId));
 
         return offer;
+    }
+
+    /// <summary>
+    /// Sets booking and collection modes while the offer is editable.
+    /// </summary>
+    public void SetBookingTerms(BookingMode bookingMode, CollectionMode collectionMode)
+    {
+        EnsureEditable();
+        BookingMode = bookingMode;
+        CollectionMode = collectionMode;
+        Touch();
     }
 
     public void UpdateDetails(string title, Money basePrice)

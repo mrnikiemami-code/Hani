@@ -664,6 +664,149 @@ paths:
               schema: { $ref: '#/components/schemas/PaymentWebhookResult' }
         default: { $ref: '#/components/responses/Problem' }
 
+  /reservation-requests:
+    post:
+      tags: [Booking]
+      summary: Submit a reservation request for a non-instant-bookable quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateReservationRequest' }
+      responses:
+        '200':
+          description: Reservation request created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReservationRequest' }
+        '404':
+          description: Quote not found
+        '409':
+          description: Quote expired or offer is online-only
+        default: { $ref: '#/components/responses/Problem' }
+
+  /reservation-requests/{requestId}:
+    get:
+      tags: [Booking]
+      summary: Read a reservation request
+      parameters:
+        - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReservationRequest' }
+        '404':
+          description: Not found
+        default: { $ref: '#/components/responses/Problem' }
+
+  /reservation-requests/{requestId}/accept:
+    post:
+      tags: [Booking]
+      summary: Accept an agency-confirmed reservation request
+      parameters:
+        - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema: { type: boolean }
+        '409':
+          description: Request is not in a confirmable state
+        default: { $ref: '#/components/responses/Problem' }
+
+  /leads:
+    post:
+      tags: [Lead]
+      summary: Submit a Safarsaz / custom-travel RFQ lead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateLeadRequest' }
+      responses:
+        '200':
+          description: Lead created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Lead' }
+        '400':
+          description: Invalid request
+        default: { $ref: '#/components/responses/Problem' }
+
+  /leads/{leadId}:
+    get:
+      tags: [Lead]
+      summary: Read a lead
+      parameters:
+        - { name: leadId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Lead' }
+        '404':
+          description: Not found
+        default: { $ref: '#/components/responses/Problem' }
+
+  /price-discrepancies:
+    post:
+      tags: [Booking]
+      summary: Report a displayed price that differs from the checkout price
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreatePriceDiscrepancyRequest' }
+      responses:
+        '200':
+          description: Report created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PriceDiscrepancy' }
+        '400':
+          description: Invalid request
+        default: { $ref: '#/components/responses/Problem' }
+
+  /orders/{orderId}/installments:
+    post:
+      tags: [Booking]
+      summary: Create an installment schedule for one order currency
+      parameters:
+        - { name: orderId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateInstallmentPlanRequest' }
+      responses:
+        '200':
+          description: Plan created or returned
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InstallmentPlan' }
+        '400':
+          description: Invalid count, interval, or currency
+        default: { $ref: '#/components/responses/Problem' }
+    get:
+      tags: [Booking]
+      summary: Read an order installment plan
+      parameters:
+        - { name: orderId, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: currency, in: query, required: true, schema: { type: string, minLength: 3, maxLength: 3 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InstallmentPlan' }
+        '404':
+          description: Plan not found
+        default: { $ref: '#/components/responses/Problem' }
+
 components:
   responses:
     Problem:
@@ -709,6 +852,9 @@ components:
         minPrices:
           type: array
           items: { $ref: '#/components/schemas/CurrencyPrice' }
+        bookingModes:
+          type: array
+          items: { type: string, enum: [Online, ReservationRequest] }
         originDestinationId: { type: [string, 'null'], format: uuid }
         difficulty: { type: string }
         vehicleType: { type: string }
@@ -758,6 +904,8 @@ components:
         departures:
           type: array
           items: { $ref: '#/components/schemas/DepartureComparison' }
+        bookingMode: { type: string, enum: [Online, ReservationRequest] }
+        collectionMode: { type: string, enum: [Online, Offline] }
 
     AccommodationOption:
       type: object
@@ -922,6 +1070,8 @@ components:
           oneOf:
             - $ref: '#/components/schemas/AccommodationSelection'
             - type: 'null'
+        bookingMode: { type: string, enum: [Online, ReservationRequest] }
+        collectionMode: { type: string, enum: [Online, Offline] }
 
     Hold:
       type: object
@@ -1008,6 +1158,8 @@ components:
           oneOf:
             - $ref: '#/components/schemas/AccommodationSelection'
             - type: 'null'
+        bookingMode: { type: string, enum: [Online, ReservationRequest] }
+        collectionMode: { type: string, enum: [Online, Offline] }
 
     Contract:
       type: object
@@ -1044,6 +1196,8 @@ components:
           oneOf:
             - $ref: '#/components/schemas/AccommodationSelection'
             - type: 'null'
+        bookingMode: { type: string, enum: [Online, ReservationRequest] }
+        collectionMode: { type: string, enum: [Online, Offline] }
 
     CreatePaymentIntentRequest:
       type: object
@@ -1090,6 +1244,146 @@ components:
         providerEventId: { type: string }
         status: { type: string, enum: [Processed, Duplicate, Ignored, Failed] }
         processedAt: { type: [string, 'null'], format: date-time }
+
+    CreateReservationRequest:
+      type: object
+      required: [quoteId, contactEmail]
+      properties:
+        quoteId: { type: string, format: uuid }
+        contactEmail: { type: string, format: email, maxLength: 320 }
+        contactPhone: { type: [string, 'null'], maxLength: 32 }
+        notes: { type: [string, 'null'], maxLength: 2000 }
+
+    ReservationRequest:
+      type: object
+      properties:
+        requestId: { type: string, format: uuid }
+        requestNumber: { type: string }
+        quoteId: { type: string, format: uuid }
+        agencyOfferId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        departureId: { type: string, format: uuid }
+        roomType: { type: string }
+        adults: { type: integer }
+        children: { type: integer }
+        infants: { type: integer }
+        total: { type: number }
+        currency: { type: string }
+        status:
+          type: string
+          enum: [PendingAgencyReview, Confirmed, Rejected, CustomerAccepted, Expired, Cancelled]
+        agencyNote: { type: [string, 'null'] }
+        rejectionReason: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+        decidedAt: { type: [string, 'null'], format: date-time }
+        acceptedAt: { type: [string, 'null'], format: date-time }
+
+    CreateLeadRequest:
+      type: object
+      required: [serviceType, adults, contactName, contactEmail, contactPhone]
+      properties:
+        serviceType:
+          type: string
+          enum: [Tour, Hotel, Flight, Visa, Design, Custom]
+        destination: { type: [string, 'null'], maxLength: 200 }
+        startDate: { type: [string, 'null'], format: date }
+        endDate: { type: [string, 'null'], format: date }
+        adults: { type: integer, minimum: 1 }
+        children: { type: integer, minimum: 0 }
+        infants: { type: integer, minimum: 0 }
+        budgetAmount: { type: [number, 'null'] }
+        currency: { type: [string, 'null'], minLength: 3, maxLength: 3 }
+        contactName: { type: string, maxLength: 200 }
+        contactEmail: { type: string, format: email, maxLength: 320 }
+        contactPhone: { type: string, maxLength: 32 }
+        notes: { type: [string, 'null'], maxLength: 4000 }
+
+    Lead:
+      type: object
+      properties:
+        leadId: { type: string, format: uuid }
+        requestNumber: { type: string }
+        serviceType: { type: string, enum: [Tour, Hotel, Flight, Visa, Design, Custom] }
+        destination: { type: [string, 'null'] }
+        startDate: { type: [string, 'null'], format: date }
+        endDate: { type: [string, 'null'], format: date }
+        adults: { type: integer }
+        children: { type: integer }
+        infants: { type: integer }
+        budgetAmount: { type: [number, 'null'] }
+        currency: { type: [string, 'null'] }
+        contactName: { type: string }
+        contactEmail: { type: string }
+        contactPhone: { type: string }
+        notes: { type: [string, 'null'] }
+        status: { type: string, enum: [Open, Matched, Closed, Cancelled] }
+        matchedAgencyId: { type: [string, 'null'], format: uuid }
+        createdAt: { type: string, format: date-time }
+        matchedAt: { type: [string, 'null'], format: date-time }
+        closedAt: { type: [string, 'null'], format: date-time }
+        invitedAgencyIds:
+          type: array
+          items: { type: string, format: uuid }
+
+    CreatePriceDiscrepancyRequest:
+      type: object
+      required: [agencyOfferId, reportedPrice, currency, note]
+      properties:
+        agencyOfferId: { type: string, format: uuid }
+        departureId: { type: [string, 'null'], format: uuid }
+        contactEmail: { type: [string, 'null'], format: email, maxLength: 320 }
+        reportedPrice: { type: number, exclusiveMinimum: 0 }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        note: { type: string, minLength: 5, maxLength: 2000 }
+
+    PriceDiscrepancy:
+      type: object
+      properties:
+        reportId: { type: string, format: uuid }
+        agencyOfferId: { type: string, format: uuid }
+        departureId: { type: [string, 'null'], format: uuid }
+        contactEmail: { type: [string, 'null'] }
+        reportedPrice: { type: number }
+        currency: { type: string }
+        note: { type: string }
+        status: { type: string, enum: [Open, Reviewed, Resolved] }
+        createdAt: { type: string, format: date-time }
+        reviewedAt: { type: [string, 'null'], format: date-time }
+        resolution: { type: [string, 'null'] }
+
+    CreateInstallmentPlanRequest:
+      type: object
+      required: [currency, installmentCount, intervalDays]
+      properties:
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        installmentCount: { type: integer, minimum: 2, maximum: 12 }
+        intervalDays: { type: integer, minimum: 1, maximum: 90 }
+
+    Installment:
+      type: object
+      properties:
+        installmentId: { type: string, format: uuid }
+        sequence: { type: integer }
+        dueDate: { type: string, format: date }
+        amount: { type: number }
+        status: { type: string, enum: [Pending, Paid] }
+        paidAt: { type: [string, 'null'], format: date-time }
+
+    InstallmentPlan:
+      type: object
+      properties:
+        planId: { type: string, format: uuid }
+        orderId: { type: string, format: uuid }
+        currency: { type: string }
+        totalAmount: { type: number }
+        installmentCount: { type: integer }
+        intervalDays: { type: integer }
+        status: { type: string, enum: [Active, Completed, Cancelled] }
+        createdAt: { type: string, format: date-time }
+        installments:
+          type: array
+          items: { $ref: '#/components/schemas/Installment' }
 
     TourProductTranslation:
       type: object

@@ -126,7 +126,9 @@ public static class SupplyEndpoints
                         rule.DutyStatus,
                         rule.DutyRate,
                         rule.ExemptionReason))
-                    .ToArray()),
+                    .ToArray(),
+                request.BookingMode,
+                request.CollectionMode),
             cancellationToken);
 
         return result.IsSuccess
@@ -193,7 +195,9 @@ public static class SupplyEndpoints
                         rule.DutyStatus,
                         rule.DutyRate,
                         rule.ExemptionReason))
-                    .ToArray()),
+                    .ToArray(),
+                request.BookingMode,
+                request.CollectionMode),
             cancellationToken);
 
         return result.IsSuccess
@@ -351,7 +355,9 @@ public sealed record CreateAgencyOfferRequest(
     string Currency,
     IReadOnlyList<AccommodationOptionRequest>? AccommodationOptions = null,
     IReadOnlyList<FlightOptionRequest>? FlightOptions = null,
-    IReadOnlyList<TaxRuleRequest>? TaxRules = null);
+    IReadOnlyList<TaxRuleRequest>? TaxRules = null,
+    BookingMode BookingMode = BookingMode.Online,
+    CollectionMode CollectionMode = CollectionMode.Online);
 
 /// <summary>
 /// HTTP request to upsert an agency offer.
@@ -363,7 +369,9 @@ public sealed record UpsertAgencyOfferRequest(
     string Currency,
     IReadOnlyList<AccommodationOptionRequest>? AccommodationOptions = null,
     IReadOnlyList<FlightOptionRequest>? FlightOptions = null,
-    IReadOnlyList<TaxRuleRequest>? TaxRules = null);
+    IReadOnlyList<TaxRuleRequest>? TaxRules = null,
+    BookingMode BookingMode = BookingMode.Online,
+    CollectionMode CollectionMode = CollectionMode.Online);
 
 /// <summary>
 /// HTTP request body for rejecting an offer.

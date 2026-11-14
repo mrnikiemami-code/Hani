@@ -254,6 +254,65 @@ public sealed class SearchProductsHandlerTests
     }
 
     [Fact]
+    public async Task Search_Should_Filter_OnlineOnly_And_Expose_Booking_Modes()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+        var productId = Guid.CreateVersion7();
+
+        catalog.Products.Add(new CatalogProductSummary(
+            productId,
+            "mixed-booking",
+            4,
+            "city-break",
+            new Dictionary<string, string> { ["fa"] = "تور ترکیبی" },
+            [],
+            DateTimeOffset.UtcNow));
+
+        offers.OffersByProduct[productId] =
+        [
+            OfferWithDetails(
+                productId,
+                Guid.CreateVersion7(),
+                4,
+                "Breakfast",
+                "Iran Air",
+                20_000_000m,
+                "IRR",
+                new DateOnly(2026, 12, 20),
+                10,
+                "Online"),
+            OfferWithDetails(
+                productId,
+                Guid.CreateVersion7(),
+                4,
+                "Breakfast",
+                "Iran Air",
+                21_000_000m,
+                "IRR",
+                new DateOnly(2026, 12, 20),
+                10,
+                "ReservationRequest")
+        ];
+
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+
+        var all = await handler.Handle(
+            new SearchProductsQuery("fa"),
+            CancellationToken.None);
+        var online = await handler.Handle(
+            new SearchProductsQuery("fa", OnlineOnly: true),
+            CancellationToken.None);
+
+        all.Value!.Items.Single().BookingModes.ShouldBe(
+            ["Online", "ReservationRequest"],
+            ignoreOrder: true);
+        all.Value.Items.Single().OfferCount.ShouldBe(2);
+        online.Value!.Items.Single().BookingModes.ShouldBe(["Online"]);
+        online.Value.Items.Single().OfferCount.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task Search_Should_Apply_Duration_And_TourType()
     {
         var catalog = new FakeCatalogReadService();
@@ -313,7 +372,8 @@ public sealed class SearchProductsHandlerTests
         decimal price,
         string currency,
         DateOnly startDate,
-        int seatsLeft)
+        int seatsLeft,
+        string bookingMode = "Online")
         => new(
             Guid.CreateVersion7(),
             agencyId,
@@ -358,7 +418,8 @@ public sealed class SearchProductsHandlerTests
                     "ECONOMY",
                     "25kg")
             ],
-            []);
+            [],
+            BookingMode: bookingMode);
 
     private static OfferSnapshot Offer(Guid productId, decimal basePrice, decimal departurePrice)
         => new(

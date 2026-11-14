@@ -37,12 +37,13 @@ Marketplace.Application
 - قیمت مقایسه از قیمت سانس‌ها محاسبه می‌شود؛ در نبود سانس، `BasePrice`.
 - حداقل قیمت به تفکیک ارز (`minPrices`) محاسبه می‌شود؛ مقایسه عددی بین ارزها انجام نمی‌شود.
 - گزینه‌های اقامت، پرواز و قوانین VAT/Duty هر Offer در پاسخ compare برگردانده می‌شوند.
+- `bookingMode` و `collectionMode` هر Offer در compare و `bookingModes` هر نتیجه جستجو برگردانده می‌شود تا UI بین رزرو مستقیم و `ReservationRequest` تفکیک کند.
 - عنوان/خلاصه/توضیح بر اساس locale با fallback به زبان پیش‌فرض `Localization:DefaultCulture`.
 - فیلترهای جستجو: مقصد/مبدا، تاریخ، مدت، نوع تور، سختی، وسیله، اقامت، قیمت/ارز، ستاره هتل، MealPlan، ایرلاین، آژانس، مسافر، نام هتل، نوع اتاق، کابین، کلیدواژه (`q`) و `onlineOnly`.
 - Sortهای پشتیبانی‌شده: `price_asc`, `price_desc`, `duration_asc`, `duration_desc`, `newest`, `title`.
 - SEO: canonical و hreflang از `Seo:PublicBaseUrl` ساخته می‌شوند؛ JSON-LD با `System.Text.Json` سریالایز می‌شود.
 - Sitemap فقط محصولات منتشرشده و destination landingهای مرتبط را شامل می‌شود؛ query filterها در robots محدود شده‌اند.
-- `onlineOnly` در Hani فعلاً no-op است چون همه Offerها Online هستند؛ در Gate 4 با BookingMode واقعی می‌شود.
+- `onlineOnly=true` فقط Offerهایی با `BookingMode=Online` را برمی‌گرداند؛ Offerهای `ReservationRequest` در جستجوی عادی دیده می‌شوند.
 
 ## محدودیت فعلی
 

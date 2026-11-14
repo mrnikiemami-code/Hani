@@ -35,6 +35,7 @@ internal sealed class UpsertAgencyOfferCommandHandler(
             try
             {
                 existing.UpdateDetails(request.Title, price);
+                existing.SetBookingTerms(request.BookingMode, request.CollectionMode);
 
                 if (request.AccommodationOptions is not null)
                 {
@@ -80,7 +81,9 @@ internal sealed class UpsertAgencyOfferCommandHandler(
             request.TourProductId,
             request.Title,
             price,
-            externalId);
+            externalId,
+            request.BookingMode,
+            request.CollectionMode);
 
         try
         {

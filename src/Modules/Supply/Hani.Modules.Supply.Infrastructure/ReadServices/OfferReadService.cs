@@ -92,7 +92,9 @@ internal sealed class OfferReadService(SupplyDbContext dbContext) : IOfferReadSe
                         rule.DutyStatus.ToString(),
                         rule.DutyRate,
                         rule.ExemptionReason))
-                    .ToArray()))
+                    .ToArray(),
+                offer.BookingMode.ToString(),
+                offer.CollectionMode.ToString()))
             .ToArray();
     }
 

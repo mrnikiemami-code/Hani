@@ -1,6 +1,6 @@
 # Booking Module
 
-> **مسئولیت:** قیمت‌گذاری موقت (Quote)، قفل ظرفیت (Hold) و چرخه عمر آن‌ها تا تبدیل به سفارش.
+> **مسئولیت:** قیمت‌گذاری موقت (Quote)، قفل ظرفیت (Hold)، سفارش/قرارداد، درخواست رزرو، Lead/RFQ، مغایرت قیمت و برنامه اقساط.
 
 ## جریان
 
@@ -20,6 +20,11 @@ Departure (Supply)
    → GET /market/v1/orders/{id}/contract
    → DELETE /market/v1/holds/{id}
        → آزادسازی صندلی + بازگشت Quote به Active
+   → POST /market/v1/reservation-requests
+       → فقط برای Offer با BookingMode=ReservationRequest
+       → درخواست بدون Hold/پرداخت تا تایید آژانس
+   → POST /market/v1/leads
+       → Lead/RFQ برای تور سفارشی، هتل، پرواز، ویزا
 ```
 
 ## قواعد
@@ -40,6 +45,12 @@ Departure (Supply)
 - هر Order برای هر ارز یک `PaymentObligation` دارد؛ `PaymentStatus` جدا از `Order.Status` است (Unpaid/PartiallyPaid/Paid).
 - Order پس از تسویه همه obligationها `Paid` می‌شود و تا آن زمان lifecycle روی `PendingPayment` می‌ماند.
 - Order به‌صورت idempotent با `Idempotency-Key` و همچنین با `HoldId` یکتا است.
+- Quote از `BookingMode` و `CollectionMode` همان Offer snapshot می‌گیرد و Order/Contract آن را حفظ می‌کند.
+- `ReservationRequest` فقط برای Quote با `BookingMode=ReservationRequest` ساخته می‌شود، TTL دارد، و با Confirm/Reject/Accept چرخه می‌شود.
+- `LeadRequest` با Match/Close چرخه دارد و برای RFQ تور سفارشی، هتل، پرواز و ویزا استفاده می‌شود.
+- `DistributeLead` درخواست را به همه آژانس‌های Active توزیع می‌کند و برای هر آژانس یک `LeadAgencyInvitation` یکتا می‌سازد (بدون تکرار).
+- `PriceDiscrepancyReport` مغایرت قیمت نمایش‌داده‌شده با checkout را ثبت و با Resolve بسته می‌شود.
+- `InstallmentPlan` برای هر ارز Order ساخته می‌شود؛ جمع اقساط دقیقاً برابر مبلغ آن ارز است و آخرین قسط اختلاف گرد کردن را جبران می‌کند.
 
 ## APIها
 
@@ -52,13 +63,30 @@ Departure (Supply)
 | POST | `/market/v1/orders` | عمومی + Idempotency-Key |
 | GET | `/market/v1/orders/{id}` | عمومی |
 | GET | `/market/v1/orders/{id}/contract` | عمومی |
+| POST | `/market/v1/reservation-requests` | عمومی |
+| GET | `/market/v1/reservation-requests/{id}` | عمومی |
+| POST | `/market/v1/reservation-requests/{id}/accept` | عمومی |
+| POST | `/market/v1/leads` | عمومی |
+| GET | `/market/v1/leads/{id}` | عمومی |
+| POST | `/market/v1/price-discrepancies` | عمومی |
+| POST | `/market/v1/orders/{id}/installments` | عمومی |
+| GET | `/market/v1/orders/{id}/installments?currency=IRR` | عمومی |
+| POST | `/internal/v1/reservation-requests/{id}/confirm` | Internal |
+| POST | `/internal/v1/reservation-requests/{id}/reject` | Internal |
+| GET | `/internal/v1/leads` | Internal |
+| POST | `/internal/v1/leads/{id}/match` | Internal |
+| POST | `/internal/v1/leads/{id}/distribute` | Internal |
+| POST | `/internal/v1/leads/{id}/close` | Internal |
+| GET | `/internal/v1/price-discrepancies` | Internal |
+| POST | `/internal/v1/price-discrepancies/{id}/resolve` | Internal |
+| POST | `/internal/v1/installments/pay` | Internal |
 
 ## Persistence
 
 - Schema: `booking`
-- جدول‌ها: `quotes`, `holds`, `orders`, `order_travelers`, `order_lines`, `payment_obligations`, `contracts`, `contract_travelers`, `contract_lines`
-- ستون `pricing` از نوع `jsonb` در `quotes`/`orders`/`contracts` snapshot چندارزی و مالیات را نگه می‌دارد.
-- Migrationها: `InitialBooking`, `AddOrdersAndContracts`, `AddMultiCurrencyPricing`, `AddPaymentObligations`
+- جدول‌ها: `quotes`, `holds`, `orders`, `order_travelers`, `order_lines`, `payment_obligations`, `contracts`, `contract_travelers`, `contract_lines`, `reservation_requests`, `lead_requests`, `lead_agency_invitations`, `price_discrepancy_reports`, `installment_plans`, `installments`
+- ستون `pricing` از نوع `jsonb` در `quotes`/`orders`/`contracts`/`reservation_requests` snapshot چندارزی و مالیات را نگه می‌دارد.
+- Migrationها: `InitialBooking`, `AddOrdersAndContracts`, `AddMultiCurrencyPricing`, `AddPaymentObligations`, `AddRequestsLeadsDiscrepanciesInstallments`, `AddLeadDistributions`
 
 ## محدودیت فعلی
 

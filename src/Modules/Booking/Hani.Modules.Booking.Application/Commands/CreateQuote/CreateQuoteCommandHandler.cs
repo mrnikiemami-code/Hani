@@ -128,7 +128,11 @@ internal sealed class CreateQuoteCommandHandler(
                 selectedAccommodation.RoomType,
                 selectedAccommodation.MealPlan,
                 selectedAccommodation.Currency.ToUpperInvariant());
-        var snapshot = new PricingSnapshot(components, accommodation);
+        var snapshot = new PricingSnapshot(
+            components,
+            accommodation,
+            departure.BookingMode,
+            departure.CollectionMode);
 
         var quote = Quote.Create(
             ids,
@@ -219,5 +223,7 @@ internal sealed class CreateQuoteCommandHandler(
                     accommodation.RoomType,
                     accommodation.MealPlan,
                     accommodation.Currency)
-                : null);
+                : null,
+            quote.EffectivePricing.BookingMode,
+            quote.EffectivePricing.CollectionMode);
 }

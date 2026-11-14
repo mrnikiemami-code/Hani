@@ -146,7 +146,9 @@ internal sealed class GetProductComparisonQueryHandler(
                             price.Amount,
                             price.Currency))
                         .ToArray()))
-                .ToArray());
+                .ToArray(),
+            offer.BookingMode,
+            offer.CollectionMode);
     }
 
     private static bool IsAdultRoomType(string roomType)

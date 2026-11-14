@@ -16,6 +16,9 @@ Order (Booking, PendingPayment)
        → تأیید HMAC + timestamp
        → dedupe با provider_event_id
        → payment.succeeded → Order.Paid
+   → POST /internal/v1/payments/offline
+       → فقط Order با CollectionMode=Offline
+       → رسید Cash/BankTransfer/Cheque + Paid + Commission
 ```
 
 ## قواعد
@@ -29,6 +32,8 @@ Order (Booking, PendingPayment)
 - Webhook با HMAC-SHA256 روی `timestamp.payload` و پنجره زمانی ۵ دقیقه تأیید می‌شود.
 - `payment_webhook_events` با `(provider, provider_event_id)` یکتا است؛ event تکراری پردازش مجدد نمی‌شود.
 - `payment.succeeded` obligation همان ارز را Paid می‌کند؛ Order فقط وقتی همه obligationها Paid شوند `Paid` می‌شود و `PaymentStatus` مستقل از lifecycle گزارش می‌شود؛ `payment.failed` فقط Intent را Failed می‌کند.
+- اگر `CollectionMode=Offline` باشد، ساخت PaymentIntent آنلاین با `409` رد می‌شود؛ فقط `RecordOfflinePayment` مجاز است.
+- پرداخت آفلاین باید دقیقاً با مبلغ obligation همان ارز برابر باشد و یک `OfflinePaymentReceipt` با اپراتور/مرجع ثبت می‌کند.
 - Gateway پیش‌فرض `MockPaymentGateway` است و برای توسعه/تست قابل جایگزینی با PSP واقعی است.
 - Refund و Reconciliation در تسک‌های بعدی اضافه می‌شوند.
 
@@ -39,13 +44,14 @@ Order (Booking, PendingPayment)
 | POST | `/market/v1/payments/intents` | عمومی + Idempotency-Key |
 | GET | `/market/v1/payments/intents/{id}` | عمومی |
 | POST | `/market/v1/payments/webhook/{provider}` | HMAC signature |
+| POST | `/internal/v1/payments/offline` | Internal |
 
 ## Persistence
 
 - Schema: `payment`
-- جدول‌ها: `payment_intents`, `payment_webhook_events`
+- جدول‌ها: `payment_intents`, `payment_webhook_events`, `offline_payment_receipts`
 - ایندکس یکتای `payment_intents`: `(order_id, currency)`
-- Migrationها: `InitialPayments`, `AddPaymentWebhookEvents`, `AddMultipleIntentsPerOrder`, `AddPaymentObligationReference`
+- Migrationها: `InitialPayments`, `AddPaymentWebhookEvents`, `AddMultipleIntentsPerOrder`, `AddPaymentObligationReference`, `AddOfflinePayments`
 
 ## پیکربندی
 

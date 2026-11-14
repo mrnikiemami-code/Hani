@@ -56,4 +56,6 @@ public sealed record AgencyOfferDto(
     DateTimeOffset UpdatedAt,
     IReadOnlyList<AccommodationOptionDto> AccommodationOptions,
     IReadOnlyList<FlightOptionDto> FlightOptions,
-    IReadOnlyList<TaxRuleDto> TaxRules);
+    IReadOnlyList<TaxRuleDto> TaxRules,
+    string BookingMode,
+    string CollectionMode);

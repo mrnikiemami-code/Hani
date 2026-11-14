@@ -78,7 +78,12 @@ internal sealed class SearchProductsQueryHandler(
                     product.Difficulty,
                     product.VehicleType,
                     product.LocalVehicleType,
-                    product.AccommodationType),
+                    product.AccommodationType,
+                    filteredOffers
+                        .Select(offer => offer.BookingMode)
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .OrderBy(mode => mode, StringComparer.OrdinalIgnoreCase)
+                        .ToArray()),
                 product.UpdatedAt));
         }
 
@@ -96,6 +101,12 @@ internal sealed class SearchProductsQueryHandler(
 
     private static OfferSnapshot? FilterOffer(OfferSnapshot offer, SearchProductsQuery request)
     {
+        if (request.OnlineOnly &&
+            !string.Equals(offer.BookingMode, "Online", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
         if (request.AgencyId is { } agencyId && offer.AgencyId != agencyId)
         {
             return null;

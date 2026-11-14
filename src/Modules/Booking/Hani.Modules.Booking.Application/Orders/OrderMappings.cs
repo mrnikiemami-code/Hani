@@ -47,7 +47,9 @@ internal static class OrderMappings
                     line.Currency))
                 .ToArray(),
             MapComponents(order.EffectivePricing),
-            MapAccommodation(order.EffectivePricing));
+            MapAccommodation(order.EffectivePricing),
+            order.EffectivePricing.BookingMode,
+            order.EffectivePricing.CollectionMode);
 
     public static ContractDto ToContractDto(Order order)
     {
@@ -90,7 +92,9 @@ internal static class OrderMappings
                     line.Currency))
                 .ToArray(),
             MapComponents(contract.EffectivePricing),
-            MapAccommodation(contract.EffectivePricing));
+            MapAccommodation(contract.EffectivePricing),
+            contract.EffectivePricing.BookingMode,
+            contract.EffectivePricing.CollectionMode);
     }
 
     private static AccommodationSelectionDto? MapAccommodation(PricingSnapshot pricing)
