@@ -218,5 +218,5 @@
 | `1c202bd` | Gate 5 verticals, geo, vertical SEO, review aggregation |
 | `f6d65ce` | Gate 5.1 vertical depth and parity residuals |
 | `1a35e3c` | Gate 6 content, growth, and gamification foundation |
-| `pending` | Gate 6 recommendation, notification dispatcher, dashboard |
+| `26e3b3a` | Gate 6 recommendation, notification dispatcher, dashboard |
 | `7df2265` | Phase roadmap + status + tasks |
