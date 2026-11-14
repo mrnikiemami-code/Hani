@@ -264,6 +264,7 @@ internal static class SeoMetadataBuilder
             Disallow: /market/v1/products/*/compare?
 
             Sitemap: {normalizedBase}/sitemap.xml
+            Sitemap: {normalizedBase}/content-sitemap.xml
             """;
     }
 }

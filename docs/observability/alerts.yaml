@@ -1,0 +1,43 @@
+groups:
+  - name: hani-gate8
+    interval: 30s
+    rules:
+      - record: hani:http_request_error_ratio5m
+        expr: |
+          sum(rate(http_server_request_duration_seconds_count{http_response_status_code=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(http_server_request_duration_seconds_count[5m])), 0.001)
+
+      - record: hani:search_p95_5m
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(http_server_request_duration_seconds_bucket{http_route="/market/v1/search"}[5m]))
+          )
+
+      - alert: HaniHighErrorRate
+        expr: hani:http_request_error_ratio5m > 0.01
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: Hani API error rate is above 1%.
+          description: The 5xx ratio has exceeded the Gate 8 SLO for 5 minutes.
+
+      - alert: HaniSearchLatencyHigh
+        expr: hani:search_p95_5m > 0.5
+        for: 10m
+        labels:
+          severity: ticket
+        annotations:
+          summary: Marketplace search p95 is above 500 ms.
+          description: Check PostgreSQL index health and the search cache hit ratio.
+
+      - alert: HaniReadinessDown
+        expr: up{job="hani-api"} == 0
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: Hani API is not scrapeable.
+          description: Check process health and the /health/ready endpoint.

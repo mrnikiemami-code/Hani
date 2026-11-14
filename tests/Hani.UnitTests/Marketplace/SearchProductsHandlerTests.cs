@@ -29,7 +29,7 @@ public sealed class SearchProductsHandlerTests
             Offer(productId, 50_000_000m, 55_000_000m)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery("en", Page: 1, PageSize: 20),
@@ -87,7 +87,7 @@ public sealed class SearchProductsHandlerTests
                 [])
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery("en", Page: 1, PageSize: 20),
@@ -124,7 +124,7 @@ public sealed class SearchProductsHandlerTests
             ];
         }
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery("fa", Page: 2, PageSize: 2),
@@ -178,7 +178,7 @@ public sealed class SearchProductsHandlerTests
                 10)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery(
@@ -233,7 +233,7 @@ public sealed class SearchProductsHandlerTests
                 2)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery(
@@ -295,7 +295,7 @@ public sealed class SearchProductsHandlerTests
                 "ReservationRequest")
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
 
         var all = await handler.Handle(
             new SearchProductsQuery("fa"),
@@ -354,7 +354,7 @@ public sealed class SearchProductsHandlerTests
                 10)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery("fa", InstallmentOnly: true),
@@ -402,7 +402,7 @@ public sealed class SearchProductsHandlerTests
             ];
         }
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery(
@@ -414,6 +414,44 @@ public sealed class SearchProductsHandlerTests
         result.Value!.TotalCount.ShouldBe(1);
         result.Value.Items.Single().TourType.ShouldBe("city-break");
         result.Value.Items.Single().DurationDays.ShouldBe(7);
+    }
+
+    [Fact]
+    public async Task Search_Should_Batch_Offers_And_Reuse_Cached_Page()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+        var cache = new FakeCacheService();
+        var productId = Guid.CreateVersion7();
+
+        catalog.Products.Add(new CatalogProductSummary(
+            productId,
+            "batched",
+            3,
+            "tour",
+            new Dictionary<string, string> { ["en"] = "Batched" },
+            [],
+            DateTimeOffset.UtcNow));
+        offers.OffersByProduct[productId] = [Offer(productId, 10m, 9m)];
+
+        var handler = new SearchProductsQueryHandler(
+            catalog,
+            offers,
+            new FakeLanguageCatalog(),
+            cache);
+
+        var first = await handler.Handle(
+            new SearchProductsQuery("en", Page: 1, PageSize: 20),
+            CancellationToken.None);
+        var second = await handler.Handle(
+            new SearchProductsQuery("en", Page: 1, PageSize: 20),
+            CancellationToken.None);
+
+        first.IsSuccess.ShouldBeTrue();
+        second.IsSuccess.ShouldBeTrue();
+        offers.BatchProductCalls.ShouldBe(1);
+        offers.SingleProductCalls.ShouldBe(0);
+        second.Value.ShouldBeSameAs(first.Value);
     }
 
     private static OfferSnapshot OfferWithDetails(

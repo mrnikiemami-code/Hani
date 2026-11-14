@@ -66,6 +66,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Hani.ArchitectureTests/Hani.ArchitectureTests.csproj" />
+    <Project Path="tests/Hani.IntegrationTests/Hani.IntegrationTests.csproj" />
     <Project Path="tests/Hani.UnitTests/Hani.UnitTests.csproj" />
   </Folder>
 </Solution>

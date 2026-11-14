@@ -106,6 +106,13 @@ public interface IOfferReadService
         CancellationToken cancellationToken);
 
     /// <summary>
+    /// Returns approved offers grouped by product id in one batch.
+    /// </summary>
+    Task<IReadOnlyDictionary<Guid, IReadOnlyList<OfferSnapshot>>> GetApprovedOffersByProductIdsAsync(
+        IReadOnlyCollection<Guid> productIds,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Returns one approved offer by id, or <c>null</c>.
     /// </summary>
     Task<OfferSnapshot?> GetApprovedOfferByIdAsync(

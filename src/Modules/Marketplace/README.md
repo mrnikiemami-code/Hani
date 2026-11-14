@@ -16,7 +16,7 @@ Marketplace.Application
 - هیچ DbContext اختصاصی ندارد.
 - هیچ Join بین Schemaها انجام نمی‌دهد.
 - داده را از قراردادهای خواندنی ماژول‌ها ترکیب می‌کند.
-- در فاز بعد به Read Model/Projection با Outbox ارتقا می‌یابد.
+- Search now uses a query-side read model with batched hydration and a 30-second cache; ADR-0028 defines the materialized projection trigger.
 
 ## Endpointها
 
@@ -67,5 +67,14 @@ Marketplace.Application
 
 ## محدودیت فعلی
 
-- Query به‌صورت N+1 (صفحه‌ای ۲۰) اجرا می‌شود؛ در فاز بعد Read Model و ایندکس جستجو.
+- Approved offers are hydrated in one batch per page; there is no per-product query loop.
 - رتبه‌بندی پیشرفته، فیلتر تاریخ و قیمت هنوز اضافه نشده است.
+
+
+## Gate 8 ? Search hardening
+
+- Offer hydration is batched with `GetApprovedOffersByProductIdsAsync`; there is no per-product query loop.
+- Paged search results are cached for 30 seconds through `ICacheService`.
+- Search tolerates indexed `ILIKE` filters through `pg_trgm`.
+- Content discovery is served by `/content-sitemap.xml` and linked from `robots.txt`.
+- ADR-0028 records the query-side read model and the scale trigger.

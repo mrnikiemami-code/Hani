@@ -115,6 +115,12 @@ internal sealed class AgencyOfferConfiguration : IEntityTypeConfiguration<Agency
         builder.HasIndex(offer => offer.TourProductId)
             .HasDatabaseName("ix_agency_offers_tour_product_id");
 
+        builder.HasIndex(offer => new { offer.TourProductId, offer.Status })
+            .HasDatabaseName("ix_agency_offers_product_status");
+
+        builder.HasIndex(offer => new { offer.AgencyId, offer.Status })
+            .HasDatabaseName("ix_agency_offers_agency_status");
+
         builder.OwnsMany(offer => offer.AccommodationOptions, options =>
         {
             options.ToTable("agency_offer_accommodations");

@@ -103,6 +103,10 @@ public interface IContentRepository
     /// <summary>Counts content by author and family for author stats.</summary>
     Task<AuthorContentCounts> CountByAuthorAsync(Guid authorUserId, CancellationToken cancellationToken);
 
+    /// <summary>Lists published editorial entries for the public content sitemap.</summary>
+    Task<IReadOnlyList<ContentSitemapEntry>> ListSitemapEntriesAsync(
+        CancellationToken cancellationToken);
+
     /// <summary>Adds a dashboard message.</summary>
     Task AddUserMessageAsync(UserMessage message, CancellationToken cancellationToken);
     /// <summary>Returns a dashboard message by id.</summary>
@@ -128,6 +132,14 @@ public interface IContentRepository
 /// Content counts used by author profiles.
 /// </summary>
 public sealed record AuthorContentCounts(int Blogs, int Travelogues, int Videos);
+
+/// <summary>
+/// One published editorial entry included in the public content sitemap.
+/// </summary>
+public sealed record ContentSitemapEntry(
+    string Type,
+    string Slug,
+    DateTimeOffset UpdatedAt);
 
 /// <summary>
 /// Analytics count grouped by entity family.

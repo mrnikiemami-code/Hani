@@ -21,6 +21,7 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pg_trgm");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Hani.Modules.Catalog.Domain.Destinations.Destination", b =>
@@ -442,6 +443,15 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.HasIndex("Slug")
                         .IsUnique()
                         .HasDatabaseName("ux_tour_products_slug");
+
+                    b.HasIndex("Status", "OriginDestinationId")
+                        .HasDatabaseName("ix_tour_products_status_origin");
+
+                    b.HasIndex("Status", "UpdatedAt")
+                        .HasDatabaseName("ix_tour_products_status_updated");
+
+                    b.HasIndex("Status", "TourType", "DurationDays")
+                        .HasDatabaseName("ix_tour_products_status_type_duration");
 
                     b.ToTable("tour_products", "catalog");
                 });
@@ -1106,6 +1116,9 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("Id");
 
+                            b1.HasIndex("DestinationId", "TourProductId")
+                                .HasDatabaseName("ix_tour_product_destinations_destination_product");
+
                             b1.HasIndex("TourProductId", "DestinationId")
                                 .IsUnique()
                                 .HasDatabaseName("ux_tour_product_destinations_product_destination");
@@ -1185,6 +1198,24 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnName("tour_product_id");
 
                             b1.HasKey("Id");
+
+                            b1.HasIndex("Description")
+                                .HasDatabaseName("ix_tour_product_translations_description_trgm");
+
+                            NpgsqlIndexBuilderExtensions.HasMethod(b1.HasIndex("Description"), "gin");
+                            NpgsqlIndexBuilderExtensions.HasOperators(b1.HasIndex("Description"), new[] { "gin_trgm_ops" });
+
+                            b1.HasIndex("Summary")
+                                .HasDatabaseName("ix_tour_product_translations_summary_trgm");
+
+                            NpgsqlIndexBuilderExtensions.HasMethod(b1.HasIndex("Summary"), "gin");
+                            NpgsqlIndexBuilderExtensions.HasOperators(b1.HasIndex("Summary"), new[] { "gin_trgm_ops" });
+
+                            b1.HasIndex("Title")
+                                .HasDatabaseName("ix_tour_product_translations_title_trgm");
+
+                            NpgsqlIndexBuilderExtensions.HasMethod(b1.HasIndex("Title"), "gin");
+                            NpgsqlIndexBuilderExtensions.HasOperators(b1.HasIndex("Title"), new[] { "gin_trgm_ops" });
 
                             b1.HasIndex("TourProductId", "Locale")
                                 .IsUnique()

@@ -1,12 +1,12 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 8 — Hardening (Ready)
+> **فاز فعال:** Gate 8 — Hardening (PASSED Core)
 > **آخرین commit کد:** `ddcb9f5`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ⏳ Ready
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core)
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
-> **گزارش Gate:** [`../reports/baseline-gate-7.md`](../reports/baseline-gate-7.md)
+> **گزارش Gate:** [`../reports/baseline-gate-8.md`](../reports/baseline-gate-8.md)
 > **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **برنامه Remediation:** [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md)
 > **Deviation Audit پس از Gate 6:** [`../reports/lastsecond-deviation-audit-post-gate6-2026-11-14.md`](../reports/lastsecond-deviation-audit-post-gate6-2026-11-14.md)
@@ -21,10 +21,10 @@
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
 | 2 | Marketplace Read + Booking | ✅ Baseline Gate 4 Remediated | 100% |
-| 3 | Channel + Billing + Settlement | ⏳ Gate 7 | 0% |
+| 3 | Channel + Billing + Settlement | ✅ Gate 7 PASSED (Core) | 100% |
 | 4 | Flights | ✅ Gate 5 | 100% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ✅ Gate 5/5.1 + Gate 6 | 100% |
-| 6 | Hardening & Scale | ⏳ Gate 8 | 0% |
+| 6 | Hardening & Scale | ✅ Gate 8 PASSED (Core) | 100% |
 
 > از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۱ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 1 به‌عنوان وضعیت تاریخی باقی می‌ماند.
 
@@ -189,9 +189,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۴۹ passed |
-| Architecture Tests | ۳۴ passed |
-| Total | **۱۸۳ passed** |
+| Unit Tests | 150 passed |
+| Architecture Tests | 34 passed |
+| Total | **187 passed** (150 unit + 34 architecture + 3 integration) |
 | Migrations | Supply (۸) / Catalog (۶) / Content (۲) / Identity (۶) / Booking (۱۰) / Payments (۸) / Settlement (۳) |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -201,7 +201,7 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 8 — Hardening (Ready)
+**تسک فعال:** Gate 8 — Hardening (PASSED Core)
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
@@ -209,6 +209,7 @@
 **GAPهای Gate 5:** ✅ GAP-13/25/29 (TC-094), GAP-14 (TC-090), GAP-15/21 (TC-091), GAP-16 (TC-092)
 **GAPهای Gate 6:** ✅ GAP-12/22/23/24/30/33/34
 **Gate 7:** ✅ PASSED (Core) — OAuth/Channel API/Refund/Invoice/Payout/Webhook/Dunning/Dashboard/Reconciliation
+**Gate 8:** ✅ PASSED (Core) — Search read model/indexes/batch/cache, content sitemap, Testcontainers, k6/SLO, DR, security, observability, ADR-0029
 **Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 8`
 
 ### Audit 2026-11-14 — Lastsecond Full Architecture
@@ -228,6 +229,20 @@
 - [x] A-08 — `TourCategory` + `TravelType` + search filters
 
 **شکاف‌های اصلی Gate 6/7:** Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
+
+### Gate 8 — Exit Checklist ✅ PASSED (Core)
+
+- [x] Search batch hydration + no N+1 loop
+- [x] PostgreSQL indexes + `pg_trgm` search indexes
+- [x] 30s search cache with full request key
+- [x] Content sitemap + robots discovery + hreflang
+- [x] Testcontainers integration tests + all module migrations
+- [x] k6 search/SEO load tests + SLO evidence
+- [x] DR drill + backup/restore runbook
+- [x] Security headers + configurable rate limiting + HSTS
+- [x] `/health/live` + `/health/ready` + observability dashboard/alerts
+- [x] ADR-0028 search read model + ADR-0029 modular monolith decision
+- [ ] Persistent idempotency / outbox consumer / shared rate limiter / frontend CSP (follow-up)
 
 ### Gate 7 — Exit Checklist ✅ PASSED (Core)
 

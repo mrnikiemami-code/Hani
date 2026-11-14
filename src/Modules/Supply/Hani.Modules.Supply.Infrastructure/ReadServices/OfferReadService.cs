@@ -27,6 +27,35 @@ internal sealed class OfferReadService(SupplyDbContext dbContext)
         return await MapAsync(offers, cancellationToken);
     }
 
+    public async Task<IReadOnlyDictionary<Guid, IReadOnlyList<OfferSnapshot>>> GetApprovedOffersByProductIdsAsync(
+        IReadOnlyCollection<Guid> productIds,
+        CancellationToken cancellationToken)
+    {
+        if (productIds.Count == 0)
+        {
+            return new Dictionary<Guid, IReadOnlyList<OfferSnapshot>>();
+        }
+
+        var ids = productIds.Distinct().ToArray();
+        var offers = await dbContext.AgencyOffers
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(offer => offer.AccommodationOptions)
+            .Include(offer => offer.FlightOptions)
+            .Include(offer => offer.TaxRules)
+            .Where(offer =>
+                ids.Contains(offer.TourProductId) &&
+                offer.Status == AgencyOfferStatus.Approved)
+            .ToArrayAsync(cancellationToken);
+        var mapped = await MapAsync(offers, cancellationToken);
+
+        return mapped
+            .GroupBy(offer => offer.TourProductId)
+            .ToDictionary(
+                group => group.Key,
+                group => (IReadOnlyList<OfferSnapshot>)group.ToArray());
+    }
+
     public async Task<IReadOnlyList<OfferSnapshot>> GetApprovedOffersByHotelAsync(
         Guid hotelId,
         CancellationToken cancellationToken)

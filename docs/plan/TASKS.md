@@ -31,7 +31,8 @@
 
 > Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
-> **Gate 7 PASSED (Core) است.** Channel OAuth/API، Refund/Invoice، Settlement/Payout، Webhook/Dunning/Dashboard و Reconciliation/Chargeback پیاده شد. Gate 8 آماده است.
+> **Gate 7 PASSED (Core).** Channel OAuth/API, Refund/Invoice, Settlement/Payout, Webhook/Dunning/Dashboard, Reconciliation/Chargeback.
+> **Gate 8 PASSED (Core).** Search read model/indexes/batch/cache, content sitemap, Testcontainers, k6/SLO, DR drill, security controls, observability, ADR-0029.
 
 ## Phase 0 — Foundation ✅
 
@@ -142,9 +143,9 @@
 
 | ID | تسک | وضعیت | وابستگی | DoD |
 |---|---|---|---|---|
-| TC-073 | Testcontainers | ❌ | TC-003 | integration tests |
-| TC-074 | Load test | ❌ | TC-051 | k6 |
-| TC-075 | DR drill | ❌ | TC-046 | RTO/RPO |
-| TC-076 | Security review | ❌ | TC-055 | رفع High |
-| TC-077 | Observability dashboards | ❌ | TC-009 | SLO |
-| TC-078 | Microservice extraction | ❌ | TC-048 | ADR |
+| TC-073 | Testcontainers | ✅ | TC-003 | integration tests |
+| TC-074 | Load test | ✅ | TC-051 | k6 |
+| TC-075 | DR drill | ✅ | TC-046 | RTO/RPO |
+| TC-076 | Security review | ✅ | TC-055 | رفع High |
+| TC-077 | Observability dashboards | ✅ | TC-009 | SLO |
+| TC-078 | Microservice extraction | ✅ | TC-048 | ADR |

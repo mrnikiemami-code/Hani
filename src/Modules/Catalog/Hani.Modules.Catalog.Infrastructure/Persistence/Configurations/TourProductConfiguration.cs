@@ -31,6 +31,15 @@ internal sealed class TourProductConfiguration : IEntityTypeConfiguration<TourPr
             .IsUnique()
             .HasDatabaseName("ux_tour_products_slug");
 
+        builder.HasIndex(product => new { product.Status, product.UpdatedAt })
+            .HasDatabaseName("ix_tour_products_status_updated");
+
+        builder.HasIndex(product => new { product.Status, product.TourType, product.DurationDays })
+            .HasDatabaseName("ix_tour_products_status_type_duration");
+
+        builder.HasIndex(product => new { product.Status, product.OriginDestinationId })
+            .HasDatabaseName("ix_tour_products_status_origin");
+
         builder.OwnsMany(product => product.Translations, translations =>
         {
             translations.ToTable("tour_product_translations");
@@ -56,6 +65,21 @@ internal sealed class TourProductConfiguration : IEntityTypeConfiguration<TourPr
                 .IsUnique()
                 .HasDatabaseName("ux_tour_product_translations_product_locale");
 
+            translations.HasIndex(translation => translation.Title)
+                .HasMethod("gin")
+                .HasOperators("gin_trgm_ops")
+                .HasDatabaseName("ix_tour_product_translations_title_trgm");
+
+            translations.HasIndex(translation => translation.Summary)
+                .HasMethod("gin")
+                .HasOperators("gin_trgm_ops")
+                .HasDatabaseName("ix_tour_product_translations_summary_trgm");
+
+            translations.HasIndex(translation => translation.Description)
+                .HasMethod("gin")
+                .HasOperators("gin_trgm_ops")
+                .HasDatabaseName("ix_tour_product_translations_description_trgm");
+
             translations.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 
@@ -73,6 +97,9 @@ internal sealed class TourProductConfiguration : IEntityTypeConfiguration<TourPr
             destinations.HasIndex(destination => new { destination.TourProductId, destination.DestinationId })
                 .IsUnique()
                 .HasDatabaseName("ux_tour_product_destinations_product_destination");
+
+            destinations.HasIndex(destination => new { destination.DestinationId, destination.TourProductId })
+                .HasDatabaseName("ix_tour_product_destinations_destination_product");
 
             destinations.UsePropertyAccessMode(PropertyAccessMode.Field);
         });

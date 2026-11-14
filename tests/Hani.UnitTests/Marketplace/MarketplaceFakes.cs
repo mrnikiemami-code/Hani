@@ -95,13 +95,20 @@ internal sealed class FakeOfferReadService : IOfferReadService
 {
     public Dictionary<Guid, IReadOnlyList<OfferSnapshot>> OffersByProduct { get; } = [];
 
+    public int SingleProductCalls { get; private set; }
+
+    public int BatchProductCalls { get; private set; }
+
     public Task<IReadOnlyList<OfferSnapshot>> GetApprovedOffersAsync(
         Guid tourProductId,
         CancellationToken cancellationToken)
-        => Task.FromResult(
+    {
+        SingleProductCalls++;
+        return Task.FromResult(
             OffersByProduct.TryGetValue(tourProductId, out var offers)
                 ? offers
                 : (IReadOnlyList<OfferSnapshot>)[]);
+    }
 
     public Task<OfferSnapshot?> GetApprovedOfferByIdAsync(
         Guid offerId,
@@ -110,6 +117,61 @@ internal sealed class FakeOfferReadService : IOfferReadService
             OffersByProduct.Values
                 .SelectMany(offers => offers)
                 .FirstOrDefault(offer => offer.OfferId == offerId));
+
+    public Task<IReadOnlyDictionary<Guid, IReadOnlyList<OfferSnapshot>>> GetApprovedOffersByProductIdsAsync(
+        IReadOnlyCollection<Guid> productIds,
+        CancellationToken cancellationToken)
+    {
+        BatchProductCalls++;
+        var result = productIds
+            .Distinct()
+            .Where(OffersByProduct.ContainsKey)
+            .ToDictionary(
+                id => id,
+                id => (IReadOnlyList<OfferSnapshot>)OffersByProduct[id]);
+        return Task.FromResult<IReadOnlyDictionary<Guid, IReadOnlyList<OfferSnapshot>>>(result);
+    }
+}
+
+internal sealed class FakeCacheService : ICacheService
+{
+    private readonly Dictionary<string, object> _values = [];
+
+    public Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
+        => Task.FromResult(
+            _values.TryGetValue(key, out var value) && value is T typed ? typed : default);
+
+    public Task SetAsync<T>(
+        string key,
+        T value,
+        TimeSpan? timeToLive = null,
+        CancellationToken cancellationToken = default)
+    {
+        _values[key] = value!;
+        return Task.CompletedTask;
+    }
+
+    public async Task<T> GetOrCreateAsync<T>(
+        string key,
+        Func<CancellationToken, Task<T>> factory,
+        TimeSpan? timeToLive = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (_values.TryGetValue(key, out var existing) && existing is T typed)
+        {
+            return typed;
+        }
+
+        var created = await factory(cancellationToken);
+        _values[key] = created!;
+        return created;
+    }
+
+    public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
+    {
+        _values.Remove(key);
+        return Task.CompletedTask;
+    }
 }
 
 internal sealed class FakeLanguageCatalog : ILanguageCatalog

@@ -68,14 +68,14 @@
 
 | ID | عنوان | GAP | Priority | وابستگی | Acceptance | Status |
 |---|---|---|---|---|---|---|
-| D-01 | CancellationPolicy + Order.Cancel | New GAP-45 | P0 | A-01 | Cancel + seat release + compensation | 🚧 Partial (cancel/release done; compensation pending) |
-| D-02 | Refund + PSP refund + ledger reversal | New GAP-45 | P0 | D-01 | Refund aggregate + PSP + ledger | 🚧 Partial (refund + mock PSP; ledger reversal pending) |
-| D-03 | Invoice + SellerOfRecord/InvoiceIssuer | New GAP-45 | P0 | A-01 | Invoice aggregate + PDF/API | 🚧 Partial (API done; PDF pending) |
-| D-04 | Agency payout + settlement terms | New GAP-46 | P1 | D-03 | Payout + settlement schedule | ✅ Basic terms/payout done |
-| D-05 | Reconciliation + chargeback | New GAP-46 | P1 | D-04 | Reconciliation + dispute | ⏳ Planned |
-| D-06 | Search Read Model + index + cache | GAP-04 | P0 | A-08 | Projection + index + no N+1 | ⏳ Planned |
-| D-07 | Sitemap/robots/SEO per vertical | GAP-28 | P1 | B-07 | Full sitemap + localized copy | 🚧 Partial (content sitemap pending) |
-| D-08 | Load tests + SLO | GAP-34 | P2 | D-06 | k6 + SLO report | ⏳ Planned |
+| D-01 | CancellationPolicy + Order.Cancel | New GAP-45 | P0 | A-01 | Cancel + seat release + compensation | ✅ Done (cancel + seat release + automatic refund compensation) |
+| D-02 | Refund + PSP refund + ledger reversal | New GAP-45 | P0 | D-01 | Refund aggregate + PSP + ledger | ✅ Done (refund + PSP abstraction + settlement ledger reversal) |
+| D-03 | Invoice + SellerOfRecord/InvoiceIssuer | New GAP-45 | P0 | A-01 | Invoice aggregate + PDF/API | ✅ Done (invoice API + PDF generation) |
+| D-04 | Agency payout + settlement terms | New GAP-46 | P1 | D-03 | Payout + settlement schedule | ✅ Done (settlement terms + payout lifecycle) |
+| D-05 | Reconciliation + chargeback | New GAP-46 | P1 | D-04 | Reconciliation + dispute | ✅ Done (chargeback + reconciliation) |
+| D-06 | Search Read Model + index + cache | GAP-04 | P0 | A-08 | Projection + index + no N+1 | ✅ Done (query-side read model + indexes + batch + cache; ADR-0028) |
+| D-07 | Sitemap/robots/SEO per vertical | GAP-28 | P1 | B-07 | Full sitemap + localized copy | ✅ Done (vertical + content sitemap + robots + hreflang) |
+| D-08 | Load tests + SLO | GAP-34 | P2 | D-06 | k6 + SLO report | ✅ Done (k6 + SLO report + measured thresholds) |
 
 ---
 

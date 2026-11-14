@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Hani.BuildingBlocks.Application;
 using Hani.Contracts.Catalog;
 using Hani.Contracts.Supply;
@@ -7,13 +8,24 @@ namespace Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 internal sealed class SearchProductsQueryHandler(
     ICatalogReadService catalog,
     IOfferReadService offers,
-    ILanguageCatalog languages)
+    ILanguageCatalog languages,
+    ICacheService cache)
     : IQueryHandler<SearchProductsQuery, PagedResult<ProductSearchItemDto>>
 {
     public async Task<Result<PagedResult<ProductSearchItemDto>>> Handle(
         SearchProductsQuery request,
         CancellationToken cancellationToken)
     {
+        var cacheKey = "market:search:" + JsonSerializer.Serialize(request);
+        var cached = await cache.GetAsync<PagedResult<ProductSearchItemDto>>(
+            cacheKey,
+            cancellationToken);
+
+        if (cached is not null)
+        {
+            return Result<PagedResult<ProductSearchItemDto>>.Success(cached);
+        }
+
         var locale = languages.Normalize(request.Locale);
         var page = Math.Max(1, request.Page);
         var pageSize = Math.Clamp(request.PageSize, 1, 50);
@@ -37,12 +49,15 @@ internal sealed class SearchProductsQueryHandler(
             cancellationToken);
 
         var items = new List<SearchCandidate>(products.Count);
+        var offersByProduct = await offers.GetApprovedOffersByProductIdsAsync(
+            products.Select(product => product.Id).ToArray(),
+            cancellationToken);
 
         foreach (var product in products)
         {
-            var productOffers = await offers.GetApprovedOffersAsync(
-                product.Id,
-                cancellationToken);
+            var productOffers = offersByProduct.TryGetValue(product.Id, out var loadedOffers)
+                ? loadedOffers
+                : [];
 
             var filteredOffers = productOffers
                 .Select(offer => FilterOffer(offer, request))
@@ -100,8 +115,13 @@ internal sealed class SearchProductsQueryHandler(
             .Select(item => item.Dto)
             .ToArray();
 
-        return Result<PagedResult<ProductSearchItemDto>>.Success(
-            new PagedResult<ProductSearchItemDto>(pageItems, page, pageSize, total));
+        var result = new PagedResult<ProductSearchItemDto>(pageItems, page, pageSize, total);
+        await cache.SetAsync(
+            cacheKey,
+            result,
+            TimeSpan.FromSeconds(30),
+            cancellationToken);
+        return Result<PagedResult<ProductSearchItemDto>>.Success(result);
     }
 
     private static OfferSnapshot? FilterOffer(OfferSnapshot offer, SearchProductsQuery request)

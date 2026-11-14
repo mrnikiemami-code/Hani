@@ -35,11 +35,11 @@
 | DEV-13 | Gamification غایب | ✅ Resolved — C-04 | — |
 | DEV-14 | Ads/Newsletter/Campaign غایب | ✅ Resolved — C-05..C-07 | — |
 | DEV-15 | Dashboard requests/passengers/documents/messages غایب | ⚠️ Partial — dashboard محتوا/پیام/مدارک هست؛ aggregation درخواست‌ها/مسافران Booking ندارد | Gate 6/7 |
-| DEV-16 | Refund/Cancellation/Invoice/Payout غایب | ❌ Open — D-01..D-05 | Gate 7/8 |
-| DEV-17 | Order.Cancel ندارد | ❌ Open — D-01 | Gate 7/8 |
+| DEV-16 | Refund/Cancellation/Invoice/Payout غایب | ✅ Closed — D-01..D-05 | Gate 7/8 |
+| DEV-17 | Order.Cancel ندارد | ✅ Closed — D-01 | Gate 7/8 |
 | DEV-18 | Auth فقط OTP؛ Lastsecond email/username/Lastgram | ❌ Open — optional | Gate 7/8 |
 | DEV-19 | Flight model مشخص نیست | ✅ Resolved — ADR-0027 Metasearch/Redirect | — |
-| DEV-20 | Performance/read model ندارد | ❌ Open — D-06 | Gate 8 |
+| DEV-20 | Performance/read model ندارد | ✅ Closed — D-06 (batch + indexes + cache + SLO) | Gate 8 |
 
 ---
 

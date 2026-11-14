@@ -1,3 +1,4 @@
+using System.Text;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Content.Application.Commands.Editorial;
@@ -5,6 +6,7 @@ using Hani.Modules.Content.Application.Commands.Growth;
 using Hani.Modules.Content.Application.Queries.Dashboard;
 using Hani.Modules.Content.Application.Queries.Editorial;
 using Hani.Modules.Content.Application.Queries.Growth;
+using Hani.Modules.Content.Application.Queries.Sitemap;
 using Hani.Modules.Content.Domain.Content;
 using Hani.Modules.Content.Domain.Dashboard;
 using Hani.Modules.Content.Domain.Growth;
@@ -82,6 +84,12 @@ public static class ContentEndpoints
         internalDashboard.MapPost("/messages/{messageId:guid}/read", MarkMessageReadAsync).WithName("Internal.MarkUserMessageRead");
         internalDashboard.MapPost("/documents", CreateDocumentAsync).WithName("Internal.CreateUserDocument");
         internalDashboard.MapPost("/documents/{documentId:guid}/status", SetDocumentStatusAsync).WithName("Internal.SetUserDocumentStatus");
+
+        app.MapGet("/content-sitemap.xml", GetContentSitemapAsync)
+            .WithTags("Content")
+            .AllowAnonymous()
+            .WithName("Public.ContentSitemap")
+            .Produces(StatusCodes.Status200OK, contentType: "application/xml");
 
         return app;
     }
@@ -737,6 +745,18 @@ public static class ContentEndpoints
     {
         var result = await sender.Send(command, cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Returns the localized content sitemap XML.</summary>
+    private static async Task<IResult> GetContentSitemapAsync(
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetContentSitemapQuery(), cancellationToken);
+        return result.IsSuccess
+            ? Results.Content(result.Value!, "application/xml", Encoding.UTF8)
+            : context.ToProblem(result.Error!);
     }
 }
 

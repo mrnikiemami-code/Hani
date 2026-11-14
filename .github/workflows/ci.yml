@@ -27,7 +27,7 @@ jobs:
       - name: Build (warnings as errors)
         run: dotnet build Hani.slnx -warnaserror --no-restore
 
-      - name: Test (unit + architecture)
+      - name: Test (unit + architecture + integration)
         run: dotnet test Hani.slnx --no-build --verbosity normal
 
       - name: Migrations

@@ -150,6 +150,12 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ux_agency_offers_agency_external")
                         .HasFilter("external_id <> ''");
 
+                    b.HasIndex("AgencyId", "Status")
+                        .HasDatabaseName("ix_agency_offers_agency_status");
+
+                    b.HasIndex("TourProductId", "Status")
+                        .HasDatabaseName("ix_agency_offers_product_status");
+
                     b.ToTable("agency_offers", "supply");
                 });
 

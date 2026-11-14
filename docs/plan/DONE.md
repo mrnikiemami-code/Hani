@@ -145,6 +145,15 @@
 | D-128 | Billing | Refund/Invoice + settlement terms/payout | Gate 7 |
 | D-129 | Channel webhook/dunning | webhook publisher + invoice reminder | Gate 7 |
 | D-130 | Dashboards + reconciliation | agency/traveler/admin dashboards + chargeback/reconciliation | Gate 7 |
+| D-131 | Search hardening | batch offer hydration + 30s cache + no N+1 | Gate 8 |
+| D-132 | Search indexes | published-product + pg_trgm GIN + offer status indexes | Gate 8 |
+| D-133 | Content sitemap | `/content-sitemap.xml` + hreflang + robots | Gate 8 |
+| D-134 | Integration tests | Testcontainers PostgreSQL + all module migrations | Gate 8 |
+| D-135 | Load/SLO | k6 search/SEO + measured SLO report | Gate 8 |
+| D-136 | DR drill | logical dump/restore + RTO/RPO runbook | Gate 8 |
+| D-137 | Security | response headers + configurable rate limiting + review | Gate 8 |
+| D-138 | Observability | live/ready health + SLO + dashboard + alerts | Gate 8 |
+| D-139 | Architecture decision | ADR-0028 read model + ADR-0029 modular monolith | Gate 8 |
 
 ## ۳. مستندات
 

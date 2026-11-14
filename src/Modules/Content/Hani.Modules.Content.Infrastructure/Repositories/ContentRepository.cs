@@ -433,6 +433,44 @@ internal sealed class ContentRepository(ContentDbContext dbContext) : IContentRe
         return new AuthorContentCounts(blogs, travelogues, videos);
     }
 
+    public async Task<IReadOnlyList<ContentSitemapEntry>> ListSitemapEntriesAsync(
+        CancellationToken cancellationToken)
+    {
+        var blogs = await dbContext.BlogPosts
+            .AsNoTracking()
+            .Where(item => item.Status == ContentStatus.Published)
+            .Select(item => new ContentSitemapEntry(
+                "blog",
+                item.Slug,
+                item.UpdatedAt))
+            .ToArrayAsync(cancellationToken);
+
+        var travelogues = await dbContext.Travelogues
+            .AsNoTracking()
+            .Where(item => item.Status == ContentStatus.Published)
+            .Select(item => new ContentSitemapEntry(
+                "travelogue",
+                item.Slug,
+                item.UpdatedAt))
+            .ToArrayAsync(cancellationToken);
+
+        var videos = await dbContext.Videos
+            .AsNoTracking()
+            .Where(item => item.Status == ContentStatus.Published)
+            .Select(item => new ContentSitemapEntry(
+                "video",
+                item.Slug,
+                item.UpdatedAt))
+            .ToArrayAsync(cancellationToken);
+
+        return blogs
+            .Concat(travelogues)
+            .Concat(videos)
+            .OrderBy(entry => entry.Type, StringComparer.Ordinal)
+            .ThenBy(entry => entry.Slug, StringComparer.Ordinal)
+            .ToArray();
+    }
+
     public Task SaveChangesAsync(CancellationToken cancellationToken)
         => dbContext.SaveChangesAsync(cancellationToken);
 

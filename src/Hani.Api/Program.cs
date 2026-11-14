@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using FluentValidation;
 using Hani.Api;
 using Hani.BuildingBlocks.Application;
@@ -104,6 +105,7 @@ using Hani.Modules.Supply.Presentation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -182,6 +184,8 @@ builder.Services.AddSettlementInfrastructure();
 builder.Services.Configure<PaymentOptions>(builder.Configuration.GetSection("Payments"));
 builder.Services.Configure<CommissionOptions>(builder.Configuration.GetSection("Commissions"));
 builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
+builder.Services.Configure<Hani.Modules.Content.Application.Queries.Sitemap.ContentSitemapOptions>(
+    builder.Configuration.GetSection("Seo"));
 builder.Services.Configure<FlightProviderOptions>(
     builder.Configuration.GetSection("FlightProvider"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
@@ -487,7 +491,27 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = cultures;
 });
 
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+    .AddCheck<PostgresHealthCheck>("postgres", tags: ["ready"]);
+var rateLimiting = builder.Configuration
+    .GetSection("RateLimiting")
+    .Get<RateLimitingOptions>() ?? new RateLimitingOptions();
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        var key = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(key, _ =>
+            new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = rateLimiting.PermitLimit,
+                Window = TimeSpan.FromSeconds(rateLimiting.WindowSeconds),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            });
+    });
+});
 builder.Services.AddExceptionHandler<HaniExceptionHandler>();
 builder.Services.AddProblemDetails();
 
@@ -495,7 +519,13 @@ var app = builder.Build();
 
 // Request pipeline: correlation -> exception -> localization -> auth -> tenant -> authorization
 app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseExceptionHandler();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
 app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseMiddleware<TenantMiddleware>();
@@ -511,8 +541,17 @@ app.UseStatusCodePages(async context =>
     var problem = HaniProblemDetails.Create(httpContext, httpContext.Response.StatusCode);
     await HaniProblemDetails.WriteAsync(httpContext, problem);
 });
+app.UseRateLimiter();
 app.UseAuthorization();
 app.MapHealthChecks("/health");
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = _ => false
+});
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready")
+});
 app.MapSupplyEndpoints();
 app.MapCatalogEndpoints();
 app.MapContentEndpoints();

@@ -6,6 +6,17 @@ info:
 servers:
   - url: https://api.hani.ir
 paths:
+  /content-sitemap.xml:
+    get:
+      tags: [Content]
+      summary: Read the localized content sitemap
+      description: Includes published blog posts, travelogues, and videos with hreflang alternates.
+      responses:
+        '200':
+          description: XML sitemap
+          content:
+            application/xml:
+              schema: { type: string }
   /market/v1/content/blog:
     get:
       tags: [Content]

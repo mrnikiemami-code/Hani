@@ -68,3 +68,10 @@ Presentation    → Minimal API endpoints
 - Schema: `supply`
 - جدول‌ها: `agency_offers`, `agency_offer_accommodations`, `agency_offer_flights`, `agency_offer_tax_rules`, `tour_departures`, `tour_departure_prices`, Outbox/Inbox
 - Migrationها: `InitialSupply`, `AddTourDepartures`, `AddOfferLifecycle`, `AddOfferOptions`, `AddTaxRulesAndCurrencyPrices`, `AddBookingModes`, `AddAuditRemediationOfferFields`
+
+
+## Gate 8 ? Read-path hardening
+
+- `IOfferReadService.GetApprovedOffersByProductIdsAsync` returns approved offers for a product page in one batch.
+- Added composite indexes `(tour_product_id, status)` and `(agency_id, status)`.
+- Migration: `AddGate8OfferSearchIndexes`.

@@ -21,6 +21,7 @@ internal sealed class CatalogReadService(
         var query = await ApplyFilterAsync(filter, cancellationToken);
 
         var products = await query
+            .AsSplitQuery()
             .OrderByDescending(product => product.UpdatedAt)
             .Skip(skip)
             .Take(take)

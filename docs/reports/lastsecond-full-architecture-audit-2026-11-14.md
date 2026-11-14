@@ -36,7 +36,7 @@ Hani آگاهانه **Hani MoR + Online Checkout** را اضافه کرده اس
 | Gate 5 — Verticals | ❌ هنوز شروع نشده؛ بدون اصلاح چند پیش‌نیاز، ورود به آن خطرناک است |
 | Gate 6 — Content/Growth | ❌ تقریباً تمام دامنه‌های محتوایی/گیمیفیکیشن/تبلیغات/خبرنامه غایب‌اند |
 | Gate 7 — Channel/Billing | ❌ Refund/Invoice/Payout/Reconciliation غایب‌اند |
-| Gate 8 — Hardening | ❌ Read Model/Search Index/N+1/Performance هنوز حل نشده |
+| Gate 8 — Hardening | ✅ Search read model/indexes/batch/cache + sitemap + Testcontainers + k6/SLO + DR + security/observability |
 
 **توصیه معماری:** Gate 5 نباید بلافاصله شروع شود. ابتدا یک **Gate 4 Corrective Patch** و چند تصمیم ADR لازم است. سپس Gate 5 با دامنه بازتعریف‌شده (Canonical Hotel/Place/Visa/Flight + Geo + Inquiry) اجرا شود.
 
@@ -564,7 +564,7 @@ Hani فعلی:
 | DEV-17 | Order cancel method ندارد | `Order.cs` | High | Gate 4/7 | Cancel + compensation |
 | DEV-18 | Auth فقط OTP؛ Lastsecond email/username/Lastgram | `/auth/login` | Low/Medium | Gate 3/7 | optional password/email/SSO |
 | DEV-19 | Flight model مشخص نیست | `/flights` | High | Gate 5 | ADR: Metasearch vs Inventory |
-| DEV-20 | Performance/read model ندارد | `SearchProductsQueryHandler` N+1 | High | Gate 8 | Read Model/Index |
+| DEV-20 | Performance/read model ندارد | ✅ Closed in Gate 8 | High | Gate 8 | Read Model/Index |
 
 ---
 

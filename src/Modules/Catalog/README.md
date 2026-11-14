@@ -76,3 +76,12 @@
 - Schema: `catalog`
 - جدول‌ها: `tour_products`, `tour_product_translations`, `tour_itinerary_days`, `tour_itinerary_day_translations`, `tour_product_destinations`, `destinations`, `destination_translations`, `hotels`, `hotel_translations`, `hotel_amenities`, `hotel_images`, `hotel_rooms`, `places`, `place_translations`, `place_amenities`, `place_menu_items`, `place_meal_periods`, `place_dietary_options`, `visa_countries`, `visa_country_translations`, `visa_types`, `visa_documents`, `visa_steps`, `visa_faqs`, `flight_routes`, `flight_offers`, `airlines`, `airports`
 - Migrationها: `InitialCatalog`, `AddTourContent`, `AddHotelsPlacesAndTourTaxonomy`, `AddGate5Verticals`, `AddGate5VerticalMedia`, `AddGate51VerticalDepth`
+
+
+## Gate 8 ? Search indexes
+
+- `pg_trgm` GIN indexes on `tour_product_translations` title/summary/description.
+- Composite indexes for `(status, updated_at)`, `(status, tour_type, duration_days)`, and `(status, origin_destination_id)`.
+- Destination link index for `(destination_id, tour_product_id)`.
+- Migration: `AddGate8SearchIndexes`.
+- Search queries use `AsSplitQuery()` to avoid collection cartesian explosion.

@@ -65,3 +65,11 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 - محتوای چندزبانه از `Translations` با fallback از زبان پیش‌فرض config خوانده می‌شود.
 - کامنت‌ها تا moderation منتشر نمی‌شوند.
 - تبلیغات فقط کریتیو فعال و در بازه زمانی را برمی‌گردانند.
+
+
+## Gate 8 ? Content sitemap
+
+- Public endpoint: `GET /content-sitemap.xml`.
+- Includes published blog posts, travelogues, and videos.
+- Emits hreflang alternates for every language in `ILanguageCatalog`.
+- `robots.txt` advertises both the marketplace and content sitemaps.
