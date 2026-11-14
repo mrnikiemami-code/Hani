@@ -25,6 +25,10 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options)
 
     public DbSet<FlightRoute> FlightRoutes => Set<FlightRoute>();
 
+    public DbSet<Airline> Airlines => Set<Airline>();
+
+    public DbSet<Airport> Airports => Set<Airport>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("catalog");

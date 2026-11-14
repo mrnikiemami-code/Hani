@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
         services.AddScoped<IAgencyReadService, AgencyReadService>();
         services.AddScoped<IReviewSummaryReadService, ReviewSummaryReadService>();
+        services.AddScoped<IReviewMediaReadService, ReviewMediaReadService>();
         return services;
     }
 }

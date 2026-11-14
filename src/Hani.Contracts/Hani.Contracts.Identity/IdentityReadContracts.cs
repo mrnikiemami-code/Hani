@@ -18,7 +18,30 @@ public interface IReviewSummaryReadService
 /// <summary>
 /// Aggregate review summary for one target.
 /// </summary>
-public sealed record ReviewSummary(Guid TargetId, decimal AverageRating, int ReviewCount);
+public sealed record ReviewSummary(
+    Guid TargetId,
+    decimal AverageRating,
+    int ReviewCount,
+    int RecommendedCount = 0);
+
+/// <summary>
+/// Read-side contract for published user media.
+/// </summary>
+public interface IReviewMediaReadService
+{
+    /// <summary>
+    /// Returns approved photo URLs attached to published reviews for the requested targets.
+    /// </summary>
+    Task<IReadOnlyList<ReviewMediaItem>> GetPhotoUrlsAsync(
+        string targetType,
+        IReadOnlyCollection<Guid> targetIds,
+        CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Approved user photo for one reviewed target.
+/// </summary>
+public sealed record ReviewMediaItem(Guid TargetId, string Url, string? Caption);
 
 /// <summary>
 /// Read-side contract for agency display data.

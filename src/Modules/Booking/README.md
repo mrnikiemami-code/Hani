@@ -54,6 +54,7 @@ Departure (Supply)
 - `HotelInquiry` درخواست موجودی/بهترین قیمت هتل را با تاریخ/اتاق/مسافر نگه می‌دارد و با `Respond` پاسخ داده می‌شود.
 - `RestaurantReservation` درخواست میز رستوران را با تاریخ/ساعت/تعداد نفرات نگه می‌دارد و Confirm/Reject می‌شود.
 - `VisaApplication` درخواست ویزا با پاسپورت/ملیت/مدارک را نگه می‌دارد و status workflow دارد.
+- `VisaApplicant` مسافران اضافی یک درخواست گروهی و `PassengerCount` را نگه می‌دارد.
 - ساخت plan فقط وقتی مجاز است که `InstallmentTerms` روی snapshot سفارش فعال باشد؛ سقف تعداد اقساط از همان terms خوانده می‌شود.
 
 ## APIها
@@ -101,9 +102,9 @@ Departure (Supply)
 ## Persistence
 
 - Schema: `booking`
-- جدول‌ها: `quotes`, `holds`, `orders`, `order_travelers`, `order_lines`, `payment_obligations`, `contracts`, `contract_travelers`, `contract_lines`, `reservation_requests`, `lead_requests`, `lead_agency_invitations`, `price_discrepancy_reports`, `installment_plans`, `installments`, `hotel_inquiries`, `restaurant_reservations`, `visa_applications`, `visa_application_documents`
+- جدول‌ها: `quotes`, `holds`, `orders`, `order_travelers`, `order_lines`, `payment_obligations`, `contracts`, `contract_travelers`, `contract_lines`, `reservation_requests`, `lead_requests`, `lead_agency_invitations`, `price_discrepancy_reports`, `installment_plans`, `installments`, `hotel_inquiries`, `restaurant_reservations`, `visa_applications`, `visa_application_documents`, `visa_application_applicants`
 - ستون `pricing` از نوع `jsonb` در `quotes`/`orders`/`contracts`/`reservation_requests` snapshot چندارزی و مالیات را نگه می‌دارد.
-- Migrationها: `InitialBooking`, `AddOrdersAndContracts`, `AddMultiCurrencyPricing`, `AddPaymentObligations`, `AddRequestsLeadsDiscrepanciesInstallments`, `AddLeadDistributions`, `AddAuditRemediationBookingFields`, `AddGate5Requests`
+- Migrationها: `InitialBooking`, `AddOrdersAndContracts`, `AddMultiCurrencyPricing`, `AddPaymentObligations`, `AddRequestsLeadsDiscrepanciesInstallments`, `AddLeadDistributions`, `AddAuditRemediationBookingFields`, `AddGate5Requests`, `AddGate51VisaApplicants`
 
 ## محدودیت فعلی
 

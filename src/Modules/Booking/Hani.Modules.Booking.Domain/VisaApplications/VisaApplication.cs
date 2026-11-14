@@ -20,6 +20,7 @@ public enum VisaApplicationStatus
 public sealed class VisaApplication : AggregateRoot<Guid>
 {
     private readonly List<VisaApplicationDocument> _documents = [];
+    private readonly List<VisaApplicant> _applicants = [];
 
     private VisaApplication()
     {
@@ -103,6 +104,12 @@ public sealed class VisaApplication : AggregateRoot<Guid>
     /// <summary>Document URLs.</summary>
     public IReadOnlyCollection<VisaApplicationDocument> Documents => _documents;
 
+    /// <summary>Additional applicants travelling on the same application.</summary>
+    public IReadOnlyCollection<VisaApplicant> Applicants => _applicants;
+
+    /// <summary>Total applicants including the primary applicant.</summary>
+    public int PassengerCount => 1 + _applicants.Count;
+
     /// <summary>
     /// Creates a submitted application.
     /// </summary>
@@ -119,6 +126,7 @@ public sealed class VisaApplication : AggregateRoot<Guid>
         string contactPhone,
         string? notes,
         IReadOnlyList<string> documents,
+        IReadOnlyList<VisaApplicantInput>? applicants = null,
         DateTimeOffset? now = null)
     {
         if (visaCountryId == Guid.Empty || visaTypeId == Guid.Empty)
@@ -159,6 +167,27 @@ public sealed class VisaApplication : AggregateRoot<Guid>
         foreach (var document in documents.Distinct(StringComparer.OrdinalIgnoreCase))
         {
             application._documents.Add(new VisaApplicationDocument(ids.NewId(), application.Id, document));
+        }
+
+        foreach (var applicant in applicants ?? [])
+        {
+            if (string.IsNullOrWhiteSpace(applicant.FullName) ||
+                string.IsNullOrWhiteSpace(applicant.PassportNo) ||
+                string.IsNullOrWhiteSpace(applicant.Nationality))
+            {
+                throw new ArgumentException(
+                    "Applicant name, passport, and nationality are required.",
+                    nameof(applicants));
+            }
+
+            application._applicants.Add(new VisaApplicant(
+                ids.NewId(),
+                application.Id,
+                applicant.FullName,
+                applicant.PassportNo,
+                applicant.Nationality,
+                applicant.DateOfBirth,
+                applicant.Relation));
         }
 
         return application;
@@ -209,3 +238,58 @@ public sealed class VisaApplicationDocument : Entity<Guid>
     /// <summary>Document URL.</summary>
     public string FileUrl { get; private set; } = string.Empty;
 }
+
+/// <summary>
+/// Additional applicant on a group visa application.
+/// </summary>
+public sealed class VisaApplicant : Entity<Guid>
+{
+    private VisaApplicant()
+    {
+    }
+
+    internal VisaApplicant(
+        Guid id,
+        Guid applicationId,
+        string fullName,
+        string passportNo,
+        string nationality,
+        DateOnly? dateOfBirth,
+        string? relation) : base(id)
+    {
+        ApplicationId = applicationId;
+        FullName = fullName.Trim();
+        PassportNo = passportNo.Trim().ToUpperInvariant();
+        Nationality = nationality.Trim().ToUpperInvariant();
+        DateOfBirth = dateOfBirth;
+        Relation = relation?.Trim();
+    }
+
+    /// <summary>Parent application.</summary>
+    public Guid ApplicationId { get; private set; }
+
+    /// <summary>Applicant full name.</summary>
+    public string FullName { get; private set; } = string.Empty;
+
+    /// <summary>Passport number.</summary>
+    public string PassportNo { get; private set; } = string.Empty;
+
+    /// <summary>Nationality.</summary>
+    public string Nationality { get; private set; } = string.Empty;
+
+    /// <summary>Date of birth.</summary>
+    public DateOnly? DateOfBirth { get; private set; }
+
+    /// <summary>Relation to the primary applicant.</summary>
+    public string? Relation { get; private set; }
+}
+
+/// <summary>
+/// Additional visa applicant input.
+/// </summary>
+public sealed record VisaApplicantInput(
+    string FullName,
+    string PassportNo,
+    string Nationality,
+    DateOnly? DateOfBirth = null,
+    string? Relation = null);

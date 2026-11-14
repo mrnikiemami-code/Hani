@@ -111,6 +111,8 @@ internal sealed class GetReviewsQueryHandler(
             request.TargetId,
             request.MinRating,
             request.Sort,
+            request.From,
+            request.To,
             skip,
             pageSize,
             cancellationToken);
@@ -118,6 +120,8 @@ internal sealed class GetReviewsQueryHandler(
             request.TargetType,
             request.TargetId,
             request.MinRating,
+            request.From,
+            request.To,
             cancellationToken);
 
         var authors = new Dictionary<Guid, User>();

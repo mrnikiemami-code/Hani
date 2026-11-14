@@ -20,7 +20,11 @@ public static class DependencyInjection
         services.AddScoped<IPlaceRepository, PlaceRepository>();
         services.AddScoped<IVisaRepository, VisaRepository>();
         services.AddScoped<IFlightRouteRepository, FlightRouteRepository>();
-        services.AddScoped<IFlightProvider, CatalogFlightProvider>();
+        services.AddScoped<IFlightReferenceRepository, FlightReferenceRepository>();
+        services.AddSingleton<HttpClient>();
+        services.AddScoped<CatalogFlightProvider>();
+        services.AddScoped<ExternalFlightProvider>();
+        services.AddScoped<IFlightProvider, CompositeFlightProvider>();
         services.AddScoped<ICatalogReadService, CatalogReadService>();
         return services;
     }

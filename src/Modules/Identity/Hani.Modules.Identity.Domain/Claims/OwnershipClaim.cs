@@ -4,12 +4,14 @@ using Hani.Modules.Identity.Domain.Reviews;
 namespace Hani.Modules.Identity.Domain.Claims;
 
 /// <summary>
-/// Type of ownership or correction request.
+/// Type of ownership, correction, violation, or amendment request.
 /// </summary>
 public enum ClaimType
 {
     Ownership = 0,
-    Correction = 1
+    Correction = 1,
+    Violation = 2,
+    Amendment = 3
 }
 
 /// <summary>

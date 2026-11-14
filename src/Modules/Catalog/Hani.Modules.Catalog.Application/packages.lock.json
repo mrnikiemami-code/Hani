@@ -34,6 +34,9 @@
       "hani.contracts.identity": {
         "type": "Project"
       },
+      "hani.contracts.supply": {
+        "type": "Project"
+      },
       "hani.modules.catalog.domain": {
         "type": "Project",
         "dependencies": {

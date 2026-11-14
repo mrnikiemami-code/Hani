@@ -9,7 +9,13 @@ public sealed record SearchFlightsQuery(
     string? Origin = null,
     string? Destination = null,
     DateOnly? DepartureDate = null,
-    string? Cabin = null) : IQuery<IReadOnlyList<FlightRouteDto>>;
+    string? Cabin = null,
+    string? Airline = null,
+    int? MaxStops = null,
+    decimal? MinPrice = null,
+    decimal? MaxPrice = null,
+    TimeOnly? DepartureAfter = null,
+    TimeOnly? DepartureBefore = null) : IQuery<IReadOnlyList<FlightRouteDto>>;
 
 /// <summary>
 /// Query that returns one flight route.

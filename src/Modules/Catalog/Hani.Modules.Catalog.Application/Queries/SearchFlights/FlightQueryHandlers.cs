@@ -19,13 +19,10 @@ internal sealed class SearchFlightsQueryHandler(IFlightProvider provider)
             cancellationToken);
 
         return Result<IReadOnlyList<FlightRouteDto>>.Success(
-            results.Select(route => Map(route, request.DepartureDate, request.Cabin)).ToArray());
+            results.Select(route => Map(route, request)).ToArray());
     }
 
-    private static FlightRouteDto Map(
-        FlightRoute route,
-        DateOnly? departureDate,
-        string? cabin)
+    private static FlightRouteDto Map(FlightRoute route, SearchFlightsQuery request)
         => new(
             route.Id,
             route.Slug,
@@ -34,9 +31,20 @@ internal sealed class SearchFlightsQueryHandler(IFlightProvider provider)
             route.OriginCity,
             route.DestinationCity,
             route.Offers
-                .Where(offer => departureDate is null || offer.DepartureDate == departureDate)
-                .Where(offer => string.IsNullOrWhiteSpace(cabin) ||
-                    string.Equals(offer.Cabin, cabin, StringComparison.OrdinalIgnoreCase))
+                .Where(offer => request.DepartureDate is null ||
+                    offer.DepartureDate == request.DepartureDate)
+                .Where(offer => string.IsNullOrWhiteSpace(request.Cabin) ||
+                    string.Equals(offer.Cabin, request.Cabin, StringComparison.OrdinalIgnoreCase))
+                .Where(offer => string.IsNullOrWhiteSpace(request.Airline) ||
+                    string.Equals(offer.AirlineCode, request.Airline, StringComparison.OrdinalIgnoreCase) ||
+                    offer.AirlineName.Contains(request.Airline, StringComparison.OrdinalIgnoreCase))
+                .Where(offer => request.MaxStops is null || offer.Stops <= request.MaxStops)
+                .Where(offer => request.MinPrice is null || offer.Price >= request.MinPrice)
+                .Where(offer => request.MaxPrice is null || offer.Price <= request.MaxPrice)
+                .Where(offer => request.DepartureAfter is null ||
+                    offer.DepartureTime >= request.DepartureAfter)
+                .Where(offer => request.DepartureBefore is null ||
+                    offer.DepartureTime <= request.DepartureBefore)
                 .OrderBy(offer => offer.Price)
                 .Select(offer => new FlightOfferDto(
                     offer.Id,

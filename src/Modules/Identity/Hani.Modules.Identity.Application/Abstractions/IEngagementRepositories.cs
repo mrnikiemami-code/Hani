@@ -32,17 +32,21 @@ public interface IReviewRepository
         Guid targetId,
         int? minRating,
         string? sort,
+        DateOnly? from,
+        DateOnly? to,
         int skip,
         int take,
         CancellationToken cancellationToken);
 
     /// <summary>
-    /// Counts reviews matching target and minimum rating.
+    /// Counts reviews matching target, minimum rating, and date range.
     /// </summary>
     Task<int> CountAsync(
         ReviewTargetType targetType,
         Guid targetId,
         int? minRating,
+        DateOnly? from,
+        DateOnly? to,
         CancellationToken cancellationToken);
 
     /// <summary>

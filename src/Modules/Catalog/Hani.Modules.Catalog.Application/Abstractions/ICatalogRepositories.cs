@@ -79,6 +79,13 @@ public interface IHotelRepository
     /// Lists hotels that have coordinates.
     /// </summary>
     Task<IReadOnlyList<Hotel>> ListWithCoordinatesAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Lists hotels in one destination for city ranking.
+    /// </summary>
+    Task<IReadOnlyList<Hotel>> ListByDestinationAsync(
+        Guid destinationId,
+        CancellationToken cancellationToken);
 }
 
 /// <summary>
@@ -123,6 +130,14 @@ public interface IPlaceRepository
     /// Counts places matching the filter.
     /// </summary>
     Task<int> CountAsync(PlaceFilter filter, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Lists places in one destination for city ranking.
+    /// </summary>
+    Task<IReadOnlyList<Place>> ListByDestinationAsync(
+        Guid destinationId,
+        PlaceType? type,
+        CancellationToken cancellationToken);
 }
 
 /// <summary>
@@ -139,6 +154,24 @@ public interface IFlightProvider
         DateOnly? departureDate,
         string? cabin,
         CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Persistence abstraction for airline and airport reference data.
+/// </summary>
+public interface IFlightReferenceRepository
+{
+    /// <summary>Adds an airline and saves changes.</summary>
+    Task AddAirlineAsync(Airline airline, CancellationToken cancellationToken);
+
+    /// <summary>Adds an airport and saves changes.</summary>
+    Task AddAirportAsync(Airport airport, CancellationToken cancellationToken);
+
+    /// <summary>Lists active airlines.</summary>
+    Task<IReadOnlyList<Airline>> ListAirlinesAsync(CancellationToken cancellationToken);
+
+    /// <summary>Lists airports.</summary>
+    Task<IReadOnlyList<Airport>> ListAirportsAsync(CancellationToken cancellationToken);
 }
 
 /// <summary>
@@ -200,4 +233,6 @@ public sealed record PlaceFilter(
     string? Amenity = null,
     bool? Reservable = null,
     bool? OnlineReservable = null,
+    string? MealPeriod = null,
+    string? DietaryOption = null,
     string? SearchTerm = null);

@@ -17,7 +17,8 @@ public sealed record CreateVisaApplicationCommand(
     string ContactEmail,
     string ContactPhone,
     string? Notes,
-    IReadOnlyList<string> Documents) : ICommand<VisaApplicationDto>;
+    IReadOnlyList<string> Documents,
+    IReadOnlyList<VisaApplicantInput>? Applicants = null) : ICommand<VisaApplicationDto>;
 
 /// <summary>
 /// Query that returns one visa application.
@@ -58,4 +59,16 @@ public sealed record VisaApplicationDto(
     DateTimeOffset CreatedAt,
     DateTimeOffset? UpdatedAt,
     string? RejectionReason,
-    IReadOnlyList<string> Documents);
+    IReadOnlyList<string> Documents,
+    int PassengerCount = 1,
+    IReadOnlyList<VisaApplicantDto>? Applicants = null);
+
+/// <summary>
+/// Additional applicant read model.
+/// </summary>
+public sealed record VisaApplicantDto(
+    string FullName,
+    string PassportNo,
+    string Nationality,
+    DateOnly? DateOfBirth,
+    string? Relation);

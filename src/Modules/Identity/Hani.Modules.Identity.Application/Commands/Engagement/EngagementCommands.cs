@@ -41,6 +41,8 @@ public sealed record GetReviewsQuery(
     Guid TargetId,
     int? MinRating = null,
     string? Sort = null,
+    DateOnly? From = null,
+    DateOnly? To = null,
     int Page = 1,
     int PageSize = 20) : IQuery<PagedResult<ReviewDto>>;
 

@@ -2,11 +2,11 @@
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
 > **فاز فعال:** Gate 6 — Content & Growth (Ready)
-> **آخرین commit کد:** `1c202bd`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 6 ⏳ Ready
+> **آخرین commit کد:** `1c202bd` + Gate 5.1
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ⏳ Ready
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
-> **گزارش Gate:** [`../reports/baseline-gate-5.md`](../reports/baseline-gate-5.md)
+> **گزارش Gate:** [`../reports/baseline-gate-5-1.md`](../reports/baseline-gate-5-1.md)
 > **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **برنامه Remediation:** [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -109,6 +109,9 @@
 | Geo | `/geo/nearby` یکپارچه + Haversine برای هتل/مکان | Gate 5 |
 | Vertical SEO | `/seo/{type}/{slug}` + sitemap همه verticalها | Gate 5 |
 | Vertical Reviews | `IReviewSummaryReadService` + rating/reviewCount + sort=rating | Gate 5 |
+| Gate 5.1 Depth | Hotel rooms/board + meal/diet + linked tours + rank/recommendation | Gate 5.1 |
+| Gate 5.1 Flight | Airline/Airport canonical + filters + external provider adapter | Gate 5.1 |
+| Gate 5.1 Visa/SEO | Visa issuance/doc category/applicants + landing SEO/AggregateRating/FAQPage | Gate 5.1 |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -185,9 +188,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۳۱ passed |
+| Unit Tests | ۱۳۳ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۶۵ passed** |
+| Total | **۱۶۷ passed** |
 | Migrations | Supply (۸) / Catalog (۶) / Identity (۵) / Booking (۹) / Payments (۶) / Settlement (۳) |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -223,6 +226,20 @@
 - [x] A-08 — `TourCategory` + `TravelType` + search filters
 
 **شکاف‌های اصلی Gate 6/7:** Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
+
+### Gate 5.1 — Exit Checklist ✅ PASSED
+
+- [x] Restaurant meal periods/dietary options + filters
+- [x] Hotel rooms/board + gallery categories equivalent
+- [x] Hotel → linked tours API
+- [x] Rank in city + recommendation percent
+- [x] Review date range + approved user gallery
+- [x] Airline/Airport canonical + flight filters + external provider adapter
+- [x] Visa issuance type + document categories + multi-applicant
+- [x] Vertical/city landing SEO + AggregateRating/FAQPage + localized labels
+- [x] Violation/Amendment claim types
+- [x] Migrationها + OpenAPI + README + tests
+- [x] `verify.ps1` + `check-baseline.ps1` سبز
 
 ### Gate 5 — Exit Checklist ✅ PASSED
 

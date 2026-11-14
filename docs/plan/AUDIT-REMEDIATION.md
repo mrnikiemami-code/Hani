@@ -117,6 +117,20 @@
 | B-07 | `GetVerticalSeoQueryHandler`, `SeoMetadataBuilder.BuildVerticalJsonLd`, `CatalogReadService.GetVerticalSitemapEntriesAsync`, `20261114052316_AddGate5Verticals` |
 | B-08 | `IReviewSummaryReadService`, `ReviewSummaryReadService.cs`, `HotelSearchQueryHandler`, `SearchPlacesQueryHandler`, `sort=rating` |
 
+### Gate 5.1 — residual evidence
+
+| مورد | Evidence |
+|---|---|
+| Restaurant meal/diet | `Place.cs`, `PlaceConfiguration.cs`, `SearchPlacesQuery.cs`, `20261114060152_AddGate51VerticalDepth` |
+| Hotel rooms | `Hotel.cs`, `HotelConfiguration.cs`, `HotelDto`, `20261114060152_AddGate51VerticalDepth` |
+| Hotel-linked tours | `IHotelOfferReadService`, `OfferReadService.cs`, `GetHotelToursQueryHandler`, `/market/v1/hotels/{slug}/tours` |
+| Rank/recommendation | `ReviewSummary.RecommendedCount`, `HotelDto.RankInCity`, `PlaceDto.RankInCity` |
+| Review date/gallery | `GetReviewsQuery` from/to, `IReviewMediaReadService`, `GetHotelBySlugQueryHandler` |
+| Airline/Airport + filters | `Airline.cs`, `Airport.cs`, `FlightReferenceRepository.cs`, `ExternalFlightProvider`, `/market/v1/flights/references` |
+| Visa depth | `VisaCountry.cs` (`IssuanceType`, document category), `VisaApplication.Applicants`, `20261114060158_AddGate51VisaApplicants` |
+| Landing/JSON-LD labels | `GetVerticalLandingSeoQueryHandler`, `SeoLabels.cs`, `BuildVerticalJsonLd`, appsettings `Seo:Labels` |
+| Violation/Amendment | `ClaimType.cs` enum values |
+
 ## ۹. وضعیت Baseline
 
 - `baseline.json` فعلاً ۳۴ GAP دارد و تغییر نکرده است.

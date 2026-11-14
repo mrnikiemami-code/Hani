@@ -150,6 +150,8 @@ public static class EngagementEndpoints
         Guid targetId,
         int? minRating,
         string? sort,
+        DateOnly? from,
+        DateOnly? to,
         int page,
         int pageSize,
         HttpContext context,
@@ -162,6 +164,8 @@ public static class EngagementEndpoints
                 targetId,
                 minRating,
                 sort,
+                from,
+                to,
                 page == 0 ? 1 : page,
                 pageSize == 0 ? 20 : pageSize),
             cancellationToken);

@@ -127,6 +127,14 @@
 | D-110 | Flight metasearch | FlightRoute/Offer + IFlightProvider + deep link (ADR-0027) | Gate 5 |
 | D-111 | Geo + Vertical SEO | `/geo/nearby` + `/seo/{type}/{slug}` + full vertical sitemap | Gate 5 |
 | D-112 | Vertical review aggregation | `IReviewSummaryReadService` + averageRating/reviewCount + `sort=rating` | Gate 5 |
+| D-113 | Restaurant meal/diet | PlaceMealPeriod/PlaceDietaryOption + filters | Gate 5.1 |
+| D-114 | Hotel rooms/board | HotelRoom + room pricing/occupancy in HotelDto | Gate 5.1 |
+| D-115 | Hotel linked tours | IHotelOfferReadService + `/hotels/{slug}/tours` | Gate 5.1 |
+| D-116 | Rank/recommendation | RankInCity + recommendationPercent | Gate 5.1 |
+| D-117 | Review date/gallery | from/to filter + approved user photos | Gate 5.1 |
+| D-118 | Flight depth | Airline/Airport + filters + external provider adapter | Gate 5.1 |
+| D-119 | Visa depth | issuance type, document category, multi-applicant | Gate 5.1 |
+| D-120 | Landing SEO/JSON-LD | vertical landing + AggregateRating/FAQPage + labels | Gate 5.1 |
 
 ## ۳. مستندات
 
@@ -146,9 +154,9 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | 131 passed |
+| Unit Tests | 133 passed |
 | Architecture Tests | 34 passed |
-| Total | **165 passed** |
+| Total | **167 passed** |
 | Migrations | Supply (8) + Catalog (6) + Identity (5) + Booking (9) + Payments (6) + Settlement (3) |
 | Format | clean |
 | Vulnerable Packages | none |
@@ -202,4 +210,5 @@
 | `f91e461` | Booking modes, reservation/lead, installments, offline payment |
 | `7083b45` | Audit remediation A-01..A-08 (CollectionMode v2, installments, reviews, hotel/place, taxonomy) |
 | `1c202bd` | Gate 5 verticals, geo, vertical SEO, review aggregation |
+| `pending` | Gate 5.1 vertical depth and parity residuals |
 | `7df2265` | Phase roadmap + status + tasks |

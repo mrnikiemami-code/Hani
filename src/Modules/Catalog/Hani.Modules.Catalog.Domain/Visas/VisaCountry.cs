@@ -85,6 +85,7 @@ public sealed class VisaCountry : AggregateRoot<Guid>
             Id,
             input.Code,
             input.EntryType,
+            input.IssuanceType,
             input.ProcessingDaysMin,
             input.ProcessingDaysMax,
             input.ValidityDays,
@@ -94,7 +95,7 @@ public sealed class VisaCountry : AggregateRoot<Guid>
 
         foreach (var document in input.Documents)
         {
-            type.AddDocument(ids, document);
+            type.AddDocument(ids, document.Name, document.Category);
         }
 
         foreach (var step in input.Steps)
@@ -161,6 +162,7 @@ public sealed class VisaType : Entity<Guid>
         Guid countryId,
         string code,
         string entryType,
+        string issuanceType,
         int processingDaysMin,
         int processingDaysMax,
         int validityDays,
@@ -171,6 +173,7 @@ public sealed class VisaType : Entity<Guid>
         CountryId = countryId;
         Code = code.Trim();
         EntryType = entryType.Trim();
+        IssuanceType = issuanceType.Trim();
         ProcessingDaysMin = processingDaysMin;
         ProcessingDaysMax = processingDaysMax;
         ValidityDays = validityDays;
@@ -187,6 +190,9 @@ public sealed class VisaType : Entity<Guid>
 
     /// <summary>Entry type such as Single or Multiple.</summary>
     public string EntryType { get; private set; } = string.Empty;
+
+    /// <summary>Issuance type such as E_Visa, Label, or OnArrival.</summary>
+    public string IssuanceType { get; private set; } = string.Empty;
 
     /// <summary>Minimum processing days.</summary>
     public int ProcessingDaysMin { get; private set; }
@@ -215,8 +221,8 @@ public sealed class VisaType : Entity<Guid>
     /// <summary>Frequently asked questions.</summary>
     public IReadOnlyCollection<VisaFaq> Faqs => _faqs;
 
-    internal void AddDocument(IIdGenerator ids, string name) =>
-        _documents.Add(new VisaDocument(ids.NewId(), Id, name));
+    internal void AddDocument(IIdGenerator ids, string name, string category) =>
+        _documents.Add(new VisaDocument(ids.NewId(), Id, name, category));
 
     internal void AddStep(IIdGenerator ids, string description) =>
         _steps.Add(new VisaStep(ids.NewId(), Id, _steps.Count + 1, description));
@@ -232,10 +238,11 @@ public sealed class VisaDocument : Entity<Guid>
     {
     }
 
-    internal VisaDocument(Guid id, Guid visaTypeId, string name) : base(id)
+    internal VisaDocument(Guid id, Guid visaTypeId, string name, string category) : base(id)
     {
         VisaTypeId = visaTypeId;
         Name = name.Trim();
+        Category = category.Trim();
     }
 
     /// <summary>Parent visa type.</summary>
@@ -243,6 +250,9 @@ public sealed class VisaDocument : Entity<Guid>
 
     /// <summary>Document name.</summary>
     public string Name { get; private set; } = string.Empty;
+
+    /// <summary>Document category such as Identity, Job, or Financial.</summary>
+    public string Category { get; private set; } = string.Empty;
 }
 
 /// <summary>One visa application step.</summary>
@@ -297,15 +307,19 @@ public sealed class VisaFaq : Entity<Guid>
 public sealed record VisaTypeInput(
     string Code,
     string EntryType,
+    string IssuanceType,
     int ProcessingDaysMin,
     int ProcessingDaysMax,
     int ValidityDays,
     decimal PriceAdult,
     decimal? PriceChild,
     string Currency,
-    IReadOnlyList<string> Documents,
+    IReadOnlyList<VisaDocumentInput> Documents,
     IReadOnlyList<string> Steps,
     IReadOnlyList<VisaFaqInput> Faqs);
+
+/// <summary>Visa required-document input.</summary>
+public sealed record VisaDocumentInput(string Name, string Category);
 
 /// <summary>Visa FAQ input.</summary>
 public sealed record VisaFaqInput(string Question, string Answer);

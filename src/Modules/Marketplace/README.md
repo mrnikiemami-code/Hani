@@ -30,7 +30,8 @@ Marketplace.Application
 | GET | `/market/v1/seo/robots.txt` | robots policy |
 | GET | `/market/v1/hotels` | جستجو/فیلتر هتل |
 | GET | `/market/v1/hotels/nearby` | هتل‌های نزدیک با Haversine |
-| GET | `/market/v1/hotels/{slug}` | پروفایل canonical هتل + گالری + امتیاز |
+| GET | `/market/v1/hotels/{slug}` | پروفایل canonical هتل + گالری + اتاق + امتیاز |
+| GET | `/market/v1/hotels/{slug}/tours` | تورهای مرتبط با هتل |
 | GET | `/market/v1/places/nearby` | مکان‌های نزدیک با Haversine |
 | GET | `/market/v1/restaurants` | جستجوی رستوران |
 | GET | `/market/v1/restaurants/{slug}` | رستوران + منو + امتیاز |
@@ -40,8 +41,10 @@ Marketplace.Application
 | GET | `/market/v1/visas` | لیست کشورهای ویزا |
 | GET | `/market/v1/visas/{slug}` | جزئیات ویزا، قیمت، مدارک و FAQ |
 | GET | `/market/v1/flights/search` | متاسرچ پرواز |
+| GET | `/market/v1/flights/references` | ایرلاین/فرودگاه canonical |
 | GET | `/market/v1/flights/routes/{slug}` | جزئیات مسیر پرواز و پیشنهادها |
 | GET | `/market/v1/seo/{type}/{slug}` | SEO عمودی + JSON-LD |
+| GET | `/market/v1/seo/{type}/landing` | SEO landing عمودی/شهری + CollectionPage |
 | GET | `/market/v1/seo/sitemap.xml` | sitemap شامل تور/هتل/رستوران/جاذبه/ویزا/پرواز |
 
 ## قواعد

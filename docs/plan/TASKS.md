@@ -31,7 +31,7 @@
 
 > Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
-> **Gate 5 PASSED است.** Audit Remediation A-01..A-08 و B-01..B-08 در [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md) کامل شد. Gate 6 آماده شروع است.
+> **Gate 5 و Gate 5.1 PASSED هستند.** Audit Remediation A-01..A-08 و B-01..B-08 کامل شد؛ Gate 5.1 residualهای صفحه‌به‌صفحه Lastsecond را بست. Gate 6 آماده شروع است.
 
 ## Phase 0 — Foundation ✅
 

@@ -8,6 +8,7 @@ namespace Hani.Modules.Catalog.Application.Queries.GetGeoNearby;
 internal sealed class GetGeoNearbyQueryHandler(
     IHotelRepository hotels,
     IPlaceRepository places,
+    IFlightReferenceRepository flightReferences,
     ILanguageCatalog languages)
     : IQueryHandler<GetGeoNearbyQuery, IReadOnlyList<GeoNearbyItemDto>>
 {
@@ -68,6 +69,25 @@ internal sealed class GetGeoNearbyQueryHandler(
                         (double)request.Longitude,
                         (double)place.Latitude,
                         (double)place.Longitude))));
+        }
+
+        if (normalizedType is null or "airport")
+        {
+            var airportItems = await flightReferences.ListAirportsAsync(cancellationToken);
+            results.AddRange(airportItems
+                .Where(airport => airport.Latitude is not null && airport.Longitude is not null)
+                .Select(airport => new GeoNearbyItemDto(
+                    "Airport",
+                    airport.Id,
+                    airport.Iata.ToLowerInvariant(),
+                    $"{airport.Name} ({airport.Iata})",
+                    airport.Latitude!.Value,
+                    airport.Longitude!.Value,
+                    Distance(
+                        (double)request.Latitude,
+                        (double)request.Longitude,
+                        (double)airport.Latitude,
+                        (double)airport.Longitude))));
         }
 
         return Result<IReadOnlyList<GeoNearbyItemDto>>.Success(

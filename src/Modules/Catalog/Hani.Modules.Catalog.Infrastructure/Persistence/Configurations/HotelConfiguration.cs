@@ -68,5 +68,26 @@ internal sealed class HotelConfiguration : IEntityTypeConfiguration<Hotel>
                 .HasDatabaseName("ix_hotel_images_hotel_sort");
             images.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
+
+        builder.OwnsMany(hotel => hotel.Rooms, rooms =>
+        {
+            rooms.ToTable("hotel_rooms");
+            rooms.WithOwner().HasForeignKey(item => item.HotelId);
+            rooms.HasKey(item => item.Id);
+            rooms.Property(item => item.Id).HasColumnName("id").ValueGeneratedNever();
+            rooms.Property(item => item.HotelId).HasColumnName("hotel_id");
+            rooms.Property(item => item.Name).HasColumnName("name").HasMaxLength(200).IsRequired();
+            rooms.Property(item => item.RoomType).HasColumnName("room_type").HasMaxLength(80).IsRequired();
+            rooms.Property(item => item.MealPlan).HasColumnName("meal_plan").HasMaxLength(40).IsRequired();
+            rooms.Property(item => item.Adults).HasColumnName("adults").IsRequired();
+            rooms.Property(item => item.Children).HasColumnName("children").IsRequired();
+            rooms.Property(item => item.Price).HasColumnName("price").HasPrecision(18, 2).IsRequired();
+            rooms.Property(item => item.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+            rooms.Property(item => item.Description).HasColumnName("description").HasColumnType("text");
+            rooms.Property(item => item.SortOrder).HasColumnName("sort_order").IsRequired();
+            rooms.HasIndex(item => new { item.HotelId, item.SortOrder })
+                .HasDatabaseName("ix_hotel_rooms_hotel_sort");
+            rooms.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
     }
 }

@@ -41,6 +41,7 @@ internal sealed class VisaCountryConfiguration : IEntityTypeConfiguration<VisaCo
             types.Property(type => type.CountryId).HasColumnName("country_id");
             types.Property(type => type.Code).HasColumnName("code").HasMaxLength(40).IsRequired();
             types.Property(type => type.EntryType).HasColumnName("entry_type").HasMaxLength(40).IsRequired();
+            types.Property(type => type.IssuanceType).HasColumnName("issuance_type").HasMaxLength(40).IsRequired();
             types.Property(type => type.ProcessingDaysMin).HasColumnName("processing_days_min").IsRequired();
             types.Property(type => type.ProcessingDaysMax).HasColumnName("processing_days_max").IsRequired();
             types.Property(type => type.ValidityDays).HasColumnName("validity_days").IsRequired();
@@ -60,6 +61,7 @@ internal sealed class VisaCountryConfiguration : IEntityTypeConfiguration<VisaCo
                 documents.Property(item => item.Id).HasColumnName("id").ValueGeneratedNever();
                 documents.Property(item => item.VisaTypeId).HasColumnName("visa_type_id");
                 documents.Property(item => item.Name).HasColumnName("name").HasMaxLength(300).IsRequired();
+                documents.Property(item => item.Category).HasColumnName("category").HasMaxLength(80).IsRequired();
                 documents.UsePropertyAccessMode(PropertyAccessMode.Field);
             });
 

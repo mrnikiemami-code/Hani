@@ -521,6 +521,7 @@
           "FluentValidation": "[12.2.0, )",
           "Hani.BuildingBlocks.Application": "[1.0.0, )",
           "Hani.Contracts.Identity": "[1.0.0, )",
+          "Hani.Contracts.Supply": "[1.0.0, )",
           "Hani.Modules.Catalog.Domain": "[1.0.0, )"
         }
       },

@@ -24,7 +24,9 @@ internal sealed class CreateFlightRouteCommandHandler(
                 request.OriginCity,
                 request.DestinationCity,
                 request.IsActive,
-                request.Offers);
+                request.Offers,
+                request.OriginAirportId,
+                request.DestinationAirportId);
             await routes.AddAsync(route, cancellationToken);
             return Result<Guid>.Success(route.Id);
         }

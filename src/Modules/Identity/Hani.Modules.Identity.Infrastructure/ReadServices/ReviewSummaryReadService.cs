@@ -31,7 +31,8 @@ internal sealed class ReviewSummaryReadService(IdentityDbContext dbContext)
             {
                 TargetId = group.Key,
                 AverageRating = group.Average(review => (decimal)review.Rating),
-                ReviewCount = group.Count()
+                ReviewCount = group.Count(),
+                RecommendedCount = group.Count(review => review.Rating >= 4)
             })
             .ToArrayAsync(cancellationToken);
 
@@ -40,6 +41,7 @@ internal sealed class ReviewSummaryReadService(IdentityDbContext dbContext)
             item => new ReviewSummary(
                 item.TargetId,
                 Math.Round(item.AverageRating, 2),
-                item.ReviewCount));
+                item.ReviewCount,
+                item.RecommendedCount));
     }
 }

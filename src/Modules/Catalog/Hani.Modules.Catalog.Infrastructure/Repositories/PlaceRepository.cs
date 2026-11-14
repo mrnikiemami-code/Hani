@@ -23,6 +23,8 @@ internal sealed class PlaceRepository(CatalogDbContext dbContext) : IPlaceReposi
             .Include(place => place.Translations)
             .Include(place => place.Amenities)
             .Include(place => place.MenuItems)
+            .Include(place => place.MealPeriods)
+            .Include(place => place.DietaryOptions)
             .FirstOrDefaultAsync(place => place.Slug == normalizedSlug, cancellationToken);
     }
 
@@ -36,6 +38,8 @@ internal sealed class PlaceRepository(CatalogDbContext dbContext) : IPlaceReposi
             .Include(place => place.Translations)
             .Include(place => place.Amenities)
             .Include(place => place.MenuItems)
+            .Include(place => place.MealPeriods)
+            .Include(place => place.DietaryOptions)
             .AsQueryable();
 
         if (type is not null)
@@ -60,6 +64,23 @@ internal sealed class PlaceRepository(CatalogDbContext dbContext) : IPlaceReposi
 
     public Task<int> CountAsync(PlaceFilter filter, CancellationToken cancellationToken)
         => ApplyFilter(filter).CountAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<Place>> ListByDestinationAsync(
+        Guid destinationId,
+        PlaceType? type,
+        CancellationToken cancellationToken)
+    {
+        var query = dbContext.Places
+            .AsNoTracking()
+            .Where(place => place.DestinationId == destinationId);
+
+        if (type is not null)
+        {
+            query = query.Where(place => place.Type == type);
+        }
+
+        return await query.ToArrayAsync(cancellationToken);
+    }
 
     private IQueryable<Place> ApplyFilter(PlaceFilter filter)
     {
@@ -117,6 +138,18 @@ internal sealed class PlaceRepository(CatalogDbContext dbContext) : IPlaceReposi
         if (filter.OnlineReservable is { } onlineReservable)
         {
             query = query.Where(place => place.OnlineReservable == onlineReservable);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.MealPeriod))
+        {
+            var mealPeriod = filter.MealPeriod.Trim();
+            query = query.Where(place => place.MealPeriods.Any(item => item.Name == mealPeriod));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.DietaryOption))
+        {
+            var dietaryOption = filter.DietaryOption.Trim();
+            query = query.Where(place => place.DietaryOptions.Any(item => item.Name == dietaryOption));
         }
 
         if (!string.IsNullOrWhiteSpace(filter.SearchTerm))

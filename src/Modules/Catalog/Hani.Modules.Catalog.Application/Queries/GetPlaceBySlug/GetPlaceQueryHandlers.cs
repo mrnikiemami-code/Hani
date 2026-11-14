@@ -8,7 +8,8 @@ namespace Hani.Modules.Catalog.Application.Queries.GetPlaceBySlug;
 
 internal sealed class GetPlaceBySlugQueryHandler(
     IPlaceRepository places,
-    IReviewSummaryReadService reviewSummaries)
+    IReviewSummaryReadService reviewSummaries,
+    IReviewMediaReadService reviewMedia)
     : IQueryHandler<GetPlaceBySlugQuery, PlaceDto>
 {
     public async Task<Result<PlaceDto>> Handle(
@@ -28,8 +29,32 @@ internal sealed class GetPlaceBySlugQueryHandler(
             [place.Id],
             cancellationToken);
         summaries.TryGetValue(place.Id, out var summary);
+        var media = await reviewMedia.GetPhotoUrlsAsync(
+            place.Type.ToString(),
+            [place.Id],
+            cancellationToken);
+        var cityPlaces = await places.ListByDestinationAsync(
+            place.DestinationId,
+            place.Type,
+            cancellationToken);
+        var citySummaries = await reviewSummaries.GetSummariesAsync(
+            place.Type.ToString(),
+            cityPlaces.Select(item => item.Id).ToArray(),
+            cancellationToken);
+        var rank = cityPlaces
+            .OrderByDescending(item => citySummaries.TryGetValue(item.Id, out var value)
+                ? value.AverageRating
+                : 0m)
+            .ThenBy(item => item.Slug)
+            .Select((item, index) => new { item.Id, Rank = index + 1 })
+            .First(item => item.Id == place.Id)
+            .Rank;
 
-        return Result<PlaceDto>.Success(PlaceMappings.ToDto(place, summary));
+        return Result<PlaceDto>.Success(PlaceMappings.ToDto(
+            place,
+            summary,
+            rank,
+            media.Select(item => item.Url).ToArray()));
     }
 }
 
@@ -93,7 +118,11 @@ internal sealed class GetNearbyPlacesQueryHandler(
 
 internal static class PlaceMappings
 {
-    public static PlaceDto ToDto(Place place, ReviewSummary? summary = null)
+    public static PlaceDto ToDto(
+        Place place,
+        ReviewSummary? summary = null,
+        int? rank = null,
+        IReadOnlyList<string>? userPhotos = null)
         => new(
             place.Id,
             place.Slug,
@@ -121,6 +150,13 @@ internal static class PlaceMappings
                     item.Currency,
                     item.SortOrder))
                 .ToArray(),
+            place.MealPeriods.Select(item => item.Name).ToArray(),
+            place.DietaryOptions.Select(item => item.Name).ToArray(),
             summary?.AverageRating,
-            summary?.ReviewCount ?? 0);
+            summary?.ReviewCount ?? 0,
+            summary is null || summary.ReviewCount == 0
+                ? null
+                : Math.Round(summary.RecommendedCount * 100m / summary.ReviewCount, 1),
+            rank,
+            userPhotos ?? []);
 }

@@ -82,9 +82,9 @@ Migration drift صفر است.
 ## ۵. تست و Smoke
 
 - `dotnet build Hani.slnx`: ۰ warning / ۰ error
-- Unit tests: **۱۳۱ passed**
+- Unit tests: **۱۳۳ passed**
 - Architecture tests: **۳۴ passed**
-- Total: **۱۶۵ passed**
+- Total: **۱۶۷ passed**
 
 Smoke واقعی روی API:
 
@@ -119,6 +119,22 @@ Smoke واقعی روی API:
 - Blog/Travelogue/Video/Growth → Gate 6.
 - Full load/SLO test → D-08.
 
-## ۸. نتیجه
+## ۸. Gate 5.1 — رفع residualها
 
-گیت ۵ با هفت GAP پایه و هشت اقدام B کامل شد. هیچ P0 باز از Gate 1..5 باقی نمانده است. Gate 6 (Content & Growth) آماده شروع است.
+پس از مقایسه دقیق‌تر با گزارش جامع Lastsecond، Gate 5.1 اجرا شد و این موارد بسته شدند:
+
+- Restaurant meal periods + dietary options و فیلترها
+- Hotel rooms/board + گالری اتاق
+- Hotel → linked tours API
+- Rank in city + recommendation percent
+- Review date-range + approved user photos
+- Airline/Airport canonical + flight filters + external provider adapter
+- Visa issuance type + document categories + multi-applicant
+- Vertical/city landing SEO + localized labels + AggregateRating/FAQPage
+- Violation/Amendment claim types
+
+شاهد: `docs/reports/baseline-gate-5-1.md` و migrationهای `AddGate51VerticalDepth` / `AddGate51VisaApplicants`.
+
+## ۹. نتیجه
+
+گیت ۵ با هفت GAP پایه و هشت اقدام B کامل شد. Gate 5.1 نیز residualهای مقایسه صفحه‌به‌صفحه را بست. هیچ P0 باز از Gate 1..5 باقی نمانده است. Gate 6 (Content & Growth) آماده شروع است.

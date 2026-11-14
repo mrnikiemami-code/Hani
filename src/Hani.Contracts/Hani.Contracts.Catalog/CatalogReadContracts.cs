@@ -83,7 +83,16 @@ public sealed record CatalogVerticalSnapshot(
     string Slug,
     IReadOnlyDictionary<string, string> Names,
     IReadOnlyDictionary<string, string> Descriptions,
-    DateTimeOffset UpdatedAt);
+    DateTimeOffset UpdatedAt,
+    Guid EntityId = default,
+    decimal? AverageRating = null,
+    int ReviewCount = 0,
+    IReadOnlyList<CatalogFaq>? Faqs = null);
+
+/// <summary>
+/// FAQ pair used in FAQPage structured data.
+/// </summary>
+public sealed record CatalogFaq(string Question, string Answer);
 
 /// <summary>
 /// Read-side contract exposed by the Catalog module.
@@ -139,5 +148,13 @@ public interface ICatalogReadService
     Task<CatalogVerticalSnapshot?> GetVerticalBySlugAsync(
         string type,
         string slug,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Counts public vertical entries for a landing page.
+    /// </summary>
+    Task<int> CountVerticalsAsync(
+        string type,
+        string? destinationSlug,
         CancellationToken cancellationToken);
 }

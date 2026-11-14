@@ -65,6 +65,103 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.ToTable("destinations", "catalog");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Flights.Airline", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Iata")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)")
+                        .HasColumnName("iata");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Iata")
+                        .IsUnique()
+                        .HasDatabaseName("ux_airlines_iata");
+
+                    b.ToTable("airlines", "catalog");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Flights.Airport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("city");
+
+                    b.Property<string>("CountryCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("country_code");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("DestinationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("destination_id");
+
+                    b.Property<string>("Iata")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("iata");
+
+                    b.Property<decimal?>("Latitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("numeric(9,6)")
+                        .HasColumnName("latitude");
+
+                    b.Property<decimal?>("Longitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("numeric(9,6)")
+                        .HasColumnName("longitude");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DestinationId")
+                        .HasDatabaseName("ix_airports_destination_id");
+
+                    b.HasIndex("Iata")
+                        .IsUnique()
+                        .HasDatabaseName("ux_airports_iata");
+
+                    b.ToTable("airports", "catalog");
+                });
+
             modelBuilder.Entity("Hani.Modules.Catalog.Domain.Flights.FlightRoute", b =>
                 {
                     b.Property<Guid>("Id")
@@ -75,6 +172,10 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
+
+                    b.Property<Guid?>("DestinationAirportId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("destination_airport_id");
 
                     b.Property<string>("DestinationCity")
                         .IsRequired()
@@ -91,6 +192,10 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
+
+                    b.Property<Guid?>("OriginAirportId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("origin_airport_id");
 
                     b.Property<string>("OriginCity")
                         .IsRequired()
@@ -431,6 +536,10 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("character varying(3)")
                                 .HasColumnName("airline_code");
 
+                            b1.Property<Guid?>("AirlineId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("airline_id");
+
                             b1.Property<string>("AirlineName")
                                 .IsRequired()
                                 .HasMaxLength(120)
@@ -588,6 +697,72 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("HotelId");
                         });
 
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Hotels.HotelRoom", "Rooms", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<int>("Adults")
+                                .HasColumnType("integer")
+                                .HasColumnName("adults");
+
+                            b1.Property<int>("Children")
+                                .HasColumnType("integer")
+                                .HasColumnName("children");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("currency");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("text")
+                                .HasColumnName("description");
+
+                            b1.Property<Guid>("HotelId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("hotel_id");
+
+                            b1.Property<string>("MealPlan")
+                                .IsRequired()
+                                .HasMaxLength(40)
+                                .HasColumnType("character varying(40)")
+                                .HasColumnName("meal_plan");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("name");
+
+                            b1.Property<decimal>("Price")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("price");
+
+                            b1.Property<string>("RoomType")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("character varying(80)")
+                                .HasColumnName("room_type");
+
+                            b1.Property<int>("SortOrder")
+                                .HasColumnType("integer")
+                                .HasColumnName("sort_order");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("HotelId", "SortOrder")
+                                .HasDatabaseName("ix_hotel_rooms_hotel_sort");
+
+                            b1.ToTable("hotel_rooms", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("HotelId");
+                        });
+
                     b.OwnsMany("Hani.Modules.Catalog.Domain.Hotels.HotelTranslation", "Translations", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -630,6 +805,8 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
 
                     b.Navigation("Images");
 
+                    b.Navigation("Rooms");
+
                     b.Navigation("Translations");
                 });
 
@@ -658,6 +835,62 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasDatabaseName("ux_place_amenities_place_name");
 
                             b1.ToTable("place_amenities", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlaceId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Places.PlaceDietaryOption", "DietaryOptions", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("character varying(80)")
+                                .HasColumnName("name");
+
+                            b1.Property<Guid>("PlaceId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("place_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("PlaceId", "Name")
+                                .IsUnique()
+                                .HasDatabaseName("ux_place_dietary_options_place_name");
+
+                            b1.ToTable("place_dietary_options", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlaceId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Places.PlaceMealPeriod", "MealPeriods", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("character varying(80)")
+                                .HasColumnName("name");
+
+                            b1.Property<Guid>("PlaceId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("place_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("PlaceId", "Name")
+                                .IsUnique()
+                                .HasDatabaseName("ux_place_meal_periods_place_name");
+
+                            b1.ToTable("place_meal_periods", "catalog");
 
                             b1.WithOwner()
                                 .HasForeignKey("PlaceId");
@@ -754,6 +987,10 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         });
 
                     b.Navigation("Amenities");
+
+                    b.Navigation("DietaryOptions");
+
+                    b.Navigation("MealPeriods");
 
                     b.Navigation("MenuItems");
 
@@ -1034,6 +1271,12 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("entry_type");
 
+                            b1.Property<string>("IssuanceType")
+                                .IsRequired()
+                                .HasMaxLength(40)
+                                .HasColumnType("character varying(40)")
+                                .HasColumnName("issuance_type");
+
                             b1.Property<decimal>("PriceAdult")
                                 .HasPrecision(18, 2)
                                 .HasColumnType("numeric(18,2)")
@@ -1072,6 +1315,12 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                     b2.Property<Guid>("Id")
                                         .HasColumnType("uuid")
                                         .HasColumnName("id");
+
+                                    b2.Property<string>("Category")
+                                        .IsRequired()
+                                        .HasMaxLength(80)
+                                        .HasColumnType("character varying(80)")
+                                        .HasColumnName("category");
 
                                     b2.Property<string>("Name")
                                         .IsRequired()

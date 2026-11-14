@@ -107,6 +107,19 @@ public interface IOfferReadService
 }
 
 /// <summary>
+/// Read-side contract for offers linked to a canonical hotel.
+/// </summary>
+public interface IHotelOfferReadService
+{
+    /// <summary>
+    /// Returns approved offers whose accommodation options reference the hotel.
+    /// </summary>
+    Task<IReadOnlyList<OfferSnapshot>> GetApprovedOffersByHotelAsync(
+        Guid hotelId,
+        CancellationToken cancellationToken);
+}
+
+/// <summary>
 /// Tax and duty rule snapshot for a departure currency.
 /// </summary>
 public sealed record DepartureTaxRuleSnapshot(

@@ -20,7 +20,9 @@ public sealed class FlightRoute : AggregateRoot<Guid>
         string destinationCode,
         string originCity,
         string destinationCity,
-        bool isActive) : base(id)
+        bool isActive,
+        Guid? originAirportId,
+        Guid? destinationAirportId) : base(id)
     {
         Slug = slug;
         OriginCode = originCode;
@@ -28,6 +30,8 @@ public sealed class FlightRoute : AggregateRoot<Guid>
         OriginCity = originCity;
         DestinationCity = destinationCity;
         IsActive = isActive;
+        OriginAirportId = originAirportId;
+        DestinationAirportId = destinationAirportId;
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
@@ -49,6 +53,12 @@ public sealed class FlightRoute : AggregateRoot<Guid>
     /// <summary>Whether the route is publicly visible.</summary>
     public bool IsActive { get; private set; }
 
+    /// <summary>Optional canonical origin airport.</summary>
+    public Guid? OriginAirportId { get; private set; }
+
+    /// <summary>Optional canonical destination airport.</summary>
+    public Guid? DestinationAirportId { get; private set; }
+
     /// <summary>Creation time.</summary>
     public DateTimeOffset CreatedAt { get; private set; }
 
@@ -66,7 +76,9 @@ public sealed class FlightRoute : AggregateRoot<Guid>
         string originCity,
         string destinationCity,
         bool isActive,
-        IReadOnlyList<FlightOfferInput> offers)
+        IReadOnlyList<FlightOfferInput> offers,
+        Guid? originAirportId = null,
+        Guid? destinationAirportId = null)
     {
         if (string.IsNullOrWhiteSpace(slug) ||
             string.IsNullOrWhiteSpace(originCode) ||
@@ -93,7 +105,9 @@ public sealed class FlightRoute : AggregateRoot<Guid>
             destinationCode.Trim().ToUpperInvariant(),
             originCity.Trim(),
             destinationCity.Trim(),
-            isActive);
+            isActive,
+            originAirportId,
+            destinationAirportId);
 
         foreach (var offer in offers)
         {
@@ -113,7 +127,8 @@ public sealed class FlightRoute : AggregateRoot<Guid>
                 offer.Price,
                 offer.Currency,
                 offer.Provider,
-                offer.DeepLink));
+                offer.DeepLink,
+                offer.AirlineId));
         }
 
         return route;
@@ -145,7 +160,8 @@ public sealed class FlightOffer : Entity<Guid>
         decimal price,
         string currency,
         string provider,
-        string deepLink) : base(id)
+        string deepLink,
+        Guid? airlineId) : base(id)
     {
         RouteId = routeId;
         FlightNumber = flightNumber.Trim().ToUpperInvariant();
@@ -162,6 +178,7 @@ public sealed class FlightOffer : Entity<Guid>
         Currency = currency.Trim().ToUpperInvariant();
         Provider = provider.Trim();
         DeepLink = deepLink.Trim();
+        AirlineId = airlineId;
     }
 
     /// <summary>Parent route.</summary>
@@ -208,6 +225,9 @@ public sealed class FlightOffer : Entity<Guid>
 
     /// <summary>Provider deep link.</summary>
     public string DeepLink { get; private set; } = string.Empty;
+
+    /// <summary>Optional canonical airline id.</summary>
+    public Guid? AirlineId { get; private set; }
 }
 
 /// <summary>Flight offer input.</summary>
@@ -225,4 +245,5 @@ public sealed record FlightOfferInput(
     decimal Price,
     string Currency,
     string Provider,
-    string DeepLink);
+    string DeepLink,
+    Guid? AirlineId = null);

@@ -30,15 +30,21 @@ public sealed record VisaTypeDto(
     Guid VisaTypeId,
     string Code,
     string EntryType,
+    string IssuanceType,
     int ProcessingDaysMin,
     int ProcessingDaysMax,
     int ValidityDays,
     decimal PriceAdult,
     decimal? PriceChild,
     string Currency,
-    IReadOnlyList<string> Documents,
+    IReadOnlyList<VisaDocumentDto> Documents,
     IReadOnlyList<string> Steps,
     IReadOnlyList<VisaFaqDto> Faqs);
+
+/// <summary>
+/// Visa required-document read model.
+/// </summary>
+public sealed record VisaDocumentDto(string Name, string Category);
 
 /// <summary>
 /// Visa FAQ read model.

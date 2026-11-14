@@ -320,7 +320,15 @@ public static class RequestEndpoints
                 request.ContactEmail,
                 request.ContactPhone,
                 request.Notes,
-                request.Documents),
+                request.Documents,
+                request.Applicants?
+                    .Select(applicant => new VisaApplicantInput(
+                        applicant.FullName,
+                        applicant.PassportNo,
+                        applicant.Nationality,
+                        applicant.DateOfBirth,
+                        applicant.Relation))
+                    .ToArray()),
             cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
@@ -734,7 +742,16 @@ public sealed record CreateVisaApplicationRequest(
     string ContactEmail,
     string ContactPhone,
     string? Notes,
-    IReadOnlyList<string> Documents);
+    IReadOnlyList<string> Documents,
+    IReadOnlyList<VisaApplicantRequest>? Applicants = null);
+
+/// <summary>Additional visa applicant body.</summary>
+public sealed record VisaApplicantRequest(
+    string FullName,
+    string PassportNo,
+    string Nationality,
+    DateOnly? DateOfBirth = null,
+    string? Relation = null);
 
 /// <summary>Visa status update body.</summary>
 public sealed record UpdateVisaApplicationStatusRequest(

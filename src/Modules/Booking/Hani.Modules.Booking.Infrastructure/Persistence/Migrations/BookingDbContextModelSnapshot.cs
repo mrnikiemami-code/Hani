@@ -1358,6 +1358,53 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Hani.Modules.Booking.Domain.VisaApplications.VisaApplication", b =>
                 {
+                    b.OwnsMany("Hani.Modules.Booking.Domain.VisaApplications.VisaApplicant", "Applicants", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("ApplicationId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("application_id");
+
+                            b1.Property<DateOnly?>("DateOfBirth")
+                                .HasColumnType("date")
+                                .HasColumnName("date_of_birth");
+
+                            b1.Property<string>("FullName")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("full_name");
+
+                            b1.Property<string>("Nationality")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("character varying(80)")
+                                .HasColumnName("nationality");
+
+                            b1.Property<string>("PassportNo")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("passport_no");
+
+                            b1.Property<string>("Relation")
+                                .HasMaxLength(80)
+                                .HasColumnType("character varying(80)")
+                                .HasColumnName("relation");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ApplicationId");
+
+                            b1.ToTable("visa_application_applicants", "booking");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ApplicationId");
+                        });
+
                     b.OwnsMany("Hani.Modules.Booking.Domain.VisaApplications.VisaApplicationDocument", "Documents", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -1383,6 +1430,8 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationId");
                         });
+
+                    b.Navigation("Applicants");
 
                     b.Navigation("Documents");
                 });

@@ -19,6 +19,14 @@ public sealed record GetVerticalSeoQuery(string Type, string Slug, string? Local
     : IQuery<VerticalSeoDto>;
 
 /// <summary>
+/// Query that returns SEO metadata for a vertical landing page.
+/// </summary>
+public sealed record GetVerticalLandingSeoQuery(
+    string Type,
+    string? DestinationSlug,
+    string? Locale) : IQuery<VerticalLandingSeoDto>;
+
+/// <summary>
 /// Query that returns the public sitemap XML.
 /// </summary>
 public sealed record GetSitemapQuery : IQuery<string>;
@@ -85,3 +93,20 @@ public sealed record VerticalSeoDto(
     IReadOnlyList<BreadcrumbItemDto> Breadcrumbs,
     string BreadcrumbJsonLd,
     string EntityJsonLd);
+
+/// <summary>
+/// SEO metadata returned for one vertical landing page.
+/// </summary>
+public sealed record VerticalLandingSeoDto(
+    string Type,
+    string? DestinationSlug,
+    string Locale,
+    string CanonicalUrl,
+    string Title,
+    string Description,
+    int ItemCount,
+    string Robots,
+    IReadOnlyList<AlternateUrlDto> Alternates,
+    IReadOnlyList<BreadcrumbItemDto> Breadcrumbs,
+    string BreadcrumbJsonLd,
+    string CollectionJsonLd);

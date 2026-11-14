@@ -117,6 +117,49 @@ public sealed class SeoHandlerTests
     }
 
     [Fact]
+    public async Task Vertical_Landing_Seo_Should_Use_Localized_Labels()
+    {
+        var catalog = new FakeCatalogReadService();
+        catalog.Verticals.Add(new CatalogVerticalSitemapEntry(
+            "hotel",
+            "grand-hotel",
+            DateTimeOffset.UtcNow));
+        catalog.Destinations.Add(new CatalogDestinationSnapshot(
+            Guid.CreateVersion7(),
+            "istanbul",
+            "City",
+            null,
+            new Dictionary<string, string> { ["fa"] = "استانبول", ["en"] = "Istanbul" }));
+
+        var handler = new GetVerticalLandingSeoQueryHandler(
+            catalog,
+            new FakeLanguageCatalog(),
+            Options.Create(new SeoOptions
+            {
+                PublicBaseUrl = "https://hani.test",
+                Labels = new Dictionary<string, Dictionary<string, string>>
+                {
+                    ["en"] = new()
+                    {
+                        ["Home"] = "Home",
+                        ["Hotels"] = "Hotels",
+                        ["VerticalTitle"] = "{0} {1}",
+                        ["VerticalDescription"] = "Browse {1} {0} on Hani."
+                    }
+                }
+            }));
+
+        var result = await handler.Handle(
+            new GetVerticalLandingSeoQuery("hotel", "istanbul", "en"),
+            CancellationToken.None);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.CanonicalUrl.ShouldBe("https://hani.test/en/hotels/istanbul");
+        result.Value.Title.ShouldContain("Hotels");
+        result.Value.CollectionJsonLd.ShouldContain("CollectionPage");
+    }
+
+    [Fact]
     public async Task Vertical_Seo_Should_Build_Hotel_JsonLd_And_Breadcrumbs()
     {
         var catalog = new FakeCatalogReadService();
@@ -125,7 +168,11 @@ public sealed class SeoHandlerTests
             "grand-hotel",
             new Dictionary<string, string> { ["fa"] = "هتل بزرگ", ["en"] = "Grand Hotel" },
             new Dictionary<string, string> { ["en"] = "Central hotel" },
-            DateTimeOffset.UtcNow);
+            DateTimeOffset.UtcNow,
+            Guid.CreateVersion7(),
+            4.5m,
+            10,
+            [new CatalogFaq("Is parking available?", "Yes.")]);
 
         var handler = new GetVerticalSeoQueryHandler(
             catalog,
@@ -140,6 +187,8 @@ public sealed class SeoHandlerTests
         result.Value!.CanonicalUrl.ShouldBe("https://hani.test/en/hotels/grand-hotel");
         result.Value.Breadcrumbs.Count.ShouldBe(3);
         result.Value.EntityJsonLd.ShouldContain("\"@type\":\"Hotel\"");
+        result.Value.EntityJsonLd.ShouldContain("AggregateRating");
+        result.Value.EntityJsonLd.ShouldContain("FAQPage");
     }
 
     [Fact]

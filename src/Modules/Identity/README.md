@@ -105,7 +105,8 @@ Client → X-Api-Key + X-Api-Secret
 
 - Onboarding آژانس با مدارک License/Website/Contract/Other و وضعیت Pending/Active/Rejected/Suspended.
 - Review با criteria مخصوص هر target (Hotel/Restaurant/Agency/Attraction)، عکس، proof (واچر/قرارداد)، helpful vote، report، moderation و پاسخ مالک.
-- Claim مالکیت/اصلاح اطلاعات با evidence و moderation.
+- Claim مالکیت/اصلاح/تخلف/اصلاحیه با evidence و moderation.
+- Review list فیلتر بازه تاریخ + sort دارد و media سوژه از عکس‌های تأییدشده Review خوانده می‌شود.
 - پروفایل عمومی آژانس شامل مجوز/تاریخ/مدیر/پرسنل/آدرس/فایل مجوز است.
 - MediaAsset با محدودیت ۲۰MB و moderation.
 - `/market/v1/trust` اطلاعات پشتیبانی/Enamad/قوانین را از `Trust` config می‌خواند.

@@ -17,6 +17,8 @@ internal sealed class FlightRouteConfiguration : IEntityTypeConfiguration<Flight
         builder.Property(route => route.OriginCity).HasColumnName("origin_city").HasMaxLength(120).IsRequired();
         builder.Property(route => route.DestinationCity).HasColumnName("destination_city").HasMaxLength(120).IsRequired();
         builder.Property(route => route.IsActive).HasColumnName("is_active").IsRequired();
+        builder.Property(route => route.OriginAirportId).HasColumnName("origin_airport_id");
+        builder.Property(route => route.DestinationAirportId).HasColumnName("destination_airport_id");
         builder.Property(route => route.CreatedAt).HasColumnName("created_at").IsRequired();
 
         builder.HasIndex(route => route.Slug).IsUnique().HasDatabaseName("ux_flight_routes_slug");
@@ -44,6 +46,7 @@ internal sealed class FlightRouteConfiguration : IEntityTypeConfiguration<Flight
             offers.Property(offer => offer.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
             offers.Property(offer => offer.Provider).HasColumnName("provider").HasMaxLength(120).IsRequired();
             offers.Property(offer => offer.DeepLink).HasColumnName("deep_link").HasMaxLength(2000).IsRequired();
+            offers.Property(offer => offer.AirlineId).HasColumnName("airline_id");
             offers.HasIndex(offer => new { offer.RouteId, offer.DepartureDate, offer.Price })
                 .HasDatabaseName("ix_flight_offers_route_date_price");
             offers.UsePropertyAccessMode(PropertyAccessMode.Field);

@@ -37,7 +37,9 @@ public sealed record HotelSummaryDto(
     string Name,
     int AmenityCount,
     decimal? AverageRating = null,
-    int ReviewCount = 0);
+    int ReviewCount = 0,
+    decimal? RecommendationPercent = null,
+    int? RankInCity = null);
 
 /// <summary>
 /// Nearby hotel result with distance in kilometres.

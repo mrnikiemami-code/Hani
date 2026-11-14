@@ -83,8 +83,15 @@ internal sealed class SearchHotelsQueryHandler(
             name,
             hotel.Amenities.Count,
             summary?.AverageRating,
-            summary?.ReviewCount ?? 0);
+            summary?.ReviewCount ?? 0,
+            RecommendedPercent(summary),
+            null);
     }
+
+    private static decimal? RecommendedPercent(ReviewSummary? summary)
+        => summary is null || summary.ReviewCount == 0
+            ? null
+            : Math.Round(summary.RecommendedCount * 100m / summary.ReviewCount, 1);
 }
 
 internal sealed class GetNearbyHotelsQueryHandler(
@@ -150,8 +157,15 @@ internal sealed class GetNearbyHotelsQueryHandler(
             name,
             hotel.Amenities.Count,
             summary?.AverageRating,
-            summary?.ReviewCount ?? 0);
+            summary?.ReviewCount ?? 0,
+            RecommendedPercent(summary),
+            null);
     }
+
+    private static decimal? RecommendedPercent(ReviewSummary? summary)
+        => summary is null || summary.ReviewCount == 0
+            ? null
+            : Math.Round(summary.RecommendedCount * 100m / summary.ReviewCount, 1);
 
     private static double CalculateDistanceKm(double lat1, double lon1, double lat2, double lon2)
     {

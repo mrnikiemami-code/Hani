@@ -82,6 +82,13 @@ internal sealed class FakeCatalogReadService : ICatalogReadService
         CancellationToken cancellationToken)
         => Task.FromResult(
             VerticalDetails.TryGetValue($"{type}:{slug}", out var vertical) ? vertical : null);
+
+    public Task<int> CountVerticalsAsync(
+        string type,
+        string? destinationSlug,
+        CancellationToken cancellationToken)
+        => Task.FromResult(Verticals.Count(vertical =>
+            string.Equals(vertical.Type, type, StringComparison.OrdinalIgnoreCase)));
 }
 
 internal sealed class FakeOfferReadService : IOfferReadService

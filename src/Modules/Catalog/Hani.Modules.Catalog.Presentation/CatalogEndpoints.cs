@@ -1,6 +1,7 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Catalog.Application.Commands.CreateDestination;
+using Hani.Modules.Catalog.Application.Commands.CreateFlightReference;
 using Hani.Modules.Catalog.Application.Commands.CreateFlightRoute;
 using Hani.Modules.Catalog.Application.Commands.CreateHotel;
 using Hani.Modules.Catalog.Application.Commands.CreatePlace;
@@ -9,6 +10,7 @@ using Hani.Modules.Catalog.Application.Commands.CreateVisaCountry;
 using Hani.Modules.Catalog.Application.Commands.PublishTourProduct;
 using Hani.Modules.Catalog.Application.Queries.GetGeoNearby;
 using Hani.Modules.Catalog.Application.Queries.GetHotelBySlug;
+using Hani.Modules.Catalog.Application.Queries.GetHotelTours;
 using Hani.Modules.Catalog.Application.Queries.GetPlaceBySlug;
 using Hani.Modules.Catalog.Application.Queries.GetTourProductById;
 using Hani.Modules.Catalog.Application.Queries.GetVisaCountry;
@@ -107,6 +109,18 @@ public static class CatalogEndpoints
             .Produces<Guid>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest);
 
+        internalFlights.MapPost("/airlines", CreateAirlineAsync)
+            .WithName("Internal.CreateAirline")
+            .Produces<Guid>(StatusCodes.Status201Created);
+
+        internalFlights.MapPost("/airports", CreateAirportAsync)
+            .WithName("Internal.CreateAirport")
+            .Produces<Guid>(StatusCodes.Status201Created);
+
+        marketFlights.MapGet("/references", ListFlightReferencesAsync)
+            .WithName("Marketplace.ListFlightReferences")
+            .Produces<FlightReferenceDto>();
+
         marketFlights.MapGet("/search", SearchFlightsAsync)
             .WithName("Marketplace.SearchFlights")
             .Produces<IReadOnlyList<FlightRouteDto>>();
@@ -128,6 +142,11 @@ public static class CatalogEndpoints
         marketHotels.MapGet("/nearby", GetNearbyHotelsAsync)
             .WithName("Marketplace.GetNearbyHotels")
             .Produces<IReadOnlyList<NearbyHotelDto>>();
+
+        marketHotels.MapGet("/{slug}/tours", GetHotelToursAsync)
+            .WithName("Marketplace.GetHotelTours")
+            .Produces<IReadOnlyList<HotelTourOfferDto>>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         marketHotels.MapGet("/{slug}", GetHotelAsync)
             .WithName("Marketplace.GetHotel")
@@ -177,6 +196,19 @@ public static class CatalogEndpoints
                 request.PageSize,
                 request.SortBy),
             cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns approved tours linked to a canonical hotel.
+    /// </summary>
+    private static async Task<IResult> GetHotelToursAsync(
+        string slug,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetHotelToursQuery(slug), cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
@@ -235,12 +267,67 @@ public static class CatalogEndpoints
                         item.Currency,
                         item.Description,
                         item.SortOrder))
-                    .ToArray() ?? []),
+                    .ToArray() ?? [],
+                request.MealPeriods ?? [],
+                request.DietaryOptions ?? []),
             cancellationToken);
 
         return result.IsSuccess
             ? Results.Created($"/market/v1/places/{request.Slug}", result.Value)
             : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Creates a canonical airline.
+    /// </summary>
+    private static async Task<IResult> CreateAirlineAsync(
+        CreateAirlineRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateAirlineCommand(request.Iata, request.Name),
+            cancellationToken);
+        return result.IsSuccess
+            ? Results.Created("/market/v1/flights/references", result.Value)
+            : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Creates a canonical airport.
+    /// </summary>
+    private static async Task<IResult> CreateAirportAsync(
+        CreateAirportRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateAirportCommand(
+                request.Iata,
+                request.Name,
+                request.City,
+                request.CountryCode,
+                request.DestinationId,
+                request.Latitude,
+                request.Longitude),
+            cancellationToken);
+        return result.IsSuccess
+            ? Results.Created("/market/v1/flights/references", result.Value)
+            : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Lists airline and airport filter references.
+    /// </summary>
+    private static async Task<IResult> ListFlightReferencesAsync(
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new ListFlightReferencesQuery(), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     /// <summary>
@@ -262,7 +349,9 @@ public static class CatalogEndpoints
                 request.IsActive,
                 request.Offers
                     .Select(offer => offer.ToInput())
-                    .ToArray()),
+                    .ToArray(),
+                request.OriginAirportId,
+                request.DestinationAirportId),
             cancellationToken);
 
         return result.IsSuccess
@@ -278,12 +367,28 @@ public static class CatalogEndpoints
         string? destination,
         DateOnly? departureDate,
         string? cabin,
+        string? airline,
+        int? maxStops,
+        decimal? minPrice,
+        decimal? maxPrice,
+        TimeOnly? departureAfter,
+        TimeOnly? departureBefore,
         HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(
-            new SearchFlightsQuery(origin, destination, departureDate, cabin),
+            new SearchFlightsQuery(
+                origin,
+                destination,
+                departureDate,
+                cabin,
+                airline,
+                maxStops,
+                minPrice,
+                maxPrice,
+                departureAfter,
+                departureBefore),
             cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
@@ -324,13 +429,18 @@ public static class CatalogEndpoints
                     .Select(type => new VisaTypeInput(
                         type.Code,
                         type.EntryType,
+                        type.IssuanceType,
                         type.ProcessingDaysMin,
                         type.ProcessingDaysMax,
                         type.ValidityDays,
                         type.PriceAdult,
                         type.PriceChild,
                         type.Currency,
-                        type.Documents,
+                        type.Documents
+                            .Select(document => new VisaDocumentInput(
+                                document.Name,
+                                document.Category))
+                            .ToArray(),
                         type.Steps,
                         type.Faqs
                             .Select(faq => new VisaFaqInput(faq.Question, faq.Answer))
@@ -411,6 +521,8 @@ public static class CatalogEndpoints
                 request.Amenity,
                 request.Reservable,
                 request.OnlineReservable,
+                request.MealPeriod,
+                request.DietaryOption,
                 request.Q,
                 request.Page,
                 request.PageSize,
@@ -505,6 +617,18 @@ public static class CatalogEndpoints
                     .ToArray(),
                 request.Images?
                     .Select(item => new HotelImageInput(item.Url, item.Caption, item.SortOrder))
+                    .ToArray() ?? [],
+                request.Rooms?
+                    .Select(item => new HotelRoomInput(
+                        item.Name,
+                        item.RoomType,
+                        item.MealPlan,
+                        item.Adults,
+                        item.Children,
+                        item.Price,
+                        item.Currency,
+                        item.Description,
+                        item.SortOrder))
                     .ToArray() ?? []),
             cancellationToken);
 
@@ -738,6 +862,20 @@ public sealed record HotelAmenityRequest(string Category, string Name);
 public sealed record HotelImageRequest(string Url, string? Caption = null, int SortOrder = 0);
 
 /// <summary>
+/// HTTP request for a hotel room option.
+/// </summary>
+public sealed record HotelRoomRequest(
+    string Name,
+    string RoomType,
+    string MealPlan,
+    int Adults,
+    int Children,
+    decimal Price,
+    string Currency,
+    string? Description = null,
+    int SortOrder = 0);
+
+/// <summary>
 /// HTTP request to create a canonical hotel.
 /// </summary>
 public sealed record CreateHotelRequest(
@@ -749,7 +887,8 @@ public sealed record CreateHotelRequest(
     decimal? Longitude,
     IReadOnlyList<HotelTranslationRequest> Translations,
     IReadOnlyList<HotelAmenityRequest> Amenities,
-    IReadOnlyList<HotelImageRequest>? Images = null);
+    IReadOnlyList<HotelImageRequest>? Images = null,
+    IReadOnlyList<HotelRoomRequest>? Rooms = null);
 
 /// <summary>
 /// HTTP query for hotel search.
@@ -772,6 +911,19 @@ public sealed record PlaceTranslationRequest(
     string Name,
     string? Description = null);
 
+/// <summary>Airline creation request.</summary>
+public sealed record CreateAirlineRequest(string Iata, string Name);
+
+/// <summary>Airport creation request.</summary>
+public sealed record CreateAirportRequest(
+    string Iata,
+    string Name,
+    string City,
+    string CountryCode,
+    Guid? DestinationId = null,
+    decimal? Latitude = null,
+    decimal? Longitude = null);
+
 /// <summary>Flight offer request.</summary>
 public sealed record FlightOfferRequest(
     string FlightNumber,
@@ -787,7 +939,8 @@ public sealed record FlightOfferRequest(
     decimal Price,
     string Currency,
     string Provider,
-    string DeepLink)
+    string DeepLink,
+    Guid? AirlineId = null)
 {
     /// <summary>
     /// Maps the request to the domain input.
@@ -807,7 +960,8 @@ public sealed record FlightOfferRequest(
             Price,
             Currency,
             Provider,
-            DeepLink);
+            DeepLink,
+            AirlineId);
 }
 
 /// <summary>Flight route creation request.</summary>
@@ -818,7 +972,9 @@ public sealed record CreateFlightRouteRequest(
     string OriginCity,
     string DestinationCity,
     bool IsActive,
-    IReadOnlyList<FlightOfferRequest> Offers);
+    IReadOnlyList<FlightOfferRequest> Offers,
+    Guid? OriginAirportId = null,
+    Guid? DestinationAirportId = null);
 
 /// <summary>Visa country translation request.</summary>
 public sealed record VisaCountryTranslationRequest(string Locale, string Name, string? Description = null);
@@ -826,17 +982,21 @@ public sealed record VisaCountryTranslationRequest(string Locale, string Name, s
 /// <summary>Visa FAQ request.</summary>
 public sealed record VisaFaqRequest(string Question, string Answer);
 
+/// <summary>Visa required-document request.</summary>
+public sealed record VisaDocumentRequest(string Name, string Category);
+
 /// <summary>Visa type request.</summary>
 public sealed record VisaTypeRequest(
     string Code,
     string EntryType,
+    string IssuanceType,
     int ProcessingDaysMin,
     int ProcessingDaysMax,
     int ValidityDays,
     decimal PriceAdult,
     decimal? PriceChild,
     string Currency,
-    IReadOnlyList<string> Documents,
+    IReadOnlyList<VisaDocumentRequest> Documents,
     IReadOnlyList<string> Steps,
     IReadOnlyList<VisaFaqRequest> Faqs);
 
@@ -859,6 +1019,8 @@ public sealed record SearchPlacesRequest(
     string? Amenity = null,
     bool? Reservable = null,
     bool? OnlineReservable = null,
+    string? MealPeriod = null,
+    string? DietaryOption = null,
     string? Q = null,
     int Page = 1,
     int PageSize = 20,
@@ -891,4 +1053,6 @@ public sealed record CreatePlaceRequest(
     decimal? Longitude,
     IReadOnlyList<PlaceTranslationRequest> Translations,
     IReadOnlyList<string> Amenities,
-    IReadOnlyList<PlaceMenuItemRequest>? MenuItems = null);
+    IReadOnlyList<PlaceMenuItemRequest>? MenuItems = null,
+    IReadOnlyList<string>? MealPeriods = null,
+    IReadOnlyList<string>? DietaryOptions = null);

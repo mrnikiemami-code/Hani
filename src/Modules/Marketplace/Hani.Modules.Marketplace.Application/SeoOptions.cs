@@ -9,4 +9,9 @@ public sealed class SeoOptions
     /// Absolute public base URL without a trailing slash, for example <c>https://hani.ir</c>.
     /// </summary>
     public string PublicBaseUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Localized SEO labels keyed by language then label key.
+    /// </summary>
+    public Dictionary<string, Dictionary<string, string>> Labels { get; set; } = new();
 }

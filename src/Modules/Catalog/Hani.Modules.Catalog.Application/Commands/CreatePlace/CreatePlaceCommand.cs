@@ -19,7 +19,9 @@ public sealed record CreatePlaceCommand(
     decimal? Longitude,
     IReadOnlyList<PlaceTranslationInput> Translations,
     IReadOnlyList<string> Amenities,
-    IReadOnlyList<PlaceMenuItemInput> MenuItems) : ICommand<Guid>;
+    IReadOnlyList<PlaceMenuItemInput> MenuItems,
+    IReadOnlyList<string> MealPeriods,
+    IReadOnlyList<string> DietaryOptions) : ICommand<Guid>;
 
 /// <summary>
 /// Place read model.
@@ -39,8 +41,13 @@ public sealed record PlaceDto(
     IReadOnlyList<PlaceTranslationDto> Translations,
     IReadOnlyList<string> Amenities,
     IReadOnlyList<PlaceMenuItemDto> MenuItems,
+    IReadOnlyList<string> MealPeriods,
+    IReadOnlyList<string> DietaryOptions,
     decimal? AverageRating = null,
-    int ReviewCount = 0);
+    int ReviewCount = 0,
+    decimal? RecommendationPercent = null,
+    int? RankInCity = null,
+    IReadOnlyList<string>? UserPhotos = null);
 
 /// <summary>
 /// Place translation read model.

@@ -104,7 +104,10 @@ internal static class SeoMetadataBuilder
         string name,
         string description,
         string canonicalUrl,
-        string baseUrl)
+        string baseUrl,
+        decimal? averageRating = null,
+        int reviewCount = 0,
+        IReadOnlyList<CatalogFaq>? faqs = null)
     {
         var schemaType = type switch
         {
@@ -116,20 +119,57 @@ internal static class SeoMetadataBuilder
             _ => "WebPage"
         };
 
+        var entity = new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org/",
+            ["@type"] = schemaType,
+            ["name"] = name,
+            ["description"] = description,
+            ["url"] = canonicalUrl,
+            ["provider"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "Organization",
+                ["name"] = "Hani",
+                ["url"] = baseUrl.TrimEnd('/')
+            }
+        };
+
+        if (averageRating is not null && reviewCount > 0)
+        {
+            entity["aggregateRating"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "AggregateRating",
+                ["ratingValue"] = averageRating,
+                ["reviewCount"] = reviewCount
+            };
+        }
+
+        if (faqs is null || faqs.Count == 0)
+        {
+            return JsonSerializer.Serialize(entity, JsonOptions);
+        }
+
+        var faqPage = new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org/",
+            ["@type"] = "FAQPage",
+            ["mainEntity"] = faqs.Select(faq => new Dictionary<string, object?>
+            {
+                ["@type"] = "Question",
+                ["name"] = faq.Question,
+                ["acceptedAnswer"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "Answer",
+                    ["text"] = faq.Answer
+                }
+            }).ToArray()
+        };
+
         return JsonSerializer.Serialize(
             new Dictionary<string, object?>
             {
                 ["@context"] = "https://schema.org/",
-                ["@type"] = schemaType,
-                ["name"] = name,
-                ["description"] = description,
-                ["url"] = canonicalUrl,
-                ["provider"] = new Dictionary<string, object?>
-                {
-                    ["@type"] = "Organization",
-                    ["name"] = "Hani",
-                    ["url"] = baseUrl.TrimEnd('/')
-                }
+                ["@graph"] = new[] { entity, faqPage }
             },
             JsonOptions);
     }
@@ -150,6 +190,12 @@ internal static class SeoMetadataBuilder
             .Concat((verticals ?? []).Select(vertical => (
                 Path: GetVerticalPath(vertical),
                 Updated: vertical.UpdatedAt)))
+            .Concat((verticals ?? [])
+                .Select(vertical => vertical.Type.ToLowerInvariant())
+                .Distinct()
+                .Select(type => (
+                    Path: GetVerticalLandingPath(type),
+                    Updated: DateTimeOffset.UtcNow)))
             .DistinctBy(item => item.Path)
             .OrderBy(item => item.Path, StringComparer.OrdinalIgnoreCase)
             .ToArray();
@@ -192,6 +238,17 @@ internal static class SeoMetadataBuilder
             "visa" => $"visas/{entry.Slug}",
             "flight" => $"flights/routes/{entry.Slug}",
             _ => entry.Slug
+        };
+
+    private static string GetVerticalLandingPath(string type)
+        => type switch
+        {
+            "hotel" => "hotels",
+            "restaurant" => "restaurants",
+            "attraction" => "attractions",
+            "visa" => "visas",
+            "flight" => "flights",
+            _ => type
         };
 
     public static string BuildRobots(string baseUrl)

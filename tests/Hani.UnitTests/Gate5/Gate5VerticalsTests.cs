@@ -64,16 +64,20 @@ public sealed class Gate5VerticalsTests
         country.AddType(TestIds.Generator, new VisaTypeInput(
             "Tourist",
             "Single",
+            "E_Visa",
             7,
             9,
             90,
             50m,
             50m,
             "EUR",
-            ["Passport", "Photo"],
+            [new VisaDocumentInput("Passport", "Identity"), new VisaDocumentInput("Photo", "Identity")],
             ["Submit documents", "Pay fee"],
             [new VisaFaqInput("How long?", "7 to 9 days")]));
 
+        country.Types.Single().IssuanceType.ShouldBe("E_Visa");
+        country.Types.Single().Documents.Single(document => document.Name == "Passport")
+            .Category.ShouldBe("Identity");
         country.Types.Single().Documents.Count.ShouldBe(2);
         country.Types.Single().Steps.Count.ShouldBe(2);
         country.Types.Single().Faqs.Single().Question.ShouldBe("How long?");
@@ -94,10 +98,13 @@ public sealed class Gate5VerticalsTests
             "applicant@example.com",
             "+989120000000",
             null,
-            ["https://cdn.example/passport.pdf"]);
+            ["https://cdn.example/passport.pdf"],
+            [new VisaApplicantInput("Second Applicant", "P7654321", "IR", new DateOnly(1992, 2, 2), "Spouse")]);
 
         application.Status.ShouldBe(VisaApplicationStatus.Submitted);
         application.Documents.Count.ShouldBe(1);
+        application.PassengerCount.ShouldBe(2);
+        application.Applicants.Single().FullName.ShouldBe("Second Applicant");
         application.SetStatus(VisaApplicationStatus.Approved);
         application.Status.ShouldBe(VisaApplicationStatus.Approved);
         Should.Throw<InvalidOperationException>(() =>
@@ -120,10 +127,14 @@ public sealed class Gate5VerticalsTests
             new HotelImageInput("https://cdn.example/hotel-1.jpg", "Lobby", 1),
             new HotelImageInput("https://cdn.example/hotel-2.jpg", "Room", 2)
         ]);
+        hotel.ReplaceRooms(TestIds.Generator, [
+            new HotelRoomInput("Deluxe", "Double", "BB", 2, 0, 7_500_000m, "IRR", "Sea view", 1)
+        ]);
 
         hotel.Images.Count.ShouldBe(2);
         hotel.Images.OrderBy(image => image.SortOrder).First().Caption.ShouldBe("Lobby");
         hotel.Amenities.Single().Name.ShouldBe("WiFi");
+        hotel.Rooms.Single().MealPlan.ShouldBe("BB");
     }
 
     [Fact]
@@ -143,8 +154,12 @@ public sealed class Gate5VerticalsTests
         restaurant.ReplaceMenuItems(TestIds.Generator, [
             new PlaceMenuItemInput("Main", "Kebab", 450_000m, "IRR", "Saffron kebab", 1)
         ]);
+        restaurant.ReplaceMealPeriods(TestIds.Generator, ["Lunch", "Dinner"]);
+        restaurant.ReplaceDietaryOptions(TestIds.Generator, ["Halal", "GlutenFree"]);
 
         restaurant.MenuItems.Single().Name.ShouldBe("Kebab");
+        restaurant.MealPeriods.Count.ShouldBe(2);
+        restaurant.DietaryOptions.ShouldContain(item => item.Name == "Halal");
 
         var attraction = Place.Create(
             TestIds.Generator,
@@ -157,6 +172,25 @@ public sealed class Gate5VerticalsTests
             attraction.ReplaceMenuItems(TestIds.Generator, [
                 new PlaceMenuItemInput("Main", "Ticket", 100m, "IRR")
             ]));
+    }
+
+    [Fact]
+    public void Airline_And_Airport_Should_Be_Canonical_References()
+    {
+        var airline = Airline.Create(TestIds.Generator, "IR", "Iran Air");
+        var airport = Airport.Create(
+            TestIds.Generator,
+            "THR",
+            "Mehrabad",
+            "Tehran",
+            "IR",
+            Guid.CreateVersion7(),
+            35.6892m,
+            51.3890m);
+
+        airline.Iata.ShouldBe("IR");
+        airport.Iata.ShouldBe("THR");
+        airport.City.ShouldBe("Tehran");
     }
 
     [Fact]

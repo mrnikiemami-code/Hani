@@ -13,4 +13,6 @@ public sealed record CreateFlightRouteCommand(
     string OriginCity,
     string DestinationCity,
     bool IsActive,
-    IReadOnlyList<FlightOfferInput> Offers) : ICommand<Guid>;
+    IReadOnlyList<FlightOfferInput> Offers,
+    Guid? OriginAirportId = null,
+    Guid? DestinationAirportId = null) : ICommand<Guid>;

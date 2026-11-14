@@ -26,6 +26,8 @@ internal sealed class SearchPlacesQueryHandler(
             request.Amenity,
             request.Reservable,
             request.OnlineReservable,
+            request.MealPeriod,
+            request.DietaryOption,
             request.Q);
 
         var items = await places.SearchAsync(
@@ -92,6 +94,13 @@ internal sealed class SearchPlacesQueryHandler(
             name,
             place.Amenities.Count,
             summary?.AverageRating,
-            summary?.ReviewCount ?? 0);
+            summary?.ReviewCount ?? 0,
+            RecommendedPercent(summary),
+            null);
     }
+
+    private static decimal? RecommendedPercent(ReviewSummary? summary)
+        => summary is null || summary.ReviewCount == 0
+            ? null
+            : Math.Round(summary.RecommendedCount * 100m / summary.ReviewCount, 1);
 }

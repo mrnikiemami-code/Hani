@@ -75,5 +75,33 @@ internal sealed class PlaceConfiguration : IEntityTypeConfiguration<Place>
                 .HasDatabaseName("ix_place_menu_items_place_section_sort");
             menuItems.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
+
+        builder.OwnsMany(place => place.MealPeriods, mealPeriods =>
+        {
+            mealPeriods.ToTable("place_meal_periods");
+            mealPeriods.WithOwner().HasForeignKey(item => item.PlaceId);
+            mealPeriods.HasKey(item => item.Id);
+            mealPeriods.Property(item => item.Id).HasColumnName("id").ValueGeneratedNever();
+            mealPeriods.Property(item => item.PlaceId).HasColumnName("place_id");
+            mealPeriods.Property(item => item.Name).HasColumnName("name").HasMaxLength(80).IsRequired();
+            mealPeriods.HasIndex(item => new { item.PlaceId, item.Name })
+                .IsUnique()
+                .HasDatabaseName("ux_place_meal_periods_place_name");
+            mealPeriods.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
+
+        builder.OwnsMany(place => place.DietaryOptions, dietaryOptions =>
+        {
+            dietaryOptions.ToTable("place_dietary_options");
+            dietaryOptions.WithOwner().HasForeignKey(item => item.PlaceId);
+            dietaryOptions.HasKey(item => item.Id);
+            dietaryOptions.Property(item => item.Id).HasColumnName("id").ValueGeneratedNever();
+            dietaryOptions.Property(item => item.PlaceId).HasColumnName("place_id");
+            dietaryOptions.Property(item => item.Name).HasColumnName("name").HasMaxLength(80).IsRequired();
+            dietaryOptions.HasIndex(item => new { item.PlaceId, item.Name })
+                .IsUnique()
+                .HasDatabaseName("ux_place_dietary_options_place_name");
+            dietaryOptions.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
     }
 }

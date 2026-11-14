@@ -10,6 +10,7 @@ public sealed class Hotel : AggregateRoot<Guid>
     private readonly List<HotelTranslation> _translations = [];
     private readonly List<HotelAmenity> _amenities = [];
     private readonly List<HotelImage> _images = [];
+    private readonly List<HotelRoom> _rooms = [];
 
     private Hotel()
     {
@@ -88,6 +89,11 @@ public sealed class Hotel : AggregateRoot<Guid>
     /// Gallery images in display order.
     /// </summary>
     public IReadOnlyCollection<HotelImage> Images => _images;
+
+    /// <summary>
+    /// Bookable room and board options.
+    /// </summary>
+    public IReadOnlyCollection<HotelRoom> Rooms => _rooms;
 
     /// <summary>
     /// Creates a validated hotel.
@@ -186,6 +192,43 @@ public sealed class Hotel : AggregateRoot<Guid>
         foreach (var amenity in amenities)
         {
             _amenities.Add(new HotelAmenity(ids.NewId(), Id, amenity.Category, amenity.Name));
+        }
+
+        Touch();
+    }
+
+    /// <summary>
+    /// Replaces room and board options.
+    /// </summary>
+    public void ReplaceRooms(IIdGenerator ids, IEnumerable<HotelRoomInput> rooms)
+    {
+        _rooms.Clear();
+
+        foreach (var room in rooms)
+        {
+            if (string.IsNullOrWhiteSpace(room.Name) ||
+                string.IsNullOrWhiteSpace(room.RoomType) ||
+                string.IsNullOrWhiteSpace(room.MealPlan) ||
+                string.IsNullOrWhiteSpace(room.Currency) ||
+                room.Price <= 0 ||
+                room.Adults < 1 ||
+                room.Children < 0)
+            {
+                throw new ArgumentException("Room pricing and occupancy are invalid.", nameof(rooms));
+            }
+
+            _rooms.Add(new HotelRoom(
+                ids.NewId(),
+                Id,
+                room.Name,
+                room.RoomType,
+                room.MealPlan,
+                room.Adults,
+                room.Children,
+                room.Price,
+                room.Currency,
+                room.Description,
+                room.SortOrder));
         }
 
         Touch();
@@ -308,6 +351,85 @@ public sealed class HotelImage : Entity<Guid>
 /// Gallery image input used by hotel creation and replacement.
 /// </summary>
 public sealed record HotelImageInput(string Url, string? Caption = null, int SortOrder = 0);
+
+/// <summary>
+/// Hotel room and board option.
+/// </summary>
+public sealed class HotelRoom : Entity<Guid>
+{
+    private HotelRoom()
+    {
+    }
+
+    internal HotelRoom(
+        Guid id,
+        Guid hotelId,
+        string name,
+        string roomType,
+        string mealPlan,
+        int adults,
+        int children,
+        decimal price,
+        string currency,
+        string? description,
+        int sortOrder) : base(id)
+    {
+        HotelId = hotelId;
+        Name = name.Trim();
+        RoomType = roomType.Trim();
+        MealPlan = mealPlan.Trim();
+        Adults = adults;
+        Children = children;
+        Price = price;
+        Currency = currency.Trim().ToUpperInvariant();
+        Description = description?.Trim();
+        SortOrder = sortOrder;
+    }
+
+    /// <summary>Parent hotel.</summary>
+    public Guid HotelId { get; private set; }
+
+    /// <summary>Room display name.</summary>
+    public string Name { get; private set; } = string.Empty;
+
+    /// <summary>Room type such as Double, Single, or Suite.</summary>
+    public string RoomType { get; private set; } = string.Empty;
+
+    /// <summary>Board basis such as BB, HB, FB, or RO.</summary>
+    public string MealPlan { get; private set; } = string.Empty;
+
+    /// <summary>Adult capacity.</summary>
+    public int Adults { get; private set; }
+
+    /// <summary>Child capacity.</summary>
+    public int Children { get; private set; }
+
+    /// <summary>Price per night.</summary>
+    public decimal Price { get; private set; }
+
+    /// <summary>Price currency.</summary>
+    public string Currency { get; private set; } = string.Empty;
+
+    /// <summary>Optional description.</summary>
+    public string? Description { get; private set; }
+
+    /// <summary>Display order.</summary>
+    public int SortOrder { get; private set; }
+}
+
+/// <summary>
+/// Hotel room input.
+/// </summary>
+public sealed record HotelRoomInput(
+    string Name,
+    string RoomType,
+    string MealPlan,
+    int Adults,
+    int Children,
+    decimal Price,
+    string Currency,
+    string? Description = null,
+    int SortOrder = 0);
 
 /// <summary>
 /// Amenity input used by hotel creation and replacement.

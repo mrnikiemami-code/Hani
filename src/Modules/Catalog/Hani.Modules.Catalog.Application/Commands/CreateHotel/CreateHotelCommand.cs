@@ -15,7 +15,8 @@ public sealed record CreateHotelCommand(
     decimal? Longitude,
     IReadOnlyList<HotelTranslationInput> Translations,
     IReadOnlyList<HotelAmenityInput> Amenities,
-    IReadOnlyList<HotelImageInput> Images) : ICommand<Guid>;
+    IReadOnlyList<HotelImageInput> Images,
+    IReadOnlyList<HotelRoomInput> Rooms) : ICommand<Guid>;
 
 /// <summary>
 /// Hotel read model.
@@ -31,8 +32,12 @@ public sealed record HotelDto(
     IReadOnlyList<HotelTranslationDto> Translations,
     IReadOnlyList<HotelAmenityDto> Amenities,
     IReadOnlyList<HotelImageDto> Images,
+    IReadOnlyList<HotelRoomDto> Rooms,
     decimal? AverageRating = null,
-    int ReviewCount = 0);
+    int ReviewCount = 0,
+    decimal? RecommendationPercent = null,
+    int? RankInCity = null,
+    IReadOnlyList<string>? UserPhotos = null);
 
 /// <summary>
 /// Hotel translation read model.
@@ -48,3 +53,17 @@ public sealed record HotelAmenityDto(string Category, string Name);
 /// Hotel gallery image read model.
 /// </summary>
 public sealed record HotelImageDto(string Url, string? Caption, int SortOrder);
+
+/// <summary>
+/// Hotel room read model.
+/// </summary>
+public sealed record HotelRoomDto(
+    string Name,
+    string RoomType,
+    string MealPlan,
+    int Adults,
+    int Children,
+    decimal Price,
+    string Currency,
+    string? Description,
+    int SortOrder);

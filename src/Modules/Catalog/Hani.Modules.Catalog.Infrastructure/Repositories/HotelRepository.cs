@@ -23,6 +23,7 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
             .Include(hotel => hotel.Translations)
             .Include(hotel => hotel.Amenities)
             .Include(hotel => hotel.Images)
+            .Include(hotel => hotel.Rooms)
             .FirstOrDefaultAsync(hotel => hotel.Slug == normalizedSlug, cancellationToken);
     }
 
@@ -49,7 +50,16 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
             .Include(hotel => hotel.Translations)
             .Include(hotel => hotel.Amenities)
             .Include(hotel => hotel.Images)
+            .Include(hotel => hotel.Rooms)
             .Where(hotel => hotel.Latitude != null && hotel.Longitude != null)
+            .ToArrayAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<Hotel>> ListByDestinationAsync(
+        Guid destinationId,
+        CancellationToken cancellationToken)
+        => await dbContext.Hotels
+            .AsNoTracking()
+            .Where(hotel => hotel.DestinationId == destinationId)
             .ToArrayAsync(cancellationToken);
 
     private IQueryable<Hotel> ApplyFilter(HotelFilter filter)
@@ -60,6 +70,7 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
             .Include(hotel => hotel.Translations)
             .Include(hotel => hotel.Amenities)
             .Include(hotel => hotel.Images)
+            .Include(hotel => hotel.Rooms)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(filter.DestinationSlug))

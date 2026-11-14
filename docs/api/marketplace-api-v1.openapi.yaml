@@ -145,6 +145,23 @@ paths:
           description: Destination not found
         default: { $ref: '#/components/responses/Problem' }
 
+  /seo/{type}/landing:
+    get:
+      tags: [SEO]
+      summary: Read localized SEO metadata and collection JSON-LD for a vertical landing page
+      parameters:
+        - { name: type, in: path, required: true, schema: { type: string, enum: [hotel, restaurant, attraction, visa, flight] } }
+        - { name: destinationSlug, in: query, required: false, schema: { type: [string, 'null'] } }
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+      responses:
+        '200':
+          description: Vertical landing SEO metadata
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VerticalLandingSeo' }
+        '404': { description: Destination not found }
+        default: { $ref: '#/components/responses/Problem' }
+
   /seo/{type}/{slug}:
     get:
       tags: [SEO]
@@ -408,6 +425,8 @@ paths:
         - { name: targetId, in: query, required: true, schema: { type: string, format: uuid } }
         - { name: minRating, in: query, schema: { type: [integer, 'null'], minimum: 1, maximum: 5 } }
         - { name: sort, in: query, schema: { type: [string, 'null'], enum: [newest, helpful, rating, null] } }
+        - { name: from, in: query, schema: { type: [string, 'null'], format: date } }
+        - { name: to, in: query, schema: { type: [string, 'null'], format: date } }
         - { name: page, in: query, schema: { type: integer, default: 1 } }
         - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
       responses:
@@ -827,6 +846,23 @@ paths:
           description: Plan not found
         default: { $ref: '#/components/responses/Problem' }
 
+  /hotels/{slug}/tours:
+    get:
+      tags: [Hotels]
+      summary: Read approved tours linked to a hotel
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Linked tour offers
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/HotelTourOffer' }
+        '404': { description: Hotel not found }
+        default: { $ref: '#/components/responses/Problem' }
+
   /hotels/{slug}:
     get:
       tags: [Catalog]
@@ -933,7 +969,7 @@ paths:
       parameters:
         - { name: latitude, in: query, required: true, schema: { type: number } }
         - { name: longitude, in: query, required: true, schema: { type: number } }
-        - { name: type, in: query, schema: { type: [string, 'null'], enum: [hotel, restaurant, attraction, place, null] } }
+        - { name: type, in: query, schema: { type: [string, 'null'], enum: [hotel, restaurant, attraction, place, airport, null] } }
         - { name: radiusKm, in: query, schema: { type: integer, default: 10, maximum: 100 } }
         - { name: limit, in: query, schema: { type: integer, default: 20, maximum: 100 } }
       responses:
@@ -1070,6 +1106,18 @@ paths:
         '404': { description: Not found }
         default: { $ref: '#/components/responses/Problem' }
 
+  /flights/references:
+    get:
+      tags: [Flights]
+      summary: List canonical airline and airport filters
+      responses:
+        '200':
+          description: Reference data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FlightReference' }
+        default: { $ref: '#/components/responses/Problem' }
+
   /flights/search:
     get:
       tags: [Flights]
@@ -1079,6 +1127,12 @@ paths:
         - { name: destination, in: query, schema: { type: [string, 'null'], minLength: 3, maxLength: 3 } }
         - { name: departureDate, in: query, schema: { type: [string, 'null'], format: date } }
         - { name: cabin, in: query, schema: { type: [string, 'null'] } }
+        - { name: airline, in: query, schema: { type: [string, 'null'] } }
+        - { name: maxStops, in: query, schema: { type: [integer, 'null'], minimum: 0, maximum: 5 } }
+        - { name: minPrice, in: query, schema: { type: [number, 'null'] } }
+        - { name: maxPrice, in: query, schema: { type: [number, 'null'] } }
+        - { name: departureAfter, in: query, schema: { type: [string, 'null'], format: time } }
+        - { name: departureBefore, in: query, schema: { type: [string, 'null'], format: time } }
       responses:
         '200':
           description: Route results
@@ -1838,11 +1892,13 @@ components:
         amenityCount: { type: integer }
         averageRating: { type: [number, 'null'] }
         reviewCount: { type: integer }
+        recommendationPercent: { type: [number, 'null'] }
+        rankInCity: { type: [integer, 'null'] }
 
     GeoNearbyItem:
       type: object
       properties:
-        type: { type: string, enum: [Hotel, Restaurant, Attraction] }
+        type: { type: string, enum: [Hotel, Restaurant, Attraction, Airport] }
         id: { type: string, format: uuid }
         slug: { type: string }
         name: { type: string }
@@ -1873,6 +1929,8 @@ components:
         amenityCount: { type: integer }
         averageRating: { type: [number, 'null'] }
         reviewCount: { type: integer }
+        recommendationPercent: { type: [number, 'null'] }
+        rankInCity: { type: [integer, 'null'] }
 
     VisaCountrySummary:
       type: object
@@ -1903,6 +1961,7 @@ components:
         visaTypeId: { type: string, format: uuid }
         code: { type: string }
         entryType: { type: string }
+        issuanceType: { type: string, enum: [E_Visa, Label, OnArrival] }
         processingDaysMin: { type: integer }
         processingDaysMax: { type: integer }
         validityDays: { type: integer }
@@ -1911,7 +1970,11 @@ components:
         currency: { type: string }
         documents:
           type: array
-          items: { type: string }
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              category: { type: string, enum: [Identity, Job, Financial, Travel, Other] }
         steps:
           type: array
           items: { type: string }
@@ -1954,6 +2017,59 @@ components:
         currency: { type: string }
         provider: { type: string }
         deepLink: { type: string, format: uri }
+
+    FlightReference:
+      type: object
+      properties:
+        airlines:
+          type: array
+          items:
+            type: object
+            properties:
+              iata: { type: string }
+              name: { type: string }
+        airports:
+          type: array
+          items:
+            type: object
+            properties:
+              iata: { type: string }
+              name: { type: string }
+              city: { type: string }
+              countryCode: { type: string }
+              latitude: { type: [number, 'null'] }
+              longitude: { type: [number, 'null'] }
+
+    HotelTourOffer:
+      type: object
+      properties:
+        offerId: { type: string, format: uuid }
+        agencyId: { type: string, format: uuid }
+        tourProductId: { type: string, format: uuid }
+        title: { type: string }
+        basePrice: { type: number }
+        currency: { type: string }
+        bookingMode: { type: string }
+        collectionMode: { type: string }
+        sellerOfRecord: { type: string }
+        invoiceIssuer: { type: string }
+        departures:
+          type: array
+          items:
+            type: object
+            properties:
+              departureId: { type: string, format: uuid }
+              startDate: { type: string, format: date }
+              endDate: { type: string, format: date }
+              seatsLeft: { type: integer }
+              prices:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    roomType: { type: string }
+                    amount: { type: number }
+                    currency: { type: string }
 
     CreateHotelInquiryRequest:
       type: object
@@ -2039,6 +2155,16 @@ components:
           type: array
           minItems: 1
           items: { type: string, format: uri }
+        applicants:
+          type: array
+          items:
+            type: object
+            properties:
+              fullName: { type: string }
+              passportNo: { type: string }
+              nationality: { type: string }
+              dateOfBirth: { type: [string, 'null'], format: date }
+              relation: { type: [string, 'null'] }
 
     VisaApplication:
       type: object
@@ -2062,6 +2188,17 @@ components:
         documents:
           type: array
           items: { type: string }
+        passengerCount: { type: integer }
+        applicants:
+          type: array
+          items:
+            type: object
+            properties:
+              fullName: { type: string }
+              passportNo: { type: string }
+              nationality: { type: string }
+              dateOfBirth: { type: [string, 'null'], format: date }
+              relation: { type: [string, 'null'] }
 
     VerticalSeo:
       type: object
@@ -2089,6 +2226,34 @@ components:
               url: { type: string, format: uri }
         breadcrumbJsonLd: { type: string }
         entityJsonLd: { type: string }
+
+    VerticalLandingSeo:
+      type: object
+      properties:
+        type: { type: string, enum: [hotel, restaurant, attraction, visa, flight] }
+        destinationSlug: { type: [string, 'null'] }
+        locale: { type: string }
+        canonicalUrl: { type: string, format: uri }
+        title: { type: string }
+        description: { type: string }
+        itemCount: { type: integer }
+        robots: { type: string }
+        alternates:
+          type: array
+          items:
+            type: object
+            properties:
+              locale: { type: string }
+              url: { type: string, format: uri }
+        breadcrumbs:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              url: { type: string, format: uri }
+        breadcrumbJsonLd: { type: string }
+        collectionJsonLd: { type: string }
 
     Hotel:
       type: object
@@ -2125,6 +2290,25 @@ components:
               sortOrder: { type: integer }
         averageRating: { type: [number, 'null'] }
         reviewCount: { type: integer }
+        recommendationPercent: { type: [number, 'null'] }
+        rankInCity: { type: [integer, 'null'] }
+        userPhotos:
+          type: array
+          items: { type: string, format: uri }
+        rooms:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              roomType: { type: string }
+              mealPlan: { type: string }
+              adults: { type: integer }
+              children: { type: integer }
+              price: { type: number }
+              currency: { type: string }
+              description: { type: [string, 'null'] }
+              sortOrder: { type: integer }
 
     Place:
       type: object
@@ -2164,6 +2348,17 @@ components:
               sortOrder: { type: integer }
         averageRating: { type: [number, 'null'] }
         reviewCount: { type: integer }
+        recommendationPercent: { type: [number, 'null'] }
+        rankInCity: { type: [integer, 'null'] }
+        userPhotos:
+          type: array
+          items: { type: string, format: uri }
+        mealPeriods:
+          type: array
+          items: { type: string }
+        dietaryOptions:
+          type: array
+          items: { type: string }
 
     NearbyPlace:
       type: object
@@ -2481,7 +2676,7 @@ components:
         userId: { type: string, format: uuid }
         targetType: { type: string }
         targetId: { type: string, format: uuid }
-        claimType: { type: string, enum: [Ownership, Correction] }
+        claimType: { type: string, enum: [Ownership, Correction, Violation, Amendment] }
         fullName: { type: string }
         email: { type: string }
         phone: { type: [string, 'null'] }
@@ -2498,7 +2693,7 @@ components:
       properties:
         targetType: { type: string, enum: [Tour, Hotel, Agency, Attraction, Restaurant] }
         targetId: { type: string, format: uuid }
-        claimType: { type: string, enum: [Ownership, Correction] }
+        claimType: { type: string, enum: [Ownership, Correction, Violation, Amendment] }
         fullName: { type: string }
         email: { type: string, format: email }
         phone: { type: [string, 'null'] }

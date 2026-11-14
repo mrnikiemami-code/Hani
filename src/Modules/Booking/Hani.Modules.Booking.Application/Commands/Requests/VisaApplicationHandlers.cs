@@ -28,7 +28,8 @@ internal sealed class CreateVisaApplicationCommandHandler(
                 request.ContactEmail,
                 request.ContactPhone,
                 request.Notes,
-                request.Documents);
+                request.Documents,
+                request.Applicants);
             await applications.AddAsync(application, cancellationToken);
             return Result<VisaApplicationDto>.Success(Map(application));
         }
@@ -57,7 +58,16 @@ internal sealed class CreateVisaApplicationCommandHandler(
             application.CreatedAt,
             application.UpdatedAt,
             application.RejectionReason,
-            application.Documents.Select(document => document.FileUrl).ToArray());
+            application.Documents.Select(document => document.FileUrl).ToArray(),
+            application.PassengerCount,
+            application.Applicants
+                .Select(applicant => new VisaApplicantDto(
+                    applicant.FullName,
+                    applicant.PassportNo,
+                    applicant.Nationality,
+                    applicant.DateOfBirth,
+                    applicant.Relation))
+                .ToArray());
 }
 
 internal sealed class GetVisaApplicationQueryHandler(IVisaApplicationRepository applications)
@@ -93,7 +103,16 @@ internal sealed class GetVisaApplicationQueryHandler(IVisaApplicationRepository 
             application.CreatedAt,
             application.UpdatedAt,
             application.RejectionReason,
-            application.Documents.Select(document => document.FileUrl).ToArray());
+            application.Documents.Select(document => document.FileUrl).ToArray(),
+            application.PassengerCount,
+            application.Applicants
+                .Select(applicant => new VisaApplicantDto(
+                    applicant.FullName,
+                    applicant.PassportNo,
+                    applicant.Nationality,
+                    applicant.DateOfBirth,
+                    applicant.Relation))
+                .ToArray());
 }
 
 internal sealed class ListVisaApplicationsQueryHandler(IVisaApplicationRepository applications)
@@ -147,7 +166,16 @@ internal sealed class ListVisaApplicationsQueryHandler(IVisaApplicationRepositor
             application.CreatedAt,
             application.UpdatedAt,
             application.RejectionReason,
-            application.Documents.Select(document => document.FileUrl).ToArray());
+            application.Documents.Select(document => document.FileUrl).ToArray(),
+            application.PassengerCount,
+            application.Applicants
+                .Select(applicant => new VisaApplicantDto(
+                    applicant.FullName,
+                    applicant.PassportNo,
+                    applicant.Nationality,
+                    applicant.DateOfBirth,
+                    applicant.Relation))
+                .ToArray());
 }
 
 internal sealed class UpdateVisaApplicationStatusCommandHandler(

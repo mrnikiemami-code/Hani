@@ -77,13 +77,16 @@ internal sealed class GetVisaCountryQueryHandler(
                 type.Id,
                 type.Code,
                 type.EntryType,
+                type.IssuanceType,
                 type.ProcessingDaysMin,
                 type.ProcessingDaysMax,
                 type.ValidityDays,
                 type.PriceAdult,
                 type.PriceChild,
                 type.Currency,
-                type.Documents.Select(document => document.Name).ToArray(),
+                type.Documents
+                    .Select(document => new VisaDocumentDto(document.Name, document.Category))
+                    .ToArray(),
                 type.Steps.OrderBy(step => step.Sequence).Select(step => step.Description).ToArray(),
                 type.Faqs.Select(faq => new VisaFaqDto(faq.Question, faq.Answer)).ToArray()))
                 .ToArray()));

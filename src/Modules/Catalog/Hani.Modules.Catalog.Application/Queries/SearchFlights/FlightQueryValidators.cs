@@ -20,6 +20,13 @@ public sealed class SearchFlightsQueryValidator : AbstractValidator<SearchFlight
             .Length(3)
             .When(query => !string.IsNullOrWhiteSpace(query.Destination))
             .WithErrorCode("HANI-CATALOG-1931");
+        RuleFor(query => query.MaxStops).InclusiveBetween(0, 5)
+            .When(query => query.MaxStops is not null)
+            .WithErrorCode("HANI-CATALOG-1933");
+        RuleFor(query => query.MaxPrice)
+            .GreaterThanOrEqualTo(query => query.MinPrice)
+            .When(query => query.MaxPrice is not null && query.MinPrice is not null)
+            .WithErrorCode("HANI-CATALOG-1934");
     }
 }
 

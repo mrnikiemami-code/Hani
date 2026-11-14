@@ -30,6 +30,8 @@ internal sealed class ReviewRepository(IdentityDbContext dbContext) : IReviewRep
         Guid targetId,
         int? minRating,
         string? sort,
+        DateOnly? from,
+        DateOnly? to,
         int skip,
         int take,
         CancellationToken cancellationToken)
@@ -48,6 +50,20 @@ internal sealed class ReviewRepository(IdentityDbContext dbContext) : IReviewRep
             query = query.Where(review => review.Rating >= minRating);
         }
 
+        if (from is not null)
+        {
+            query = query.Where(review => review.CreatedAt >= new DateTimeOffset(
+                from.Value.ToDateTime(TimeOnly.MinValue),
+                TimeSpan.Zero));
+        }
+
+        if (to is not null)
+        {
+            query = query.Where(review => review.CreatedAt <= new DateTimeOffset(
+                to.Value.ToDateTime(TimeOnly.MaxValue),
+                TimeSpan.Zero));
+        }
+
         query = sort?.Trim().ToLowerInvariant() switch
         {
             "helpful" => query.OrderByDescending(review => review.HelpfulCount),
@@ -62,6 +78,8 @@ internal sealed class ReviewRepository(IdentityDbContext dbContext) : IReviewRep
         ReviewTargetType targetType,
         Guid targetId,
         int? minRating,
+        DateOnly? from,
+        DateOnly? to,
         CancellationToken cancellationToken)
     {
         var query = dbContext.Reviews.Where(review =>
@@ -72,6 +90,20 @@ internal sealed class ReviewRepository(IdentityDbContext dbContext) : IReviewRep
         if (minRating is not null)
         {
             query = query.Where(review => review.Rating >= minRating);
+        }
+
+        if (from is not null)
+        {
+            query = query.Where(review => review.CreatedAt >= new DateTimeOffset(
+                from.Value.ToDateTime(TimeOnly.MinValue),
+                TimeSpan.Zero));
+        }
+
+        if (to is not null)
+        {
+            query = query.Where(review => review.CreatedAt <= new DateTimeOffset(
+                to.Value.ToDateTime(TimeOnly.MaxValue),
+                TimeSpan.Zero));
         }
 
         return query.CountAsync(cancellationToken);

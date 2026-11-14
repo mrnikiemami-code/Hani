@@ -1,4 +1,5 @@
 using Hani.Contracts.Catalog;
+using Hani.Contracts.Identity;
 using Hani.Modules.Catalog.Domain.Destinations;
 using Hani.Modules.Catalog.Domain.Places;
 using Hani.Modules.Catalog.Domain.TourProducts;
@@ -7,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Catalog.Infrastructure.ReadServices;
 
-internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogReadService
+internal sealed class CatalogReadService(
+    CatalogDbContext dbContext,
+    IReviewSummaryReadService reviewSummaries) : ICatalogReadService
 {
     public async Task<IReadOnlyList<CatalogProductSummary>> SearchPublishedAsync(
         CatalogProductFilter filter,
@@ -153,6 +156,35 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
         return hotels.Concat(places).Concat(visas).Concat(flights).ToArray();
     }
 
+    public async Task<int> CountVerticalsAsync(
+        string type,
+        string? destinationSlug,
+        CancellationToken cancellationToken)
+    {
+        var normalizedType = type.Trim().ToLowerInvariant();
+        var destinationId = await ResolveDestinationIdAsync(destinationSlug, cancellationToken);
+
+        return normalizedType switch
+        {
+            "hotel" => await dbContext.Hotels.CountAsync(
+                hotel => destinationId == null || hotel.DestinationId == destinationId,
+                cancellationToken),
+            "restaurant" => await dbContext.Places.CountAsync(
+                place => place.Type == PlaceType.Restaurant &&
+                    (destinationId == null || place.DestinationId == destinationId),
+                cancellationToken),
+            "attraction" => await dbContext.Places.CountAsync(
+                place => place.Type == PlaceType.Attraction &&
+                    (destinationId == null || place.DestinationId == destinationId),
+                cancellationToken),
+            "visa" => await dbContext.VisaCountries.CountAsync(cancellationToken),
+            "flight" => await dbContext.FlightRoutes.CountAsync(
+                route => route.IsActive,
+                cancellationToken),
+            _ => 0
+        };
+    }
+
     public async Task<CatalogVerticalSnapshot?> GetVerticalBySlugAsync(
         string type,
         string slug,
@@ -174,22 +206,34 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
                         .AsNoTracking()
                         .Include(item => item.Translations)
                         .FirstOrDefaultAsync(item => item.Slug == normalizedSlug, cancellationToken);
-                    return hotel is null
-                        ? null
-                        : new CatalogVerticalSnapshot(
-                            "hotel",
-                            hotel.Slug,
-                            hotel.Translations.ToDictionary(
+                    if (hotel is null)
+                    {
+                        return null;
+                    }
+
+                    var hotelSummary = await reviewSummaries.GetSummariesAsync(
+                        "Hotel",
+                        [hotel.Id],
+                        cancellationToken);
+                    hotelSummary.TryGetValue(hotel.Id, out var hotelRating);
+
+                    return new CatalogVerticalSnapshot(
+                        "hotel",
+                        hotel.Slug,
+                        hotel.Translations.ToDictionary(
+                            item => item.Locale,
+                            item => item.Name,
+                            StringComparer.OrdinalIgnoreCase),
+                        hotel.Translations
+                            .Where(item => !string.IsNullOrWhiteSpace(item.Description))
+                            .ToDictionary(
                                 item => item.Locale,
-                                item => item.Name,
+                                item => item.Description!,
                                 StringComparer.OrdinalIgnoreCase),
-                            hotel.Translations
-                                .Where(item => !string.IsNullOrWhiteSpace(item.Description))
-                                .ToDictionary(
-                                    item => item.Locale,
-                                    item => item.Description!,
-                                    StringComparer.OrdinalIgnoreCase),
-                            hotel.UpdatedAt);
+                        hotel.UpdatedAt,
+                        hotel.Id,
+                        hotelRating?.AverageRating,
+                        hotelRating?.ReviewCount ?? 0);
                 }
 
             case "restaurant":
@@ -204,22 +248,34 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
                         .FirstOrDefaultAsync(
                             item => item.Slug == normalizedSlug && item.Type == placeType,
                             cancellationToken);
-                    return place is null
-                        ? null
-                        : new CatalogVerticalSnapshot(
-                            normalizedType,
-                            place.Slug,
-                            place.Translations.ToDictionary(
+                    if (place is null)
+                    {
+                        return null;
+                    }
+
+                    var placeSummary = await reviewSummaries.GetSummariesAsync(
+                        placeType.ToString(),
+                        [place.Id],
+                        cancellationToken);
+                    placeSummary.TryGetValue(place.Id, out var placeRating);
+
+                    return new CatalogVerticalSnapshot(
+                        normalizedType,
+                        place.Slug,
+                        place.Translations.ToDictionary(
+                            item => item.Locale,
+                            item => item.Name,
+                            StringComparer.OrdinalIgnoreCase),
+                        place.Translations
+                            .Where(item => !string.IsNullOrWhiteSpace(item.Description))
+                            .ToDictionary(
                                 item => item.Locale,
-                                item => item.Name,
+                                item => item.Description!,
                                 StringComparer.OrdinalIgnoreCase),
-                            place.Translations
-                                .Where(item => !string.IsNullOrWhiteSpace(item.Description))
-                                .ToDictionary(
-                                    item => item.Locale,
-                                    item => item.Description!,
-                                    StringComparer.OrdinalIgnoreCase),
-                            place.UpdatedAt);
+                        place.UpdatedAt,
+                        place.Id,
+                        placeRating?.AverageRating,
+                        placeRating?.ReviewCount ?? 0);
                 }
 
             case "visa":
@@ -227,6 +283,8 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
                     var visa = await dbContext.VisaCountries
                         .AsNoTracking()
                         .Include(item => item.Translations)
+                        .Include(item => item.Types)
+                            .ThenInclude(type => type.Faqs)
                         .FirstOrDefaultAsync(item => item.Slug == normalizedSlug, cancellationToken);
                     return visa is null
                         ? null
@@ -243,7 +301,12 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
                                     item => item.Locale,
                                     item => item.Description!,
                                     StringComparer.OrdinalIgnoreCase),
-                            visa.CreatedAt);
+                            visa.CreatedAt,
+                            visa.Id,
+                            Faqs: visa.Types
+                                .SelectMany(type => type.Faqs)
+                                .Select(faq => new CatalogFaq(faq.Question, faq.Answer))
+                                .ToArray());
                 }
 
             case "flight":

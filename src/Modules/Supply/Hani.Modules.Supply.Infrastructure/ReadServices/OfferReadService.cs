@@ -6,31 +6,56 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Supply.Infrastructure.ReadServices;
 
-internal sealed class OfferReadService(SupplyDbContext dbContext) : IOfferReadService
+internal sealed class OfferReadService(SupplyDbContext dbContext)
+    : IOfferReadService, IHotelOfferReadService
 {
     public async Task<IReadOnlyList<OfferSnapshot>> GetApprovedOffersAsync(
         Guid tourProductId,
         CancellationToken cancellationToken)
     {
-        var offers = (await dbContext.AgencyOffers
-                .AsNoTracking()
-                .AsSplitQuery()
-                .Include(offer => offer.AccommodationOptions)
-                .Include(offer => offer.FlightOptions)
-                .Include(offer => offer.TaxRules)
-                .Where(offer =>
-                    offer.TourProductId == tourProductId &&
-                    offer.Status == AgencyOfferStatus.Approved)
-                .ToArrayAsync(cancellationToken))
-            .OrderBy(offer => offer.BasePrice.Amount)
-            .ToArray();
+        var offers = await dbContext.AgencyOffers
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(offer => offer.AccommodationOptions)
+            .Include(offer => offer.FlightOptions)
+            .Include(offer => offer.TaxRules)
+            .Where(offer =>
+                offer.TourProductId == tourProductId &&
+                offer.Status == AgencyOfferStatus.Approved)
+            .ToArrayAsync(cancellationToken);
 
+        return await MapAsync(offers, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<OfferSnapshot>> GetApprovedOffersByHotelAsync(
+        Guid hotelId,
+        CancellationToken cancellationToken)
+    {
+        var offers = await dbContext.AgencyOffers
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(offer => offer.AccommodationOptions)
+            .Include(offer => offer.FlightOptions)
+            .Include(offer => offer.TaxRules)
+            .Where(offer =>
+                offer.Status == AgencyOfferStatus.Approved &&
+                offer.AccommodationOptions.Any(option => option.HotelId == hotelId))
+            .ToArrayAsync(cancellationToken);
+
+        return await MapAsync(offers, cancellationToken);
+    }
+
+    private async Task<IReadOnlyList<OfferSnapshot>> MapAsync(
+        AgencyOffer[] offers,
+        CancellationToken cancellationToken)
+    {
         if (offers.Length == 0)
         {
             return [];
         }
 
-        var offerIds = offers.Select(offer => offer.Id).ToArray();
+        var sortedOffers = offers.OrderBy(offer => offer.BasePrice.Amount).ToArray();
+        var offerIds = sortedOffers.Select(offer => offer.Id).ToArray();
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
         var departures = await dbContext.TourDepartures
@@ -46,7 +71,7 @@ internal sealed class OfferReadService(SupplyDbContext dbContext) : IOfferReadSe
             .GroupBy(departure => departure.AgencyOfferId)
             .ToDictionary(group => group.Key, group => group.ToArray());
 
-        return offers
+        return sortedOffers
             .Select(offer => new OfferSnapshot(
                 offer.Id,
                 offer.AgencyId,

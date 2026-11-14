@@ -40,8 +40,10 @@ internal sealed class GetProductSeoQueryHandler(
 
         var breadcrumbs = new List<BreadcrumbItemDto>
         {
-            new("Home", SeoMetadataBuilder.BuildUrl(baseUrl, locale, string.Empty)),
-            new("Tours", SeoMetadataBuilder.BuildUrl(baseUrl, locale, "tours"))
+            new(SeoLabels.Resolve(options.Value, languages, locale, "Home", "Home"),
+                SeoMetadataBuilder.BuildUrl(baseUrl, locale, string.Empty)),
+            new(SeoLabels.Resolve(options.Value, languages, locale, "Tours", "Tours"),
+                SeoMetadataBuilder.BuildUrl(baseUrl, locale, "tours"))
         };
 
         foreach (var destinationId in product.DestinationIds)
@@ -129,13 +131,28 @@ internal sealed class GetLandingSeoQueryHandler(
         var baseUrl = options.Value.PublicBaseUrl;
         var path = $"tours/{destination.Slug}";
         var canonicalUrl = SeoMetadataBuilder.BuildUrl(baseUrl, locale, path);
-        var title = $"{destinationName} tours";
-        var description = $"Explore {count} curated tours to {destinationName} with Hani.";
+        var title = SeoLabels.Format(
+            options.Value,
+            languages,
+            locale,
+            "ToursTitle",
+            "{0} tours",
+            destinationName);
+        var description = SeoLabels.Format(
+            options.Value,
+            languages,
+            locale,
+            "ToursDescription",
+            "Explore {1} curated tours to {0} with Hani.",
+            destinationName,
+            count);
 
         var breadcrumbs = new List<BreadcrumbItemDto>
         {
-            new("Home", SeoMetadataBuilder.BuildUrl(baseUrl, locale, string.Empty)),
-            new("Tours", SeoMetadataBuilder.BuildUrl(baseUrl, locale, "tours")),
+            new(SeoLabels.Resolve(options.Value, languages, locale, "Home", "Home"),
+                SeoMetadataBuilder.BuildUrl(baseUrl, locale, string.Empty)),
+            new(SeoLabels.Resolve(options.Value, languages, locale, "Tours", "Tours"),
+                SeoMetadataBuilder.BuildUrl(baseUrl, locale, "tours")),
             new(destinationName, canonicalUrl)
         };
 
@@ -186,11 +203,17 @@ internal sealed class GetVerticalSeoQueryHandler(
         var baseUrl = options.Value.PublicBaseUrl;
         var path = GetPath(vertical.Type, vertical.Slug);
         var canonicalUrl = SeoMetadataBuilder.BuildUrl(baseUrl, locale, path);
-        var listLabel = GetListLabel(vertical.Type);
+        var listLabel = SeoLabels.Resolve(
+            options.Value,
+            languages,
+            locale,
+            GetLabelKey(vertical.Type),
+            "Explore");
 
         var breadcrumbs = new List<BreadcrumbItemDto>
         {
-            new("Home", SeoMetadataBuilder.BuildUrl(baseUrl, locale, string.Empty)),
+            new(SeoLabels.Resolve(options.Value, languages, locale, "Home", "Home"),
+                SeoMetadataBuilder.BuildUrl(baseUrl, locale, string.Empty)),
             new(listLabel, SeoMetadataBuilder.BuildUrl(baseUrl, locale, GetListPath(vertical.Type))),
             new(name, canonicalUrl)
         };
@@ -211,7 +234,10 @@ internal sealed class GetVerticalSeoQueryHandler(
                 name,
                 description,
                 canonicalUrl,
-                baseUrl)));
+                baseUrl,
+                vertical.AverageRating,
+                vertical.ReviewCount,
+                vertical.Faqs)));
     }
 
     private static string GetPath(string type, string slug)
@@ -236,7 +262,7 @@ internal sealed class GetVerticalSeoQueryHandler(
             _ => string.Empty
         };
 
-    private static string GetListLabel(string type)
+    private static string GetLabelKey(string type)
         => type.ToLowerInvariant() switch
         {
             "hotel" => "Hotels",
@@ -257,6 +283,139 @@ internal sealed class GetVerticalSeoQueryHandler(
             : values.TryGetValue(languages.DefaultLanguage, out var defaultValue)
                 ? defaultValue
                 : values.Values.FirstOrDefault() ?? fallback;
+}
+
+internal sealed class GetVerticalLandingSeoQueryHandler(
+    ICatalogReadService catalog,
+    ILanguageCatalog languages,
+    IOptions<SeoOptions> options)
+    : IQueryHandler<GetVerticalLandingSeoQuery, VerticalLandingSeoDto>
+{
+    public async Task<Result<VerticalLandingSeoDto>> Handle(
+        GetVerticalLandingSeoQuery request,
+        CancellationToken cancellationToken)
+    {
+        var locale = languages.Normalize(request.Locale);
+        var type = request.Type.Trim().ToLowerInvariant();
+        var listPath = GetListPath(type);
+        var label = SeoLabels.Resolve(
+            options.Value,
+            languages,
+            locale,
+            GetLabelKey(type),
+            "Explore");
+        var name = label;
+
+        if (!string.IsNullOrWhiteSpace(request.DestinationSlug))
+        {
+            var destination = await catalog.GetDestinationBySlugAsync(
+                request.DestinationSlug,
+                cancellationToken);
+
+            if (destination is null)
+            {
+                return Result<VerticalLandingSeoDto>.Failure(
+                    Error.NotFound("HANI-MARKET-1308", "Destination was not found."));
+            }
+
+            name = Resolve(destination.Names, locale, languages, destination.Slug);
+        }
+
+        var count = await catalog.CountVerticalsAsync(
+            type,
+            request.DestinationSlug,
+            cancellationToken);
+        var baseUrl = options.Value.PublicBaseUrl;
+        var path = string.IsNullOrWhiteSpace(request.DestinationSlug)
+            ? listPath
+            : $"{listPath}/{request.DestinationSlug.Trim()}";
+        var canonicalUrl = SeoMetadataBuilder.BuildUrl(baseUrl, locale, path);
+        var title = string.IsNullOrWhiteSpace(request.DestinationSlug)
+            ? label
+            : SeoLabels.Format(
+                options.Value,
+                languages,
+                locale,
+                "VerticalTitle",
+                "{0} {1}",
+                name,
+                label);
+        var description = SeoLabels.Format(
+            options.Value,
+            languages,
+            locale,
+            "VerticalDescription",
+            "Browse {1} {0} on Hani.",
+            name,
+            count);
+
+        var breadcrumbs = new List<BreadcrumbItemDto>
+        {
+            new(SeoLabels.Resolve(options.Value, languages, locale, "Home", "Home"),
+                SeoMetadataBuilder.BuildUrl(baseUrl, locale, string.Empty))
+        };
+
+        if (!string.IsNullOrWhiteSpace(request.DestinationSlug))
+        {
+            breadcrumbs.Add(new BreadcrumbItemDto(
+                label,
+                SeoMetadataBuilder.BuildUrl(baseUrl, locale, listPath)));
+        }
+
+        breadcrumbs.Add(new BreadcrumbItemDto(name, canonicalUrl));
+
+        return Result<VerticalLandingSeoDto>.Success(new VerticalLandingSeoDto(
+            type,
+            request.DestinationSlug,
+            locale,
+            canonicalUrl,
+            title,
+            description,
+            count,
+            "index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1",
+            SeoMetadataBuilder.BuildAlternates(baseUrl, languages.SupportedLanguages, path),
+            breadcrumbs,
+            SeoMetadataBuilder.BuildBreadcrumbJsonLd(breadcrumbs),
+            SeoMetadataBuilder.BuildCollectionJsonLd(
+                title,
+                description,
+                canonicalUrl,
+                count,
+                baseUrl)));
+    }
+
+    private static string Resolve(
+        IReadOnlyDictionary<string, string> values,
+        string locale,
+        ILanguageCatalog languages,
+        string fallback)
+        => values.TryGetValue(locale, out var value)
+            ? value
+            : values.TryGetValue(languages.DefaultLanguage, out var defaultValue)
+                ? defaultValue
+                : values.Values.FirstOrDefault() ?? fallback;
+
+    private static string GetListPath(string type)
+        => type switch
+        {
+            "hotel" => "hotels",
+            "restaurant" => "restaurants",
+            "attraction" => "attractions",
+            "visa" => "visas",
+            "flight" => "flights",
+            _ => type
+        };
+
+    private static string GetLabelKey(string type)
+        => type switch
+        {
+            "hotel" => "Hotels",
+            "restaurant" => "Restaurants",
+            "attraction" => "Attractions",
+            "visa" => "Visa",
+            "flight" => "Flights",
+            _ => "Explore"
+        };
 }
 
 internal sealed class GetSitemapQueryHandler(

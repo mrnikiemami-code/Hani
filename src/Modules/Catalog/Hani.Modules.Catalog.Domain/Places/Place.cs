@@ -19,6 +19,8 @@ public sealed class Place : AggregateRoot<Guid>
     private readonly List<PlaceTranslation> _translations = [];
     private readonly List<PlaceAmenity> _amenities = [];
     private readonly List<PlaceMenuItem> _menuItems = [];
+    private readonly List<PlaceMealPeriod> _mealPeriods = [];
+    private readonly List<PlaceDietaryOption> _dietaryOptions = [];
 
     private Place()
     {
@@ -125,6 +127,16 @@ public sealed class Place : AggregateRoot<Guid>
     /// Menu items for restaurants; empty for attractions.
     /// </summary>
     public IReadOnlyCollection<PlaceMenuItem> MenuItems => _menuItems;
+
+    /// <summary>
+    /// Meal periods served by a restaurant.
+    /// </summary>
+    public IReadOnlyCollection<PlaceMealPeriod> MealPeriods => _mealPeriods;
+
+    /// <summary>
+    /// Dietary options supported by a restaurant.
+    /// </summary>
+    public IReadOnlyCollection<PlaceDietaryOption> DietaryOptions => _dietaryOptions;
 
     /// <summary>
     /// Creates a validated place.
@@ -238,6 +250,50 @@ public sealed class Place : AggregateRoot<Guid>
                 item.Price,
                 item.Currency,
                 item.SortOrder));
+        }
+
+        Touch();
+    }
+
+    /// <summary>
+    /// Replaces restaurant meal periods.
+    /// </summary>
+    public void ReplaceMealPeriods(IIdGenerator ids, IEnumerable<string> mealPeriods)
+    {
+        if (Type != PlaceType.Restaurant && mealPeriods.Any())
+        {
+            throw new InvalidOperationException("Only restaurants can have meal periods.");
+        }
+
+        _mealPeriods.Clear();
+
+        foreach (var mealPeriod in mealPeriods
+                     .Where(item => !string.IsNullOrWhiteSpace(item))
+                     .Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            _mealPeriods.Add(new PlaceMealPeriod(ids.NewId(), Id, mealPeriod));
+        }
+
+        Touch();
+    }
+
+    /// <summary>
+    /// Replaces restaurant dietary options.
+    /// </summary>
+    public void ReplaceDietaryOptions(IIdGenerator ids, IEnumerable<string> dietaryOptions)
+    {
+        if (Type != PlaceType.Restaurant && dietaryOptions.Any())
+        {
+            throw new InvalidOperationException("Only restaurants can have dietary options.");
+        }
+
+        _dietaryOptions.Clear();
+
+        foreach (var option in dietaryOptions
+                     .Where(item => !string.IsNullOrWhiteSpace(item))
+                     .Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            _dietaryOptions.Add(new PlaceDietaryOption(ids.NewId(), Id, option));
         }
 
         Touch();
@@ -376,3 +432,47 @@ public sealed record PlaceMenuItemInput(
     string Currency,
     string? Description = null,
     int SortOrder = 0);
+
+/// <summary>
+/// Meal period served by a restaurant.
+/// </summary>
+public sealed class PlaceMealPeriod : Entity<Guid>
+{
+    private PlaceMealPeriod()
+    {
+    }
+
+    internal PlaceMealPeriod(Guid id, Guid placeId, string name) : base(id)
+    {
+        PlaceId = placeId;
+        Name = name.Trim();
+    }
+
+    /// <summary>Parent place.</summary>
+    public Guid PlaceId { get; private set; }
+
+    /// <summary>Meal period name such as Breakfast, Lunch, or Dinner.</summary>
+    public string Name { get; private set; } = string.Empty;
+}
+
+/// <summary>
+/// Dietary option supported by a restaurant.
+/// </summary>
+public sealed class PlaceDietaryOption : Entity<Guid>
+{
+    private PlaceDietaryOption()
+    {
+    }
+
+    internal PlaceDietaryOption(Guid id, Guid placeId, string name) : base(id)
+    {
+        PlaceId = placeId;
+        Name = name.Trim();
+    }
+
+    /// <summary>Parent place.</summary>
+    public Guid PlaceId { get; private set; }
+
+    /// <summary>Dietary option such as Halal, Vegetarian, or GlutenFree.</summary>
+    public string Name { get; private set; } = string.Empty;
+}

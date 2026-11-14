@@ -43,5 +43,20 @@ internal sealed class VisaApplicationConfiguration : IEntityTypeConfiguration<Vi
             documents.Property(document => document.FileUrl).HasColumnName("file_url").HasMaxLength(1000).IsRequired();
             documents.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
+
+        builder.OwnsMany(item => item.Applicants, applicants =>
+        {
+            applicants.ToTable("visa_application_applicants");
+            applicants.WithOwner().HasForeignKey(applicant => applicant.ApplicationId);
+            applicants.HasKey(applicant => applicant.Id);
+            applicants.Property(applicant => applicant.Id).HasColumnName("id").ValueGeneratedNever();
+            applicants.Property(applicant => applicant.ApplicationId).HasColumnName("application_id");
+            applicants.Property(applicant => applicant.FullName).HasColumnName("full_name").HasMaxLength(200).IsRequired();
+            applicants.Property(applicant => applicant.PassportNo).HasColumnName("passport_no").HasMaxLength(32).IsRequired();
+            applicants.Property(applicant => applicant.Nationality).HasColumnName("nationality").HasMaxLength(80).IsRequired();
+            applicants.Property(applicant => applicant.DateOfBirth).HasColumnName("date_of_birth");
+            applicants.Property(applicant => applicant.Relation).HasColumnName("relation").HasMaxLength(80);
+            applicants.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
     }
 }

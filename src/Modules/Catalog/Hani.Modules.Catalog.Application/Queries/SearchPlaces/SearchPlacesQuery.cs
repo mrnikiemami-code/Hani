@@ -16,6 +16,8 @@ public sealed record SearchPlacesQuery(
     string? Amenity = null,
     bool? Reservable = null,
     bool? OnlineReservable = null,
+    string? MealPeriod = null,
+    string? DietaryOption = null,
     string? Q = null,
     int Page = 1,
     int PageSize = 20,
@@ -38,4 +40,6 @@ public sealed record PlaceSummaryDto(
     string Name,
     int AmenityCount,
     decimal? AverageRating = null,
-    int ReviewCount = 0);
+    int ReviewCount = 0,
+    decimal? RecommendationPercent = null,
+    int? RankInCity = null);

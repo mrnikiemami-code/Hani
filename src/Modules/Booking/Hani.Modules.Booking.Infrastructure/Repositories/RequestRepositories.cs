@@ -206,6 +206,7 @@ internal sealed class VisaApplicationRepository(BookingDbContext dbContext)
     public Task<VisaApplication?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         => dbContext.VisaApplications
             .Include(application => application.Documents)
+            .Include(application => application.Applicants)
             .FirstOrDefaultAsync(application => application.Id == id, cancellationToken);
 
     public async Task<IReadOnlyList<VisaApplication>> ListAsync(
@@ -217,6 +218,7 @@ internal sealed class VisaApplicationRepository(BookingDbContext dbContext)
         var query = dbContext.VisaApplications
             .AsNoTracking()
             .Include(application => application.Documents)
+            .Include(application => application.Applicants)
             .AsQueryable();
 
         if (status is not null)

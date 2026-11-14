@@ -22,6 +22,9 @@
 | `TourCategory` / `TravelType` | Normal/Installment/Luxury و Air/Bus/Rail/Other |
 | `Hotel` / `HotelTranslation` / `HotelAmenity` | هتل canonical با ستاره/مختصات/امکانات/ترجمه |
 | `HotelImage` | گالری تصاویر هتل |
+| `HotelRoom` | اتاق/پلن اقامت با ظرفیت و قیمت |
+| `PlaceMealPeriod` / `PlaceDietaryOption` | وعده غذایی و رژیم رستوران |
+| `Airline` / `Airport` | مرجع canonical ایرلاین/فرودگاه برای فیلتر و Nearby |
 | `Place` / `PlaceTranslation` / `PlaceAmenity` | رستوران/جاذبه canonical با Geo و Reservation |
 | `PlaceMenuItem` | منوی رستوران با بخش/قیمت/ارز |
 | `VisaCountry` / `VisaType` | ویزا با قیمت بزرگسال/کودک، مدارک، مراحل و FAQ |
@@ -48,6 +51,7 @@
 | GET | `/market/v1/hotels` |
 | GET | `/market/v1/hotels/nearby` |
 | GET | `/market/v1/hotels/{slug}` |
+| GET | `/market/v1/hotels/{slug}/tours` |
 | POST | `/internal/v1/places` |
 | GET | `/market/v1/places/{slug}` |
 | GET | `/market/v1/places/nearby` |
@@ -60,11 +64,15 @@
 | GET | `/market/v1/visas` |
 | GET | `/market/v1/visas/{slug}` |
 | POST | `/internal/v1/flights/routes` |
+| POST | `/internal/v1/flights/airlines` |
+| POST | `/internal/v1/flights/airports` |
+| GET | `/market/v1/flights/references` |
 | GET | `/market/v1/flights/search` |
+| GET | `/market/v1/flights/references` |
 | GET | `/market/v1/flights/routes/{slug}` |
 
 ## Persistence
 
 - Schema: `catalog`
-- جدول‌ها: `tour_products`, `tour_product_translations`, `tour_itinerary_days`, `tour_itinerary_day_translations`, `tour_product_destinations`, `destinations`, `destination_translations`, `hotels`, `hotel_translations`, `hotel_amenities`, `hotel_images`, `places`, `place_translations`, `place_amenities`, `place_menu_items`, `visa_countries`, `visa_country_translations`, `visa_types`, `visa_documents`, `visa_steps`, `visa_faqs`, `flight_routes`, `flight_offers`
-- Migrationها: `InitialCatalog`, `AddTourContent`, `AddHotelsPlacesAndTourTaxonomy`, `AddGate5Verticals`, `AddGate5VerticalMedia`
+- جدول‌ها: `tour_products`, `tour_product_translations`, `tour_itinerary_days`, `tour_itinerary_day_translations`, `tour_product_destinations`, `destinations`, `destination_translations`, `hotels`, `hotel_translations`, `hotel_amenities`, `hotel_images`, `hotel_rooms`, `places`, `place_translations`, `place_amenities`, `place_menu_items`, `place_meal_periods`, `place_dietary_options`, `visa_countries`, `visa_country_translations`, `visa_types`, `visa_documents`, `visa_steps`, `visa_faqs`, `flight_routes`, `flight_offers`, `airlines`, `airports`
+- Migrationها: `InitialCatalog`, `AddTourContent`, `AddHotelsPlacesAndTourTaxonomy`, `AddGate5Verticals`, `AddGate5VerticalMedia`, `AddGate51VerticalDepth`
