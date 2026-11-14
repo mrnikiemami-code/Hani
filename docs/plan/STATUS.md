@@ -1,13 +1,14 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 8.1 — Lastsecond Parity Closure (PASSED Core)
+> **فاز فعال:** Gate 9 — Frontend Launch (PASSED Core)
 > **آخرین commit کد:** `1e76231`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core) / Gate 8.1 ✅ PASSED (Core)
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core) / Gate 8.1 ✅ PASSED (Core) / Gate 9 ✅ PASSED (Core)
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 > **گزارش Gate:** [`../reports/baseline-gate-8.md`](../reports/baseline-gate-8.md)
 > **قرارداد Gate 8.1:** [`GATE-8.1-CONTRACT.md`](GATE-8.1-CONTRACT.md)
+> **قرارداد Gate 9:** [`GATE-9-CONTRACT.md`](GATE-9-CONTRACT.md)
 > **بازبینی دوباره Lastsecond:** [`../reports/lastsecond-reaudit-post-gate8-2026-11-14.md`](../reports/lastsecond-reaudit-post-gate8-2026-11-14.md)
 > **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **برنامه Remediation:** [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md)
@@ -27,6 +28,7 @@
 | 4 | Flights | ✅ Gate 5 | 100% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ✅ Gate 5/5.1 + Gate 6 | 100% |
 | 6 | Hardening & Scale | ✅ Gate 8 + 8.1 PASSED (Core) | 100% |
+| 7 | Frontend Launch | ✅ Gate 9 PASSED (Core) | 100% |
 
 > از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۱ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 1 به‌عنوان وضعیت تاریخی باقی می‌ماند.
 
@@ -203,9 +205,10 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 8.1 — Lastsecond Parity Closure (PASSED Core)
+**تسک فعال:** Gate 9 — Frontend Launch (PASSED Core)
 
-> **Gate 8.1 (2026-11-14):** ۱۲ انحراف Backend بسته شد (Continent/هیبرارشی، Hotel sort/rank، Agency directory/profile، Author aggregate، Home BFF، Content JSON-LD، Review criteria، Blog tags/related، Visa related articles، Media upload، HTTP Email/SMS). E-01 (Frontend)، E-07 (credential پرووایدر پرواز) و A-15 (Lastgram SSO/Competition) به‌عنوان تحویل خارجی باقی ماندند. قرارداد: [`GATE-8.1-CONTRACT.md`](GATE-8.1-CONTRACT.md).
+> **Gate 8.1 (2026-11-14):** ۱۲ انحراف Backend بسته شد (Continent/هیبرارشی، Hotel sort/rank، Agency directory/profile، Author aggregate، Home BFF، Content JSON-LD، Review criteria، Blog tags/related، Visa related articles، Media upload، HTTP Email/SMS). E-07 (credential پرووایدر پرواز) و A-15 (Lastgram SSO/Competition) به‌عنوان تحویل خارجی باقی ماندند؛ E-01 در Gate 9 بسته شد. قرارداد: [`GATE-8.1-CONTRACT.md`](GATE-8.1-CONTRACT.md).
+> **Gate 9 (2026-11-14):** Frontend Next.js 16 / React 19 با routing سه‌زبانه FA/EN/AR، RTL/LTR، صفحات Home/Tours/Hotels/Visa/Blog/Itineraries/Videos/Agencies/Author/Restaurants/Attractions/Flights ساخته شد. Contract: [`GATE-9-CONTRACT.md`](GATE-9-CONTRACT.md).
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
@@ -233,6 +236,24 @@
 - [x] A-08 — `TourCategory` + `TravelType` + search filters
 
 **شکاف‌های اصلی Gate 6/7:** Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
+
+### Gate 9 — Exit Checklist ✅ PASSED (Core)
+
+- [x] Next.js 16 / React 19 application
+- [x] FA/EN/AR routing + RTL/LTR
+- [x] API client + typed public DTOs
+- [x] Home BFF page
+- [x] Tours list/detail
+- [x] Hotels list/detail
+- [x] Visa list/detail
+- [x] Blog / Itineraries / Videos
+- [x] Agency directory/profile
+- [x] Author aggregate profile
+- [x] Restaurants / Attractions
+- [x] Flights metasearch page
+- [x] Login entry page
+- [x] `npm run build` + HTTP smoke
+- [ ] Playwright E2E + production credentials/CDN/TLS (external)
 
 ### Gate 8.1 — Exit Checklist ✅ PASSED (Core)
 

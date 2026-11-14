@@ -166,6 +166,10 @@
 | D-149 | Media upload | multipart upload + storage abstraction | Gate 8.1 |
 | D-150 | Notification provider | HTTP Email/SMS sender + logging fallback | Gate 8.1 |
 | D-151 | External boundary | frontend, flight credentials, Lastgram SSO/competition | Gate 8.1 |
+| D-152 | Next.js frontend | FA/EN/AR app shell + RTL/LTR + API client | Gate 9 |
+| D-153 | Core public pages | home, tours, hotels, visa, content, agencies, author, places, flights | Gate 9 |
+| D-154 | Frontend build | `npm run build` + smoke HTTP 200 | Gate 9 |
+| D-155 | Frontend Docker | multi-stage Next.js image | Gate 9 |
 
 ## ۳. مستندات
 

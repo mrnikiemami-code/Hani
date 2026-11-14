@@ -1,0 +1,48 @@
+{
+  "brand": "هاني",
+  "tagline": "سفر ذكي من اللحظة الأخيرة",
+  "nav": {
+    "tours": "الجولات",
+    "hotels": "الفنادق",
+    "restaurants": "المطاعم",
+    "attractions": "المعالم",
+    "visa": "التأشيرات",
+    "flights": "الرحلات",
+    "itineraries": "يوميات السفر",
+    "blog": "المجلة",
+    "videos": "الفيديوهات",
+    "agencies": "الوكالات"
+  },
+  "home": {
+    "title": "اختر رحلتك القادمة بثقة",
+    "subtitle": "قارن الجولات والفنادق والتأشيرات وتجارب المسافرين",
+    "featuredTours": "جولات مميزة",
+    "latestItineraries": "أحدث يوميات السفر",
+    "latestBlog": "مجلة السفر",
+    "visas": "تأشيرات شائعة",
+    "campaigns": "الحملات"
+  },
+  "common": {
+    "search": "بحث",
+    "from": "ابتداءً من",
+    "nights": "ليالٍ",
+    "viewAll": "عرض الكل",
+    "noResults": "لا توجد نتائج",
+    "loading": "جارٍ التحميل...",
+    "tours": "الجولات",
+    "hotels": "الفنادق",
+    "offers": "العروض",
+    "amenities": "المرافق",
+    "rooms": "الغرف",
+    "visa": "التأشيرات",
+    "blog": "المجلة",
+    "itineraries": "يوميات السفر",
+    "agencies": "الوكالات",
+    "restaurants": "المطاعم",
+    "attractions": "المعالم",
+    "flights": "الرحلات",
+    "videos": "الفيديوهات",
+    "login": "????? ??????",
+    "dashboard": "???? ??????"
+  }
+}

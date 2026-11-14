@@ -1,0 +1,48 @@
+{
+  "brand": "Hani",
+  "tagline": "Smart travel, from the last second",
+  "nav": {
+    "tours": "Tours",
+    "hotels": "Hotels",
+    "restaurants": "Restaurants",
+    "attractions": "Attractions",
+    "visa": "Visa",
+    "flights": "Flights",
+    "itineraries": "Itineraries",
+    "blog": "Magazine",
+    "videos": "Videos",
+    "agencies": "Agencies"
+  },
+  "home": {
+    "title": "Choose your next trip with confidence",
+    "subtitle": "Compare tours, hotels, visas, and real traveler experiences",
+    "featuredTours": "Featured tours",
+    "latestItineraries": "Latest itineraries",
+    "latestBlog": "Travel magazine",
+    "visas": "Popular visas",
+    "campaigns": "Campaigns"
+  },
+  "common": {
+    "search": "Search",
+    "from": "From",
+    "nights": "nights",
+    "viewAll": "View all",
+    "noResults": "No results found",
+    "loading": "Loading...",
+    "tours": "Tours",
+    "hotels": "Hotels",
+    "offers": "Offers",
+    "amenities": "Amenities",
+    "rooms": "Rooms",
+    "visa": "Visa",
+    "blog": "Magazine",
+    "itineraries": "Itineraries",
+    "agencies": "Agencies",
+    "restaurants": "Restaurants",
+    "attractions": "Attractions",
+    "flights": "Flights",
+    "videos": "Videos",
+    "login": "Login",
+    "dashboard": "Dashboard"
+  }
+}

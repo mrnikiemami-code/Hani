@@ -45,7 +45,7 @@ dotnet test Hani.slnx
 | بخش | تصمیم |
 |---|---|
 | Backend | ASP.NET Core 10 / Minimal API |
-| Frontend | Next.js 16 / React 19 |
+| Frontend | Next.js 16 / React 19 — Gate 9 Core (`frontend/`) |
 | معماری | Modular Monolith + Clean Architecture |
 | Database | PostgreSQL + Schema per Module |
 | Cache | Redis با انتزاع قابل جایگزینی |

@@ -1,0 +1,48 @@
+{
+  "brand": "هانی",
+  "tagline": "سفر هوشمند، از لحظه آخر",
+  "nav": {
+    "tours": "تورها",
+    "hotels": "هتل‌ها",
+    "restaurants": "رستوران‌ها",
+    "attractions": "جاذبه‌ها",
+    "visa": "ویزا",
+    "flights": "پروازها",
+    "itineraries": "سفرنامه‌ها",
+    "blog": "مجله",
+    "videos": "ویدیوها",
+    "agencies": "آژانس‌ها"
+  },
+  "home": {
+    "title": "سفر بعدی‌ات را با اطمینان انتخاب کن",
+    "subtitle": "مقایسه تور، هتل، ویزا و تجربه مسافران در یک پلتفرم",
+    "featuredTours": "تورهای ویژه",
+    "latestItineraries": "جدیدترین سفرنامه‌ها",
+    "latestBlog": "مجله گردشگری",
+    "visas": "ویزای پرطرفدار",
+    "campaigns": "کمپین‌ها"
+  },
+  "common": {
+    "search": "جستجو",
+    "from": "شروع از",
+    "nights": "شب",
+    "viewAll": "مشاهده همه",
+    "noResults": "نتیجه‌ای یافت نشد",
+    "loading": "در حال بارگذاری...",
+    "tours": "تورها",
+    "hotels": "هتل‌ها",
+    "offers": "پیشنهادها",
+    "amenities": "امکانات",
+    "rooms": "اتاق‌ها",
+    "visa": "ویزا",
+    "blog": "مجله",
+    "itineraries": "سفرنامه‌ها",
+    "agencies": "آژانس‌ها",
+    "restaurants": "رستوران‌ها",
+    "attractions": "جاذبه‌ها",
+    "flights": "پروازها",
+    "videos": "ویدیوها",
+    "login": "????",
+    "dashboard": "???????"
+  }
+}

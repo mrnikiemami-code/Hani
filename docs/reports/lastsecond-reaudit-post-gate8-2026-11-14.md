@@ -148,7 +148,7 @@ deliverables are still outside this repository.
 
 | ID | Final status | Evidence |
 |---|---|---|
-| E-01 | External | Next.js frontend |
+| E-01 | ✅ Closed (Gate 9 Core) | Next.js frontend in `frontend/` |
 | E-02 | ? Closed (adapter) | `HttpNotificationSender` + logging fallback |
 | E-03 | ? Closed | Blog/Travelogue/Video JSON-LD endpoints |
 | E-04 | ? Closed | `/market/v1/authors/{username}/profile` |

@@ -264,4 +264,5 @@
 - Gate 7: ✅ PASSED (Core) — Channel OAuth/API، Refund/Invoice، Settlement/Payout، Webhook/Dunning/Dashboard/Reconciliation.
 - Gate 8: ✅ PASSED (Core) — Search hardening, sitemap, Testcontainers, load/SLO, DR, security, observability, ADR-0029. Contract: [`GATE-8-CONTRACT.md`](GATE-8-CONTRACT.md).
 - Gate 8.1: ✅ PASSED (Core) — Lastsecond parity closure: continents/hierarchy, hotel sort/rank, agency directory/profile, author aggregate, Home BFF, content JSON-LD, review criteria, blog tags/related, visa related articles, media upload, HTTP notification sender. Contract: [`GATE-8.1-CONTRACT.md`](GATE-8.1-CONTRACT.md). External: Next.js frontend, real flight-provider credentials, Lastgram SSO/Competition.
+- Gate 9: ✅ PASSED (Core) — Next.js 16/React 19 frontend with FA/EN/AR routing, RTL/LTR, API client, and core public pages. Contract: [`GATE-9-CONTRACT.md`](GATE-9-CONTRACT.md). External: Playwright/production E2E, real credentials, CDN/TLS.
 - Audit: [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
