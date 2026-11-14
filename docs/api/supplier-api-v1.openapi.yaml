@@ -305,6 +305,23 @@ components:
         taxRules:
           type: array
           items: { $ref: '#/components/schemas/TaxRule' }
+        bookingMode: { type: string, enum: [Online, ReservationRequest], default: Online }
+        collectionMode: { type: string, enum: [HaniOnline, AgencyOnline, AgencyOffline], default: HaniOnline }
+        sellerOfRecord: { type: string, enum: [Hani, Agency], default: Hani }
+        invoiceIssuer: { type: string, enum: [Hani, Agency], default: Hani }
+        installmentTerms:
+          oneOf:
+            - $ref: '#/components/schemas/InstallmentTerms'
+            - type: 'null'
+
+    InstallmentTerms:
+      type: object
+      required: [minDownPaymentRate, maxMonths, monthlyFeeRate, requiresCheque]
+      properties:
+        minDownPaymentRate: { type: number, minimum: 0, maximum: 1 }
+        maxMonths: { type: integer, minimum: 1, maximum: 36 }
+        monthlyFeeRate: { type: number, minimum: 0, maximum: 1 }
+        requiresCheque: { type: boolean }
 
     TaxRule:
       type: object
@@ -321,6 +338,7 @@ components:
       type: object
       required: [hotelName, hotelStars, roomType, mealPlan, amount, currency]
       properties:
+        hotelId: { type: [string, 'null'], format: uuid }
         hotelName: { type: string, maxLength: 200 }
         hotelStars: { type: integer, minimum: 1, maximum: 5 }
         roomType: { type: string, enum: [Double, Single, Triple, ChildWithBed, ChildWithoutBed, Infant] }

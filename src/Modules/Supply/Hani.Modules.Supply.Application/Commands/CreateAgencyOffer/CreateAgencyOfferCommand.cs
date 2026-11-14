@@ -26,7 +26,8 @@ public sealed record AccommodationOptionInput(
     MealPlanType MealPlan,
     decimal Amount,
     string Currency,
-    string? Description = null);
+    string? Description = null,
+    Guid? HotelId = null);
 
 /// <summary>
 /// Flight option input.
@@ -56,4 +57,16 @@ public sealed record CreateAgencyOfferCommand(
     IReadOnlyList<FlightOptionInput>? FlightOptions = null,
     IReadOnlyList<TaxRuleInput>? TaxRules = null,
     BookingMode BookingMode = BookingMode.Online,
-    CollectionMode CollectionMode = CollectionMode.Online) : ICommand<Guid>;
+    CollectionMode CollectionMode = CollectionMode.HaniOnline,
+    SellerOfRecord SellerOfRecord = SellerOfRecord.Hani,
+    InvoiceIssuer InvoiceIssuer = InvoiceIssuer.Hani,
+    InstallmentTermsInput? InstallmentTerms = null) : ICommand<Guid>;
+
+/// <summary>
+/// Installment rules submitted by a supplier.
+/// </summary>
+public sealed record InstallmentTermsInput(
+    decimal MinDownPaymentRate,
+    int MaxMonths,
+    decimal MonthlyFeeRate,
+    bool RequiresCheque);

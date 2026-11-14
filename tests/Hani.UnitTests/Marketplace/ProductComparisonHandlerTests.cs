@@ -38,7 +38,7 @@ public sealed class ProductComparisonHandlerTests
                 agencyB,
                 45_000_000m,
                 bookingMode: "ReservationRequest",
-                collectionMode: "Offline")
+                collectionMode: "AgencyOffline")
         ];
 
         var handler = new GetProductComparisonQueryHandler(catalog, offers, agencies, new FakeLanguageCatalog());
@@ -52,7 +52,7 @@ public sealed class ProductComparisonHandlerTests
         result.Value.Offers[0].MinPrice.ShouldBe(45_000_000m);
         result.Value.Offers[0].AgencyName.ShouldBe("Agency B");
         result.Value.Offers[0].BookingMode.ShouldBe("ReservationRequest");
-        result.Value.Offers[0].CollectionMode.ShouldBe("Offline");
+        result.Value.Offers[0].CollectionMode.ShouldBe("AgencyOffline");
         result.Value.Title.ShouldBe("استانبول");
     }
 
@@ -78,7 +78,7 @@ public sealed class ProductComparisonHandlerTests
         Guid agencyId,
         decimal price,
         string bookingMode = "Online",
-        string collectionMode = "Online")
+        string collectionMode = "HaniOnline")
         => new(
             Guid.CreateVersion7(),
             agencyId,

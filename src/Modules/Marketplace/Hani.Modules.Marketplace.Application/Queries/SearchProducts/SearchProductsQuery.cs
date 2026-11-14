@@ -14,6 +14,8 @@ public sealed record SearchProductsQuery(
     int? MinDuration = null,
     int? MaxDuration = null,
     string? TourType = null,
+    string? Category = null,
+    string? TravelType = null,
     string? Difficulty = null,
     string? VehicleType = null,
     string? AccommodationType = null,
@@ -32,6 +34,7 @@ public sealed record SearchProductsQuery(
     string? Cabin = null,
     string? Q = null,
     bool OnlineOnly = false,
+    bool InstallmentOnly = false,
     string? Sort = null,
     int Page = 1,
     int PageSize = 20) : IQuery<PagedResult<ProductSearchItemDto>>;
@@ -62,4 +65,7 @@ public sealed record ProductSearchItemDto(
     string VehicleType,
     string LocalVehicleType,
     string AccommodationType,
-    IReadOnlyList<string> BookingModes);
+    IReadOnlyList<string> BookingModes,
+    bool InstallmentAvailable,
+    string Category,
+    string TravelType);

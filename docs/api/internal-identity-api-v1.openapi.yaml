@@ -107,6 +107,30 @@ paths:
             application/json:
               schema: { type: boolean }
 
+  /internal/v1/reviews/{reviewId}/reply:
+    post:
+      tags: [Reviews]
+      summary: Add an owner reply to a review
+      parameters:
+        - { name: reviewId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reply]
+              properties:
+                reply: { type: string, minLength: 1, maxLength: 2000 }
+      responses:
+        '200':
+          description: Reply saved
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { description: Review not found }
+        default: { $ref: '#/components/responses/Problem' }
+
   /internal/v1/claims:
     get:
       tags: [Claims]
@@ -231,6 +255,13 @@ components:
         status: { type: string }
         comment: { type: string }
         createdAt: { type: string, format: date-time }
+        criteria:
+          type: object
+          additionalProperties: { type: integer }
+        proofType: { type: string }
+        proofUrl: { type: [string, 'null'] }
+        ownerReply: { type: [string, 'null'] }
+        ownerRepliedAt: { type: [string, 'null'], format: date-time }
 
     ReviewPage:
       type: object

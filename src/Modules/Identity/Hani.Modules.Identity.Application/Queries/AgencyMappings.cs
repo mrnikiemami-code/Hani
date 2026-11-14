@@ -30,5 +30,12 @@ internal static class AgencyMappings
                     document.FileUrl,
                     document.Status.ToString(),
                     document.UploadedAt))
-                .ToArray());
+                .ToArray(),
+            agency.LicenseType,
+            agency.LicenseIssuedAt,
+            agency.ManagerName,
+            agency.StaffCount,
+            agency.Address,
+            agency.Province,
+            agency.LicenseFileUrl);
 }

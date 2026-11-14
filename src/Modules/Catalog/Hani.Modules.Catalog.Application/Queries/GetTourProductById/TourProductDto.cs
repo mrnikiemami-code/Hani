@@ -50,6 +50,8 @@ public sealed record TourProductDto(
     string VehicleType,
     string LocalVehicleType,
     string AccommodationType,
+    string Category,
+    string TravelType,
     DateTimeOffset CreatedAt,
     IReadOnlyList<TourProductTranslationDto> Translations,
     IReadOnlyList<Guid> DestinationIds,

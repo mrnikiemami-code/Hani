@@ -15,6 +15,8 @@ public static class DependencyInjection
     {
         services.AddScoped<ITourProductRepository, TourProductRepository>();
         services.AddScoped<IDestinationRepository, DestinationRepository>();
+        services.AddScoped<IHotelRepository, HotelRepository>();
+        services.AddScoped<IPlaceRepository, PlaceRepository>();
         services.AddScoped<ICatalogReadService, CatalogReadService>();
         return services;
     }

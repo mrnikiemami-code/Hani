@@ -35,7 +35,14 @@ internal sealed class CreateAgencyOnboardingCommandHandler(
                 request.ContactEmail,
                 request.ContactPhone,
                 request.About,
-                request.Documents);
+                request.Documents,
+                request.LicenseType,
+                request.LicenseIssuedAt,
+                request.ManagerName,
+                request.StaffCount,
+                request.Address,
+                request.Province,
+                request.LicenseFileUrl);
 
             await agencies.AddAsync(agency, cancellationToken);
             return Result<AgencyDto>.Success(AgencyMappings.ToDto(agency));
@@ -116,7 +123,15 @@ internal sealed class GetPublicAgencyQueryHandler(IAgencyRepository agencies)
             agency.ContactEmail,
             agency.ContactPhone,
             agency.About,
-            agency.CreatedAt));
+            agency.CreatedAt,
+            agency.LicenseNo,
+            agency.LicenseType,
+            agency.LicenseIssuedAt,
+            agency.ManagerName,
+            agency.StaffCount,
+            agency.Address,
+            agency.Province,
+            agency.LicenseFileUrl));
     }
 }
 

@@ -90,6 +90,7 @@ Client → X-Api-Key + X-Api-Secret
 | GET | `/internal/v1/reviews` |
 | POST | `/internal/v1/reviews/{id}/publish` |
 | POST | `/internal/v1/reviews/{id}/reject` |
+| POST | `/internal/v1/reviews/{id}/reply` |
 | GET | `/internal/v1/claims` |
 | POST | `/internal/v1/claims/{id}/approve` |
 | POST | `/internal/v1/claims/{id}/reject` |
@@ -103,8 +104,9 @@ Client → X-Api-Key + X-Api-Secret
 ## Trust, Reviews, Claims, Media
 
 - Onboarding آژانس با مدارک License/Website/Contract/Other و وضعیت Pending/Active/Rejected/Suspended.
-- Review چندمعیاره با عکس، helpful vote، report و moderation.
+- Review با criteria مخصوص هر target (Hotel/Restaurant/Agency/Attraction)، عکس، proof (واچر/قرارداد)، helpful vote، report، moderation و پاسخ مالک.
 - Claim مالکیت/اصلاح اطلاعات با evidence و moderation.
+- پروفایل عمومی آژانس شامل مجوز/تاریخ/مدیر/پرسنل/آدرس/فایل مجوز است.
 - MediaAsset با محدودیت ۲۰MB و moderation.
 - `/market/v1/trust` اطلاعات پشتیبانی/Enamad/قوانین را از `Trust` config می‌خواند.
 
@@ -112,4 +114,4 @@ Client → X-Api-Key + X-Api-Secret
 
 - Schema: `identity`
 - جدول‌ها: `users`, `user_otp_codes`, `user_refresh_tokens`, `agencies`, `agency_documents`, `api_clients`, `reviews`, `review_photos`, `review_helpful_votes`, `review_reports`, `ownership_claims`, `media_assets`
-- Migrationها: `InitialIdentity`, `AddUsersAndOtp`, `AddTrustAgencyAndEngagement`
+- Migrationها: `InitialIdentity`, `AddUsersAndOtp`, `AddTrustAgencyAndEngagement`, `AddAuditRemediationIdentityFields`

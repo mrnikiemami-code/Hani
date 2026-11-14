@@ -17,7 +17,14 @@ public sealed record CreateAgencyOnboardingCommand(
     string? ContactEmail,
     string? ContactPhone,
     string? About,
-    IReadOnlyList<AgencyDocumentInput> Documents) : ICommand<AgencyDto>;
+    IReadOnlyList<AgencyDocumentInput> Documents,
+    string? LicenseType = null,
+    DateOnly? LicenseIssuedAt = null,
+    string? ManagerName = null,
+    int? StaffCount = null,
+    string? Address = null,
+    string? Province = null,
+    string? LicenseFileUrl = null) : ICommand<AgencyDto>;
 
 /// <summary>
 /// Query that returns the current user's agency onboarding state.
@@ -56,4 +63,12 @@ public sealed record PublicAgencyDto(
     string? ContactEmail,
     string? ContactPhone,
     string? About,
-    DateTimeOffset MemberSince);
+    DateTimeOffset MemberSince,
+    string LicenseNo,
+    string? LicenseType,
+    DateOnly? LicenseIssuedAt,
+    string? ManagerName,
+    int? StaffCount,
+    string? Address,
+    string? Province,
+    string? LicenseFileUrl);

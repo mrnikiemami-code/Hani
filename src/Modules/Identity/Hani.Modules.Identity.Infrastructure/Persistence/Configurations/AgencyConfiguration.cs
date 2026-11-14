@@ -25,6 +25,13 @@ internal sealed class AgencyConfiguration : IEntityTypeConfiguration<Agency>
         builder.Property(agency => agency.ContactEmail).HasColumnName("contact_email").HasMaxLength(320);
         builder.Property(agency => agency.ContactPhone).HasColumnName("contact_phone").HasMaxLength(32);
         builder.Property(agency => agency.About).HasColumnName("about").HasMaxLength(2000);
+        builder.Property(agency => agency.LicenseType).HasColumnName("license_type").HasMaxLength(50);
+        builder.Property(agency => agency.LicenseIssuedAt).HasColumnName("license_issued_at");
+        builder.Property(agency => agency.ManagerName).HasColumnName("manager_name").HasMaxLength(200);
+        builder.Property(agency => agency.StaffCount).HasColumnName("staff_count");
+        builder.Property(agency => agency.Address).HasColumnName("address").HasMaxLength(500);
+        builder.Property(agency => agency.Province).HasColumnName("province").HasMaxLength(80);
+        builder.Property(agency => agency.LicenseFileUrl).HasColumnName("license_file_url").HasMaxLength(1000);
         builder.Property(agency => agency.SubmittedAt).HasColumnName("submitted_at");
         builder.Property(agency => agency.ReviewedAt).HasColumnName("reviewed_at");
         builder.Property(agency => agency.RejectionReason).HasColumnName("rejection_reason").HasMaxLength(1000);

@@ -20,7 +20,9 @@ public sealed record OrderPaymentSnapshot(
     string Status,
     DateTimeOffset PaymentDueAt,
     IReadOnlyList<OrderPaymentObligationSnapshot> Obligations,
-    string CollectionMode = "Online");
+    string CollectionMode = "HaniOnline",
+    string SellerOfRecord = "Hani",
+    string InvoiceIssuer = "Hani");
 
 /// <summary>
 /// Read-side contract exposed by Booking for payment initiation.

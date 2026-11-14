@@ -85,7 +85,14 @@ public static class AgencyOnboardingEndpoints
                 request.About,
                 request.Documents
                     .Select(document => new AgencyDocumentInput(document.Type, document.FileUrl))
-                    .ToArray()),
+                    .ToArray(),
+                request.LicenseType,
+                request.LicenseIssuedAt,
+                request.ManagerName,
+                request.StaffCount,
+                request.Address,
+                request.Province,
+                request.LicenseFileUrl),
             cancellationToken);
 
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
@@ -177,7 +184,14 @@ public sealed record CreateAgencyOnboardingRequest(
     string? ContactEmail,
     string? ContactPhone,
     string? About,
-    IReadOnlyList<AgencyDocumentRequest> Documents);
+    IReadOnlyList<AgencyDocumentRequest> Documents,
+    string? LicenseType = null,
+    DateOnly? LicenseIssuedAt = null,
+    string? ManagerName = null,
+    int? StaffCount = null,
+    string? Address = null,
+    string? Province = null,
+    string? LicenseFileUrl = null);
 
 /// <summary>
 /// Agency document request.

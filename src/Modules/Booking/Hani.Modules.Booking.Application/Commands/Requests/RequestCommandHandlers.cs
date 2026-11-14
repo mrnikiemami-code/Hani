@@ -675,6 +675,42 @@ internal sealed class CreateInstallmentPlanCommandHandler(
                 Error.Validation("HANI-BOOKING-3302", "Currency is not payable for this order."));
         }
 
+        var terms = order.EffectivePricing.InstallmentTerms;
+
+        if (terms is not { IsEnabled: true })
+        {
+            return Result<InstallmentPlanDto>.Failure(
+                Error.Conflict("HANI-BOOKING-3307", "Installments are not offered for this order."));
+        }
+
+        if (request.InstallmentCount > terms.MaxMonths)
+        {
+            return Result<InstallmentPlanDto>.Failure(
+                Error.Validation(
+                    "HANI-BOOKING-3308",
+                    $"At most {terms.MaxMonths} installments are allowed."));
+        }
+
+        var minimumDownPayment = Math.Round(
+            component.TotalAmount * terms.MinDownPaymentRate,
+            2,
+            MidpointRounding.AwayFromZero);
+        var downPayment = request.DownPaymentAmount ?? minimumDownPayment;
+
+        if (downPayment < minimumDownPayment || downPayment >= component.TotalAmount)
+        {
+            return Result<InstallmentPlanDto>.Failure(
+                Error.Validation(
+                    "HANI-BOOKING-3309",
+                    $"Down payment must be between {minimumDownPayment} and {component.TotalAmount}."));
+        }
+
+        if (terms.RequiresCheque && string.IsNullOrWhiteSpace(request.ChequeReference))
+        {
+            return Result<InstallmentPlanDto>.Failure(
+                Error.Validation("HANI-BOOKING-3315", "Cheque reference is required."));
+        }
+
         var existing = await plans.GetByOrderIdAsync(
             request.OrderId,
             component.Currency,
@@ -693,7 +729,11 @@ internal sealed class CreateInstallmentPlanCommandHandler(
                 component.Currency,
                 component.TotalAmount,
                 request.InstallmentCount,
-                request.IntervalDays);
+                request.IntervalDays,
+                downPayment / component.TotalAmount,
+                terms.MonthlyFeeRate,
+                terms.RequiresCheque,
+                request.ChequeReference);
             await plans.AddAsync(plan, cancellationToken);
             return Result<InstallmentPlanDto>.Success(Map(plan));
         }
@@ -710,6 +750,12 @@ internal sealed class CreateInstallmentPlanCommandHandler(
             plan.OrderId,
             plan.Currency,
             plan.TotalAmount,
+            plan.DownPaymentAmount,
+            plan.FinancedAmount,
+            plan.MonthlyFeeRate,
+            plan.TotalPayable,
+            plan.RequiresCheque,
+            plan.ChequeReference,
             plan.InstallmentCount,
             plan.IntervalDays,
             plan.Status.ToString(),
@@ -750,6 +796,12 @@ internal sealed class GetInstallmentPlanQueryHandler(IInstallmentPlanRepository 
             plan.OrderId,
             plan.Currency,
             plan.TotalAmount,
+            plan.DownPaymentAmount,
+            plan.FinancedAmount,
+            plan.MonthlyFeeRate,
+            plan.TotalPayable,
+            plan.RequiresCheque,
+            plan.ChequeReference,
             plan.InstallmentCount,
             plan.IntervalDays,
             plan.Status.ToString(),

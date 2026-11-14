@@ -42,7 +42,9 @@ internal sealed class CreateTourProductCommandHandler(
             content?.Difficulty ?? TourDifficulty.Normal,
             content?.VehicleType ?? TourVehicleType.None,
             content?.LocalVehicleType ?? TourVehicleType.None,
-            content?.AccommodationType ?? TourAccommodationType.Hotel);
+            content?.AccommodationType ?? TourAccommodationType.Hotel,
+            request.Category,
+            request.TravelType);
 
         foreach (var translation in request.Translations)
         {

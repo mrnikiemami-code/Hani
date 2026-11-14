@@ -37,7 +37,12 @@ internal static class EngagementMappings
                     photo.Url,
                     photo.Caption,
                     photo.Status.ToString()))
-                .ToArray());
+                .ToArray(),
+            review.Criteria,
+            review.ProofType.ToString(),
+            review.ProofUrl,
+            review.OwnerReply,
+            review.OwnerRepliedAt);
 
     public static ClaimDto ToDto(OwnershipClaim claim)
         => new(

@@ -4,6 +4,7 @@
 - **نوع سند:** Senior Software Architecture / Domain Audit
 - **دامنه بررسی:** `https://lastsecond.ir` — صفحات عمومی، ساختار URL، دامنه‌ها، مدل‌های قابل استنباط، SEO، فرم‌ها، ناوبری، داده‌های SSR و robots
 - **وضعیت سند:** Final for review — این سند جایگزین Baseline نیست
+- **Post-remediation:** A-01..A-08 در `docs/plan/AUDIT-REMEDIATION.md` بسته شدند (2026-11-14).
 - **مرجع مقایسه:** `docs/plan/baseline.json`، `docs/plan/PHASE-CONTRACT.md`، `docs/plan/STATUS.md`، گزارش‌های Gate 1–4
 - **هدف:** ثبت مدل دامنه Lastsecond از دید یک معمار ارشد، مقایسه با Hani پس از Gate 4، و گزارش شکاف‌ها/انحرافات قبل از شروع Gate 5
 

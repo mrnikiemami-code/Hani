@@ -99,6 +99,12 @@ public sealed class InstallmentPlan : AggregateRoot<Guid>
         decimal totalAmount,
         int installmentCount,
         int intervalDays,
+        decimal downPaymentAmount,
+        decimal financedAmount,
+        decimal monthlyFeeRate,
+        decimal totalPayable,
+        bool requiresCheque,
+        string? chequeReference,
         DateTimeOffset createdAt) : base(id)
     {
         OrderId = orderId;
@@ -106,6 +112,12 @@ public sealed class InstallmentPlan : AggregateRoot<Guid>
         TotalAmount = totalAmount;
         InstallmentCount = installmentCount;
         IntervalDays = intervalDays;
+        DownPaymentAmount = downPaymentAmount;
+        FinancedAmount = financedAmount;
+        MonthlyFeeRate = monthlyFeeRate;
+        TotalPayable = totalPayable;
+        RequiresCheque = requiresCheque;
+        ChequeReference = chequeReference;
         CreatedAt = createdAt;
         Status = InstallmentPlanStatus.Active;
     }
@@ -121,9 +133,39 @@ public sealed class InstallmentPlan : AggregateRoot<Guid>
     public string Currency { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Total financed amount.
+    /// Original order amount for this currency.
     /// </summary>
     public decimal TotalAmount { get; private set; }
+
+    /// <summary>
+    /// Amount paid upfront before installments.
+    /// </summary>
+    public decimal DownPaymentAmount { get; private set; }
+
+    /// <summary>
+    /// Amount financed through installments.
+    /// </summary>
+    public decimal FinancedAmount { get; private set; }
+
+    /// <summary>
+    /// Monthly fee rate applied to the financed amount.
+    /// </summary>
+    public decimal MonthlyFeeRate { get; private set; }
+
+    /// <summary>
+    /// Total payable including down payment and monthly fees.
+    /// </summary>
+    public decimal TotalPayable { get; private set; }
+
+    /// <summary>
+    /// Whether a cheque guarantee is required.
+    /// </summary>
+    public bool RequiresCheque { get; private set; }
+
+    /// <summary>
+    /// Cheque reference supplied at plan creation.
+    /// </summary>
+    public string? ChequeReference { get; private set; }
 
     /// <summary>
     /// Number of installments.
@@ -160,6 +202,10 @@ public sealed class InstallmentPlan : AggregateRoot<Guid>
         decimal totalAmount,
         int installmentCount,
         int intervalDays,
+        decimal downPaymentRate = 0m,
+        decimal monthlyFeeRate = 0m,
+        bool requiresCheque = false,
+        string? chequeReference = null,
         DateTimeOffset? now = null)
     {
         if (orderId == Guid.Empty)
@@ -182,7 +228,37 @@ public sealed class InstallmentPlan : AggregateRoot<Guid>
             throw new ArgumentOutOfRangeException(nameof(intervalDays), "Interval must be between 1 and 90 days.");
         }
 
+        if (downPaymentRate is < 0m or > 1m)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(downPaymentRate),
+                "Down payment rate must be between 0 and 1.");
+        }
+
+        if (monthlyFeeRate is < 0m or > 1m)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(monthlyFeeRate),
+                "Monthly fee rate must be between 0 and 1.");
+        }
+
+        if (requiresCheque && string.IsNullOrWhiteSpace(chequeReference))
+        {
+            throw new ArgumentException("Cheque reference is required when cheque is required.", nameof(chequeReference));
+        }
+
         var createdAt = now ?? DateTimeOffset.UtcNow;
+        var downPaymentAmount = Math.Round(
+            totalAmount * downPaymentRate,
+            2,
+            MidpointRounding.AwayFromZero);
+        var financedAmount = totalAmount - downPaymentAmount;
+        var monthlyFee = Math.Round(
+            financedAmount * monthlyFeeRate,
+            2,
+            MidpointRounding.AwayFromZero);
+        var scheduledAmount = financedAmount + (monthlyFee * installmentCount);
+
         var plan = new InstallmentPlan(
             ids.NewId(),
             orderId,
@@ -190,10 +266,16 @@ public sealed class InstallmentPlan : AggregateRoot<Guid>
             totalAmount,
             installmentCount,
             intervalDays,
+            downPaymentAmount,
+            financedAmount,
+            monthlyFeeRate,
+            totalAmount + (monthlyFee * installmentCount),
+            requiresCheque,
+            string.IsNullOrWhiteSpace(chequeReference) ? null : chequeReference.Trim(),
             createdAt);
 
         var perInstallment = Math.Round(
-            totalAmount / installmentCount,
+            scheduledAmount / installmentCount,
             2,
             MidpointRounding.AwayFromZero);
         var allocated = 0m;
@@ -202,7 +284,7 @@ public sealed class InstallmentPlan : AggregateRoot<Guid>
         for (var sequence = 1; sequence <= installmentCount; sequence++)
         {
             var amount = sequence == installmentCount
-                ? totalAmount - allocated
+                ? scheduledAmount - allocated
                 : perInstallment;
             allocated += amount;
 

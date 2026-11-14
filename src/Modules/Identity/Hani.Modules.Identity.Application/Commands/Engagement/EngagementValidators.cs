@@ -17,6 +17,35 @@ public sealed class CreateReviewCommandValidator : AbstractValidator<CreateRevie
         RuleFor(command => command.Rating).InclusiveBetween(1, 5).WithErrorCode("HANI-IDENTITY-1512");
         RuleFor(command => command.Comment).NotEmpty().MaximumLength(4000).WithErrorCode("HANI-IDENTITY-1513");
         RuleFor(command => command.Photos).Must(photos => photos.Count <= 5).WithErrorCode("HANI-IDENTITY-1514");
+        RuleFor(command => command.ProofUrl)
+            .NotEmpty()
+            .When(command => command.ProofType != Domain.Reviews.ReviewProofType.None)
+            .WithErrorCode("HANI-IDENTITY-1517");
+        RuleFor(command => command.ProofType)
+            .Must(proof => proof != Domain.Reviews.ReviewProofType.None)
+            .When(command => command.TargetType is
+                Domain.Reviews.ReviewTargetType.Hotel or
+                Domain.Reviews.ReviewTargetType.Agency)
+            .WithErrorCode("HANI-IDENTITY-1521");
+        RuleFor(command => command.ProofUrl)
+            .MaximumLength(1000)
+            .When(command => command.ProofUrl is not null)
+            .WithErrorCode("HANI-IDENTITY-1518");
+    }
+}
+
+/// <summary>
+/// Validation rules for owner replies.
+/// </summary>
+public sealed class ReplyToReviewCommandValidator : AbstractValidator<ReplyToReviewCommand>
+{
+    /// <summary>
+    /// Creates validation rules.
+    /// </summary>
+    public ReplyToReviewCommandValidator()
+    {
+        RuleFor(command => command.ReviewId).NotEmpty().WithErrorCode("HANI-IDENTITY-1519");
+        RuleFor(command => command.Reply).NotEmpty().MaximumLength(2000).WithErrorCode("HANI-IDENTITY-1520");
     }
 }
 

@@ -103,7 +103,8 @@ public static class SupplyEndpoints
                         option.MealPlan,
                         option.Amount,
                         option.Currency,
-                        option.Description))
+                        option.Description,
+                        option.HotelId))
                     .ToArray(),
                 request.FlightOptions?
                     .Select(option => new FlightOptionInput(
@@ -128,7 +129,16 @@ public static class SupplyEndpoints
                         rule.ExemptionReason))
                     .ToArray(),
                 request.BookingMode,
-                request.CollectionMode),
+                request.CollectionMode,
+                request.SellerOfRecord,
+                request.InvoiceIssuer,
+                request.InstallmentTerms is null
+                    ? null
+                    : new InstallmentTermsInput(
+                        request.InstallmentTerms.MinDownPaymentRate,
+                        request.InstallmentTerms.MaxMonths,
+                        request.InstallmentTerms.MonthlyFeeRate,
+                        request.InstallmentTerms.RequiresCheque)),
             cancellationToken);
 
         return result.IsSuccess
@@ -172,7 +182,8 @@ public static class SupplyEndpoints
                         option.MealPlan,
                         option.Amount,
                         option.Currency,
-                        option.Description))
+                        option.Description,
+                        option.HotelId))
                     .ToArray(),
                 request.FlightOptions?
                     .Select(option => new FlightOptionInput(
@@ -197,7 +208,16 @@ public static class SupplyEndpoints
                         rule.ExemptionReason))
                     .ToArray(),
                 request.BookingMode,
-                request.CollectionMode),
+                request.CollectionMode,
+                request.SellerOfRecord,
+                request.InvoiceIssuer,
+                request.InstallmentTerms is null
+                    ? null
+                    : new InstallmentTermsInput(
+                        request.InstallmentTerms.MinDownPaymentRate,
+                        request.InstallmentTerms.MaxMonths,
+                        request.InstallmentTerms.MonthlyFeeRate,
+                        request.InstallmentTerms.RequiresCheque)),
             cancellationToken);
 
         return result.IsSuccess
@@ -317,7 +337,8 @@ public sealed record AccommodationOptionRequest(
     MealPlanType MealPlan,
     decimal Amount,
     string Currency,
-    string? Description = null);
+    string? Description = null,
+    Guid? HotelId = null);
 
 /// <summary>
 /// HTTP request for a flight option.
@@ -346,6 +367,15 @@ public sealed record TaxRuleRequest(
     string? ExemptionReason = null);
 
 /// <summary>
+/// HTTP request for installment terms.
+/// </summary>
+public sealed record InstallmentTermsRequest(
+    decimal MinDownPaymentRate,
+    int MaxMonths,
+    decimal MonthlyFeeRate,
+    bool RequiresCheque);
+
+/// <summary>
 /// HTTP request to create an agency offer.
 /// </summary>
 public sealed record CreateAgencyOfferRequest(
@@ -357,7 +387,10 @@ public sealed record CreateAgencyOfferRequest(
     IReadOnlyList<FlightOptionRequest>? FlightOptions = null,
     IReadOnlyList<TaxRuleRequest>? TaxRules = null,
     BookingMode BookingMode = BookingMode.Online,
-    CollectionMode CollectionMode = CollectionMode.Online);
+    CollectionMode CollectionMode = CollectionMode.HaniOnline,
+    SellerOfRecord SellerOfRecord = SellerOfRecord.Hani,
+    InvoiceIssuer InvoiceIssuer = InvoiceIssuer.Hani,
+    InstallmentTermsRequest? InstallmentTerms = null);
 
 /// <summary>
 /// HTTP request to upsert an agency offer.
@@ -371,7 +404,10 @@ public sealed record UpsertAgencyOfferRequest(
     IReadOnlyList<FlightOptionRequest>? FlightOptions = null,
     IReadOnlyList<TaxRuleRequest>? TaxRules = null,
     BookingMode BookingMode = BookingMode.Online,
-    CollectionMode CollectionMode = CollectionMode.Online);
+    CollectionMode CollectionMode = CollectionMode.HaniOnline,
+    SellerOfRecord SellerOfRecord = SellerOfRecord.Hani,
+    InvoiceIssuer InvoiceIssuer = InvoiceIssuer.Hani,
+    InstallmentTermsRequest? InstallmentTerms = null);
 
 /// <summary>
 /// HTTP request body for rejecting an offer.

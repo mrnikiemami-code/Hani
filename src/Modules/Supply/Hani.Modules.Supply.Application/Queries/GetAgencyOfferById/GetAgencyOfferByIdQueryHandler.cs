@@ -68,7 +68,17 @@ internal sealed class GetAgencyOfferByIdQueryHandler(
                     rule.ExemptionReason))
                 .ToArray(),
             offer.BookingMode.ToString(),
-            offer.CollectionMode.ToString());
+            offer.CollectionMode.ToString(),
+            offer.SellerOfRecord.ToString(),
+            offer.InvoiceIssuer.ToString(),
+            offer.InstallmentTerms.IsEnabled
+                ? new InstallmentTermsDto(
+                    true,
+                    offer.InstallmentTerms.MinDownPaymentRate,
+                    offer.InstallmentTerms.MaxMonths,
+                    offer.InstallmentTerms.MonthlyFeeRate,
+                    offer.InstallmentTerms.RequiresCheque)
+                : null);
 
         return Result<AgencyOfferDto>.Success(dto);
     }

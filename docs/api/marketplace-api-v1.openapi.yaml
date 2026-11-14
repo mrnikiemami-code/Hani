@@ -34,6 +34,8 @@ paths:
         - { name: minDuration, in: query, schema: { type: [integer, 'null'], minimum: 0 } }
         - { name: maxDuration, in: query, schema: { type: [integer, 'null'], minimum: 0 } }
         - { name: tourType, in: query, schema: { type: [string, 'null'] } }
+        - { name: category, in: query, schema: { type: [string, 'null'], enum: [Normal, Installment, Luxury, null] } }
+        - { name: travelType, in: query, schema: { type: [string, 'null'], enum: [Other, Air, Bus, Rail, null] } }
         - { name: difficulty, in: query, schema: { type: [string, 'null'] } }
         - { name: vehicleType, in: query, schema: { type: [string, 'null'] } }
         - { name: accommodationType, in: query, schema: { type: [string, 'null'] } }
@@ -52,6 +54,7 @@ paths:
         - { name: cabin, in: query, schema: { type: [string, 'null'] } }
         - { name: q, in: query, schema: { type: [string, 'null'] } }
         - { name: onlineOnly, in: query, schema: { type: boolean, default: false } }
+        - { name: installmentOnly, in: query, schema: { type: boolean, default: false } }
         - name: sort
           in: query
           schema: { type: [string, 'null'], enum: [price_asc, price_desc, duration_asc, duration_desc, newest, title, null] }
@@ -807,6 +810,56 @@ paths:
           description: Plan not found
         default: { $ref: '#/components/responses/Problem' }
 
+  /hotels/{slug}:
+    get:
+      tags: [Catalog]
+      summary: Read a canonical hotel
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Hotel' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /places/{slug}:
+    get:
+      tags: [Catalog]
+      summary: Read a canonical restaurant or attraction
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Place' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /places/nearby:
+    get:
+      tags: [Catalog]
+      summary: Find nearby restaurants or attractions
+      parameters:
+        - { name: latitude, in: query, required: true, schema: { type: number } }
+        - { name: longitude, in: query, required: true, schema: { type: number } }
+        - { name: type, in: query, required: false, schema: { type: string, enum: [Restaurant, Attraction] } }
+        - { name: radiusKm, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 100, default: 10 } }
+        - { name: limit, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+      responses:
+        '200':
+          description: Nearby places ordered by distance
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/NearbyPlace' }
+        default: { $ref: '#/components/responses/Problem' }
+
 components:
   responses:
     Problem:
@@ -855,6 +908,9 @@ components:
         bookingModes:
           type: array
           items: { type: string, enum: [Online, ReservationRequest] }
+        installmentAvailable: { type: boolean }
+        category: { type: string, enum: [Normal, Installment, Luxury] }
+        travelType: { type: string, enum: [Other, Air, Bus, Rail] }
         originDestinationId: { type: [string, 'null'], format: uuid }
         difficulty: { type: string }
         vehicleType: { type: string }
@@ -905,12 +961,17 @@ components:
           type: array
           items: { $ref: '#/components/schemas/DepartureComparison' }
         bookingMode: { type: string, enum: [Online, ReservationRequest] }
-        collectionMode: { type: string, enum: [Online, Offline] }
+        collectionMode: { type: string, enum: [HaniOnline, AgencyOnline, AgencyOffline] }
+        installmentTerms:
+          oneOf:
+            - $ref: '#/components/schemas/InstallmentTerms'
+            - type: 'null'
 
     AccommodationOption:
       type: object
       properties:
         optionId: { type: string, format: uuid }
+        hotelId: { type: [string, 'null'], format: uuid }
         hotelName: { type: string }
         hotelStars: { type: integer }
         roomType: { type: string }
@@ -972,6 +1033,15 @@ components:
         infants: { type: integer, minimum: 0, maximum: 10, default: 0 }
         accommodationOptionId: { type: [string, 'null'], format: uuid }
 
+    InstallmentTerms:
+      type: object
+      properties:
+        isEnabled: { type: boolean }
+        minDownPaymentRate: { type: number, minimum: 0, maximum: 1 }
+        maxMonths: { type: integer, minimum: 1, maximum: 36 }
+        monthlyFeeRate: { type: number, minimum: 0, maximum: 1 }
+        requiresCheque: { type: boolean }
+
     PriceComponent:
       type: object
       properties:
@@ -990,6 +1060,7 @@ components:
       type: object
       properties:
         optionId: { type: string, format: uuid }
+        hotelId: { type: [string, 'null'], format: uuid }
         hotelName: { type: string }
         hotelStars: { type: integer }
         roomType: { type: string }
@@ -1071,7 +1142,13 @@ components:
             - $ref: '#/components/schemas/AccommodationSelection'
             - type: 'null'
         bookingMode: { type: string, enum: [Online, ReservationRequest] }
-        collectionMode: { type: string, enum: [Online, Offline] }
+        collectionMode: { type: string, enum: [HaniOnline, AgencyOnline, AgencyOffline] }
+        sellerOfRecord: { type: string, enum: [Hani, Agency] }
+        invoiceIssuer: { type: string, enum: [Hani, Agency] }
+        installmentTerms:
+          oneOf:
+            - $ref: '#/components/schemas/InstallmentTerms'
+            - type: 'null'
 
     Hold:
       type: object
@@ -1159,7 +1236,13 @@ components:
             - $ref: '#/components/schemas/AccommodationSelection'
             - type: 'null'
         bookingMode: { type: string, enum: [Online, ReservationRequest] }
-        collectionMode: { type: string, enum: [Online, Offline] }
+        collectionMode: { type: string, enum: [HaniOnline, AgencyOnline, AgencyOffline] }
+        sellerOfRecord: { type: string, enum: [Hani, Agency] }
+        invoiceIssuer: { type: string, enum: [Hani, Agency] }
+        installmentTerms:
+          oneOf:
+            - $ref: '#/components/schemas/InstallmentTerms'
+            - type: 'null'
 
     Contract:
       type: object
@@ -1197,7 +1280,13 @@ components:
             - $ref: '#/components/schemas/AccommodationSelection'
             - type: 'null'
         bookingMode: { type: string, enum: [Online, ReservationRequest] }
-        collectionMode: { type: string, enum: [Online, Offline] }
+        collectionMode: { type: string, enum: [HaniOnline, AgencyOnline, AgencyOffline] }
+        sellerOfRecord: { type: string, enum: [Hani, Agency] }
+        invoiceIssuer: { type: string, enum: [Hani, Agency] }
+        installmentTerms:
+          oneOf:
+            - $ref: '#/components/schemas/InstallmentTerms'
+            - type: 'null'
 
     CreatePaymentIntentRequest:
       type: object
@@ -1359,6 +1448,8 @@ components:
         currency: { type: string, minLength: 3, maxLength: 3 }
         installmentCount: { type: integer, minimum: 2, maximum: 12 }
         intervalDays: { type: integer, minimum: 1, maximum: 90 }
+        downPaymentAmount: { type: [number, 'null'], minimum: 0 }
+        chequeReference: { type: [string, 'null'], maxLength: 100 }
 
     Installment:
       type: object
@@ -1377,6 +1468,12 @@ components:
         orderId: { type: string, format: uuid }
         currency: { type: string }
         totalAmount: { type: number }
+        downPaymentAmount: { type: number }
+        financedAmount: { type: number }
+        monthlyFeeRate: { type: number }
+        totalPayable: { type: number }
+        requiresCheque: { type: boolean }
+        chequeReference: { type: [string, 'null'] }
         installmentCount: { type: integer }
         intervalDays: { type: integer }
         status: { type: string, enum: [Active, Completed, Cancelled] }
@@ -1384,6 +1481,64 @@ components:
         installments:
           type: array
           items: { $ref: '#/components/schemas/Installment' }
+
+    Hotel:
+      type: object
+      properties:
+        hotelId: { type: string, format: uuid }
+        slug: { type: string }
+        destinationId: { type: string, format: uuid }
+        stars: { type: integer }
+        address: { type: [string, 'null'] }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        translations:
+          type: array
+          items:
+            type: object
+            properties:
+              locale: { type: string }
+              name: { type: string }
+              description: { type: [string, 'null'] }
+        amenities:
+          type: array
+          items:
+            type: object
+            properties:
+              category: { type: string }
+              name: { type: string }
+
+    Place:
+      type: object
+      properties:
+        placeId: { type: string, format: uuid }
+        slug: { type: string }
+        type: { type: string, enum: [Restaurant, Attraction] }
+        destinationId: { type: string, format: uuid }
+        category: { type: string }
+        cuisine: { type: [string, 'null'] }
+        priceBand: { type: [string, 'null'] }
+        reservable: { type: boolean }
+        onlineReservable: { type: boolean }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        translations:
+          type: array
+          items:
+            type: object
+            properties:
+              locale: { type: string }
+              name: { type: string }
+              description: { type: [string, 'null'] }
+        amenities:
+          type: array
+          items: { type: string }
+
+    NearbyPlace:
+      type: object
+      properties:
+        place: { $ref: '#/components/schemas/Place' }
+        distanceKm: { type: number }
 
     TourProductTranslation:
       type: object
@@ -1638,6 +1793,13 @@ components:
         photos:
           type: array
           items: { $ref: '#/components/schemas/ReviewPhoto' }
+        criteria:
+          type: object
+          additionalProperties: { type: integer }
+        proofType: { type: string, enum: [None, HotelVoucher, AgencyContract, TravelTicket, Other] }
+        proofUrl: { type: [string, 'null'] }
+        ownerReply: { type: [string, 'null'] }
+        ownerRepliedAt: { type: [string, 'null'], format: date-time }
 
     ReviewPage:
       type: object
@@ -1675,6 +1837,11 @@ components:
             properties:
               url: { type: string, format: uri }
               caption: { type: [string, 'null'] }
+        criteria:
+          type: object
+          additionalProperties: { type: integer }
+        proofType: { type: string, enum: [None, HotelVoucher, AgencyContract, TravelTicket, Other] }
+        proofUrl: { type: [string, 'null'], maxLength: 1000 }
 
     Claim:
       type: object

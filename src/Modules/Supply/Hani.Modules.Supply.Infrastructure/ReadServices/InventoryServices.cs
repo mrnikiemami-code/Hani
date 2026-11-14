@@ -59,10 +59,21 @@ internal sealed class DeparturePricingService(SupplyDbContext dbContext)
                     option.MealPlan.ToString(),
                     option.Amount,
                     option.Currency,
-                    option.Description))
+                    option.Description,
+                    option.HotelId))
                 .ToArray(),
             data.offer.BookingMode.ToString(),
-            data.offer.CollectionMode.ToString());
+            data.offer.CollectionMode.ToString(),
+            data.offer.SellerOfRecord.ToString(),
+            data.offer.InvoiceIssuer.ToString(),
+            data.offer.InstallmentTerms.IsEnabled
+                ? new InstallmentTermsSnapshot(
+                    true,
+                    data.offer.InstallmentTerms.MinDownPaymentRate,
+                    data.offer.InstallmentTerms.MaxMonths,
+                    data.offer.InstallmentTerms.MonthlyFeeRate,
+                    data.offer.InstallmentTerms.RequiresCheque)
+                : null);
     }
 }
 

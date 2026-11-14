@@ -148,7 +148,15 @@ internal sealed class GetProductComparisonQueryHandler(
                         .ToArray()))
                 .ToArray(),
             offer.BookingMode,
-            offer.CollectionMode);
+            offer.CollectionMode,
+            offer.InstallmentTerms is null
+                ? null
+                : new InstallmentTermsComparisonDto(
+                    offer.InstallmentTerms.IsEnabled,
+                    offer.InstallmentTerms.MinDownPaymentRate,
+                    offer.InstallmentTerms.MaxMonths,
+                    offer.InstallmentTerms.MonthlyFeeRate,
+                    offer.InstallmentTerms.RequiresCheque));
     }
 
     private static bool IsAdultRoomType(string roomType)

@@ -41,11 +41,13 @@
 - BFF نازک روی Next.js.
 - رزرو نیازمند احراز هویت و پذیرش قرارداد.
 - `BookingMode` روی Offer تعیین می‌کند کاربر مستقیم رزرو کند یا `ReservationRequest` بفرستد.
-- `CollectionMode=Offline` پرداخت آنلاین را رد می‌کند و فقط رسید آفلاین داخلی می‌پذیرد.
+- `CollectionMode` یکی از `HaniOnline`، `AgencyOnline` یا `AgencyOffline` است؛ فقط `HaniOnline` PaymentIntent Hani می‌سازد.
+- `SellerOfRecord` و `InvoiceIssuer` در snapshot سفارش ثبت می‌شوند.
+- `installmentOnly` و `criteria`/`proofType` در APIهای جستجو و Review اضافه شده‌اند.
 
 ## Internal Booking
 
 - تأیید/رد `ReservationRequest` توسط آژانس.
 - صف `Lead/RFQ` (Safarsaz، تور سفارشی، هتل، ویزا) + Match/Close.
 - صف `PriceDiscrepancy` + Resolve.
-- ثبت پرداخت اقساط و پرداخت آفلاین (Cash/BankTransfer/Cheque) با رسید.
+- ثبت پرداخت اقساط (پیش‌پرداخت/کارمزد/چک) و پرداخت آفلاین (Cash/BankTransfer/Cheque) با رسید.

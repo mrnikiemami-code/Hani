@@ -26,7 +26,9 @@ public sealed class TourProduct : AggregateRoot<Guid>
         TourDifficulty difficulty,
         TourVehicleType vehicleType,
         TourVehicleType localVehicleType,
-        TourAccommodationType accommodationType) : base(id)
+        TourAccommodationType accommodationType,
+        TourCategory category,
+        TravelType travelType) : base(id)
     {
         Slug = slug;
         DurationDays = durationDays;
@@ -36,6 +38,8 @@ public sealed class TourProduct : AggregateRoot<Guid>
         VehicleType = vehicleType;
         LocalVehicleType = localVehicleType;
         AccommodationType = accommodationType;
+        Category = category;
+        TravelType = travelType;
         Status = TourProductStatus.Draft;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = CreatedAt;
@@ -61,6 +65,16 @@ public sealed class TourProduct : AggregateRoot<Guid>
     /// Primary transport type.
     /// </summary>
     public TourVehicleType VehicleType { get; private set; }
+
+    /// <summary>
+    /// Commercial tour category.
+    /// </summary>
+    public TourCategory Category { get; private set; }
+
+    /// <summary>
+    /// Primary travel mode.
+    /// </summary>
+    public TravelType TravelType { get; private set; }
 
     /// <summary>
     /// Local transport type.
@@ -96,7 +110,9 @@ public sealed class TourProduct : AggregateRoot<Guid>
         TourDifficulty difficulty = TourDifficulty.Normal,
         TourVehicleType vehicleType = TourVehicleType.None,
         TourVehicleType localVehicleType = TourVehicleType.None,
-        TourAccommodationType accommodationType = TourAccommodationType.Hotel)
+        TourAccommodationType accommodationType = TourAccommodationType.Hotel,
+        TourCategory category = TourCategory.Normal,
+        TravelType travelType = TravelType.Other)
     {
         if (string.IsNullOrWhiteSpace(slug))
         {
@@ -119,7 +135,9 @@ public sealed class TourProduct : AggregateRoot<Guid>
             difficulty,
             vehicleType,
             localVehicleType,
-            accommodationType);
+            accommodationType,
+            category,
+            travelType);
 
         product.AddDomainEvent(new TourProductCreatedDomainEvent(ids.NewId(), product.Id));
 

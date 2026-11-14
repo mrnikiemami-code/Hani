@@ -37,7 +37,8 @@ public sealed record AccommodationSelectionDto(
     int HotelStars,
     string RoomType,
     string MealPlan,
-    string Currency);
+    string Currency,
+    Guid? HotelId = null);
 
 /// <summary>
 /// Quote read model returned to marketplace clients.
@@ -60,4 +61,6 @@ public sealed record QuoteDto(
     IReadOnlyList<PriceComponentDto> Components,
     AccommodationSelectionDto? Accommodation,
     string BookingMode,
-    string CollectionMode);
+    string CollectionMode,
+    string SellerOfRecord,
+    string InvoiceIssuer);

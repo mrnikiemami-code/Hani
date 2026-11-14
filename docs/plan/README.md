@@ -10,6 +10,7 @@
 | [`STATUS.md`](STATUS.md) | وضعیت زنده: انجام‌شده / در حال انجام / بعدی |
 | [`TASKS.md`](TASKS.md) | بک‌لاگ تسک‌ها با ID، وابستگی، DoD و commit |
 | [`DONE.md`](DONE.md) | دفتر کارهای تحویل‌شده (Done Ledger) |
+| [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md) | برنامه رسمی رفع شکاف‌های Audit 2026-11-14 |
 | [`../engineering/code-documentation.md`](../engineering/code-documentation.md) | استاندارد کامنت‌گذاری و XML docs |
 | [`../../PLAN.md`](../../PLAN.md) | معماری، تصمیم‌ها، جزئیات فنی |
 
@@ -36,8 +37,9 @@
 
 ## وضعیت فعلی
 
-- فاز فعال: **هیچ — توقف برای بازبینی**
+- فاز فعال: **Gate 5 — Verticals (Ready)**
 - Phase 0: ✅ بسته شد
 - Phase 1: ✅ Gate Passed
+- Gate 4: ✅ Remediated (A-01..A-08 Done)
 - Phase 2: ⏳ شروع نشده
 - فازهای ۳ تا ۶: ⏳ شروع نشده

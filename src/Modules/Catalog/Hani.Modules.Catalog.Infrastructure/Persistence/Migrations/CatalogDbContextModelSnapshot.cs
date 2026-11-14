@@ -65,6 +65,139 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.ToTable("destinations", "catalog");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Hotels.Hotel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("address");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("DestinationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("destination_id");
+
+                    b.Property<decimal?>("Latitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("numeric(9,6)")
+                        .HasColumnName("latitude");
+
+                    b.Property<decimal?>("Longitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("numeric(9,6)")
+                        .HasColumnName("longitude");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("slug");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("integer")
+                        .HasColumnName("stars");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DestinationId")
+                        .HasDatabaseName("ix_hotels_destination_id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ux_hotels_slug");
+
+                    b.ToTable("hotels", "catalog");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Places.Place", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("category");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Cuisine")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("cuisine");
+
+                    b.Property<Guid>("DestinationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("destination_id");
+
+                    b.Property<decimal?>("Latitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("numeric(9,6)")
+                        .HasColumnName("latitude");
+
+                    b.Property<decimal?>("Longitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("numeric(9,6)")
+                        .HasColumnName("longitude");
+
+                    b.Property<bool>("OnlineReservable")
+                        .HasColumnType("boolean")
+                        .HasColumnName("online_reservable");
+
+                    b.Property<string>("PriceBand")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("price_band");
+
+                    b.Property<bool>("Reservable")
+                        .HasColumnType("boolean")
+                        .HasColumnName("reservable");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("slug");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("type");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ux_places_slug");
+
+                    b.HasIndex("Type", "DestinationId")
+                        .HasDatabaseName("ix_places_type_destination");
+
+                    b.ToTable("places", "catalog");
+                });
+
             modelBuilder.Entity("Hani.Modules.Catalog.Domain.TourProducts.TourProduct", b =>
                 {
                     b.Property<Guid>("Id")
@@ -77,6 +210,12 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("accommodation_type");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("category");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -119,6 +258,12 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)")
                         .HasColumnName("tour_type");
+
+                    b.Property<string>("TravelType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("travel_type");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -179,6 +324,158 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("DestinationId");
                         });
+
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Hotels.Hotel", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Hotels.HotelAmenity", "Amenities", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Category")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("character varying(80)")
+                                .HasColumnName("category");
+
+                            b1.Property<Guid>("HotelId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("hotel_id");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("name");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("HotelId", "Category", "Name")
+                                .IsUnique()
+                                .HasDatabaseName("ux_hotel_amenities_hotel_category_name");
+
+                            b1.ToTable("hotel_amenities", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("HotelId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Hotels.HotelTranslation", "Translations", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("text")
+                                .HasColumnName("description");
+
+                            b1.Property<Guid>("HotelId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("hotel_id");
+
+                            b1.Property<string>("Locale")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("character varying(10)")
+                                .HasColumnName("locale");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("character varying(250)")
+                                .HasColumnName("name");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("HotelId", "Locale")
+                                .IsUnique()
+                                .HasDatabaseName("ux_hotel_translations_hotel_locale");
+
+                            b1.ToTable("hotel_translations", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("HotelId");
+                        });
+
+                    b.Navigation("Amenities");
+
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Places.Place", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Places.PlaceAmenity", "Amenities", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("name");
+
+                            b1.Property<Guid>("PlaceId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("place_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("PlaceId", "Name")
+                                .IsUnique()
+                                .HasDatabaseName("ux_place_amenities_place_name");
+
+                            b1.ToTable("place_amenities", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlaceId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Places.PlaceTranslation", "Translations", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("text")
+                                .HasColumnName("description");
+
+                            b1.Property<string>("Locale")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("character varying(10)")
+                                .HasColumnName("locale");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("character varying(250)")
+                                .HasColumnName("name");
+
+                            b1.Property<Guid>("PlaceId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("place_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("PlaceId", "Locale")
+                                .IsUnique()
+                                .HasDatabaseName("ux_place_translations_place_locale");
+
+                            b1.ToTable("place_translations", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlaceId");
+                        });
+
+                    b.Navigation("Amenities");
 
                     b.Navigation("Translations");
                 });

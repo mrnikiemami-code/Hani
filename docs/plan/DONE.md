@@ -113,6 +113,14 @@
 | D-96 | PriceDiscrepancy | Report + admin queue + Resolve | Gate 4 |
 | D-97 | Installments | InstallmentPlan per currency + pay endpoint + `AddRequestsLeadsDiscrepanciesInstallments` | Gate 4 |
 | D-98 | Offline Payment | Receipt Cash/Transfer/Cheque + Paid + commission + `AddOfflinePayments` | Gate 4 |
+| D-99 | CollectionMode v2 | HaniOnline/AgencyOnline/AgencyOffline + SellerOfRecord/InvoiceIssuer + ADR-0026 | Audit Remediation |
+| D-100 | InstallmentTerms | Down payment/monthly fee/cheque + eligibility + `installmentOnly` | Audit Remediation |
+| D-101 | Review criteria/proof/reply | Per-target criteria + voucher/contract proof + owner reply | Audit Remediation |
+| D-102 | Public agency profile | License type/date/file + manager/staff/address/province | Audit Remediation |
+| D-103 | Canonical Hotel | Hotel aggregate + translations/amenities/geo + `HotelId` link | Audit Remediation |
+| D-104 | Place/Geo/Nearby | Restaurant/Attraction aggregate + Haversine nearby API | Audit Remediation |
+| D-105 | Flight ADR | Metasearch/Redirect decision (ADR-0027) | Audit Remediation |
+| D-106 | Tour taxonomy | TourCategory/TravelType + search filters | Audit Remediation |
 
 ## ۳. مستندات
 
@@ -132,10 +140,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۱۵ passed |
+| Unit Tests | ۱۲۲ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۴۹ passed** |
-| Migrations | Supply (۶) + Catalog (۲) + Identity (۳) + Booking (۶) + Payments (۵) + Settlement (۲) |
+| Total | **۱۵۶ passed** |
+| Migrations | Supply (۸) + Catalog (۴) + Identity (۵) + Booking (۸) + Payments (۶) + Settlement (۳) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API `/health` | Healthy |

@@ -1,6 +1,16 @@
 namespace Hani.Contracts.Supply;
 
 /// <summary>
+/// Installment terms exposed by Supply read contracts.
+/// </summary>
+public sealed record InstallmentTermsSnapshot(
+    bool IsEnabled,
+    decimal MinDownPaymentRate,
+    int MaxMonths,
+    decimal MonthlyFeeRate,
+    bool RequiresCheque);
+
+/// <summary>
 /// Price snapshot for one room/passenger type.
 /// </summary>
 public sealed record DeparturePriceSnapshot(
@@ -31,7 +41,8 @@ public sealed record AccommodationOptionSnapshot(
     string MealPlan,
     decimal Amount,
     string Currency,
-    string? Description);
+    string? Description,
+    Guid? HotelId = null);
 
 /// <summary>
 /// Flight option snapshot.
@@ -77,7 +88,10 @@ public sealed record OfferSnapshot(
     IReadOnlyList<FlightOptionSnapshot> FlightOptions,
     IReadOnlyList<OfferTaxRuleSnapshot> TaxRules,
     string BookingMode = "Online",
-    string CollectionMode = "Online");
+    string CollectionMode = "HaniOnline",
+    string SellerOfRecord = "Hani",
+    string InvoiceIssuer = "Hani",
+    InstallmentTermsSnapshot? InstallmentTerms = null);
 
 /// <summary>
 /// Read-side contract exposed by the Supply module.
@@ -116,7 +130,10 @@ public sealed record DeparturePricingSnapshot(
     IReadOnlyList<DepartureTaxRuleSnapshot> TaxRules,
     IReadOnlyList<AccommodationOptionSnapshot> AccommodationOptions,
     string BookingMode = "Online",
-    string CollectionMode = "Online");
+    string CollectionMode = "HaniOnline",
+    string SellerOfRecord = "Hani",
+    string InvoiceIssuer = "Hani",
+    InstallmentTermsSnapshot? InstallmentTerms = null);
 
 /// <summary>
 /// Read-side contract for departure pricing.

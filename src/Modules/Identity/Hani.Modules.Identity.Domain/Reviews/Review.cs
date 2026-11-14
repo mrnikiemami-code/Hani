@@ -31,6 +31,9 @@ public sealed class Review : AggregateRoot<Guid>
         string comment,
         TravelType travelType,
         DateOnly? visitDate,
+        Dictionary<string, int> criteria,
+        ReviewProofType proofType,
+        string? proofUrl,
         DateTimeOffset createdAt) : base(id)
     {
         UserId = userId;
@@ -47,6 +50,9 @@ public sealed class Review : AggregateRoot<Guid>
         Comment = comment;
         TravelType = travelType;
         VisitDate = visitDate;
+        Criteria = criteria;
+        ProofType = proofType;
+        ProofUrl = proofUrl;
         CreatedAt = createdAt;
         Status = ReviewStatus.Pending;
     }
@@ -122,6 +128,31 @@ public sealed class Review : AggregateRoot<Guid>
     public DateOnly? VisitDate { get; private set; }
 
     /// <summary>
+    /// Target-specific criterion scores keyed by canonical criterion name.
+    /// </summary>
+    public Dictionary<string, int> Criteria { get; private set; } = [];
+
+    /// <summary>
+    /// Proof type supplied by the reviewer.
+    /// </summary>
+    public ReviewProofType ProofType { get; private set; }
+
+    /// <summary>
+    /// Proof file URL.
+    /// </summary>
+    public string? ProofUrl { get; private set; }
+
+    /// <summary>
+    /// Optional public reply from the entity owner.
+    /// </summary>
+    public string? OwnerReply { get; private set; }
+
+    /// <summary>
+    /// Time of the owner reply.
+    /// </summary>
+    public DateTimeOffset? OwnerRepliedAt { get; private set; }
+
+    /// <summary>
     /// Moderation state.
     /// </summary>
     public ReviewStatus Status { get; private set; }
@@ -186,7 +217,10 @@ public sealed class Review : AggregateRoot<Guid>
         TravelType travelType,
         DateOnly? visitDate,
         IReadOnlyCollection<ReviewPhotoInput> photos,
-        DateTimeOffset? now = null)
+        DateTimeOffset? now = null,
+        IReadOnlyDictionary<string, int>? criteria = null,
+        ReviewProofType proofType = ReviewProofType.None,
+        string? proofUrl = null)
     {
         if (userId == Guid.Empty || targetId == Guid.Empty)
         {
@@ -220,6 +254,13 @@ public sealed class Review : AggregateRoot<Guid>
             throw new ArgumentException("A review can have at most five photos.", nameof(photos));
         }
 
+        var normalizedCriteria = NormalizeCriteria(targetType, criteria, foodRating, cleanlinessRating, staffRating, entertainmentRating, locationRating, valueRating);
+
+        if (proofType != ReviewProofType.None && string.IsNullOrWhiteSpace(proofUrl))
+        {
+            throw new ArgumentException("Proof URL is required when proof type is supplied.", nameof(proofUrl));
+        }
+
         var createdAt = now ?? DateTimeOffset.UtcNow;
         var review = new Review(
             ids.NewId(),
@@ -237,6 +278,9 @@ public sealed class Review : AggregateRoot<Guid>
             comment.Trim(),
             travelType,
             visitDate,
+            normalizedCriteria,
+            proofType,
+            string.IsNullOrWhiteSpace(proofUrl) ? null : proofUrl.Trim(),
             createdAt);
 
         foreach (var photo in photos)
@@ -245,6 +289,98 @@ public sealed class Review : AggregateRoot<Guid>
         }
 
         return review;
+    }
+
+    /// <summary>
+    /// Adds or replaces the public owner reply.
+    /// </summary>
+    public void Reply(string reply, DateTimeOffset? now = null)
+    {
+        if (string.IsNullOrWhiteSpace(reply))
+        {
+            throw new ArgumentException("Reply is required.", nameof(reply));
+        }
+
+        if (reply.Trim().Length > 2000)
+        {
+            throw new ArgumentException("Reply is too long.", nameof(reply));
+        }
+
+        OwnerReply = reply.Trim();
+        OwnerRepliedAt = now ?? DateTimeOffset.UtcNow;
+    }
+
+    private static Dictionary<string, int> NormalizeCriteria(
+        ReviewTargetType targetType,
+        IReadOnlyDictionary<string, int>? criteria,
+        int? foodRating,
+        int? cleanlinessRating,
+        int? staffRating,
+        int? entertainmentRating,
+        int? locationRating,
+        int? valueRating)
+    {
+        var allowed = targetType switch
+        {
+            ReviewTargetType.Hotel =>
+                new[] { "Food", "Cleanliness", "Staff", "Entertainment", "Location", "Value" },
+            ReviewTargetType.Restaurant =>
+                new[] { "Quality", "Service", "Atmosphere", "Price" },
+            ReviewTargetType.Agency =>
+                new[] { "Staff", "Location", "Documents", "Support", "Contract", "TourLeader", "Price" },
+            _ => []
+        };
+
+        var result = criteria is null
+            ? new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+            : new Dictionary<string, int>(criteria, StringComparer.OrdinalIgnoreCase);
+
+        if (targetType == ReviewTargetType.Hotel && result.Count == 0)
+        {
+            AddIfPresent(result, "Food", foodRating);
+            AddIfPresent(result, "Cleanliness", cleanlinessRating);
+            AddIfPresent(result, "Staff", staffRating);
+            AddIfPresent(result, "Entertainment", entertainmentRating);
+            AddIfPresent(result, "Location", locationRating);
+            AddIfPresent(result, "Value", valueRating);
+        }
+
+        foreach (var item in result)
+        {
+            if (!allowed.Contains(item.Key, StringComparer.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException(
+                    $"Criterion '{item.Key}' is not valid for {targetType}.",
+                    nameof(criteria));
+            }
+
+            if (item.Value is < 1 or > 5)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(criteria),
+                    $"Criterion '{item.Key}' must be between 1 and 5.");
+            }
+        }
+
+        if (targetType is ReviewTargetType.Restaurant or ReviewTargetType.Agency && result.Count == 0)
+        {
+            throw new ArgumentException(
+                $"At least one criterion is required for {targetType}.",
+                nameof(criteria));
+        }
+
+        return result.ToDictionary(
+            item => allowed.First(name => string.Equals(name, item.Key, StringComparison.OrdinalIgnoreCase)),
+            item => item.Value,
+            StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static void AddIfPresent(Dictionary<string, int> criteria, string key, int? value)
+    {
+        if (value is not null)
+        {
+            criteria[key] = value.Value;
+        }
     }
 
     /// <summary>

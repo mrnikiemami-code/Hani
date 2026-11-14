@@ -1,6 +1,7 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Supply.Application.Abstractions;
+using Hani.Modules.Supply.Application.Commands.CreateAgencyOffer;
 using Hani.Modules.Supply.Domain.AgencyOffers;
 
 namespace Hani.Modules.Supply.Application.Commands.UpsertAgencyOffer;
@@ -35,7 +36,12 @@ internal sealed class UpsertAgencyOfferCommandHandler(
             try
             {
                 existing.UpdateDetails(request.Title, price);
-                existing.SetBookingTerms(request.BookingMode, request.CollectionMode);
+                existing.SetBookingTerms(
+                    request.BookingMode,
+                    request.CollectionMode,
+                    request.SellerOfRecord,
+                    request.InvoiceIssuer);
+                existing.SetInstallmentTerms(MapInstallmentTerms(request.InstallmentTerms));
 
                 if (request.AccommodationOptions is not null)
                 {
@@ -83,7 +89,10 @@ internal sealed class UpsertAgencyOfferCommandHandler(
             price,
             externalId,
             request.BookingMode,
-            request.CollectionMode);
+            request.CollectionMode,
+            request.SellerOfRecord,
+            request.InvoiceIssuer,
+            MapInstallmentTerms(request.InstallmentTerms));
 
         try
         {
@@ -119,4 +128,13 @@ internal sealed class UpsertAgencyOfferCommandHandler(
         return Result<UpsertAgencyOfferResult>.Success(
             new UpsertAgencyOfferResult(offer.Id, Created: true));
     }
+
+    private static InstallmentTerms? MapInstallmentTerms(InstallmentTermsInput? input)
+        => input is null
+            ? null
+            : InstallmentTerms.Create(
+                input.MinDownPaymentRate,
+                input.MaxMonths,
+                input.MonthlyFeeRate,
+                input.RequiresCheque);
 }

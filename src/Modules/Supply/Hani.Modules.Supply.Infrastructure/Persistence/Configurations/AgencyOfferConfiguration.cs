@@ -76,6 +76,39 @@ internal sealed class AgencyOfferConfiguration : IEntityTypeConfiguration<Agency
             .HasMaxLength(32)
             .IsRequired();
 
+        builder.Property(offer => offer.SellerOfRecord)
+            .HasColumnName("seller_of_record")
+            .HasConversion<string>()
+            .HasMaxLength(32)
+            .IsRequired();
+
+        builder.Property(offer => offer.InvoiceIssuer)
+            .HasColumnName("invoice_issuer")
+            .HasConversion<string>()
+            .HasMaxLength(32)
+            .IsRequired();
+
+        builder.ComplexProperty(offer => offer.InstallmentTerms, terms =>
+        {
+            terms.Property(item => item.IsEnabled)
+                .HasColumnName("installment_enabled")
+                .IsRequired();
+            terms.Property(item => item.MinDownPaymentRate)
+                .HasColumnName("installment_min_down_payment_rate")
+                .HasPrecision(5, 4)
+                .IsRequired();
+            terms.Property(item => item.MaxMonths)
+                .HasColumnName("installment_max_months")
+                .IsRequired();
+            terms.Property(item => item.MonthlyFeeRate)
+                .HasColumnName("installment_monthly_fee_rate")
+                .HasPrecision(5, 4)
+                .IsRequired();
+            terms.Property(item => item.RequiresCheque)
+                .HasColumnName("installment_requires_cheque")
+                .IsRequired();
+        });
+
         builder.HasIndex(offer => offer.AgencyId)
             .HasDatabaseName("ix_agency_offers_agency_id");
 
@@ -90,6 +123,7 @@ internal sealed class AgencyOfferConfiguration : IEntityTypeConfiguration<Agency
 
             options.Property(option => option.Id).HasColumnName("id");
             options.Property(option => option.AgencyOfferId).HasColumnName("agency_offer_id");
+            options.Property(option => option.HotelId).HasColumnName("hotel_id");
             options.Property(option => option.HotelName).HasColumnName("hotel_name").HasMaxLength(200).IsRequired();
             options.Property(option => option.HotelStars).HasColumnName("hotel_stars").IsRequired();
             options.Property(option => option.RoomType).HasColumnName("room_type").HasConversion<string>().HasMaxLength(32).IsRequired();

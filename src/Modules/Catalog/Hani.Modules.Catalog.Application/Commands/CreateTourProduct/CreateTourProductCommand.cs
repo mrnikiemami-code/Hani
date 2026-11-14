@@ -59,4 +59,6 @@ public sealed record CreateTourProductCommand(
     string TourType,
     IReadOnlyList<TourProductTranslationInput> Translations,
     IReadOnlyList<Guid> DestinationIds,
-    TourProductContentInput? Content = null) : ICommand<Guid>;
+    TourProductContentInput? Content = null,
+    TourCategory Category = TourCategory.Normal,
+    TravelType TravelType = TravelType.Other) : ICommand<Guid>;

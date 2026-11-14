@@ -28,6 +28,9 @@ Marketplace.Application
 | GET | `/market/v1/destinations/{slug}/landing?locale=fa` | Landing metadata مقصد + تعداد تور |
 | GET | `/market/v1/seo/sitemap.xml` | Sitemap چندزبانه |
 | GET | `/market/v1/seo/robots.txt` | robots policy |
+| GET | `/market/v1/hotels/{slug}` | پروفایل canonical هتل |
+| GET | `/market/v1/places/{slug}` | رستوران یا جاذبه canonical |
+| GET | `/market/v1/places/nearby` | مکان‌های نزدیک با Haversine |
 
 ## قواعد
 
@@ -39,11 +42,13 @@ Marketplace.Application
 - گزینه‌های اقامت، پرواز و قوانین VAT/Duty هر Offer در پاسخ compare برگردانده می‌شوند.
 - `bookingMode` و `collectionMode` هر Offer در compare و `bookingModes` هر نتیجه جستجو برگردانده می‌شود تا UI بین رزرو مستقیم و `ReservationRequest` تفکیک کند.
 - عنوان/خلاصه/توضیح بر اساس locale با fallback به زبان پیش‌فرض `Localization:DefaultCulture`.
-- فیلترهای جستجو: مقصد/مبدا، تاریخ، مدت، نوع تور، سختی، وسیله، اقامت، قیمت/ارز، ستاره هتل، MealPlan، ایرلاین، آژانس، مسافر، نام هتل، نوع اتاق، کابین، کلیدواژه (`q`) و `onlineOnly`.
+- فیلترهای جستجو: مقصد/مبدا، تاریخ، مدت، نوع تور، دسته (`category`)، نوع سفر (`travelType`)، سختی، وسیله، اقامت، قیمت/ارز، ستاره هتل، MealPlan، ایرلاین، آژانس، مسافر، نام هتل، نوع اتاق، کابین، کلیدواژه (`q`)، `onlineOnly` و `installmentOnly`.
 - Sortهای پشتیبانی‌شده: `price_asc`, `price_desc`, `duration_asc`, `duration_desc`, `newest`, `title`.
 - SEO: canonical و hreflang از `Seo:PublicBaseUrl` ساخته می‌شوند؛ JSON-LD با `System.Text.Json` سریالایز می‌شود.
 - Sitemap فقط محصولات منتشرشده و destination landingهای مرتبط را شامل می‌شود؛ query filterها در robots محدود شده‌اند.
 - `onlineOnly=true` فقط Offerهایی با `BookingMode=Online` را برمی‌گرداند؛ Offerهای `ReservationRequest` در جستجوی عادی دیده می‌شوند.
+- `installmentOnly=true` فقط Offerهایی را برمی‌گرداند که `InstallmentTerms.IsEnabled` دارند.
+- `category` و `travelType` از `TourProduct` فیلتر می‌کنند و در نتیجه جستجو برگردانده می‌شوند.
 
 ## محدودیت فعلی
 

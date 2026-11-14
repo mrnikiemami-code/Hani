@@ -30,4 +30,11 @@ public sealed record AgencyDto(
     DateTimeOffset? SubmittedAt,
     DateTimeOffset? ReviewedAt,
     string? RejectionReason,
-    IReadOnlyList<AgencyDocumentDto> Documents);
+    IReadOnlyList<AgencyDocumentDto> Documents,
+    string? LicenseType,
+    DateOnly? LicenseIssuedAt,
+    string? ManagerName,
+    int? StaffCount,
+    string? Address,
+    string? Province,
+    string? LicenseFileUrl);

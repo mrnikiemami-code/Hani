@@ -23,7 +23,15 @@ public sealed record CreateReviewCommand(
     string Comment,
     TravelType TravelType,
     DateOnly? VisitDate,
-    IReadOnlyList<ReviewPhotoInput> Photos) : ICommand<ReviewDto>;
+    IReadOnlyList<ReviewPhotoInput> Photos,
+    IReadOnlyDictionary<string, int>? Criteria = null,
+    ReviewProofType ProofType = ReviewProofType.None,
+    string? ProofUrl = null) : ICommand<ReviewDto>;
+
+/// <summary>
+/// Command that adds the owner reply to a review.
+/// </summary>
+public sealed record ReplyToReviewCommand(Guid ReviewId, string Reply) : ICommand<bool>;
 
 /// <summary>
 /// Query that returns published reviews for a target.
@@ -145,7 +153,12 @@ public sealed record ReviewDto(
     int ReportCount,
     DateTimeOffset CreatedAt,
     DateTimeOffset? PublishedAt,
-    IReadOnlyList<ReviewPhotoDto> Photos);
+    IReadOnlyList<ReviewPhotoDto> Photos,
+    IReadOnlyDictionary<string, int> Criteria,
+    string ProofType,
+    string? ProofUrl,
+    string? OwnerReply,
+    DateTimeOffset? OwnerRepliedAt);
 
 /// <summary>
 /// Review photo read model.

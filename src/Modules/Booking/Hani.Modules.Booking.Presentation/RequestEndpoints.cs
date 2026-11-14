@@ -395,7 +395,9 @@ public static class RequestEndpoints
                 orderId,
                 request.Currency,
                 request.InstallmentCount,
-                request.IntervalDays),
+                request.IntervalDays,
+                request.DownPaymentAmount,
+                request.ChequeReference),
             cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
@@ -476,7 +478,9 @@ public sealed record ResolvePriceDiscrepancyRequest(string Resolution);
 public sealed record CreateInstallmentPlanRequest(
     string Currency,
     int InstallmentCount,
-    int IntervalDays);
+    int IntervalDays,
+    decimal? DownPaymentAmount = null,
+    string? ChequeReference = null);
 
 /// <summary>Installment payment body.</summary>
 public sealed record PayInstallmentRequest(

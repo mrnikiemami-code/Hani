@@ -15,6 +15,7 @@ public sealed class OfferAccommodationOption : Entity<Guid>
     internal OfferAccommodationOption(
         Guid id,
         Guid agencyOfferId,
+        Guid? hotelId,
         string hotelName,
         int hotelStars,
         RoomType roomType,
@@ -23,6 +24,7 @@ public sealed class OfferAccommodationOption : Entity<Guid>
         string? description) : base(id)
     {
         AgencyOfferId = agencyOfferId;
+        HotelId = hotelId;
         HotelName = hotelName;
         HotelStars = hotelStars;
         RoomType = roomType;
@@ -36,6 +38,11 @@ public sealed class OfferAccommodationOption : Entity<Guid>
     /// Owning agency offer.
     /// </summary>
     public Guid AgencyOfferId { get; private set; }
+
+    /// <summary>
+    /// Canonical hotel id when linked.
+    /// </summary>
+    public Guid? HotelId { get; private set; }
 
     /// <summary>
     /// Hotel name.

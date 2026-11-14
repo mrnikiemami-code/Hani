@@ -21,6 +21,8 @@ internal sealed class TourProductConfiguration : IEntityTypeConfiguration<TourPr
         builder.Property(product => product.VehicleType).HasColumnName("vehicle_type").HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(product => product.LocalVehicleType).HasColumnName("local_vehicle_type").HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(product => product.AccommodationType).HasColumnName("accommodation_type").HasConversion<string>().HasMaxLength(20).IsRequired();
+        builder.Property(product => product.Category).HasColumnName("category").HasConversion<string>().HasMaxLength(32).IsRequired();
+        builder.Property(product => product.TravelType).HasColumnName("travel_type").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(product => product.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(product => product.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(product => product.UpdatedAt).HasColumnName("updated_at").IsRequired();

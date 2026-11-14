@@ -31,7 +31,7 @@
 
 > Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
-> **Gate 5 موقتاً Blocked است.** پیش‌نیازها: A-01..A-08 در [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md).
+> **Gate 5 Ready است.** Audit Remediation A-01..A-08 در [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md) کامل شد.
 
 ## Phase 0 — Foundation ✅
 

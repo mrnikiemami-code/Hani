@@ -127,12 +127,23 @@ internal sealed class CreateQuoteCommandHandler(
                 selectedAccommodation.HotelStars,
                 selectedAccommodation.RoomType,
                 selectedAccommodation.MealPlan,
-                selectedAccommodation.Currency.ToUpperInvariant());
+                selectedAccommodation.Currency.ToUpperInvariant(),
+                selectedAccommodation.HotelId);
         var snapshot = new PricingSnapshot(
             components,
             accommodation,
             departure.BookingMode,
-            departure.CollectionMode);
+            departure.CollectionMode,
+            departure.SellerOfRecord,
+            departure.InvoiceIssuer,
+            departure.InstallmentTerms is null
+                ? null
+                : new Hani.BuildingBlocks.Domain.Pricing.InstallmentTermsSnapshot(
+                    departure.InstallmentTerms.IsEnabled,
+                    departure.InstallmentTerms.MinDownPaymentRate,
+                    departure.InstallmentTerms.MaxMonths,
+                    departure.InstallmentTerms.MonthlyFeeRate,
+                    departure.InstallmentTerms.RequiresCheque));
 
         var quote = Quote.Create(
             ids,
@@ -222,8 +233,11 @@ internal sealed class CreateQuoteCommandHandler(
                     accommodation.HotelStars,
                     accommodation.RoomType,
                     accommodation.MealPlan,
-                    accommodation.Currency)
+                    accommodation.Currency,
+                    accommodation.HotelId)
                 : null,
             quote.EffectivePricing.BookingMode,
-            quote.EffectivePricing.CollectionMode);
+            quote.EffectivePricing.CollectionMode,
+            quote.EffectivePricing.SellerOfRecord,
+            quote.EffectivePricing.InvoiceIssuer);
 }

@@ -53,7 +53,18 @@ public sealed record AccommodationSelectionSnapshot(
     int HotelStars,
     string RoomType,
     string MealPlan,
-    string Currency);
+    string Currency,
+    Guid? HotelId = null);
+
+/// <summary>
+/// Installment terms captured in a pricing snapshot.
+/// </summary>
+public sealed record InstallmentTermsSnapshot(
+    bool IsEnabled,
+    decimal MinDownPaymentRate,
+    int MaxMonths,
+    decimal MonthlyFeeRate,
+    bool RequiresCheque);
 
 /// <summary>
 /// Multi-currency pricing snapshot with per-currency tax and duty amounts.
@@ -62,7 +73,10 @@ public sealed record PricingSnapshot(
     List<PriceComponentSnapshot> Components,
     AccommodationSelectionSnapshot? Accommodation = null,
     string BookingMode = "Online",
-    string CollectionMode = "Online")
+    string CollectionMode = "HaniOnline",
+    string SellerOfRecord = "Hani",
+    string InvoiceIssuer = "Hani",
+    InstallmentTermsSnapshot? InstallmentTerms = null)
 {
     /// <summary>
     /// Creates a snapshot for a single currency with no applicable tax.

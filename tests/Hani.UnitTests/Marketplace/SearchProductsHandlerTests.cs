@@ -313,6 +313,59 @@ public sealed class SearchProductsHandlerTests
     }
 
     [Fact]
+    public async Task Search_Should_Filter_Installment_Offers()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+        var productId = Guid.CreateVersion7();
+
+        catalog.Products.Add(new CatalogProductSummary(
+            productId,
+            "installment",
+            4,
+            "city-break",
+            new Dictionary<string, string> { ["fa"] = "تور اقساطی" },
+            [],
+            DateTimeOffset.UtcNow));
+
+        offers.OffersByProduct[productId] =
+        [
+            OfferWithDetails(
+                productId,
+                Guid.CreateVersion7(),
+                4,
+                "Breakfast",
+                "Iran Air",
+                20_000_000m,
+                "IRR",
+                new DateOnly(2026, 12, 20),
+                10,
+                "Online",
+                new InstallmentTermsSnapshot(true, 0.3m, 10, 0.05m, true)),
+            OfferWithDetails(
+                productId,
+                Guid.CreateVersion7(),
+                4,
+                "Breakfast",
+                "Iran Air",
+                21_000_000m,
+                "IRR",
+                new DateOnly(2026, 12, 20),
+                10)
+        ];
+
+        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog());
+
+        var result = await handler.Handle(
+            new SearchProductsQuery("fa", InstallmentOnly: true),
+            CancellationToken.None);
+
+        result.Value!.TotalCount.ShouldBe(1);
+        result.Value.Items.Single().InstallmentAvailable.ShouldBeTrue();
+        result.Value.Items.Single().OfferCount.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task Search_Should_Apply_Duration_And_TourType()
     {
         var catalog = new FakeCatalogReadService();
@@ -373,7 +426,8 @@ public sealed class SearchProductsHandlerTests
         string currency,
         DateOnly startDate,
         int seatsLeft,
-        string bookingMode = "Online")
+        string bookingMode = "Online",
+        InstallmentTermsSnapshot? installmentTerms = null)
         => new(
             Guid.CreateVersion7(),
             agencyId,
@@ -419,7 +473,8 @@ public sealed class SearchProductsHandlerTests
                     "25kg")
             ],
             [],
-            BookingMode: bookingMode);
+            BookingMode: bookingMode,
+            InstallmentTerms: installmentTerms);
 
     private static OfferSnapshot Offer(Guid productId, decimal basePrice, decimal departurePrice)
         => new(

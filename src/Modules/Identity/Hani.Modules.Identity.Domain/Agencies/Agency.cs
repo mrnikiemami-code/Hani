@@ -25,7 +25,14 @@ public sealed class Agency : AggregateRoot<Guid>
         string? website = null,
         string? contactEmail = null,
         string? contactPhone = null,
-        string? about = null) : base(id)
+        string? about = null,
+        string? licenseType = null,
+        DateOnly? licenseIssuedAt = null,
+        string? managerName = null,
+        int? staffCount = null,
+        string? address = null,
+        string? province = null,
+        string? licenseFileUrl = null) : base(id)
     {
         Slug = slug;
         Name = name;
@@ -37,6 +44,13 @@ public sealed class Agency : AggregateRoot<Guid>
         ContactEmail = contactEmail;
         ContactPhone = contactPhone;
         About = about;
+        LicenseType = licenseType;
+        LicenseIssuedAt = licenseIssuedAt;
+        ManagerName = managerName;
+        StaffCount = staffCount;
+        Address = address;
+        Province = province;
+        LicenseFileUrl = licenseFileUrl;
         Status = AgencyStatus.Active;
         CreatedAt = DateTimeOffset.UtcNow;
     }
@@ -79,6 +93,41 @@ public sealed class Agency : AggregateRoot<Guid>
     /// Short agency description.
     /// </summary>
     public string? About { get; private set; }
+
+    /// <summary>
+    /// Public license type, for example Band B.
+    /// </summary>
+    public string? LicenseType { get; private set; }
+
+    /// <summary>
+    /// License issue date.
+    /// </summary>
+    public DateOnly? LicenseIssuedAt { get; private set; }
+
+    /// <summary>
+    /// Public manager name.
+    /// </summary>
+    public string? ManagerName { get; private set; }
+
+    /// <summary>
+    /// Number of agency staff.
+    /// </summary>
+    public int? StaffCount { get; private set; }
+
+    /// <summary>
+    /// Public agency address.
+    /// </summary>
+    public string? Address { get; private set; }
+
+    /// <summary>
+    /// Public province.
+    /// </summary>
+    public string? Province { get; private set; }
+
+    /// <summary>
+    /// Public license file URL.
+    /// </summary>
+    public string? LicenseFileUrl { get; private set; }
 
     /// <summary>
     /// Onboarding submission time.
@@ -151,6 +200,13 @@ public sealed class Agency : AggregateRoot<Guid>
         string? contactPhone,
         string? about,
         IReadOnlyCollection<AgencyDocumentInput> documents,
+        string? licenseType = null,
+        DateOnly? licenseIssuedAt = null,
+        string? managerName = null,
+        int? staffCount = null,
+        string? address = null,
+        string? province = null,
+        string? licenseFileUrl = null,
         DateTimeOffset? now = null)
     {
         if (ownerUserId == Guid.Empty)
@@ -175,7 +231,14 @@ public sealed class Agency : AggregateRoot<Guid>
             string.IsNullOrWhiteSpace(website) ? null : website.Trim(),
             string.IsNullOrWhiteSpace(contactEmail) ? null : contactEmail.Trim().ToLowerInvariant(),
             string.IsNullOrWhiteSpace(contactPhone) ? null : contactPhone.Trim(),
-            string.IsNullOrWhiteSpace(about) ? null : about.Trim())
+            string.IsNullOrWhiteSpace(about) ? null : about.Trim(),
+            string.IsNullOrWhiteSpace(licenseType) ? null : licenseType.Trim(),
+            licenseIssuedAt,
+            string.IsNullOrWhiteSpace(managerName) ? null : managerName.Trim(),
+            staffCount,
+            string.IsNullOrWhiteSpace(address) ? null : address.Trim(),
+            string.IsNullOrWhiteSpace(province) ? null : province.Trim(),
+            string.IsNullOrWhiteSpace(licenseFileUrl) ? null : licenseFileUrl.Trim())
         {
             Status = AgencyStatus.Pending,
             SubmittedAt = createdAt,

@@ -44,7 +44,10 @@ internal sealed class CreateReviewCommandHandler(
                 request.Comment,
                 request.TravelType,
                 request.VisitDate,
-                request.Photos);
+                request.Photos,
+                criteria: request.Criteria,
+                proofType: request.ProofType,
+                proofUrl: request.ProofUrl);
 
             await reviews.AddAsync(review, cancellationToken);
             return Result<ReviewDto>.Success(EngagementMappings.ToDto(
@@ -57,6 +60,35 @@ internal sealed class CreateReviewCommandHandler(
         {
             return Result<ReviewDto>.Failure(
                 Error.Validation("HANI-IDENTITY-1501", exception.Message));
+        }
+    }
+}
+
+internal sealed class ReplyToReviewCommandHandler(IReviewRepository reviews)
+    : ICommandHandler<ReplyToReviewCommand, bool>
+{
+    public async Task<Result<bool>> Handle(
+        ReplyToReviewCommand request,
+        CancellationToken cancellationToken)
+    {
+        var review = await reviews.GetByIdAsync(request.ReviewId, cancellationToken);
+
+        if (review is null)
+        {
+            return Result<bool>.Failure(
+                Error.NotFound("HANI-IDENTITY-1502", "Review was not found."));
+        }
+
+        try
+        {
+            review.Reply(request.Reply);
+            await reviews.SaveChangesAsync(cancellationToken);
+            return Result<bool>.Success(true);
+        }
+        catch (ArgumentException exception)
+        {
+            return Result<bool>.Failure(
+                Error.Validation("HANI-IDENTITY-1503", exception.Message));
         }
     }
 }

@@ -1,6 +1,6 @@
 # Catalog Module
 
-> **مسئولیت:** کاتالوگ مشترک محصولات سفر (`TourProduct`) و مقاصد (`Destination`) به‌همراه ترجمه FA/EN/AR.
+> **مسئولیت:** کاتالوگ مشترک محصولات سفر (`TourProduct`)، مقاصد (`Destination`)، هتل (`Hotel`) و مکان‌های رستوران/جاذبه (`Place`) به‌همراه ترجمه FA/EN/AR و مختصات جغرافیایی.
 
 ## چرا TourProduct مشترک است؟
 
@@ -19,6 +19,9 @@
 | `DestinationTranslation` | نام و توضیح مقصد در هر زبان |
 | `TourProductStatus` | Draft / Published / Archived |
 | `TourDifficulty` / `TourVehicleType` / `TourAccommodationType` | کدهای زبان‌مستقل برای نمایش چندزبانه |
+| `TourCategory` / `TravelType` | Normal/Installment/Luxury و Air/Bus/Rail/Other |
+| `Hotel` / `HotelTranslation` / `HotelAmenity` | هتل canonical با ستاره/مختصات/امکانات/ترجمه |
+| `Place` / `PlaceTranslation` / `PlaceAmenity` | رستوران/جاذبه canonical با Geo و Reservation |
 
 ## قواعد
 
@@ -37,9 +40,14 @@
 | POST | `/internal/v1/products` |
 | POST | `/internal/v1/products/{id}/publish` |
 | GET | `/market/v1/products/{id}` |
+| POST | `/internal/v1/hotels` |
+| GET | `/market/v1/hotels/{slug}` |
+| POST | `/internal/v1/places` |
+| GET | `/market/v1/places/{slug}` |
+| GET | `/market/v1/places/nearby` |
 
 ## Persistence
 
 - Schema: `catalog`
-- جدول‌ها: `tour_products`, `tour_product_translations`, `tour_itinerary_days`, `tour_itinerary_day_translations`, `tour_product_destinations`, `destinations`, `destination_translations`
-- Migrationها: `InitialCatalog`, `AddTourContent`
+- جدول‌ها: `tour_products`, `tour_product_translations`, `tour_itinerary_days`, `tour_itinerary_day_translations`, `tour_product_destinations`, `destinations`, `destination_translations`, `hotels`, `hotel_translations`, `hotel_amenities`, `places`, `place_translations`, `place_amenities`
+- Migrationها: `InitialCatalog`, `AddTourContent`, `AddHotelsPlacesAndTourTaxonomy`

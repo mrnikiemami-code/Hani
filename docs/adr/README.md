@@ -27,6 +27,8 @@
 | [0023](0023-settlement-ledger-and-commission.md) | Settlement Ledger و Accrual کمیسیون | Accepted |
 | [0024](0024-multicurrency-taxes-booking-and-mor.md) | چندارزی، مالیات/عوارض، مدل‌های رزرو و تفکیک MoR | Accepted (Locked for implementation) |
 | [0025](0025-booking-modes-requests-leads-installments-offline.md) | BookingMode/ReservationRequest، Lead/RFQ، اقساط و پرداخت آفلاین | Accepted |
+| [0026](0026-collection-mode-v2-seller-and-invoice.md) | CollectionMode v2 + SellerOfRecord/InvoiceIssuer | Accepted |
+| [0027](0027-flight-metasearch-redirect.md) | Flight Metasearch/Redirect | Accepted |
 
 ## قالب ADR جدید
 

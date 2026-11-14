@@ -17,7 +17,7 @@ Order (Booking, PendingPayment)
        → dedupe با provider_event_id
        → payment.succeeded → Order.Paid
    → POST /internal/v1/payments/offline
-       → فقط Order با CollectionMode=Offline
+       → فقط Order با CollectionMode=AgencyOffline
        → رسید Cash/BankTransfer/Cheque + Paid + Commission
 ```
 
@@ -32,7 +32,8 @@ Order (Booking, PendingPayment)
 - Webhook با HMAC-SHA256 روی `timestamp.payload` و پنجره زمانی ۵ دقیقه تأیید می‌شود.
 - `payment_webhook_events` با `(provider, provider_event_id)` یکتا است؛ event تکراری پردازش مجدد نمی‌شود.
 - `payment.succeeded` obligation همان ارز را Paid می‌کند؛ Order فقط وقتی همه obligationها Paid شوند `Paid` می‌شود و `PaymentStatus` مستقل از lifecycle گزارش می‌شود؛ `payment.failed` فقط Intent را Failed می‌کند.
-- اگر `CollectionMode=Offline` باشد، ساخت PaymentIntent آنلاین با `409` رد می‌شود؛ فقط `RecordOfflinePayment` مجاز است.
+- فقط `CollectionMode=HaniOnline` اجازه ساخت PaymentIntent Hani دارد؛ `AgencyOnline` و `AgencyOffline` با `409` رد می‌شوند.
+- `RecordOfflinePayment` فقط برای `CollectionMode=AgencyOffline` مجاز است.
 - پرداخت آفلاین باید دقیقاً با مبلغ obligation همان ارز برابر باشد و یک `OfflinePaymentReceipt` با اپراتور/مرجع ثبت می‌کند.
 - Gateway پیش‌فرض `MockPaymentGateway` است و برای توسعه/تست قابل جایگزینی با PSP واقعی است.
 - Refund و Reconciliation در تسک‌های بعدی اضافه می‌شوند.

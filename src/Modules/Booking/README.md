@@ -50,7 +50,8 @@ Departure (Supply)
 - `LeadRequest` با Match/Close چرخه دارد و برای RFQ تور سفارشی، هتل، پرواز و ویزا استفاده می‌شود.
 - `DistributeLead` درخواست را به همه آژانس‌های Active توزیع می‌کند و برای هر آژانس یک `LeadAgencyInvitation` یکتا می‌سازد (بدون تکرار).
 - `PriceDiscrepancyReport` مغایرت قیمت نمایش‌داده‌شده با checkout را ثبت و با Resolve بسته می‌شود.
-- `InstallmentPlan` برای هر ارز Order ساخته می‌شود؛ جمع اقساط دقیقاً برابر مبلغ آن ارز است و آخرین قسط اختلاف گرد کردن را جبران می‌کند.
+- `InstallmentPlan` برای هر ارز Order ساخته می‌شود؛ پیش‌پرداخت، مبلغ تأمین‌شده، کارمزد ماهانه، مبلغ کل قابل پرداخت و نیاز به چک را نگه می‌دارد و آخرین قسط اختلاف گرد کردن را جبران می‌کند.
+- ساخت plan فقط وقتی مجاز است که `InstallmentTerms` روی snapshot سفارش فعال باشد؛ سقف تعداد اقساط از همان terms خوانده می‌شود.
 
 ## APIها
 
@@ -86,7 +87,7 @@ Departure (Supply)
 - Schema: `booking`
 - جدول‌ها: `quotes`, `holds`, `orders`, `order_travelers`, `order_lines`, `payment_obligations`, `contracts`, `contract_travelers`, `contract_lines`, `reservation_requests`, `lead_requests`, `lead_agency_invitations`, `price_discrepancy_reports`, `installment_plans`, `installments`
 - ستون `pricing` از نوع `jsonb` در `quotes`/`orders`/`contracts`/`reservation_requests` snapshot چندارزی و مالیات را نگه می‌دارد.
-- Migrationها: `InitialBooking`, `AddOrdersAndContracts`, `AddMultiCurrencyPricing`, `AddPaymentObligations`, `AddRequestsLeadsDiscrepanciesInstallments`, `AddLeadDistributions`
+- Migrationها: `InitialBooking`, `AddOrdersAndContracts`, `AddMultiCurrencyPricing`, `AddPaymentObligations`, `AddRequestsLeadsDiscrepanciesInstallments`, `AddLeadDistributions`, `AddAuditRemediationBookingFields`
 
 ## محدودیت فعلی
 

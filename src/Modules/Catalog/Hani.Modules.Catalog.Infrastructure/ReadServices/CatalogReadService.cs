@@ -75,6 +75,8 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
             product.VehicleType.ToString(),
             product.LocalVehicleType.ToString(),
             product.AccommodationType.ToString(),
+            product.Category.ToString(),
+            product.TravelType.ToString(),
             product.Translations
                 .Where(translation => !string.IsNullOrWhiteSpace(translation.SeoTitle))
                 .ToDictionary(
@@ -168,6 +170,18 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
             query = query.Where(product => product.TourType == tourType);
         }
 
+        if (!string.IsNullOrWhiteSpace(filter.Category) &&
+            Enum.TryParse<TourCategory>(filter.Category, ignoreCase: true, out var category))
+        {
+            query = query.Where(product => product.Category == category);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.TravelType) &&
+            Enum.TryParse<TravelType>(filter.TravelType, ignoreCase: true, out var travelType))
+        {
+            query = query.Where(product => product.TravelType == travelType);
+        }
+
         if (!string.IsNullOrWhiteSpace(filter.Difficulty))
         {
             if (!Enum.TryParse<TourDifficulty>(filter.Difficulty, ignoreCase: true, out var difficulty))
@@ -251,7 +265,9 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
             product.Difficulty.ToString(),
             product.VehicleType.ToString(),
             product.LocalVehicleType.ToString(),
-            product.AccommodationType.ToString());
+            product.AccommodationType.ToString(),
+            product.Category.ToString(),
+            product.TravelType.ToString());
 
     private static CatalogDestinationSnapshot MapDestination(Destination destination)
         => new(

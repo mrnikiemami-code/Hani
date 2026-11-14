@@ -48,6 +48,8 @@ internal sealed class OrderPaymentReadService(BookingDbContext dbContext)
             order.Status.ToString(),
             order.PaymentDueAt,
             obligations,
-            order.EffectivePricing.CollectionMode);
+            order.EffectivePricing.CollectionMode,
+            order.EffectivePricing.SellerOfRecord,
+            order.EffectivePricing.InvoiceIssuer);
     }
 }

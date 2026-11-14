@@ -23,7 +23,10 @@ internal sealed class CreateAgencyOfferCommandHandler(
             request.Title,
             price,
             bookingMode: request.BookingMode,
-            collectionMode: request.CollectionMode);
+            collectionMode: request.CollectionMode,
+            sellerOfRecord: request.SellerOfRecord,
+            invoiceIssuer: request.InvoiceIssuer,
+            installmentTerms: MapInstallmentTerms(request.InstallmentTerms));
 
         try
         {
@@ -58,4 +61,13 @@ internal sealed class CreateAgencyOfferCommandHandler(
 
         return Result<Guid>.Success(offer.Id);
     }
+
+    private static InstallmentTerms? MapInstallmentTerms(InstallmentTermsInput? input)
+        => input is null
+            ? null
+            : InstallmentTerms.Create(
+                input.MinDownPaymentRate,
+                input.MaxMonths,
+                input.MonthlyFeeRate,
+                input.RequiresCheque);
 }

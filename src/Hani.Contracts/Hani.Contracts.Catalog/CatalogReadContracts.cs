@@ -12,7 +12,9 @@ public sealed record CatalogProductFilter(
     string? Difficulty = null,
     string? VehicleType = null,
     string? AccommodationType = null,
-    string? SearchTerm = null);
+    string? SearchTerm = null,
+    string? Category = null,
+    string? TravelType = null);
 
 /// <summary>
 /// Minimal published product projection used by marketplace reads.
@@ -29,7 +31,9 @@ public sealed record CatalogProductSummary(
     string Difficulty = "",
     string VehicleType = "",
     string LocalVehicleType = "",
-    string AccommodationType = "");
+    string AccommodationType = "",
+    string Category = "Normal",
+    string TravelType = "Other");
 
 /// <summary>
 /// Published product details with localized marketing content.
@@ -48,6 +52,8 @@ public sealed record CatalogProductDetails(
     string VehicleType = "",
     string LocalVehicleType = "",
     string AccommodationType = "",
+    string Category = "Normal",
+    string TravelType = "Other",
     IReadOnlyDictionary<string, string>? SeoTitles = null,
     IReadOnlyDictionary<string, string>? SeoDescriptions = null);
 

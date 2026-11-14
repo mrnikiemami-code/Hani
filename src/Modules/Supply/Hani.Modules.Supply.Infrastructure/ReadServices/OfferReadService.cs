@@ -68,7 +68,8 @@ internal sealed class OfferReadService(SupplyDbContext dbContext) : IOfferReadSe
                         option.MealPlan.ToString(),
                         option.Amount,
                         option.Currency,
-                        option.Description))
+                        option.Description,
+                        option.HotelId))
                     .ToArray(),
                 offer.FlightOptions
                     .Select(option => new FlightOptionSnapshot(
@@ -94,9 +95,22 @@ internal sealed class OfferReadService(SupplyDbContext dbContext) : IOfferReadSe
                         rule.ExemptionReason))
                     .ToArray(),
                 offer.BookingMode.ToString(),
-                offer.CollectionMode.ToString()))
+                offer.CollectionMode.ToString(),
+                offer.SellerOfRecord.ToString(),
+                offer.InvoiceIssuer.ToString(),
+                MapInstallmentTerms(offer.InstallmentTerms)))
             .ToArray();
     }
+
+    private static InstallmentTermsSnapshot? MapInstallmentTerms(InstallmentTerms terms)
+        => terms.IsEnabled
+            ? new InstallmentTermsSnapshot(
+                terms.IsEnabled,
+                terms.MinDownPaymentRate,
+                terms.MaxMonths,
+                terms.MonthlyFeeRate,
+                terms.RequiresCheque)
+            : null;
 
     private static DepartureSnapshot MapDeparture(TourDeparture departure)
         => new(

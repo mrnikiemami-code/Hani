@@ -1,8 +1,14 @@
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Catalog.Application.Commands.CreateDestination;
+using Hani.Modules.Catalog.Application.Commands.CreateHotel;
+using Hani.Modules.Catalog.Application.Commands.CreatePlace;
 using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Catalog.Application.Commands.PublishTourProduct;
+using Hani.Modules.Catalog.Application.Queries.GetHotelBySlug;
+using Hani.Modules.Catalog.Application.Queries.GetPlaceBySlug;
 using Hani.Modules.Catalog.Application.Queries.GetTourProductById;
+using Hani.Modules.Catalog.Domain.Hotels;
+using Hani.Modules.Catalog.Domain.Places;
 using Hani.Modules.Catalog.Domain.TourProducts;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +28,35 @@ public static class CatalogEndpoints
         var internalApi = app.MapGroup("/internal/v1/products").WithTags("Internal.Catalog");
         var destinations = app.MapGroup("/internal/v1/destinations").WithTags("Internal.Catalog");
         var market = app.MapGroup("/market/v1/products").WithTags("Marketplace.Catalog");
+        var internalHotels = app.MapGroup("/internal/v1/hotels").WithTags("Internal.Catalog");
+        var marketHotels = app.MapGroup("/market/v1/hotels").WithTags("Marketplace.Catalog");
+        var internalPlaces = app.MapGroup("/internal/v1/places").WithTags("Internal.Catalog");
+        var marketPlaces = app.MapGroup("/market/v1/places").WithTags("Marketplace.Catalog");
+
+        internalPlaces.MapPost("/", CreatePlaceAsync)
+            .WithName("Internal.CreatePlace")
+            .Produces<Guid>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        marketPlaces.MapGet("/nearby", GetNearbyPlacesAsync)
+            .WithName("Marketplace.GetNearbyPlaces")
+            .Produces<IReadOnlyList<NearbyPlaceDto>>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        marketPlaces.MapGet("/{slug}", GetPlaceAsync)
+            .WithName("Marketplace.GetPlace")
+            .Produces<PlaceDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        internalHotels.MapPost("/", CreateHotelAsync)
+            .WithName("Internal.CreateHotel")
+            .Produces<Guid>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        marketHotels.MapGet("/{slug}", GetHotelAsync)
+            .WithName("Marketplace.GetHotel")
+            .Produces<HotelDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         destinations.MapPost("/", CreateDestinationAsync)
             .WithName("Internal.CreateDestination")
@@ -44,6 +79,118 @@ public static class CatalogEndpoints
             .ProducesProblem(StatusCodes.Status404NotFound);
 
         return app;
+    }
+
+    /// <summary>
+    /// Creates a canonical restaurant or attraction. Returns 201 or 400.
+    /// </summary>
+    private static async Task<IResult> CreatePlaceAsync(
+        CreatePlaceRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreatePlaceCommand(
+                request.Slug,
+                request.Type,
+                request.DestinationId,
+                request.Category,
+                request.Cuisine,
+                request.PriceBand,
+                request.Reservable,
+                request.OnlineReservable,
+                request.Latitude,
+                request.Longitude,
+                request.Translations
+                    .Select(item => new PlaceTranslationInput(item.Locale, item.Name, item.Description))
+                    .ToArray(),
+                request.Amenities),
+            cancellationToken);
+
+        return result.IsSuccess
+            ? Results.Created($"/market/v1/places/{request.Slug}", result.Value)
+            : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns a canonical restaurant or attraction.
+    /// </summary>
+    private static async Task<IResult> GetPlaceAsync(
+        string slug,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetPlaceBySlugQuery(slug), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns nearby restaurants or attractions by distance.
+    /// </summary>
+    private static async Task<IResult> GetNearbyPlacesAsync(
+        decimal latitude,
+        decimal longitude,
+        PlaceType? type,
+        int? radiusKm,
+        int? limit,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetNearbyPlacesQuery(
+                latitude,
+                longitude,
+                type,
+                radiusKm ?? 10,
+                limit ?? 20),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Creates a canonical hotel. Returns 201 or 400.
+    /// </summary>
+    private static async Task<IResult> CreateHotelAsync(
+        CreateHotelRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateHotelCommand(
+                request.Slug,
+                request.DestinationId,
+                request.Stars,
+                request.Address,
+                request.Latitude,
+                request.Longitude,
+                request.Translations
+                    .Select(item => new HotelTranslationInput(item.Locale, item.Name, item.Description))
+                    .ToArray(),
+                request.Amenities
+                    .Select(item => new HotelAmenityInput(item.Category, item.Name))
+                    .ToArray()),
+            cancellationToken);
+
+        return result.IsSuccess
+            ? Results.Created($"/market/v1/hotels/{request.Slug}", result.Value)
+            : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns a canonical hotel by slug.
+    /// </summary>
+    private static async Task<IResult> GetHotelAsync(
+        string slug,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetHotelBySlugQuery(slug), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     /// <summary>
@@ -123,7 +270,9 @@ public static class CatalogEndpoints
                                     translation.Description,
                                     translation.Accommodation))
                                 .ToArray()))
-                        .ToArray()));
+                        .ToArray()),
+            request.Category,
+            request.TravelType);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -233,4 +382,57 @@ public sealed record CreateTourProductRequest(
     string TourType,
     IReadOnlyList<TourProductTranslationRequest> Translations,
     IReadOnlyList<Guid> DestinationIds,
-    TourProductContentRequest? Content = null);
+    TourProductContentRequest? Content = null,
+    TourCategory Category = TourCategory.Normal,
+    TravelType TravelType = TravelType.Other);
+
+/// <summary>
+/// HTTP request for a hotel translation.
+/// </summary>
+public sealed record HotelTranslationRequest(
+    string Locale,
+    string Name,
+    string? Description = null);
+
+/// <summary>
+/// HTTP request for a hotel amenity.
+/// </summary>
+public sealed record HotelAmenityRequest(string Category, string Name);
+
+/// <summary>
+/// HTTP request to create a canonical hotel.
+/// </summary>
+public sealed record CreateHotelRequest(
+    string Slug,
+    Guid DestinationId,
+    int Stars,
+    string? Address,
+    decimal? Latitude,
+    decimal? Longitude,
+    IReadOnlyList<HotelTranslationRequest> Translations,
+    IReadOnlyList<HotelAmenityRequest> Amenities);
+
+/// <summary>
+/// HTTP request for a place translation.
+/// </summary>
+public sealed record PlaceTranslationRequest(
+    string Locale,
+    string Name,
+    string? Description = null);
+
+/// <summary>
+/// HTTP request to create a restaurant or attraction.
+/// </summary>
+public sealed record CreatePlaceRequest(
+    string Slug,
+    PlaceType Type,
+    Guid DestinationId,
+    string Category,
+    string? Cuisine,
+    string? PriceBand,
+    bool Reservable,
+    bool OnlineReservable,
+    decimal? Latitude,
+    decimal? Longitude,
+    IReadOnlyList<PlaceTranslationRequest> Translations,
+    IReadOnlyList<string> Amenities);

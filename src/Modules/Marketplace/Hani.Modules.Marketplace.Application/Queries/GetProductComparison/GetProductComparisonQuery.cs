@@ -37,7 +37,18 @@ public sealed record OfferComparisonDto(
     IReadOnlyList<TaxRuleComparisonDto> TaxRules,
     IReadOnlyList<DepartureComparisonDto> Departures,
     string BookingMode,
-    string CollectionMode);
+    string CollectionMode,
+    InstallmentTermsComparisonDto? InstallmentTerms);
+
+/// <summary>
+/// Installment terms shown in offer comparison.
+/// </summary>
+public sealed record InstallmentTermsComparisonDto(
+    bool IsEnabled,
+    decimal MinDownPaymentRate,
+    int MaxMonths,
+    decimal MonthlyFeeRate,
+    bool RequiresCheque);
 
 /// <summary>
 /// Accommodation option shown on a tour detail page.

@@ -49,7 +49,9 @@ internal static class OrderMappings
             MapComponents(order.EffectivePricing),
             MapAccommodation(order.EffectivePricing),
             order.EffectivePricing.BookingMode,
-            order.EffectivePricing.CollectionMode);
+            order.EffectivePricing.CollectionMode,
+            order.EffectivePricing.SellerOfRecord,
+            order.EffectivePricing.InvoiceIssuer);
 
     public static ContractDto ToContractDto(Order order)
     {
@@ -94,7 +96,9 @@ internal static class OrderMappings
             MapComponents(contract.EffectivePricing),
             MapAccommodation(contract.EffectivePricing),
             contract.EffectivePricing.BookingMode,
-            contract.EffectivePricing.CollectionMode);
+            contract.EffectivePricing.CollectionMode,
+            contract.EffectivePricing.SellerOfRecord,
+            contract.EffectivePricing.InvoiceIssuer);
     }
 
     private static AccommodationSelectionDto? MapAccommodation(PricingSnapshot pricing)
@@ -105,7 +109,8 @@ internal static class OrderMappings
                 accommodation.HotelStars,
                 accommodation.RoomType,
                 accommodation.MealPlan,
-                accommodation.Currency)
+                accommodation.Currency,
+                accommodation.HotelId)
             : null;
 
     private static PriceComponentDto[] MapComponents(PricingSnapshot pricing)

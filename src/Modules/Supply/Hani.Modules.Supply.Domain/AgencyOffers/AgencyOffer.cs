@@ -25,7 +25,10 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
         string title,
         Money basePrice,
         BookingMode bookingMode = BookingMode.Online,
-        CollectionMode collectionMode = CollectionMode.Online) : base(id)
+        CollectionMode collectionMode = CollectionMode.HaniOnline,
+        SellerOfRecord sellerOfRecord = SellerOfRecord.Hani,
+        InvoiceIssuer invoiceIssuer = InvoiceIssuer.Hani,
+        InstallmentTerms? installmentTerms = null) : base(id)
     {
         AgencyId = agencyId;
         ExternalId = externalId;
@@ -34,6 +37,9 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
         BasePrice = basePrice;
         BookingMode = bookingMode;
         CollectionMode = collectionMode;
+        SellerOfRecord = sellerOfRecord;
+        InvoiceIssuer = invoiceIssuer;
+        InstallmentTerms = installmentTerms ?? InstallmentTerms.None;
         Status = AgencyOfferStatus.Draft;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = CreatedAt;
@@ -55,9 +61,24 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
     public BookingMode BookingMode { get; private set; }
 
     /// <summary>
-    /// Online or offline payment collection.
+    /// Payment collection channel.
     /// </summary>
     public CollectionMode CollectionMode { get; private set; }
+
+    /// <summary>
+    /// Party legally selling the booking.
+    /// </summary>
+    public SellerOfRecord SellerOfRecord { get; private set; }
+
+    /// <summary>
+    /// Party issuing the customer invoice.
+    /// </summary>
+    public InvoiceIssuer InvoiceIssuer { get; private set; }
+
+    /// <summary>
+    /// Agency-specific installment rules for this offer.
+    /// </summary>
+    public InstallmentTerms InstallmentTerms { get; private set; } = InstallmentTerms.None;
 
     /// <summary>
     /// Hotel/room/board options.
@@ -90,7 +111,10 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
         Money basePrice,
         string externalId = "",
         BookingMode bookingMode = BookingMode.Online,
-        CollectionMode collectionMode = CollectionMode.Online)
+        CollectionMode collectionMode = CollectionMode.HaniOnline,
+        SellerOfRecord sellerOfRecord = SellerOfRecord.Hani,
+        InvoiceIssuer invoiceIssuer = InvoiceIssuer.Hani,
+        InstallmentTerms? installmentTerms = null)
     {
         if (agencyId == Guid.Empty)
         {
@@ -115,7 +139,10 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
             title.Trim(),
             basePrice,
             bookingMode,
-            collectionMode);
+            collectionMode,
+            sellerOfRecord,
+            invoiceIssuer,
+            installmentTerms);
 
         offer.AddDomainEvent(new AgencyOfferCreatedDomainEvent(ids.NewId(), offer.Id, agencyId));
 
@@ -125,11 +152,27 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
     /// <summary>
     /// Sets booking and collection modes while the offer is editable.
     /// </summary>
-    public void SetBookingTerms(BookingMode bookingMode, CollectionMode collectionMode)
+    public void SetBookingTerms(
+        BookingMode bookingMode,
+        CollectionMode collectionMode,
+        SellerOfRecord sellerOfRecord = SellerOfRecord.Hani,
+        InvoiceIssuer invoiceIssuer = InvoiceIssuer.Hani)
     {
         EnsureEditable();
         BookingMode = bookingMode;
         CollectionMode = collectionMode;
+        SellerOfRecord = sellerOfRecord;
+        InvoiceIssuer = invoiceIssuer;
+        Touch();
+    }
+
+    /// <summary>
+    /// Sets or clears installment rules while the offer is editable.
+    /// </summary>
+    public void SetInstallmentTerms(InstallmentTerms? terms)
+    {
+        EnsureEditable();
+        InstallmentTerms = terms ?? InstallmentTerms.None;
         Touch();
     }
 
@@ -233,6 +276,7 @@ public sealed class AgencyOffer : AggregateRoot<Guid>
             _accommodationOptions.Add(new OfferAccommodationOption(
                 ids.NewId(),
                 Id,
+                option.HotelId,
                 option.HotelName.Trim(),
                 option.HotelStars,
                 option.RoomType,
@@ -352,7 +396,8 @@ public sealed record OfferAccommodationOptionDetails(
     RoomType RoomType,
     MealPlanType MealPlan,
     Money Price,
-    string? Description = null);
+    string? Description = null,
+    Guid? HotelId = null);
 
 /// <summary>
 /// Flight option input.

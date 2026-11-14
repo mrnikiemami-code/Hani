@@ -74,6 +74,11 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("ChequeReference")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("cheque_reference");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -84,6 +89,16 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(3)")
                         .HasColumnName("currency");
 
+                    b.Property<decimal>("DownPaymentAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("down_payment_amount");
+
+                    b.Property<decimal>("FinancedAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("financed_amount");
+
                     b.Property<int>("InstallmentCount")
                         .HasColumnType("integer")
                         .HasColumnName("installment_count");
@@ -92,9 +107,18 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("interval_days");
 
+                    b.Property<decimal>("MonthlyFeeRate")
+                        .HasPrecision(5, 4)
+                        .HasColumnType("numeric(5,4)")
+                        .HasColumnName("monthly_fee_rate");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid")
                         .HasColumnName("order_id");
+
+                    b.Property<bool>("RequiresCheque")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_cheque");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -106,6 +130,11 @@ namespace Hani.Modules.Booking.Infrastructure.Persistence.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)")
                         .HasColumnName("total_amount");
+
+                    b.Property<decimal>("TotalPayable")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_payable");
 
                     b.HasKey("Id");
 

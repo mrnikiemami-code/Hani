@@ -29,7 +29,9 @@ internal sealed class SearchProductsQueryHandler(
                 request.Difficulty,
                 request.VehicleType,
                 request.AccommodationType,
-                request.Q),
+                request.Q,
+                request.Category,
+                request.TravelType),
             0,
             int.MaxValue,
             cancellationToken);
@@ -83,7 +85,10 @@ internal sealed class SearchProductsQueryHandler(
                         .Select(offer => offer.BookingMode)
                         .Distinct(StringComparer.OrdinalIgnoreCase)
                         .OrderBy(mode => mode, StringComparer.OrdinalIgnoreCase)
-                        .ToArray()),
+                        .ToArray(),
+                    filteredOffers.Any(offer => offer.InstallmentTerms is { IsEnabled: true }),
+                    product.Category,
+                    product.TravelType),
                 product.UpdatedAt));
         }
 
@@ -103,6 +108,12 @@ internal sealed class SearchProductsQueryHandler(
     {
         if (request.OnlineOnly &&
             !string.Equals(offer.BookingMode, "Online", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (request.InstallmentOnly &&
+            offer.InstallmentTerms is not { IsEnabled: true })
         {
             return null;
         }

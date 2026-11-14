@@ -27,12 +27,12 @@ internal sealed class CreatePaymentIntentCommandHandler(
                 Error.NotFound("HANI-PAYMENT-1001", "Order was not found."));
         }
 
-        if (string.Equals(order.CollectionMode, "Offline", StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(order.CollectionMode, "HaniOnline", StringComparison.OrdinalIgnoreCase))
         {
             return Result<PaymentIntentDto>.Failure(
                 Error.Conflict(
                     "HANI-PAYMENT-1011",
-                    "This order is collected offline and cannot create an online payment intent."));
+                    "This order is not collected by Hani online and cannot create a Hani payment intent."));
         }
 
         var obligations = order.Obligations.Count > 0

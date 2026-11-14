@@ -69,6 +69,10 @@ public static class EngagementEndpoints
             .WithName("Internal.RejectReview")
             .Produces<bool>();
 
+        internalApi.MapPost("/reviews/{reviewId:guid}/reply", ReplyReviewAsync)
+            .WithName("Internal.ReplyReview")
+            .Produces<bool>();
+
         internalApi.MapGet("/claims", GetClaimsAsync)
             .WithName("Internal.GetClaims")
             .Produces<PagedResult<ClaimDto>>();
@@ -129,7 +133,10 @@ public static class EngagementEndpoints
                 request.VisitDate,
                 request.Photos
                     .Select(photo => new ReviewPhotoInput(photo.Url, photo.Caption))
-                    .ToArray()),
+                    .ToArray(),
+                request.Criteria,
+                request.ProofType,
+                request.ProofUrl),
             cancellationToken);
 
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
@@ -295,6 +302,22 @@ public static class EngagementEndpoints
     }
 
     /// <summary>
+    /// Adds an owner reply to a review.
+    /// </summary>
+    private static async Task<IResult> ReplyReviewAsync(
+        Guid reviewId,
+        ReplyReviewRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new ReplyToReviewCommand(reviewId, request.Reply),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
     /// Rejects a pending review.
     /// </summary>
     private static async Task<IResult> RejectReviewAsync(
@@ -426,7 +449,15 @@ public sealed record CreateReviewRequest(
     string Comment,
     TravelType TravelType,
     DateOnly? VisitDate,
-    IReadOnlyList<ReviewPhotoRequest> Photos);
+    IReadOnlyList<ReviewPhotoRequest> Photos,
+    IReadOnlyDictionary<string, int>? Criteria = null,
+    ReviewProofType ProofType = ReviewProofType.None,
+    string? ProofUrl = null);
+
+/// <summary>
+/// Owner reply request.
+/// </summary>
+public sealed record ReplyReviewRequest(string Reply);
 
 /// <summary>
 /// Review photo request.

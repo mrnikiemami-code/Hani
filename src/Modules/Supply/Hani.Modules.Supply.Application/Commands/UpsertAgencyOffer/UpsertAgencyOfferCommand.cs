@@ -19,7 +19,10 @@ public sealed record UpsertAgencyOfferCommand(
     IReadOnlyList<FlightOptionInput>? FlightOptions = null,
     IReadOnlyList<TaxRuleInput>? TaxRules = null,
     BookingMode BookingMode = BookingMode.Online,
-    CollectionMode CollectionMode = CollectionMode.Online) : ICommand<UpsertAgencyOfferResult>, IIdempotentCommand
+    CollectionMode CollectionMode = CollectionMode.HaniOnline,
+    SellerOfRecord SellerOfRecord = SellerOfRecord.Hani,
+    InvoiceIssuer InvoiceIssuer = InvoiceIssuer.Hani,
+    InstallmentTermsInput? InstallmentTerms = null) : ICommand<UpsertAgencyOfferResult>, IIdempotentCommand
 {
     string IIdempotentCommand.IdempotencyKey => IdempotencyKey;
 }

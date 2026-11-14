@@ -189,7 +189,9 @@ public sealed record CreateInstallmentPlanCommand(
     Guid OrderId,
     string Currency,
     int InstallmentCount,
-    int IntervalDays) : ICommand<InstallmentPlanDto>;
+    int IntervalDays,
+    decimal? DownPaymentAmount = null,
+    string? ChequeReference = null) : ICommand<InstallmentPlanDto>;
 
 /// <summary>
 /// Query that returns an order installment plan.
@@ -211,6 +213,12 @@ public sealed record InstallmentPlanDto(
     Guid OrderId,
     string Currency,
     decimal TotalAmount,
+    decimal DownPaymentAmount,
+    decimal FinancedAmount,
+    decimal MonthlyFeeRate,
+    decimal TotalPayable,
+    bool RequiresCheque,
+    string? ChequeReference,
     int InstallmentCount,
     int IntervalDays,
     string Status,

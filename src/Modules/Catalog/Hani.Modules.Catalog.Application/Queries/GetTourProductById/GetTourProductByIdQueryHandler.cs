@@ -29,6 +29,8 @@ internal sealed class GetTourProductByIdQueryHandler(ITourProductRepository tour
             product.VehicleType.ToString(),
             product.LocalVehicleType.ToString(),
             product.AccommodationType.ToString(),
+            product.Category.ToString(),
+            product.TravelType.ToString(),
             product.CreatedAt,
             product.Translations
                 .Select(translation => new TourProductTranslationDto(

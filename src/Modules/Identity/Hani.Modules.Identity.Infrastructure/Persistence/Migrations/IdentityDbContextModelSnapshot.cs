@@ -35,6 +35,11 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(2000)")
                         .HasColumnName("about");
 
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("address");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(80)
@@ -55,11 +60,30 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<string>("LicenseFileUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("license_file_url");
+
+                    b.Property<DateOnly?>("LicenseIssuedAt")
+                        .HasColumnType("date")
+                        .HasColumnName("license_issued_at");
+
                     b.Property<string>("LicenseNo")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("license_no");
+
+                    b.Property<string>("LicenseType")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("license_type");
+
+                    b.Property<string>("ManagerName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("manager_name");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -70,6 +94,11 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("OwnerUserId")
                         .HasColumnType("uuid")
                         .HasColumnName("owner_user_id");
+
+                    b.Property<string>("Province")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("province");
 
                     b.Property<string>("RejectionReason")
                         .HasMaxLength(1000)
@@ -85,6 +114,10 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)")
                         .HasColumnName("slug");
+
+                    b.Property<int?>("StaffCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("staff_count");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -348,6 +381,11 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<string>("Criteria")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("criteria");
+
                     b.Property<int?>("EntertainmentRating")
                         .HasColumnType("integer")
                         .HasColumnName("entertainment_rating");
@@ -368,6 +406,25 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("moderation_reason");
+
+                    b.Property<DateTimeOffset?>("OwnerRepliedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("owner_replied_at");
+
+                    b.Property<string>("OwnerReply")
+                        .HasColumnType("text")
+                        .HasColumnName("owner_reply");
+
+                    b.Property<string>("ProofType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("proof_type");
+
+                    b.Property<string>("ProofUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("proof_url");
 
                     b.Property<DateTimeOffset?>("PublishedAt")
                         .HasColumnType("timestamp with time zone")

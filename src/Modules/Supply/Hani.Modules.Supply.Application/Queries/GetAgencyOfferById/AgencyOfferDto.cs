@@ -58,4 +58,17 @@ public sealed record AgencyOfferDto(
     IReadOnlyList<FlightOptionDto> FlightOptions,
     IReadOnlyList<TaxRuleDto> TaxRules,
     string BookingMode,
-    string CollectionMode);
+    string CollectionMode,
+    string SellerOfRecord,
+    string InvoiceIssuer,
+    InstallmentTermsDto? InstallmentTerms);
+
+/// <summary>
+/// Installment terms read model.
+/// </summary>
+public sealed record InstallmentTermsDto(
+    bool IsEnabled,
+    decimal MinDownPaymentRate,
+    int MaxMonths,
+    decimal MonthlyFeeRate,
+    bool RequiresCheque);

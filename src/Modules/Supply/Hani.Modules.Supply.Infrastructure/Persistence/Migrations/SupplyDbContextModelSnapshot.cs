@@ -57,10 +57,22 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("external_id");
 
+                    b.Property<string>("InvoiceIssuer")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("invoice_issuer");
+
                     b.Property<string>("RejectionReason")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("rejection_reason");
+
+                    b.Property<string>("SellerOfRecord")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("seller_of_record");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -96,6 +108,33 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                                 .HasMaxLength(3)
                                 .HasColumnType("character varying(3)")
                                 .HasColumnName("currency");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "InstallmentTerms", "Hani.Modules.Supply.Domain.AgencyOffers.AgencyOffer.InstallmentTerms#InstallmentTerms", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<bool>("IsEnabled")
+                                .HasColumnType("boolean")
+                                .HasColumnName("installment_enabled");
+
+                            b1.Property<int>("MaxMonths")
+                                .HasColumnType("integer")
+                                .HasColumnName("installment_max_months");
+
+                            b1.Property<decimal>("MinDownPaymentRate")
+                                .HasPrecision(5, 4)
+                                .HasColumnType("numeric(5,4)")
+                                .HasColumnName("installment_min_down_payment_rate");
+
+                            b1.Property<decimal>("MonthlyFeeRate")
+                                .HasPrecision(5, 4)
+                                .HasColumnType("numeric(5,4)")
+                                .HasColumnName("installment_monthly_fee_rate");
+
+                            b1.Property<bool>("RequiresCheque")
+                                .HasColumnType("boolean")
+                                .HasColumnName("installment_requires_cheque");
                         });
 
                     b.HasKey("Id");
@@ -362,6 +401,10 @@ namespace Hani.Modules.Supply.Infrastructure.Persistence.Migrations
                             b1.Property<string>("Description")
                                 .HasColumnType("text")
                                 .HasColumnName("description");
+
+                            b1.Property<Guid?>("HotelId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("hotel_id");
 
                             b1.Property<string>("HotelName")
                                 .IsRequired()

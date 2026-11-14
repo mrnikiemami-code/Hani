@@ -52,10 +52,10 @@ internal sealed class RecordOfflinePaymentCommandHandler(
                 Error.NotFound("HANI-PAYMENT-2001", "Order was not found."));
         }
 
-        if (!string.Equals(order.CollectionMode, "Offline", StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(order.CollectionMode, "AgencyOffline", StringComparison.OrdinalIgnoreCase))
         {
             return Result<OfflinePaymentDto>.Failure(
-                Error.Conflict("HANI-PAYMENT-2002", "Order is not configured for offline collection."));
+                Error.Conflict("HANI-PAYMENT-2002", "Order is not configured for agency offline collection."));
         }
 
         var obligation = order.Obligations.FirstOrDefault(item =>

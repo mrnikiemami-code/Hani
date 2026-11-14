@@ -35,6 +35,18 @@ public enum ReviewStatus
 }
 
 /// <summary>
+/// Proof supplied with a review.
+/// </summary>
+public enum ReviewProofType
+{
+    None = 0,
+    HotelVoucher = 1,
+    AgencyContract = 2,
+    TravelTicket = 3,
+    Other = 4
+}
+
+/// <summary>
 /// Moderation state of a review photo.
 /// </summary>
 public enum ReviewPhotoStatus

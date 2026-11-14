@@ -14,6 +14,28 @@ internal sealed class InstallmentPlanConfiguration : IEntityTypeConfiguration<In
         builder.Property(plan => plan.OrderId).HasColumnName("order_id").IsRequired();
         builder.Property(plan => plan.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
         builder.Property(plan => plan.TotalAmount).HasColumnName("total_amount").HasPrecision(18, 2).IsRequired();
+        builder.Property(plan => plan.DownPaymentAmount)
+            .HasColumnName("down_payment_amount")
+            .HasPrecision(18, 2)
+            .IsRequired();
+        builder.Property(plan => plan.FinancedAmount)
+            .HasColumnName("financed_amount")
+            .HasPrecision(18, 2)
+            .IsRequired();
+        builder.Property(plan => plan.MonthlyFeeRate)
+            .HasColumnName("monthly_fee_rate")
+            .HasPrecision(5, 4)
+            .IsRequired();
+        builder.Property(plan => plan.TotalPayable)
+            .HasColumnName("total_payable")
+            .HasPrecision(18, 2)
+            .IsRequired();
+        builder.Property(plan => plan.RequiresCheque)
+            .HasColumnName("requires_cheque")
+            .IsRequired();
+        builder.Property(plan => plan.ChequeReference)
+            .HasColumnName("cheque_reference")
+            .HasMaxLength(100);
         builder.Property(plan => plan.InstallmentCount).HasColumnName("installment_count").IsRequired();
         builder.Property(plan => plan.IntervalDays).HasColumnName("interval_days").IsRequired();
         builder.Property(plan => plan.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();

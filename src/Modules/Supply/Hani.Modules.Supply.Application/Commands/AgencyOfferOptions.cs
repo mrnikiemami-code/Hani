@@ -15,7 +15,8 @@ internal static class AgencyOfferOptions
                 option.RoomType,
                 option.MealPlan,
                 Money.Of(option.Amount, option.Currency),
-                option.Description))
+                option.Description,
+                option.HotelId))
             .ToArray();
 
     public static IReadOnlyCollection<OfferFlightOptionDetails>? MapFlights(
