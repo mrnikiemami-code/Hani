@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
 > **فاز فعال:** Gate 9 — Frontend Launch (PASSED Core)
-> **آخرین commit کد:** `1e76231`
+> **آخرین commit کد:** `87827ef`
 > **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core) / Gate 8.1 ✅ PASSED (Core) / Gate 9 ✅ PASSED (Core)
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)

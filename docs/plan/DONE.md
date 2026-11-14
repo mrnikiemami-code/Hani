@@ -253,4 +253,5 @@
 | `ddcb9f5` | Gate 7 PSP refund abstraction, PDF invoice, dunning scheduler, white-label resolver, dashboards |
 | `18ea8bd` | Gate 8 search hardening, sitemap, Testcontainers, k6/SLO, DR, security, observability |
 | `1e76231` | Gate 8.1 Lastsecond parity closure: hierarchy, sort, agency/author BFF, content JSON-LD, media upload, HTTP sender |
+| `87827ef` | Gate 9 Next.js frontend: FA/EN/AR, core public pages, Docker build |
 | `7df2265` | Phase roadmap + status + tasks |
