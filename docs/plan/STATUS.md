@@ -2,7 +2,7 @@
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
 > **فاز فعال:** Gate 8 — Hardening (Ready)
-> **آخرین commit کد:** `09712c0` + Gate 7
+> **آخرین commit کد:** `a532531`
 > **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ⏳ Ready
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)

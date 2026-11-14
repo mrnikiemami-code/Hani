@@ -224,5 +224,5 @@
 | `1a35e3c` | Gate 6 content, growth, and gamification foundation |
 | `26e3b3a` | Gate 6 recommendation, notification dispatcher, dashboard |
 | `09712c0` | Gate 7 channel OAuth, refunds, invoices, settlement payouts |
-| `pending` | Gate 7 webhook, dunning, dashboards, chargebacks, reconciliation |
+| `a532531` | Gate 7 webhook, dunning, dashboards, chargebacks, reconciliation |
 | `7df2265` | Phase roadmap + status + tasks |
