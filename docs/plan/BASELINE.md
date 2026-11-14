@@ -4,7 +4,8 @@
 - **Report:** `docs/reports/lastsecond-gap-analysis-2026-11-12.md`
 - **Machine-readable:** `docs/plan/baseline.json`
 - **Status:** Locked for planning
-- **Current gate:** Gate 5 — Verticals (Gate 1/2/3/4 ✅ Passed)
+- **Current gate:** Gate 5 — Verticals (Gate 1/2/3 ✅ Passed؛ Gate 4 ⚠️ Conditional PASS)
+- **Gate 5 status:** ⛔ Blocked by Audit Remediation — `docs/reports/lastsecond-full-architecture-audit-2026-11-14.md`
 
 > این فایل مرجع برنامه‌ریزی است. هر GAP باید یک Gate، Task، وضعیت و Evidence داشته باشد.
 > ترتیب Gateها از گزارش Lastsecond و وابستگی‌های واقعی محصول پیروی می‌کند؛ هیچ GAP حذف نمی‌شود.

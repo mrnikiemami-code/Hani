@@ -1,7 +1,9 @@
 # Baseline Gate 4 — Booking, Request & Lead
 
+> **Post-audit note (2026-11-14):** پس از این گزارش، Audit کامل Lastsecond دو انحراف `CollectionMode` و `InstallmentTerms` را ثبت کرد. وضعیت این Gate اکنون **Conditional PASS** است؛ Gate 5 تا رفع A-01/A-02 و سایر پیش‌نیازها شروع نمی‌شود. مرجع: `lastsecond-full-architecture-audit-2026-11-14.md`.
+
 - **تاریخ:** 2026-11-14
-- **وضعیت:** ✅ PASSED
+- **وضعیت:** ⚠️ Conditional PASS (پس از Audit کامل)
 - **Baseline:** `docs/plan/baseline.json` (نسخه ۱، `currentGate = 5`)
 - **قرارداد:** `docs/plan/PHASE-CONTRACT.md` — بخش ۵
 - **ADR:** `docs/adr/0025-booking-modes-requests-leads-installments-offline.md`
@@ -156,4 +158,5 @@
 | PSP اقساطی و Dunning | Gate 7/8؛ اکنون فقط schedule + ثبت پرداخت. |
 | Hotel Inquiry / Visa Request | Gate 5 با استفاده از همان Lead/Reservation primitives. |
 
-**نتیجه نهایی: Gate 4 PASSED است و Gate 5 (Verticals) مجاز به شروع است.**
+**نتیجه نهایی (قبل از Audit): Gate 4 PASSED است.**  
+**نتیجه پس از Audit 2026-11-14: Gate 4 Conditional PASS است و Gate 5 تا رفع A-01..A-08 شروع نمی‌شود.**

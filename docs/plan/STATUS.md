@@ -1,12 +1,13 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Baseline Gate 5 — Verticals
+> **فاز فعال:** Gate 5 — Verticals (⛔ Blocked by Full Architecture Audit)
 > **آخرین commit کد:** `f91e461`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ⚠️ Conditional PASS / Gate 5 ⛔ Blocked
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 > **گزارش Gate:** [`../reports/baseline-gate-4.md`](../reports/baseline-gate-4.md)
+> **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
 ---
@@ -17,7 +18,7 @@
 |---|---|---|---|
 | 0 | Foundation & Governance | ✅ Done | 100% |
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
-| 2 | Marketplace Read + Booking | ✅ Baseline Gate 4 Passed | 100% |
+| 2 | Marketplace Read + Booking | ⚠️ Baseline Gate 4 Conditional PASS | 95% |
 | 3 | Channel + Billing + Settlement | ⏳ Gate 7 | 0% |
 | 4 | Flights | ⏳ Gate 5 | 0% |
 | 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Gate 1/5/6 | 0% |
@@ -188,26 +189,45 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 5 — Verticals
+**تسک فعال:** Gate 5 — Verticals (متوقف تا رفع Audit Remediation)
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
 **GAPهای Gate 4:** ✅ GAP-05/06/19 (TC-088), GAP-17/18 (TC-098)
-**Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای ۱ تا ۴؛ `currentGate = 5`
+**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 5`؛ Gate 5 تا پایان Audit Remediation شروع نمی‌شود
 **قرارداد Gate 4:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 
-### Gate 4 — Exit Checklist ✅
+### Audit 2026-11-14 — Lastsecond Full Architecture
 
-- [x] `BookingMode`/`CollectionMode` روی Offer + snapshot
+سند کامل: [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
+
+**نتیجه:** Gate 4 از نظر قابلیت اصلی PASS است، اما از نظر دو انحراف مهم **Conditional PASS** است. Gate 5 تا تکمیل اقدامات زیر شروع نمی‌شود:
+
+- [ ] A-01 — ADR-0026: `CollectionMode` v2 + `SellerOfRecord`/`InvoiceIssuer`
+- [ ] A-02 — `InstallmentTerms` (پیش‌پرداخت، کارمزد ماهانه، چک صیادی، شرایط آژانس) + فیلتر اقساطی
+- [ ] A-03 — Review criteria template per target + proof (واچر/قرارداد) + owner reply
+- [ ] A-04 — تکمیل PublicAgency (مجوز/مدیر/پرسنل/آدرس/امتیاز/تعداد تور)
+- [ ] A-05 — Canonical Hotel + اتصال `OfferAccommodationOption.HotelId`
+- [ ] A-06 — Place/Geo/Nearby برای Restaurant/Attraction
+- [ ] A-07 — ADR تصمیم Flight: Metasearch/Redirect یا Inventory
+- [ ] A-08 — `TourCategory` + `TravelType` + multi-select search filters
+
+**شکاف‌های اصلی Gate 5/6/7:** Hotel/Restaurant/Attraction/Visa/Flight، Geo/Nearby، Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
+
+### Gate 4 — Exit Checklist ⚠️ Conditional PASS
+
+- [x] `BookingMode`/`CollectionMode` روی Offer + snapshot (پایه؛ تکمیل `CollectionMode` v2 در A-01)
 - [x] `ReservationRequest` + تایید/رد/پذیرش + پنل آژانس
-- [x] `LeadRequest` + Match/Close
+- [x] `LeadRequest` + Match/Distribute/Close
 - [x] `PriceDiscrepancyReport` + Resolve
-- [x] `InstallmentPlan` به تفکیک ارز
+- [x] `InstallmentPlan` به تفکیک ارز (پایه؛ `InstallmentTerms` کامل در A-02)
 - [x] پرداخت آفلاین + رد PaymentIntent آنلاین + کمیسیون
 - [x] Search/Compare افشای BookingMode + `onlineOnly` واقعی
 - [x] Migrationها + OpenAPI + README + ADR-0025
 - [x] Gate 4 Deviation Audit + PASS report
 - [x] `verify.ps1` + `check-baseline.ps1` سبز
+
+> Audit کامل 2026-11-14 دو انحراف Gate 4 را ثبت کرد: `CollectionMode` دوحالتی و `InstallmentTerms` ناقص. این‌ها در A-01/A-02 رفع می‌شوند.
 
 ### Gate 3 — Exit Checklist ✅
 

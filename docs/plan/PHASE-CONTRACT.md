@@ -27,7 +27,7 @@
 | 2 | Discovery & SEO | GAP-04 — TC-085، GAP-28 — TC-097 | ✅ PASSED |
 | 3 | Identity, Trust & Agency | GAP-09/10/26/27/31 (TC-086/087)، GAP-11/20/32 (TC-089) | ✅ PASSED |
 | 4 | Booking, Request & Lead | GAP-05/06/19 (TC-088)، GAP-17/18 (TC-098) | ✅ PASSED |
-| 5 | Verticals | GAP-13/25/29 (TC-094)، GAP-14 (TC-090)، GAP-15/21 (TC-091)، GAP-16 (TC-092) | ⏳ |
+| 5 | Verticals | GAP-13/25/29 (TC-094)، GAP-14 (TC-090)، GAP-15/21 (TC-091)، GAP-16 (TC-092) | ⛔ Blocked by Audit Remediation |
 | 6 | Content & Growth | GAP-12 (TC-093)، GAP-22/33 (TC-096)، GAP-23 (TC-100)، GAP-24/30/34 (TC-099) | ⏳ |
 | 7 | Channel & Billing | HB-02 — Supplier/Channel OAuth + contracts (بدون GAP در baseline) | ⏳ |
 | 8 | Hardening | Reliability/Security/Performance/NFR (بدون GAP در baseline) | ⏳ |
@@ -214,5 +214,6 @@
 - Gate 1: ✅ PASSED و Re-audit شده.
 - Gate 2: ✅ PASSED — GAP-04/28 بسته شدند و گزارش `baseline-gate-2.md` ثبت شد.
 - Gate 3: ✅ PASSED — GAP-09/10/26/27/31/11/20/32 بسته شدند.
-- Gate 4: ✅ PASSED — GAP-05/06/19/17/18 بسته شدند و گزارش `baseline-gate-4.md` ثبت شد.
-- Gate 5: ⏳ Next — Hotels/Visa/Flights/Places.
+- Gate 4: ⚠️ Conditional PASS — GAP-05/06/19/17/18 بسته شدند، اما Audit کامل 2026-11-14 دو انحراف `CollectionMode` و `InstallmentTerms` را ثبت کرد.
+- Gate 5: ⛔ Blocked — تا تکمیل A-01..A-08 در `docs/reports/lastsecond-full-architecture-audit-2026-11-14.md` شروع نمی‌شود.
+- Audit: [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
