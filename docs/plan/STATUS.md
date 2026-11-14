@@ -1,12 +1,12 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 5 — Verticals (Ready)
-> **آخرین commit کد:** `7083b45`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ Ready
+> **فاز فعال:** Gate 6 — Content & Growth (Ready)
+> **آخرین commit کد:** `7083b45` + Gate 5
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 6 ⏳ Ready
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
-> **گزارش Gate:** [`../reports/baseline-gate-4.md`](../reports/baseline-gate-4.md)
+> **گزارش Gate:** [`../reports/baseline-gate-5.md`](../reports/baseline-gate-5.md)
 > **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **برنامه Remediation:** [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
@@ -21,8 +21,8 @@
 | 1 | Core Domain: Catalog + Identity + Supply | ✅ Gate Passed | 100% |
 | 2 | Marketplace Read + Booking | ✅ Baseline Gate 4 Remediated | 100% |
 | 3 | Channel + Billing + Settlement | ⏳ Gate 7 | 0% |
-| 4 | Flights | ⏳ Gate 5 | 0% |
-| 5 | Content + Hotels + Visa + SEO/i18n | ⏳ Gate 1/5/6 | 0% |
+| 4 | Flights | ✅ Gate 5 | 100% |
+| 5 | Content + Hotels + Visa + SEO/i18n | ✅ Gate 5 (Hotels/Visa/Flights/Places) / ⏳ Gate 6 (Content) | 70% |
 | 6 | Hardening & Scale | ⏳ Gate 8 | 0% |
 
 > از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۱ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 1 به‌عنوان وضعیت تاریخی باقی می‌ماند.
@@ -102,6 +102,13 @@
 | Price Discrepancy | گزارش مغایرت قیمت + صف بررسی + Resolve | Gate 4 |
 | Installments | InstallmentPlan به تفکیک ارز + پرداخت قسط | Gate 4 |
 | Offline Payment | CollectionMode=Offline + رسید Cash/Transfer/Cheque + کمیسیون | Gate 4 |
+| Hotels Vertical | جستجو/فیلتر، گالری، Inquiry، Nearby، امتیاز تجمیعی | Gate 5 |
+| Restaurants/Attractions | دایرکتوری، منو، Nearby، Reservation و امتیاز | Gate 5 |
+| Visa Vertical | VisaCountry/Type، قیمت، مدارک، FAQ و VisaApplication | Gate 5 |
+| Flights Metasearch | FlightRoute/Offer، Provider abstraction و deep link | Gate 5 |
+| Geo | `/geo/nearby` یکپارچه + Haversine برای هتل/مکان | Gate 5 |
+| Vertical SEO | `/seo/{type}/{slug}` + sitemap همه verticalها | Gate 5 |
+| Vertical Reviews | `IReviewSummaryReadService` + rating/reviewCount + sort=rating | Gate 5 |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -109,7 +116,7 @@
 | مورد | فاز مقصد |
 |---|---|
 | User + Role + JWT | Phase 2/3 |
-| Hotel / Attraction / Visa | Phase 5 |
+| Blog/Itinerary/Video + Growth | Gate 6 |
 | ترجمه per-code با resx کامل | Phase 5 |
 | Postgres Idempotency پایدار | Phase 2 |
 | Outbox فعال + Consumer | Phase 2 |
@@ -178,10 +185,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۲۲ passed |
+| Unit Tests | ۱۳۱ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۵۶ passed** |
-| Migrations | Supply (۸) / Catalog (۴) / Identity (۵) / Booking (۸) / Payments (۶) / Settlement (۳) |
+| Total | **۱۶۵ passed** |
+| Migrations | Supply (۸) / Catalog (۶) / Identity (۵) / Booking (۹) / Payments (۶) / Settlement (۳) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -190,13 +197,14 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 5 — Verticals (Ready)
+**تسک فعال:** Gate 6 — Content & Growth (Ready)
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
 **GAPهای Gate 4:** ✅ GAP-05/06/19 (TC-088), GAP-17/18 (TC-098)
-**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 5`؛ Audit Remediation A-01..A-08 کامل شد
-**قرارداد Gate 4:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
+**GAPهای Gate 5:** ✅ GAP-13/25/29 (TC-094), GAP-14 (TC-090), GAP-15/21 (TC-091), GAP-16 (TC-092)
+**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 6`؛ Audit Remediation A-01..A-08 و B-01..B-08 کامل شد
+**قرارداد Gate 5:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 
 ### Audit 2026-11-14 — Lastsecond Full Architecture
 
@@ -214,7 +222,21 @@
 - [x] A-07 — ADR-0027: Flight Metasearch/Redirect
 - [x] A-08 — `TourCategory` + `TravelType` + search filters
 
-**شکاف‌های اصلی Gate 5/6/7:** Hotel/Restaurant/Attraction/Visa/Flight، Geo/Nearby، Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
+**شکاف‌های اصلی Gate 6/7:** Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
+
+### Gate 5 — Exit Checklist ✅ PASSED
+
+- [x] Hotel search/detail/nearby + gallery + amenities + inquiry + rating
+- [x] Restaurant search/detail/menu/nearby + reservation + rating
+- [x] Attraction search/detail/nearby + rating
+- [x] Visa country/type + price/documents/steps/FAQ + visa application
+- [x] Flight metasearch route/offer + provider abstraction + deep link
+- [x] Unified geo nearby + Haversine
+- [x] Vertical SEO `/seo/{type}/{slug}` + full vertical sitemap
+- [x] Review aggregation + `sort=rating`
+- [x] Migrationها + OpenAPI + README + B-01..B-08
+- [x] Gate 5 Deviation Audit + PASS report
+- [x] `verify.ps1` + `check-baseline.ps1` سبز
 
 ### Gate 4 — Exit Checklist ✅ Remediated
 

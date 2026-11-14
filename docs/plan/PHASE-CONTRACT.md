@@ -27,8 +27,8 @@
 | 2 | Discovery & SEO | GAP-04 — TC-085، GAP-28 — TC-097 | ✅ PASSED |
 | 3 | Identity, Trust & Agency | GAP-09/10/26/27/31 (TC-086/087)، GAP-11/20/32 (TC-089) | ✅ PASSED |
 | 4 | Booking, Request & Lead | GAP-05/06/19 (TC-088)، GAP-17/18 (TC-098) | ✅ PASSED |
-| 5 | Verticals | GAP-13/25/29 (TC-094)، GAP-14 (TC-090)، GAP-15/21 (TC-091)، GAP-16 (TC-092) | ✅ Ready (A-01..A-08 Done) |
-| 6 | Content & Growth | GAP-12 (TC-093)، GAP-22/33 (TC-096)، GAP-23 (TC-100)، GAP-24/30/34 (TC-099) | ⏳ |
+| 5 | Verticals | GAP-13/25/29 (TC-094)، GAP-14 (TC-090)، GAP-15/21 (TC-091)، GAP-16 (TC-092) | ✅ PASSED (A-01..A-08 + B-01..B-08) |
+| 6 | Content & Growth | GAP-12 (TC-093)، GAP-22/33 (TC-096)، GAP-23 (TC-100)، GAP-24/30/34 (TC-099) | ⏳ Ready |
 | 7 | Channel & Billing | HB-02 — Supplier/Channel OAuth + contracts (بدون GAP در baseline) | ⏳ |
 | 8 | Hardening | Reliability/Security/Performance/NFR (بدون GAP در baseline) | ⏳ |
 
@@ -197,7 +197,50 @@
 
 ---
 
-## ۶. قاعده Deviation Audit
+## ۶. قرارداد Gate 5 — Verticals
+
+### 6.1. هدف فاز
+
+تکمیل پنج vertical واقعی Lastsecond (هتل، رستوران/جاذبه، ویزا، پرواز) با استعلام/رزرو/درخواست، Geo، SEO عمودی و امتیاز تجمیعی.
+
+### 6.2. GAPها
+
+| GAP | تسک | محدوده |
+|---|---|---|
+| GAP-13 | TC-094 | رستوران/جاذبه: جستجو، صفحه، منو، Nearby، Review |
+| GAP-14 | TC-090 | هتل: جستجو، صفحه، گالری، امکانات، Inquiry، Review |
+| GAP-15 | TC-091 | ویزا: کشور/نوع، قیمت، مراحل، FAQ، درخواست |
+| GAP-16 | TC-092 | پرواز: Route/Offer، Provider abstraction، Deep link |
+| GAP-21 | TC-091 | مدارک ویزا در Type و VisaApplication |
+| GAP-25 | TC-094 | Geo filter/distance + Nearby یکپارچه |
+| GAP-29 | TC-094 | Restaurant Reservation + Confirm/Reject |
+
+### 6.3. Acceptance
+
+- هتل/رستوران/جاذبه جستجوی فیلترشده، صفحه canonical، Nearby و امتیاز تجمیعی داشته باشند.
+- هتل گالری/امکانات/Inquiry و رستوران منو/Reservation داشته باشد.
+- ویزا قیمت بزرگسال/کودک، مدارک اجباری، مراحل، FAQ و Application status داشته باشد.
+- پرواز فقط Metasearch/Redirect باشد؛ Route/Offer/Provider/Deep link ثبت شود و بلیط صادر نشود.
+- Geo با Haversine و radius/type کار کند.
+- SEO عمودی + JSON-LD + sitemap شامل همه verticalها باشد.
+- همه endpointها XML summary، OpenAPI، README و تست داشته باشند.
+- Migration drift صفر، `verify.ps1` و `check-baseline.ps1` سبز، و Deviation Audit ثبت شود.
+
+### 6.4. خروجی‌های اجباری Gate 5
+
+| خروجی | محل |
+|---|---|
+| Hotels/Places/Visa/Flight domain | `Catalog.Domain/Hotels|Places|Visas|Flights` |
+| Inquiry/Reservation/VisaApplication | `Booking.Domain/HotelInquiries|RestaurantReservations|VisaApplications` |
+| Geo + Vertical SEO | `Catalog.Application/Queries/GetGeoNearby` + `Marketplace.Application/Queries/Seo` |
+| Review aggregation | `Hani.Contracts.Identity` + Identity Infrastructure |
+| OpenAPI | `docs/api/marketplace-api-v1.openapi.yaml` + `internal-booking-api-v1.openapi.yaml` |
+| Tests | `tests/Hani.UnitTests/Gate5` + Marketplace tests |
+| Gate report | `docs/reports/baseline-gate-5.md` |
+
+---
+
+## ۷. قاعده Deviation Audit
 
 قبل از PASS هر Gate:
 
@@ -209,11 +252,12 @@
 
 ---
 
-## ۷. وضعیت فعلی
+## ۸. وضعیت فعلی
 
 - Gate 1: ✅ PASSED و Re-audit شده.
 - Gate 2: ✅ PASSED — GAP-04/28 بسته شدند و گزارش `baseline-gate-2.md` ثبت شد.
 - Gate 3: ✅ PASSED — GAP-09/10/26/27/31/11/20/32 بسته شدند.
 - Gate 4: ✅ Remediated — GAP-05/06/19/17/18 بسته شدند و Audit Remediation A-01..A-08 اعمال شد.
-- Gate 5: ✅ Ready — A-01..A-08 در `docs/plan/AUDIT-REMEDIATION.md` Done شده‌اند.
+- Gate 5: ✅ PASSED — GAP-13/14/15/16/21/25/29 و B-01..B-08 بسته شدند.
+- Gate 6: ⏳ Ready — Content & Growth.
 - Audit: [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)

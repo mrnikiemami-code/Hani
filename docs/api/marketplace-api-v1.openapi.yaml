@@ -145,6 +145,23 @@ paths:
           description: Destination not found
         default: { $ref: '#/components/responses/Problem' }
 
+  /seo/{type}/{slug}:
+    get:
+      tags: [SEO]
+      summary: Read SEO metadata and JSON-LD for a vertical page
+      parameters:
+        - { name: type, in: path, required: true, schema: { type: string, enum: [hotel, restaurant, attraction, visa, flight] } }
+        - { name: slug, in: path, required: true, schema: { type: string } }
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+      responses:
+        '200':
+          description: Vertical SEO metadata
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VerticalSeo' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
   /seo/sitemap.xml:
     get:
       tags: [Catalog]
@@ -860,6 +877,332 @@ paths:
                 items: { $ref: '#/components/schemas/NearbyPlace' }
         default: { $ref: '#/components/responses/Problem' }
 
+  /hotels:
+    get:
+      tags: [Hotels]
+      summary: Search canonical hotels
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: destinationSlug, in: query, schema: { type: [string, 'null'] } }
+        - { name: minStars, in: query, schema: { type: [integer, 'null'], minimum: 1, maximum: 5 } }
+        - { name: amenity, in: query, schema: { type: [string, 'null'] } }
+        - { name: q, in: query, schema: { type: [string, 'null'] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+        - { name: sortBy, in: query, schema: { type: [string, 'null'], enum: [rating, null] } }
+      responses:
+        '200':
+          description: Paged hotels
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/HotelSummary' }
+                  page: { type: integer }
+                  pageSize: { type: integer }
+                  totalCount: { type: integer }
+                  totalPages: { type: integer }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /hotels/nearby:
+    get:
+      tags: [Hotels, Geo]
+      summary: Find hotels near a coordinate
+      parameters:
+        - { name: latitude, in: query, required: true, schema: { type: number } }
+        - { name: longitude, in: query, required: true, schema: { type: number } }
+        - { name: radiusKm, in: query, schema: { type: integer, default: 10, maximum: 100 } }
+        - { name: limit, in: query, schema: { type: integer, default: 20, maximum: 100 } }
+      responses:
+        '200':
+          description: Nearby hotels
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/NearbyHotel' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /geo/nearby:
+    get:
+      tags: [Geo]
+      summary: Unified nearby hotels and places for maps and geo landing
+      parameters:
+        - { name: latitude, in: query, required: true, schema: { type: number } }
+        - { name: longitude, in: query, required: true, schema: { type: number } }
+        - { name: type, in: query, schema: { type: [string, 'null'], enum: [hotel, restaurant, attraction, place, null] } }
+        - { name: radiusKm, in: query, schema: { type: integer, default: 10, maximum: 100 } }
+        - { name: limit, in: query, schema: { type: integer, default: 20, maximum: 100 } }
+      responses:
+        '200':
+          description: Nearby geo items
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/GeoNearbyItem' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /restaurants:
+    get:
+      tags: [Restaurants]
+      summary: Search restaurants
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: destinationSlug, in: query, schema: { type: [string, 'null'] } }
+        - { name: category, in: query, schema: { type: [string, 'null'] } }
+        - { name: cuisine, in: query, schema: { type: [string, 'null'] } }
+        - { name: priceBand, in: query, schema: { type: [string, 'null'] } }
+        - { name: amenity, in: query, schema: { type: [string, 'null'] } }
+        - { name: reservable, in: query, schema: { type: [boolean, 'null'] } }
+        - { name: onlineReservable, in: query, schema: { type: [boolean, 'null'] } }
+        - { name: q, in: query, schema: { type: [string, 'null'] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+        - { name: sortBy, in: query, schema: { type: [string, 'null'], enum: [rating, null] } }
+      responses:
+        '200':
+          description: Paged restaurants
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/PlaceSummary' }
+                  page: { type: integer }
+                  pageSize: { type: integer }
+                  totalCount: { type: integer }
+                  totalPages: { type: integer }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /restaurants/{slug}:
+    get:
+      tags: [Restaurants]
+      summary: Read a restaurant
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Place' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /attractions:
+    get:
+      tags: [Attractions]
+      summary: Search attractions
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: destinationSlug, in: query, schema: { type: [string, 'null'] } }
+        - { name: category, in: query, schema: { type: [string, 'null'] } }
+        - { name: q, in: query, schema: { type: [string, 'null'] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: Paged attractions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/PlaceSummary' }
+                  page: { type: integer }
+                  pageSize: { type: integer }
+                  totalCount: { type: integer }
+                  totalPages: { type: integer }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /attractions/{slug}:
+    get:
+      tags: [Attractions]
+      summary: Read an attraction
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Place' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /visas:
+    get:
+      tags: [Visa]
+      summary: List visa countries
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+      responses:
+        '200':
+          description: Visa countries
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/VisaCountrySummary' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /visas/{slug}:
+    get:
+      tags: [Visa]
+      summary: Read visa country and types
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VisaCountry' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /flights/search:
+    get:
+      tags: [Flights]
+      summary: Search flight provider offers (metasearch)
+      parameters:
+        - { name: origin, in: query, schema: { type: [string, 'null'], minLength: 3, maxLength: 3 } }
+        - { name: destination, in: query, schema: { type: [string, 'null'], minLength: 3, maxLength: 3 } }
+        - { name: departureDate, in: query, schema: { type: [string, 'null'], format: date } }
+        - { name: cabin, in: query, schema: { type: [string, 'null'] } }
+      responses:
+        '200':
+          description: Route results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FlightRoute' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /flights/routes/{slug}:
+    get:
+      tags: [Flights]
+      summary: Read a flight route
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FlightRoute' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /hotel-inquiries:
+    post:
+      tags: [Hotels]
+      summary: Submit a hotel availability inquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateHotelInquiryRequest' }
+      responses:
+        '200':
+          description: Inquiry created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HotelInquiry' }
+        '400': { description: Invalid inquiry }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /hotel-inquiries/{inquiryId}:
+    get:
+      tags: [Hotels]
+      summary: Read a hotel inquiry
+      parameters:
+        - { name: inquiryId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HotelInquiry' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /restaurant-reservations:
+    post:
+      tags: [Restaurants]
+      summary: Request a restaurant table reservation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateRestaurantReservationRequest' }
+      responses:
+        '200':
+          description: Reservation requested
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RestaurantReservation' }
+        '400': { description: Invalid reservation }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /restaurant-reservations/{reservationId}:
+    get:
+      tags: [Restaurants]
+      summary: Read a restaurant reservation
+      parameters:
+        - { name: reservationId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RestaurantReservation' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /visa-applications:
+    post:
+      tags: [Visa]
+      summary: Submit a visa application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateVisaApplicationRequest' }
+      responses:
+        '200':
+          description: Application submitted
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VisaApplication' }
+        '400': { description: Invalid application }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /visa-applications/{applicationId}:
+    get:
+      tags: [Visa]
+      summary: Read a visa application
+      parameters:
+        - { name: applicationId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VisaApplication' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
 components:
   responses:
     Problem:
@@ -1482,6 +1825,271 @@ components:
           type: array
           items: { $ref: '#/components/schemas/Installment' }
 
+    HotelSummary:
+      type: object
+      properties:
+        hotelId: { type: string, format: uuid }
+        slug: { type: string }
+        stars: { type: integer }
+        address: { type: [string, 'null'] }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        name: { type: string }
+        amenityCount: { type: integer }
+        averageRating: { type: [number, 'null'] }
+        reviewCount: { type: integer }
+
+    GeoNearbyItem:
+      type: object
+      properties:
+        type: { type: string, enum: [Hotel, Restaurant, Attraction] }
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        name: { type: string }
+        latitude: { type: number }
+        longitude: { type: number }
+        distanceKm: { type: number }
+
+    NearbyHotel:
+      type: object
+      properties:
+        hotel: { $ref: '#/components/schemas/HotelSummary' }
+        distanceKm: { type: number }
+
+    PlaceSummary:
+      type: object
+      properties:
+        placeId: { type: string, format: uuid }
+        slug: { type: string }
+        type: { type: string, enum: [Restaurant, Attraction] }
+        category: { type: string }
+        cuisine: { type: [string, 'null'] }
+        priceBand: { type: [string, 'null'] }
+        reservable: { type: boolean }
+        onlineReservable: { type: boolean }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        name: { type: string }
+        amenityCount: { type: integer }
+        averageRating: { type: [number, 'null'] }
+        reviewCount: { type: integer }
+
+    VisaCountrySummary:
+      type: object
+      properties:
+        countryId: { type: string, format: uuid }
+        slug: { type: string }
+        countryCode: { type: string }
+        name: { type: string }
+        typeCount: { type: integer }
+        minimumPriceCurrency: { type: [string, 'null'] }
+        minimumPrice: { type: [number, 'null'] }
+
+    VisaCountry:
+      type: object
+      properties:
+        countryId: { type: string, format: uuid }
+        slug: { type: string }
+        countryCode: { type: string }
+        name: { type: string }
+        description: { type: [string, 'null'] }
+        types:
+          type: array
+          items: { $ref: '#/components/schemas/VisaType' }
+
+    VisaType:
+      type: object
+      properties:
+        visaTypeId: { type: string, format: uuid }
+        code: { type: string }
+        entryType: { type: string }
+        processingDaysMin: { type: integer }
+        processingDaysMax: { type: integer }
+        validityDays: { type: integer }
+        priceAdult: { type: number }
+        priceChild: { type: [number, 'null'] }
+        currency: { type: string }
+        documents:
+          type: array
+          items: { type: string }
+        steps:
+          type: array
+          items: { type: string }
+        faqs:
+          type: array
+          items:
+            type: object
+            properties:
+              question: { type: string }
+              answer: { type: string }
+
+    FlightRoute:
+      type: object
+      properties:
+        routeId: { type: string, format: uuid }
+        slug: { type: string }
+        originCode: { type: string }
+        destinationCode: { type: string }
+        originCity: { type: string }
+        destinationCity: { type: string }
+        offers:
+          type: array
+          items: { $ref: '#/components/schemas/FlightOffer' }
+
+    FlightOffer:
+      type: object
+      properties:
+        flightOfferId: { type: string, format: uuid }
+        flightNumber: { type: string }
+        airlineCode: { type: string }
+        airlineName: { type: string }
+        departureDate: { type: string, format: date }
+        departureTime: { type: string, format: time }
+        arrivalTime: { type: string, format: time }
+        durationMinutes: { type: integer }
+        stops: { type: integer }
+        cabin: { type: string }
+        baggageAllowance: { type: string }
+        price: { type: number }
+        currency: { type: string }
+        provider: { type: string }
+        deepLink: { type: string, format: uri }
+
+    CreateHotelInquiryRequest:
+      type: object
+      required: [hotelId, checkIn, checkOut, rooms, adults, children, contactEmail]
+      properties:
+        hotelId: { type: string, format: uuid }
+        checkIn: { type: string, format: date }
+        checkOut: { type: string, format: date }
+        rooms: { type: integer, minimum: 1 }
+        adults: { type: integer, minimum: 1 }
+        children: { type: integer, minimum: 0 }
+        contactEmail: { type: string, format: email }
+        contactPhone: { type: [string, 'null'] }
+        notes: { type: [string, 'null'] }
+
+    HotelInquiry:
+      type: object
+      properties:
+        inquiryId: { type: string, format: uuid }
+        inquiryNumber: { type: string }
+        hotelId: { type: string, format: uuid }
+        checkIn: { type: string, format: date }
+        checkOut: { type: string, format: date }
+        rooms: { type: integer }
+        adults: { type: integer }
+        children: { type: integer }
+        contactEmail: { type: string }
+        contactPhone: { type: [string, 'null'] }
+        notes: { type: [string, 'null'] }
+        status: { type: string, enum: [Pending, Responded, Closed, Cancelled] }
+        createdAt: { type: string, format: date-time }
+        respondedAt: { type: [string, 'null'], format: date-time }
+        responseNote: { type: [string, 'null'] }
+        quotedTotal: { type: [number, 'null'] }
+        quotedCurrency: { type: [string, 'null'] }
+
+    CreateRestaurantReservationRequest:
+      type: object
+      required: [placeId, reservationDate, reservationTime, partySize, contactName, contactEmail, contactPhone]
+      properties:
+        placeId: { type: string, format: uuid }
+        reservationDate: { type: string, format: date }
+        reservationTime: { type: string, format: time }
+        partySize: { type: integer, minimum: 1, maximum: 100 }
+        contactName: { type: string }
+        contactEmail: { type: string, format: email }
+        contactPhone: { type: string }
+        notes: { type: [string, 'null'] }
+
+    RestaurantReservation:
+      type: object
+      properties:
+        reservationId: { type: string, format: uuid }
+        reservationNumber: { type: string }
+        placeId: { type: string, format: uuid }
+        reservationDate: { type: string, format: date }
+        reservationTime: { type: string, format: time }
+        partySize: { type: integer }
+        contactName: { type: string }
+        contactEmail: { type: string }
+        contactPhone: { type: string }
+        notes: { type: [string, 'null'] }
+        status: { type: string, enum: [Requested, Confirmed, Rejected, Cancelled] }
+        createdAt: { type: string, format: date-time }
+        confirmedAt: { type: [string, 'null'], format: date-time }
+        rejectionReason: { type: [string, 'null'] }
+
+    CreateVisaApplicationRequest:
+      type: object
+      required: [visaCountryId, visaTypeId, applicantName, passportNo, nationality, contactEmail, contactPhone, documents]
+      properties:
+        visaCountryId: { type: string, format: uuid }
+        visaTypeId: { type: string, format: uuid }
+        applicantName: { type: string }
+        passportNo: { type: string }
+        nationality: { type: string }
+        dateOfBirth: { type: [string, 'null'], format: date }
+        travelDate: { type: [string, 'null'], format: date }
+        contactEmail: { type: string, format: email }
+        contactPhone: { type: string }
+        notes: { type: [string, 'null'] }
+        documents:
+          type: array
+          minItems: 1
+          items: { type: string, format: uri }
+
+    VisaApplication:
+      type: object
+      properties:
+        applicationId: { type: string, format: uuid }
+        applicationNumber: { type: string }
+        visaCountryId: { type: string, format: uuid }
+        visaTypeId: { type: string, format: uuid }
+        applicantName: { type: string }
+        passportNo: { type: string }
+        nationality: { type: string }
+        dateOfBirth: { type: [string, 'null'], format: date }
+        travelDate: { type: [string, 'null'], format: date }
+        contactEmail: { type: string }
+        contactPhone: { type: string }
+        notes: { type: [string, 'null'] }
+        status: { type: string, enum: [Submitted, UnderReview, Approved, Rejected, Cancelled] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: [string, 'null'], format: date-time }
+        rejectionReason: { type: [string, 'null'] }
+        documents:
+          type: array
+          items: { type: string }
+
+    VerticalSeo:
+      type: object
+      properties:
+        type: { type: string, enum: [hotel, restaurant, attraction, visa, flight] }
+        slug: { type: string }
+        locale: { type: string }
+        canonicalUrl: { type: string, format: uri }
+        title: { type: string }
+        description: { type: string }
+        robots: { type: string }
+        alternates:
+          type: array
+          items:
+            type: object
+            properties:
+              locale: { type: string }
+              url: { type: string, format: uri }
+        breadcrumbs:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              url: { type: string, format: uri }
+        breadcrumbJsonLd: { type: string }
+        entityJsonLd: { type: string }
+
     Hotel:
       type: object
       properties:
@@ -1507,6 +2115,16 @@ components:
             properties:
               category: { type: string }
               name: { type: string }
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              url: { type: string, format: uri }
+              caption: { type: [string, 'null'] }
+              sortOrder: { type: integer }
+        averageRating: { type: [number, 'null'] }
+        reviewCount: { type: integer }
 
     Place:
       type: object
@@ -1533,6 +2151,19 @@ components:
         amenities:
           type: array
           items: { type: string }
+        menuItems:
+          type: array
+          items:
+            type: object
+            properties:
+              section: { type: string }
+              name: { type: string }
+              description: { type: [string, 'null'] }
+              price: { type: number }
+              currency: { type: string }
+              sortOrder: { type: integer }
+        averageRating: { type: [number, 'null'] }
+        reviewCount: { type: integer }
 
     NearbyPlace:
       type: object

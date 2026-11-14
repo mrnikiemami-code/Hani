@@ -1,5 +1,6 @@
 using Hani.Contracts.Catalog;
 using Hani.Modules.Catalog.Domain.Destinations;
+using Hani.Modules.Catalog.Domain.Places;
 using Hani.Modules.Catalog.Domain.TourProducts;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -123,6 +124,159 @@ internal sealed class CatalogReadService(CatalogDbContext dbContext) : ICatalogR
             .FirstOrDefaultAsync(item => item.Slug == normalized, cancellationToken);
 
         return destination is null ? null : MapDestination(destination);
+    }
+
+    public async Task<IReadOnlyList<CatalogVerticalSitemapEntry>> GetVerticalSitemapEntriesAsync(
+        CancellationToken cancellationToken)
+    {
+        var hotels = await dbContext.Hotels
+            .AsNoTracking()
+            .Select(item => new CatalogVerticalSitemapEntry("hotel", item.Slug, item.UpdatedAt))
+            .ToArrayAsync(cancellationToken);
+        var places = await dbContext.Places
+            .AsNoTracking()
+            .Select(item => new CatalogVerticalSitemapEntry(
+                item.Type == PlaceType.Restaurant ? "restaurant" : "attraction",
+                item.Slug,
+                item.UpdatedAt))
+            .ToArrayAsync(cancellationToken);
+        var visas = await dbContext.VisaCountries
+            .AsNoTracking()
+            .Select(item => new CatalogVerticalSitemapEntry("visa", item.Slug, item.CreatedAt))
+            .ToArrayAsync(cancellationToken);
+        var flights = await dbContext.FlightRoutes
+            .AsNoTracking()
+            .Where(item => item.IsActive)
+            .Select(item => new CatalogVerticalSitemapEntry("flight", item.Slug, item.CreatedAt))
+            .ToArrayAsync(cancellationToken);
+
+        return hotels.Concat(places).Concat(visas).Concat(flights).ToArray();
+    }
+
+    public async Task<CatalogVerticalSnapshot?> GetVerticalBySlugAsync(
+        string type,
+        string slug,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(slug))
+        {
+            return null;
+        }
+
+        var normalizedType = type.Trim().ToLowerInvariant();
+        var normalizedSlug = slug.Trim().ToLowerInvariant();
+
+        switch (normalizedType)
+        {
+            case "hotel":
+                {
+                    var hotel = await dbContext.Hotels
+                        .AsNoTracking()
+                        .Include(item => item.Translations)
+                        .FirstOrDefaultAsync(item => item.Slug == normalizedSlug, cancellationToken);
+                    return hotel is null
+                        ? null
+                        : new CatalogVerticalSnapshot(
+                            "hotel",
+                            hotel.Slug,
+                            hotel.Translations.ToDictionary(
+                                item => item.Locale,
+                                item => item.Name,
+                                StringComparer.OrdinalIgnoreCase),
+                            hotel.Translations
+                                .Where(item => !string.IsNullOrWhiteSpace(item.Description))
+                                .ToDictionary(
+                                    item => item.Locale,
+                                    item => item.Description!,
+                                    StringComparer.OrdinalIgnoreCase),
+                            hotel.UpdatedAt);
+                }
+
+            case "restaurant":
+            case "attraction":
+                {
+                    var placeType = normalizedType == "restaurant"
+                        ? PlaceType.Restaurant
+                        : PlaceType.Attraction;
+                    var place = await dbContext.Places
+                        .AsNoTracking()
+                        .Include(item => item.Translations)
+                        .FirstOrDefaultAsync(
+                            item => item.Slug == normalizedSlug && item.Type == placeType,
+                            cancellationToken);
+                    return place is null
+                        ? null
+                        : new CatalogVerticalSnapshot(
+                            normalizedType,
+                            place.Slug,
+                            place.Translations.ToDictionary(
+                                item => item.Locale,
+                                item => item.Name,
+                                StringComparer.OrdinalIgnoreCase),
+                            place.Translations
+                                .Where(item => !string.IsNullOrWhiteSpace(item.Description))
+                                .ToDictionary(
+                                    item => item.Locale,
+                                    item => item.Description!,
+                                    StringComparer.OrdinalIgnoreCase),
+                            place.UpdatedAt);
+                }
+
+            case "visa":
+                {
+                    var visa = await dbContext.VisaCountries
+                        .AsNoTracking()
+                        .Include(item => item.Translations)
+                        .FirstOrDefaultAsync(item => item.Slug == normalizedSlug, cancellationToken);
+                    return visa is null
+                        ? null
+                        : new CatalogVerticalSnapshot(
+                            "visa",
+                            visa.Slug,
+                            visa.Translations.ToDictionary(
+                                item => item.Locale,
+                                item => item.Name,
+                                StringComparer.OrdinalIgnoreCase),
+                            visa.Translations
+                                .Where(item => !string.IsNullOrWhiteSpace(item.Description))
+                                .ToDictionary(
+                                    item => item.Locale,
+                                    item => item.Description!,
+                                    StringComparer.OrdinalIgnoreCase),
+                            visa.CreatedAt);
+                }
+
+            case "flight":
+                {
+                    var route = await dbContext.FlightRoutes
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(
+                            item => item.Slug == normalizedSlug && item.IsActive,
+                            cancellationToken);
+
+                    if (route is null)
+                    {
+                        return null;
+                    }
+
+                    var name = $"{route.OriginCity} → {route.DestinationCity}";
+                    return new CatalogVerticalSnapshot(
+                        "flight",
+                        route.Slug,
+                        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                        {
+                            ["en"] = name
+                        },
+                        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                        {
+                            ["en"] = $"Flight offers from {route.OriginCity} to {route.DestinationCity}."
+                        },
+                        route.CreatedAt);
+                }
+
+            default:
+                return null;
+        }
     }
 
     private async Task<IQueryable<TourProduct>> ApplyFilterAsync(

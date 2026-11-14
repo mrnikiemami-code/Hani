@@ -9,6 +9,7 @@ public sealed class Hotel : AggregateRoot<Guid>
 {
     private readonly List<HotelTranslation> _translations = [];
     private readonly List<HotelAmenity> _amenities = [];
+    private readonly List<HotelImage> _images = [];
 
     private Hotel()
     {
@@ -84,6 +85,11 @@ public sealed class Hotel : AggregateRoot<Guid>
     public IReadOnlyCollection<HotelAmenity> Amenities => _amenities;
 
     /// <summary>
+    /// Gallery images in display order.
+    /// </summary>
+    public IReadOnlyCollection<HotelImage> Images => _images;
+
+    /// <summary>
     /// Creates a validated hotel.
     /// </summary>
     public static Hotel Create(
@@ -143,6 +149,31 @@ public sealed class Hotel : AggregateRoot<Guid>
         _translations.Add(translation);
         Touch();
         return translation;
+    }
+
+    /// <summary>
+    /// Replaces the gallery images.
+    /// </summary>
+    public void ReplaceImages(IIdGenerator ids, IEnumerable<HotelImageInput> images)
+    {
+        _images.Clear();
+
+        foreach (var image in images)
+        {
+            if (string.IsNullOrWhiteSpace(image.Url))
+            {
+                throw new ArgumentException("Image URL is required.", nameof(images));
+            }
+
+            _images.Add(new HotelImage(
+                ids.NewId(),
+                Id,
+                image.Url,
+                image.Caption,
+                image.SortOrder));
+        }
+
+        Touch();
     }
 
     /// <summary>
@@ -237,6 +268,46 @@ public sealed class HotelAmenity : Entity<Guid>
     /// </summary>
     public string Name { get; private set; } = string.Empty;
 }
+
+/// <summary>
+/// Hotel gallery image.
+/// </summary>
+public sealed class HotelImage : Entity<Guid>
+{
+    private HotelImage()
+    {
+    }
+
+    internal HotelImage(
+        Guid id,
+        Guid hotelId,
+        string url,
+        string? caption,
+        int sortOrder) : base(id)
+    {
+        HotelId = hotelId;
+        Url = url.Trim();
+        Caption = caption?.Trim();
+        SortOrder = sortOrder;
+    }
+
+    /// <summary>Parent hotel.</summary>
+    public Guid HotelId { get; private set; }
+
+    /// <summary>Public image URL.</summary>
+    public string Url { get; private set; } = string.Empty;
+
+    /// <summary>Optional caption.</summary>
+    public string? Caption { get; private set; }
+
+    /// <summary>Display order.</summary>
+    public int SortOrder { get; private set; }
+}
+
+/// <summary>
+/// Gallery image input used by hotel creation and replacement.
+/// </summary>
+public sealed record HotelImageInput(string Url, string? Caption = null, int SortOrder = 0);
 
 /// <summary>
 /// Amenity input used by hotel creation and replacement.

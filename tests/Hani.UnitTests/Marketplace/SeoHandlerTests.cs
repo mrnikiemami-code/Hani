@@ -117,6 +117,58 @@ public sealed class SeoHandlerTests
     }
 
     [Fact]
+    public async Task Vertical_Seo_Should_Build_Hotel_JsonLd_And_Breadcrumbs()
+    {
+        var catalog = new FakeCatalogReadService();
+        catalog.VerticalDetails["hotel:grand-hotel"] = new CatalogVerticalSnapshot(
+            "hotel",
+            "grand-hotel",
+            new Dictionary<string, string> { ["fa"] = "هتل بزرگ", ["en"] = "Grand Hotel" },
+            new Dictionary<string, string> { ["en"] = "Central hotel" },
+            DateTimeOffset.UtcNow);
+
+        var handler = new GetVerticalSeoQueryHandler(
+            catalog,
+            new FakeLanguageCatalog(),
+            Options.Create(new SeoOptions { PublicBaseUrl = "https://hani.test" }));
+
+        var result = await handler.Handle(
+            new GetVerticalSeoQuery("hotel", "grand-hotel", "en"),
+            CancellationToken.None);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.CanonicalUrl.ShouldBe("https://hani.test/en/hotels/grand-hotel");
+        result.Value.Breadcrumbs.Count.ShouldBe(3);
+        result.Value.EntityJsonLd.ShouldContain("\"@type\":\"Hotel\"");
+    }
+
+    [Fact]
+    public async Task Sitemap_Should_Include_Vertical_Urls()
+    {
+        var catalog = new FakeCatalogReadService();
+        catalog.Verticals.Add(new CatalogVerticalSitemapEntry(
+            "hotel",
+            "grand-hotel",
+            DateTimeOffset.UtcNow));
+        catalog.Verticals.Add(new CatalogVerticalSitemapEntry(
+            "flight",
+            "thr-mhd",
+            DateTimeOffset.UtcNow));
+
+        var handler = new GetSitemapQueryHandler(
+            catalog,
+            new FakeLanguageCatalog(),
+            Options.Create(new SeoOptions { PublicBaseUrl = "https://hani.test" }));
+
+        var result = await handler.Handle(new GetSitemapQuery(), CancellationToken.None);
+
+        result.IsSuccess.ShouldBeTrue();
+        var xml = result.Value!;
+        xml.ShouldContain("https://hani.test/fa/hotels/grand-hotel");
+        xml.ShouldContain("https://hani.test/fa/flights/routes/thr-mhd");
+    }
+
+    [Fact]
     public async Task Robots_Should_Point_To_Sitemap_And_Disallow_Filter_Urls()
     {
         var handler = new GetRobotsQueryHandler(

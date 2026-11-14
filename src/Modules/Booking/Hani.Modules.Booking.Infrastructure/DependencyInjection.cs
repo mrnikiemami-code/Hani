@@ -20,6 +20,9 @@ public static class DependencyInjection
         services.AddScoped<IHoldRepository, HoldRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IReservationRequestRepository, ReservationRequestRepository>();
+        services.AddScoped<IHotelInquiryRepository, HotelInquiryRepository>();
+        services.AddScoped<IRestaurantReservationRepository, RestaurantReservationRepository>();
+        services.AddScoped<IVisaApplicationRepository, VisaApplicationRepository>();
         services.AddScoped<ILeadRepository, LeadRepository>();
         services.AddScoped<IPriceDiscrepancyRepository, PriceDiscrepancyRepository>();
         services.AddScoped<IInstallmentPlanRepository, InstallmentPlanRepository>();

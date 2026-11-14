@@ -65,6 +65,63 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.ToTable("destinations", "catalog");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Flights.FlightRoute", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("DestinationCity")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("destination_city");
+
+                    b.Property<string>("DestinationCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("destination_code");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("OriginCity")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("origin_city");
+
+                    b.Property<string>("OriginCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("origin_code");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("slug");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ux_flight_routes_slug");
+
+                    b.HasIndex("OriginCode", "DestinationCode")
+                        .HasDatabaseName("ix_flight_routes_origin_destination");
+
+                    b.ToTable("flight_routes", "catalog");
+                });
+
             modelBuilder.Entity("Hani.Modules.Catalog.Domain.Hotels.Hotel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -284,6 +341,38 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.ToTable("tour_products", "catalog");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Visas.VisaCountry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CountryCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("country_code");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("slug");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ux_visa_countries_slug");
+
+                    b.ToTable("visa_countries", "catalog");
+                });
+
             modelBuilder.Entity("Hani.Modules.Catalog.Domain.Destinations.Destination", b =>
                 {
                     b.OwnsMany("Hani.Modules.Catalog.Domain.Destinations.DestinationTranslation", "Translations", b1 =>
@@ -328,6 +417,105 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Navigation("Translations");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Flights.FlightRoute", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Flights.FlightOffer", "Offers", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("AirlineCode")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("airline_code");
+
+                            b1.Property<string>("AirlineName")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("airline_name");
+
+                            b1.Property<TimeOnly>("ArrivalTime")
+                                .HasColumnType("time without time zone")
+                                .HasColumnName("arrival_time");
+
+                            b1.Property<string>("BaggageAllowance")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("baggage_allowance");
+
+                            b1.Property<string>("Cabin")
+                                .IsRequired()
+                                .HasMaxLength(40)
+                                .HasColumnType("character varying(40)")
+                                .HasColumnName("cabin");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("currency");
+
+                            b1.Property<string>("DeepLink")
+                                .IsRequired()
+                                .HasMaxLength(2000)
+                                .HasColumnType("character varying(2000)")
+                                .HasColumnName("deep_link");
+
+                            b1.Property<DateOnly>("DepartureDate")
+                                .HasColumnType("date")
+                                .HasColumnName("departure_date");
+
+                            b1.Property<TimeOnly>("DepartureTime")
+                                .HasColumnType("time without time zone")
+                                .HasColumnName("departure_time");
+
+                            b1.Property<int>("DurationMinutes")
+                                .HasColumnType("integer")
+                                .HasColumnName("duration_minutes");
+
+                            b1.Property<string>("FlightNumber")
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType("character varying(20)")
+                                .HasColumnName("flight_number");
+
+                            b1.Property<decimal>("Price")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("price");
+
+                            b1.Property<string>("Provider")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("provider");
+
+                            b1.Property<Guid>("RouteId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("route_id");
+
+                            b1.Property<int>("Stops")
+                                .HasColumnType("integer")
+                                .HasColumnName("stops");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("RouteId", "DepartureDate", "Price")
+                                .HasDatabaseName("ix_flight_offers_route_date_price");
+
+                            b1.ToTable("flight_offers", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RouteId");
+                        });
+
+                    b.Navigation("Offers");
+                });
+
             modelBuilder.Entity("Hani.Modules.Catalog.Domain.Hotels.Hotel", b =>
                 {
                     b.OwnsMany("Hani.Modules.Catalog.Domain.Hotels.HotelAmenity", "Amenities", b1 =>
@@ -359,6 +547,42 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasDatabaseName("ux_hotel_amenities_hotel_category_name");
 
                             b1.ToTable("hotel_amenities", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("HotelId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Hotels.HotelImage", "Images", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Caption")
+                                .HasMaxLength(300)
+                                .HasColumnType("character varying(300)")
+                                .HasColumnName("caption");
+
+                            b1.Property<Guid>("HotelId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("hotel_id");
+
+                            b1.Property<int>("SortOrder")
+                                .HasColumnType("integer")
+                                .HasColumnName("sort_order");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasMaxLength(1000)
+                                .HasColumnType("character varying(1000)")
+                                .HasColumnName("url");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("HotelId", "SortOrder")
+                                .HasDatabaseName("ix_hotel_images_hotel_sort");
+
+                            b1.ToTable("hotel_images", "catalog");
 
                             b1.WithOwner()
                                 .HasForeignKey("HotelId");
@@ -404,6 +628,8 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
 
                     b.Navigation("Amenities");
 
+                    b.Navigation("Images");
+
                     b.Navigation("Translations");
                 });
 
@@ -432,6 +658,58 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasDatabaseName("ux_place_amenities_place_name");
 
                             b1.ToTable("place_amenities", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlaceId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Places.PlaceMenuItem", "MenuItems", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("currency");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("text")
+                                .HasColumnName("description");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("name");
+
+                            b1.Property<Guid>("PlaceId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("place_id");
+
+                            b1.Property<decimal>("Price")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("price");
+
+                            b1.Property<string>("Section")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("section");
+
+                            b1.Property<int>("SortOrder")
+                                .HasColumnType("integer")
+                                .HasColumnName("sort_order");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("PlaceId", "Section", "SortOrder")
+                                .HasDatabaseName("ix_place_menu_items_place_section_sort");
+
+                            b1.ToTable("place_menu_items", "catalog");
 
                             b1.WithOwner()
                                 .HasForeignKey("PlaceId");
@@ -476,6 +754,8 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         });
 
                     b.Navigation("Amenities");
+
+                    b.Navigation("MenuItems");
 
                     b.Navigation("Translations");
                 });
@@ -684,6 +964,206 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Navigation("ItineraryDays");
 
                     b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Catalog.Domain.Visas.VisaCountry", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Visas.VisaCountryTranslation", "Translations", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("CountryId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("country_id");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("text")
+                                .HasColumnName("description");
+
+                            b1.Property<string>("Locale")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("character varying(10)")
+                                .HasColumnName("locale");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("character varying(250)")
+                                .HasColumnName("name");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("CountryId", "Locale")
+                                .IsUnique()
+                                .HasDatabaseName("ux_visa_country_translations_country_locale");
+
+                            b1.ToTable("visa_country_translations", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CountryId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Catalog.Domain.Visas.VisaType", "Types", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Code")
+                                .IsRequired()
+                                .HasMaxLength(40)
+                                .HasColumnType("character varying(40)")
+                                .HasColumnName("code");
+
+                            b1.Property<Guid>("CountryId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("country_id");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("currency");
+
+                            b1.Property<string>("EntryType")
+                                .IsRequired()
+                                .HasMaxLength(40)
+                                .HasColumnType("character varying(40)")
+                                .HasColumnName("entry_type");
+
+                            b1.Property<decimal>("PriceAdult")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("price_adult");
+
+                            b1.Property<decimal?>("PriceChild")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("price_child");
+
+                            b1.Property<int>("ProcessingDaysMax")
+                                .HasColumnType("integer")
+                                .HasColumnName("processing_days_max");
+
+                            b1.Property<int>("ProcessingDaysMin")
+                                .HasColumnType("integer")
+                                .HasColumnName("processing_days_min");
+
+                            b1.Property<int>("ValidityDays")
+                                .HasColumnType("integer")
+                                .HasColumnName("validity_days");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("CountryId", "Code")
+                                .IsUnique()
+                                .HasDatabaseName("ux_visa_types_country_code");
+
+                            b1.ToTable("visa_types", "catalog");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CountryId");
+
+                            b1.OwnsMany("Hani.Modules.Catalog.Domain.Visas.VisaDocument", "Documents", b2 =>
+                                {
+                                    b2.Property<Guid>("Id")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("id");
+
+                                    b2.Property<string>("Name")
+                                        .IsRequired()
+                                        .HasMaxLength(300)
+                                        .HasColumnType("character varying(300)")
+                                        .HasColumnName("name");
+
+                                    b2.Property<Guid>("VisaTypeId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("visa_type_id");
+
+                                    b2.HasKey("Id");
+
+                                    b2.HasIndex("VisaTypeId");
+
+                                    b2.ToTable("visa_documents", "catalog");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VisaTypeId");
+                                });
+
+                            b1.OwnsMany("Hani.Modules.Catalog.Domain.Visas.VisaFaq", "Faqs", b2 =>
+                                {
+                                    b2.Property<Guid>("Id")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("id");
+
+                                    b2.Property<string>("Answer")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasColumnName("answer");
+
+                                    b2.Property<string>("Question")
+                                        .IsRequired()
+                                        .HasMaxLength(500)
+                                        .HasColumnType("character varying(500)")
+                                        .HasColumnName("question");
+
+                                    b2.Property<Guid>("VisaTypeId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("visa_type_id");
+
+                                    b2.HasKey("Id");
+
+                                    b2.HasIndex("VisaTypeId");
+
+                                    b2.ToTable("visa_faqs", "catalog");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VisaTypeId");
+                                });
+
+                            b1.OwnsMany("Hani.Modules.Catalog.Domain.Visas.VisaStep", "Steps", b2 =>
+                                {
+                                    b2.Property<Guid>("Id")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("id");
+
+                                    b2.Property<string>("Description")
+                                        .IsRequired()
+                                        .HasMaxLength(2000)
+                                        .HasColumnType("character varying(2000)")
+                                        .HasColumnName("description");
+
+                                    b2.Property<int>("Sequence")
+                                        .HasColumnType("integer")
+                                        .HasColumnName("sequence");
+
+                                    b2.Property<Guid>("VisaTypeId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("visa_type_id");
+
+                                    b2.HasKey("Id");
+
+                                    b2.HasIndex("VisaTypeId");
+
+                                    b2.ToTable("visa_steps", "catalog");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VisaTypeId");
+                                });
+
+                            b1.Navigation("Documents");
+
+                            b1.Navigation("Faqs");
+
+                            b1.Navigation("Steps");
+                        });
+
+                    b.Navigation("Translations");
+
+                    b.Navigation("Types");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,7 +1,9 @@
 using Hani.Modules.Catalog.Domain.Destinations;
+using Hani.Modules.Catalog.Domain.Flights;
 using Hani.Modules.Catalog.Domain.Hotels;
 using Hani.Modules.Catalog.Domain.Places;
 using Hani.Modules.Catalog.Domain.TourProducts;
+using Hani.Modules.Catalog.Domain.Visas;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Catalog.Infrastructure.Persistence;
@@ -18,6 +20,10 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options)
     public DbSet<Hotel> Hotels => Set<Hotel>();
 
     public DbSet<Place> Places => Set<Place>();
+
+    public DbSet<VisaCountry> VisaCountries => Set<VisaCountry>();
+
+    public DbSet<FlightRoute> FlightRoutes => Set<FlightRoute>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

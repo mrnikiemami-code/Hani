@@ -159,6 +159,106 @@ internal sealed class GetLandingSeoQueryHandler(
     }
 }
 
+internal sealed class GetVerticalSeoQueryHandler(
+    ICatalogReadService catalog,
+    ILanguageCatalog languages,
+    IOptions<SeoOptions> options)
+    : IQueryHandler<GetVerticalSeoQuery, VerticalSeoDto>
+{
+    public async Task<Result<VerticalSeoDto>> Handle(
+        GetVerticalSeoQuery request,
+        CancellationToken cancellationToken)
+    {
+        var vertical = await catalog.GetVerticalBySlugAsync(
+            request.Type,
+            request.Slug,
+            cancellationToken);
+
+        if (vertical is null)
+        {
+            return Result<VerticalSeoDto>.Failure(
+                Error.NotFound("HANI-MARKET-1305", "Vertical page was not found."));
+        }
+
+        var locale = languages.Normalize(request.Locale);
+        var name = Resolve(vertical.Names, locale, languages, vertical.Slug);
+        var description = Resolve(vertical.Descriptions, locale, languages, name);
+        var baseUrl = options.Value.PublicBaseUrl;
+        var path = GetPath(vertical.Type, vertical.Slug);
+        var canonicalUrl = SeoMetadataBuilder.BuildUrl(baseUrl, locale, path);
+        var listLabel = GetListLabel(vertical.Type);
+
+        var breadcrumbs = new List<BreadcrumbItemDto>
+        {
+            new("Home", SeoMetadataBuilder.BuildUrl(baseUrl, locale, string.Empty)),
+            new(listLabel, SeoMetadataBuilder.BuildUrl(baseUrl, locale, GetListPath(vertical.Type))),
+            new(name, canonicalUrl)
+        };
+
+        return Result<VerticalSeoDto>.Success(new VerticalSeoDto(
+            vertical.Type,
+            vertical.Slug,
+            locale,
+            canonicalUrl,
+            name,
+            description,
+            "index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1",
+            SeoMetadataBuilder.BuildAlternates(baseUrl, languages.SupportedLanguages, path),
+            breadcrumbs,
+            SeoMetadataBuilder.BuildBreadcrumbJsonLd(breadcrumbs),
+            SeoMetadataBuilder.BuildVerticalJsonLd(
+                vertical.Type,
+                name,
+                description,
+                canonicalUrl,
+                baseUrl)));
+    }
+
+    private static string GetPath(string type, string slug)
+        => type.ToLowerInvariant() switch
+        {
+            "hotel" => $"hotels/{slug}",
+            "restaurant" => $"restaurants/{slug}",
+            "attraction" => $"attractions/{slug}",
+            "visa" => $"visas/{slug}",
+            "flight" => $"flights/routes/{slug}",
+            _ => slug
+        };
+
+    private static string GetListPath(string type)
+        => type.ToLowerInvariant() switch
+        {
+            "hotel" => "hotels",
+            "restaurant" => "restaurants",
+            "attraction" => "attractions",
+            "visa" => "visas",
+            "flight" => "flights",
+            _ => string.Empty
+        };
+
+    private static string GetListLabel(string type)
+        => type.ToLowerInvariant() switch
+        {
+            "hotel" => "Hotels",
+            "restaurant" => "Restaurants",
+            "attraction" => "Attractions",
+            "visa" => "Visa",
+            "flight" => "Flights",
+            _ => "Explore"
+        };
+
+    private static string Resolve(
+        IReadOnlyDictionary<string, string> values,
+        string locale,
+        ILanguageCatalog languages,
+        string fallback)
+        => values.TryGetValue(locale, out var value)
+            ? value
+            : values.TryGetValue(languages.DefaultLanguage, out var defaultValue)
+                ? defaultValue
+                : values.Values.FirstOrDefault() ?? fallback;
+}
+
 internal sealed class GetSitemapQueryHandler(
     ICatalogReadService catalog,
     ILanguageCatalog languages,
@@ -183,13 +283,15 @@ internal sealed class GetSitemapQueryHandler(
         var destinations = await catalog.GetDestinationsAsync(
             destinationIds,
             cancellationToken);
+        var verticals = await catalog.GetVerticalSitemapEntriesAsync(cancellationToken);
 
         var sitemap = SeoMetadataBuilder.BuildSitemap(
             options.Value.PublicBaseUrl,
             languages.DefaultLanguage,
             languages.SupportedLanguages,
             products,
-            destinations);
+            destinations,
+            verticals);
 
         return Result<string>.Success(sitemap);
     }

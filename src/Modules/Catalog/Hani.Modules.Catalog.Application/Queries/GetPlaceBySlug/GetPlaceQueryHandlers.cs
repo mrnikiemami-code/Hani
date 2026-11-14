@@ -1,11 +1,14 @@
 using Hani.BuildingBlocks.Application;
+using Hani.Contracts.Identity;
 using Hani.Modules.Catalog.Application.Abstractions;
 using Hani.Modules.Catalog.Application.Commands.CreatePlace;
 using Hani.Modules.Catalog.Domain.Places;
 
 namespace Hani.Modules.Catalog.Application.Queries.GetPlaceBySlug;
 
-internal sealed class GetPlaceBySlugQueryHandler(IPlaceRepository places)
+internal sealed class GetPlaceBySlugQueryHandler(
+    IPlaceRepository places,
+    IReviewSummaryReadService reviewSummaries)
     : IQueryHandler<GetPlaceBySlugQuery, PlaceDto>
 {
     public async Task<Result<PlaceDto>> Handle(
@@ -13,13 +16,26 @@ internal sealed class GetPlaceBySlugQueryHandler(IPlaceRepository places)
         CancellationToken cancellationToken)
     {
         var place = await places.GetBySlugAsync(request.Slug, cancellationToken);
-        return place is null
-            ? Result<PlaceDto>.Failure(Error.NotFound("HANI-CATALOG-1520", "Place was not found."))
-            : Result<PlaceDto>.Success(PlaceMappings.ToDto(place));
+
+        if (place is null)
+        {
+            return Result<PlaceDto>.Failure(
+                Error.NotFound("HANI-CATALOG-1520", "Place was not found."));
+        }
+
+        var summaries = await reviewSummaries.GetSummariesAsync(
+            place.Type.ToString(),
+            [place.Id],
+            cancellationToken);
+        summaries.TryGetValue(place.Id, out var summary);
+
+        return Result<PlaceDto>.Success(PlaceMappings.ToDto(place, summary));
     }
 }
 
-internal sealed class GetNearbyPlacesQueryHandler(IPlaceRepository places)
+internal sealed class GetNearbyPlacesQueryHandler(
+    IPlaceRepository places,
+    IReviewSummaryReadService reviewSummaries)
     : IQueryHandler<GetNearbyPlacesQuery, IReadOnlyList<NearbyPlaceDto>>
 {
     public async Task<Result<IReadOnlyList<NearbyPlaceDto>>> Handle(
@@ -33,17 +49,26 @@ internal sealed class GetNearbyPlacesQueryHandler(IPlaceRepository places)
         }
 
         var items = await places.ListAsync(request.Type, cancellationToken);
+        var summaries = await reviewSummaries.GetSummariesAsync(
+            request.Type?.ToString() ?? "Restaurant",
+            items.Select(place => place.Id).ToArray(),
+            cancellationToken);
         var results = items
             .Where(place => place.Latitude is not null && place.Longitude is not null)
-            .Select(place => new NearbyPlaceDto(
-                PlaceMappings.ToDto(place),
-                Math.Round(
-                    CalculateDistanceKm(
-                        (double)request.Latitude,
-                        (double)request.Longitude,
-                        (double)place.Latitude!,
-                        (double)place.Longitude!),
-                    2)))
+            .Select(place =>
+            {
+                summaries.TryGetValue(place.Id, out var summary);
+
+                return new NearbyPlaceDto(
+                    PlaceMappings.ToDto(place, summary),
+                    Math.Round(
+                        CalculateDistanceKm(
+                            (double)request.Latitude,
+                            (double)request.Longitude,
+                            (double)place.Latitude!,
+                            (double)place.Longitude!),
+                        2));
+            })
             .Where(item => item.DistanceKm <= request.RadiusKm)
             .OrderBy(item => item.DistanceKm)
             .Take(Math.Clamp(request.Limit, 1, 100))
@@ -68,7 +93,7 @@ internal sealed class GetNearbyPlacesQueryHandler(IPlaceRepository places)
 
 internal static class PlaceMappings
 {
-    public static PlaceDto ToDto(Place place)
+    public static PlaceDto ToDto(Place place, ReviewSummary? summary = null)
         => new(
             place.Id,
             place.Slug,
@@ -84,5 +109,18 @@ internal static class PlaceMappings
             place.Translations
                 .Select(item => new PlaceTranslationDto(item.Locale, item.Name, item.Description))
                 .ToArray(),
-            place.Amenities.Select(item => item.Name).ToArray());
+            place.Amenities.Select(item => item.Name).ToArray(),
+            place.MenuItems
+                .OrderBy(item => item.Section)
+                .ThenBy(item => item.SortOrder)
+                .Select(item => new PlaceMenuItemDto(
+                    item.Section,
+                    item.Name,
+                    item.Description,
+                    item.Price,
+                    item.Currency,
+                    item.SortOrder))
+                .ToArray(),
+            summary?.AverageRating,
+            summary?.ReviewCount ?? 0);
 }

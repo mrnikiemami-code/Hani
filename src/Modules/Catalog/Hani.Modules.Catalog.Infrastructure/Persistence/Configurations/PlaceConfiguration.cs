@@ -57,5 +57,23 @@ internal sealed class PlaceConfiguration : IEntityTypeConfiguration<Place>
                 .HasDatabaseName("ux_place_amenities_place_name");
             amenities.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
+
+        builder.OwnsMany(place => place.MenuItems, menuItems =>
+        {
+            menuItems.ToTable("place_menu_items");
+            menuItems.WithOwner().HasForeignKey(item => item.PlaceId);
+            menuItems.HasKey(item => item.Id);
+            menuItems.Property(item => item.Id).HasColumnName("id").ValueGeneratedNever();
+            menuItems.Property(item => item.PlaceId).HasColumnName("place_id");
+            menuItems.Property(item => item.Section).HasColumnName("section").HasMaxLength(120).IsRequired();
+            menuItems.Property(item => item.Name).HasColumnName("name").HasMaxLength(200).IsRequired();
+            menuItems.Property(item => item.Description).HasColumnName("description").HasColumnType("text");
+            menuItems.Property(item => item.Price).HasColumnName("price").HasPrecision(18, 2).IsRequired();
+            menuItems.Property(item => item.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
+            menuItems.Property(item => item.SortOrder).HasColumnName("sort_order").IsRequired();
+            menuItems.HasIndex(item => new { item.PlaceId, item.Section, item.SortOrder })
+                .HasDatabaseName("ix_place_menu_items_place_section_sort");
+            menuItems.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
     }
 }

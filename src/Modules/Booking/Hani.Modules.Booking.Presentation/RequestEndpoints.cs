@@ -2,6 +2,7 @@ using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Booking.Application.Commands.Requests;
 using Hani.Modules.Booking.Domain.Leads;
+using Hani.Modules.Booking.Domain.VisaApplications;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -69,6 +70,64 @@ public static class RequestEndpoints
             .WithName("Marketplace.GetLead")
             .Produces<LeadDto>()
             .ProducesProblem(StatusCodes.Status404NotFound);
+
+        market.MapPost("/hotel-inquiries", CreateHotelInquiryAsync)
+            .WithName("Marketplace.CreateHotelInquiry")
+            .Produces<HotelInquiryDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        market.MapGet("/hotel-inquiries/{inquiryId:guid}", GetHotelInquiryAsync)
+            .WithName("Marketplace.GetHotelInquiry")
+            .Produces<HotelInquiryDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        market.MapPost("/restaurant-reservations", CreateRestaurantReservationAsync)
+            .WithName("Marketplace.CreateRestaurantReservation")
+            .Produces<RestaurantReservationDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        market.MapGet("/restaurant-reservations/{reservationId:guid}", GetRestaurantReservationAsync)
+            .WithName("Marketplace.GetRestaurantReservation")
+            .Produces<RestaurantReservationDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        internalApi.MapGet("/restaurant-reservations", ListRestaurantReservationsAsync)
+            .WithName("Internal.ListRestaurantReservations")
+            .Produces<PagedResult<RestaurantReservationDto>>();
+
+        internalApi.MapPost("/restaurant-reservations/{reservationId:guid}/confirm", ConfirmRestaurantReservationAsync)
+            .WithName("Internal.ConfirmRestaurantReservation")
+            .Produces<bool>();
+
+        internalApi.MapPost("/restaurant-reservations/{reservationId:guid}/reject", RejectRestaurantReservationAsync)
+            .WithName("Internal.RejectRestaurantReservation")
+            .Produces<bool>();
+
+        market.MapPost("/visa-applications", CreateVisaApplicationAsync)
+            .WithName("Marketplace.CreateVisaApplication")
+            .Produces<VisaApplicationDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        market.MapGet("/visa-applications/{applicationId:guid}", GetVisaApplicationAsync)
+            .WithName("Marketplace.GetVisaApplication")
+            .Produces<VisaApplicationDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        internalApi.MapGet("/visa-applications", ListVisaApplicationsAsync)
+            .WithName("Internal.ListVisaApplications")
+            .Produces<PagedResult<VisaApplicationDto>>();
+
+        internalApi.MapPost("/visa-applications/{applicationId:guid}/status", UpdateVisaApplicationStatusAsync)
+            .WithName("Internal.UpdateVisaApplicationStatus")
+            .Produces<bool>();
+
+        internalApi.MapGet("/hotel-inquiries", ListHotelInquiriesAsync)
+            .WithName("Internal.ListHotelInquiries")
+            .Produces<PagedResult<HotelInquiryDto>>();
+
+        internalApi.MapPost("/hotel-inquiries/{inquiryId:guid}/respond", RespondHotelInquiryAsync)
+            .WithName("Internal.RespondHotelInquiry")
+            .Produces<bool>();
 
         internalApi.MapGet("/leads", ListLeadsAsync)
             .WithName("Internal.ListLeads")
@@ -238,6 +297,226 @@ public static class RequestEndpoints
     {
         var result = await sender.Send(
             new RejectReservationRequestCommand(requestId, request.Reason),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Submits a visa application.</summary>
+    private static async Task<IResult> CreateVisaApplicationAsync(
+        CreateVisaApplicationRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateVisaApplicationCommand(
+                request.VisaCountryId,
+                request.VisaTypeId,
+                request.ApplicantName,
+                request.PassportNo,
+                request.Nationality,
+                request.DateOfBirth,
+                request.TravelDate,
+                request.ContactEmail,
+                request.ContactPhone,
+                request.Notes,
+                request.Documents),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Returns a visa application.</summary>
+    private static async Task<IResult> GetVisaApplicationAsync(
+        Guid applicationId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetVisaApplicationQuery(applicationId),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Lists visa applications for operations.</summary>
+    private static async Task<IResult> ListVisaApplicationsAsync(
+        string? status,
+        int page,
+        int pageSize,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new ListVisaApplicationsQuery(
+                status,
+                page == 0 ? 1 : page,
+                pageSize == 0 ? 20 : pageSize),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Updates visa application status.</summary>
+    private static async Task<IResult> UpdateVisaApplicationStatusAsync(
+        Guid applicationId,
+        UpdateVisaApplicationStatusRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new UpdateVisaApplicationStatusCommand(
+                applicationId,
+                request.Status,
+                request.RejectionReason),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Creates a restaurant table reservation request.</summary>
+    private static async Task<IResult> CreateRestaurantReservationAsync(
+        CreateRestaurantReservationRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateRestaurantReservationCommand(
+                request.PlaceId,
+                request.ReservationDate,
+                request.ReservationTime,
+                request.PartySize,
+                request.ContactName,
+                request.ContactEmail,
+                request.ContactPhone,
+                request.Notes),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Returns a restaurant reservation.</summary>
+    private static async Task<IResult> GetRestaurantReservationAsync(
+        Guid reservationId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetRestaurantReservationQuery(reservationId),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Lists restaurant reservations for operations.</summary>
+    private static async Task<IResult> ListRestaurantReservationsAsync(
+        string? status,
+        int page,
+        int pageSize,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new ListRestaurantReservationsQuery(
+                status,
+                page == 0 ? 1 : page,
+                pageSize == 0 ? 20 : pageSize),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Confirms a restaurant reservation.</summary>
+    private static async Task<IResult> ConfirmRestaurantReservationAsync(
+        Guid reservationId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new ConfirmRestaurantReservationCommand(reservationId),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Rejects a restaurant reservation.</summary>
+    private static async Task<IResult> RejectRestaurantReservationAsync(
+        Guid reservationId,
+        RejectRestaurantReservationRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new RejectRestaurantReservationCommand(reservationId, request.Reason),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Creates a hotel availability inquiry.</summary>
+    private static async Task<IResult> CreateHotelInquiryAsync(
+        CreateHotelInquiryRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateHotelInquiryCommand(
+                request.HotelId,
+                request.CheckIn,
+                request.CheckOut,
+                request.Rooms,
+                request.Adults,
+                request.Children,
+                request.ContactEmail,
+                request.ContactPhone,
+                request.Notes),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Returns a hotel inquiry.</summary>
+    private static async Task<IResult> GetHotelInquiryAsync(
+        Guid inquiryId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetHotelInquiryQuery(inquiryId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Lists hotel inquiries for operations.</summary>
+    private static async Task<IResult> ListHotelInquiriesAsync(
+        string? status,
+        int page,
+        int pageSize,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new ListHotelInquiriesQuery(
+                status,
+                page == 0 ? 1 : page,
+                pageSize == 0 ? 20 : pageSize),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Responds to a hotel inquiry.</summary>
+    private static async Task<IResult> RespondHotelInquiryAsync(
+        Guid inquiryId,
+        RespondHotelInquiryRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new RespondHotelInquiryCommand(
+                inquiryId,
+                request.ResponseNote,
+                request.QuotedTotal,
+                request.QuotedCurrency),
             cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
@@ -442,6 +721,57 @@ public sealed record ConfirmReservationRequest(string? AgencyNote);
 
 /// <summary>Reservation rejection body.</summary>
 public sealed record RejectReservationRequest(string Reason);
+
+/// <summary>Visa application body.</summary>
+public sealed record CreateVisaApplicationRequest(
+    Guid VisaCountryId,
+    Guid VisaTypeId,
+    string ApplicantName,
+    string PassportNo,
+    string Nationality,
+    DateOnly? DateOfBirth,
+    DateOnly? TravelDate,
+    string ContactEmail,
+    string ContactPhone,
+    string? Notes,
+    IReadOnlyList<string> Documents);
+
+/// <summary>Visa status update body.</summary>
+public sealed record UpdateVisaApplicationStatusRequest(
+    VisaApplicationStatus Status,
+    string? RejectionReason = null);
+
+/// <summary>Restaurant reservation body.</summary>
+public sealed record CreateRestaurantReservationRequest(
+    Guid PlaceId,
+    DateOnly ReservationDate,
+    TimeOnly ReservationTime,
+    int PartySize,
+    string ContactName,
+    string ContactEmail,
+    string ContactPhone,
+    string? Notes);
+
+/// <summary>Restaurant reservation rejection body.</summary>
+public sealed record RejectRestaurantReservationRequest(string Reason);
+
+/// <summary>Hotel inquiry body.</summary>
+public sealed record CreateHotelInquiryRequest(
+    Guid HotelId,
+    DateOnly CheckIn,
+    DateOnly CheckOut,
+    int Rooms,
+    int Adults,
+    int Children,
+    string ContactEmail,
+    string? ContactPhone,
+    string? Notes);
+
+/// <summary>Hotel inquiry response body.</summary>
+public sealed record RespondHotelInquiryRequest(
+    string ResponseNote,
+    decimal? QuotedTotal = null,
+    string? QuotedCurrency = null);
 
 /// <summary>Lead request body.</summary>
 public sealed record CreateLeadRequest(

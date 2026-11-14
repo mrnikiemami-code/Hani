@@ -31,6 +31,7 @@ internal sealed class CreateHotelCommandHandler(
             }
 
             hotel.ReplaceAmenities(ids, request.Amenities);
+            hotel.ReplaceImages(ids, request.Images);
             await hotels.AddAsync(hotel, cancellationToken);
             return Result<Guid>.Success(hotel.Id);
         }

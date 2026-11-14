@@ -68,6 +68,24 @@ public sealed record CatalogDestinationSnapshot(
     IReadOnlyDictionary<string, string> Names);
 
 /// <summary>
+/// One vertical sitemap entry such as a hotel, restaurant, attraction, visa, or flight route.
+/// </summary>
+public sealed record CatalogVerticalSitemapEntry(
+    string Type,
+    string Slug,
+    DateTimeOffset UpdatedAt);
+
+/// <summary>
+/// Localized vertical projection used by vertical SEO pages.
+/// </summary>
+public sealed record CatalogVerticalSnapshot(
+    string Type,
+    string Slug,
+    IReadOnlyDictionary<string, string> Names,
+    IReadOnlyDictionary<string, string> Descriptions,
+    DateTimeOffset UpdatedAt);
+
+/// <summary>
 /// Read-side contract exposed by the Catalog module.
 /// </summary>
 public interface ICatalogReadService
@@ -106,6 +124,20 @@ public interface ICatalogReadService
     /// Returns one destination by slug, or <c>null</c>.
     /// </summary>
     Task<CatalogDestinationSnapshot?> GetDestinationBySlugAsync(
+        string slug,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns all public vertical entries for sitemap generation.
+    /// </summary>
+    Task<IReadOnlyList<CatalogVerticalSitemapEntry>> GetVerticalSitemapEntriesAsync(
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns one localized vertical projection, or <c>null</c>.
+    /// </summary>
+    Task<CatalogVerticalSnapshot?> GetVerticalBySlugAsync(
+        string type,
         string slug,
         CancellationToken cancellationToken);
 }

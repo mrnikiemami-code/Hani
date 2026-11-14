@@ -99,18 +99,57 @@ internal static class SeoMetadataBuilder
             },
             JsonOptions);
 
+    public static string BuildVerticalJsonLd(
+        string type,
+        string name,
+        string description,
+        string canonicalUrl,
+        string baseUrl)
+    {
+        var schemaType = type switch
+        {
+            "hotel" => "Hotel",
+            "restaurant" => "Restaurant",
+            "attraction" => "TouristAttraction",
+            "visa" => "Service",
+            "flight" => "Product",
+            _ => "WebPage"
+        };
+
+        return JsonSerializer.Serialize(
+            new Dictionary<string, object?>
+            {
+                ["@context"] = "https://schema.org/",
+                ["@type"] = schemaType,
+                ["name"] = name,
+                ["description"] = description,
+                ["url"] = canonicalUrl,
+                ["provider"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "Organization",
+                    ["name"] = "Hani",
+                    ["url"] = baseUrl.TrimEnd('/')
+                }
+            },
+            JsonOptions);
+    }
+
     public static string BuildSitemap(
         string baseUrl,
         string defaultLocale,
         IReadOnlyList<string> languages,
         IReadOnlyList<CatalogProductSummary> products,
-        IReadOnlyList<CatalogDestinationSnapshot> destinations)
+        IReadOnlyList<CatalogDestinationSnapshot> destinations,
+        IReadOnlyList<CatalogVerticalSitemapEntry>? verticals = null)
     {
         var paths = products
             .Select(product => (Path: $"tours/{product.Slug}", Updated: product.UpdatedAt))
             .Concat(destinations.Select(destination => (
                 Path: $"tours/{destination.Slug}",
                 Updated: DateTimeOffset.UtcNow)))
+            .Concat((verticals ?? []).Select(vertical => (
+                Path: GetVerticalPath(vertical),
+                Updated: vertical.UpdatedAt)))
             .DistinctBy(item => item.Path)
             .OrderBy(item => item.Path, StringComparer.OrdinalIgnoreCase)
             .ToArray();
@@ -143,6 +182,17 @@ internal static class SeoMetadataBuilder
         builder.AppendLine("</urlset>");
         return builder.ToString();
     }
+
+    private static string GetVerticalPath(CatalogVerticalSitemapEntry entry)
+        => entry.Type.ToLowerInvariant() switch
+        {
+            "hotel" => $"hotels/{entry.Slug}",
+            "restaurant" => $"restaurants/{entry.Slug}",
+            "attraction" => $"attractions/{entry.Slug}",
+            "visa" => $"visas/{entry.Slug}",
+            "flight" => $"flights/routes/{entry.Slug}",
+            _ => entry.Slug
+        };
 
     public static string BuildRobots(string baseUrl)
     {

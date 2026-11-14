@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
         services.AddScoped<IAgencyReadService, AgencyReadService>();
+        services.AddScoped<IReviewSummaryReadService, ReviewSummaryReadService>();
         return services;
     }
 }

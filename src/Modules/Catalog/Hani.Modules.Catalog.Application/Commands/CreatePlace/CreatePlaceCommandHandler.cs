@@ -35,6 +35,7 @@ internal sealed class CreatePlaceCommandHandler(
             }
 
             place.ReplaceAmenities(ids, request.Amenities);
+            place.ReplaceMenuItems(ids, request.MenuItems);
             await places.AddAsync(place, cancellationToken);
             return Result<Guid>.Success(place.Id);
         }

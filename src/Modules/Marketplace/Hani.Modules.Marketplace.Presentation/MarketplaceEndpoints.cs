@@ -44,6 +44,11 @@ public static class MarketplaceEndpoints
             .Produces<LandingSeoDto>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 
+        market.MapGet("/seo/{type}/{slug}", GetVerticalSeoAsync)
+            .WithName("Marketplace.GetVerticalSeo")
+            .Produces<VerticalSeoDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
         market.MapGet("/seo/sitemap.xml", GetSitemapAsync)
             .WithName("Marketplace.GetSitemap")
             .Produces<string>(StatusCodes.Status200OK, "application/xml");
@@ -127,6 +132,24 @@ public static class MarketplaceEndpoints
     {
         var result = await sender.Send(
             new GetProductComparisonQuery(productId, locale),
+            cancellationToken);
+
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns canonical, alternate and JSON-LD SEO metadata for one vertical page.
+    /// </summary>
+    private static async Task<IResult> GetVerticalSeoAsync(
+        string type,
+        string slug,
+        string? locale,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetVerticalSeoQuery(type, slug, locale),
             cancellationToken);
 
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);

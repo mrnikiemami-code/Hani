@@ -13,6 +13,10 @@ internal sealed class FakeCatalogReadService : ICatalogReadService
 
     public List<CatalogDestinationSnapshot> Destinations { get; } = [];
 
+    public List<CatalogVerticalSitemapEntry> Verticals { get; } = [];
+
+    public Dictionary<string, CatalogVerticalSnapshot> VerticalDetails { get; } = [];
+
     public Task<IReadOnlyList<CatalogProductSummary>> SearchPublishedAsync(
         CatalogProductFilter filter,
         int skip,
@@ -67,6 +71,17 @@ internal sealed class FakeCatalogReadService : ICatalogReadService
         string slug,
         CancellationToken cancellationToken)
         => Task.FromResult(Destinations.FirstOrDefault(destination => destination.Slug == slug));
+
+    public Task<IReadOnlyList<CatalogVerticalSitemapEntry>> GetVerticalSitemapEntriesAsync(
+        CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyList<CatalogVerticalSitemapEntry>>(Verticals);
+
+    public Task<CatalogVerticalSnapshot?> GetVerticalBySlugAsync(
+        string type,
+        string slug,
+        CancellationToken cancellationToken)
+        => Task.FromResult(
+            VerticalDetails.TryGetValue($"{type}:{slug}", out var vertical) ? vertical : null);
 }
 
 internal sealed class FakeOfferReadService : IOfferReadService

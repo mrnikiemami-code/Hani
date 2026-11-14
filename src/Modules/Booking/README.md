@@ -51,6 +51,9 @@ Departure (Supply)
 - `DistributeLead` درخواست را به همه آژانس‌های Active توزیع می‌کند و برای هر آژانس یک `LeadAgencyInvitation` یکتا می‌سازد (بدون تکرار).
 - `PriceDiscrepancyReport` مغایرت قیمت نمایش‌داده‌شده با checkout را ثبت و با Resolve بسته می‌شود.
 - `InstallmentPlan` برای هر ارز Order ساخته می‌شود؛ پیش‌پرداخت، مبلغ تأمین‌شده، کارمزد ماهانه، مبلغ کل قابل پرداخت و نیاز به چک را نگه می‌دارد و آخرین قسط اختلاف گرد کردن را جبران می‌کند.
+- `HotelInquiry` درخواست موجودی/بهترین قیمت هتل را با تاریخ/اتاق/مسافر نگه می‌دارد و با `Respond` پاسخ داده می‌شود.
+- `RestaurantReservation` درخواست میز رستوران را با تاریخ/ساعت/تعداد نفرات نگه می‌دارد و Confirm/Reject می‌شود.
+- `VisaApplication` درخواست ویزا با پاسپورت/ملیت/مدارک را نگه می‌دارد و status workflow دارد.
 - ساخت plan فقط وقتی مجاز است که `InstallmentTerms` روی snapshot سفارش فعال باشد؛ سقف تعداد اقساط از همان terms خوانده می‌شود.
 
 ## APIها
@@ -81,13 +84,26 @@ Departure (Supply)
 | GET | `/internal/v1/price-discrepancies` | Internal |
 | POST | `/internal/v1/price-discrepancies/{id}/resolve` | Internal |
 | POST | `/internal/v1/installments/pay` | Internal |
+| POST | `/market/v1/hotel-inquiries` | عمومی |
+| GET | `/market/v1/hotel-inquiries/{id}` | عمومی |
+| GET | `/internal/v1/hotel-inquiries` | Internal |
+| POST | `/internal/v1/hotel-inquiries/{id}/respond` | Internal |
+| POST | `/market/v1/restaurant-reservations` | عمومی |
+| GET | `/market/v1/restaurant-reservations/{id}` | عمومی |
+| GET | `/internal/v1/restaurant-reservations` | Internal |
+| POST | `/internal/v1/restaurant-reservations/{id}/confirm` | Internal |
+| POST | `/internal/v1/restaurant-reservations/{id}/reject` | Internal |
+| POST | `/market/v1/visa-applications` | عمومی |
+| GET | `/market/v1/visa-applications/{id}` | عمومی |
+| GET | `/internal/v1/visa-applications` | Internal |
+| POST | `/internal/v1/visa-applications/{id}/status` | Internal |
 
 ## Persistence
 
 - Schema: `booking`
-- جدول‌ها: `quotes`, `holds`, `orders`, `order_travelers`, `order_lines`, `payment_obligations`, `contracts`, `contract_travelers`, `contract_lines`, `reservation_requests`, `lead_requests`, `lead_agency_invitations`, `price_discrepancy_reports`, `installment_plans`, `installments`
+- جدول‌ها: `quotes`, `holds`, `orders`, `order_travelers`, `order_lines`, `payment_obligations`, `contracts`, `contract_travelers`, `contract_lines`, `reservation_requests`, `lead_requests`, `lead_agency_invitations`, `price_discrepancy_reports`, `installment_plans`, `installments`, `hotel_inquiries`, `restaurant_reservations`, `visa_applications`, `visa_application_documents`
 - ستون `pricing` از نوع `jsonb` در `quotes`/`orders`/`contracts`/`reservation_requests` snapshot چندارزی و مالیات را نگه می‌دارد.
-- Migrationها: `InitialBooking`, `AddOrdersAndContracts`, `AddMultiCurrencyPricing`, `AddPaymentObligations`, `AddRequestsLeadsDiscrepanciesInstallments`, `AddLeadDistributions`, `AddAuditRemediationBookingFields`
+- Migrationها: `InitialBooking`, `AddOrdersAndContracts`, `AddMultiCurrencyPricing`, `AddPaymentObligations`, `AddRequestsLeadsDiscrepanciesInstallments`, `AddLeadDistributions`, `AddAuditRemediationBookingFields`, `AddGate5Requests`
 
 ## محدودیت فعلی
 

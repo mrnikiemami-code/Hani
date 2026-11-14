@@ -1,10 +1,13 @@
 using Hani.Modules.Booking.Domain.Holds;
+using Hani.Modules.Booking.Domain.HotelInquiries;
 using Hani.Modules.Booking.Domain.Installments;
 using Hani.Modules.Booking.Domain.Leads;
 using Hani.Modules.Booking.Domain.Orders;
 using Hani.Modules.Booking.Domain.PriceDiscrepancies;
 using Hani.Modules.Booking.Domain.Quotes;
 using Hani.Modules.Booking.Domain.ReservationRequests;
+using Hani.Modules.Booking.Domain.RestaurantReservations;
+using Hani.Modules.Booking.Domain.VisaApplications;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Booking.Infrastructure.Persistence;
@@ -33,6 +36,21 @@ public sealed class BookingDbContext(DbContextOptions<BookingDbContext> options)
     /// Reservation requests.
     /// </summary>
     public DbSet<ReservationRequest> ReservationRequests => Set<ReservationRequest>();
+
+    /// <summary>
+    /// Hotel inquiries.
+    /// </summary>
+    public DbSet<HotelInquiry> HotelInquiries => Set<HotelInquiry>();
+
+    /// <summary>
+    /// Restaurant reservations.
+    /// </summary>
+    public DbSet<RestaurantReservation> RestaurantReservations => Set<RestaurantReservation>();
+
+    /// <summary>
+    /// Visa applications.
+    /// </summary>
+    public DbSet<VisaApplication> VisaApplications => Set<VisaApplication>();
 
     /// <summary>
     /// Lead/RFQ requests.

@@ -1,7 +1,10 @@
+using Hani.Modules.Booking.Domain.HotelInquiries;
 using Hani.Modules.Booking.Domain.Installments;
 using Hani.Modules.Booking.Domain.Leads;
 using Hani.Modules.Booking.Domain.PriceDiscrepancies;
 using Hani.Modules.Booking.Domain.ReservationRequests;
+using Hani.Modules.Booking.Domain.RestaurantReservations;
+using Hani.Modules.Booking.Domain.VisaApplications;
 
 namespace Hani.Modules.Booking.Application.Abstractions;
 
@@ -69,6 +72,76 @@ public interface ILeadRepository
 }
 
 /// <summary>
+/// Persistence abstraction for restaurant reservations.
+/// </summary>
+public interface IRestaurantReservationRepository
+{
+    /// <summary>
+    /// Adds a reservation and saves changes.
+    /// </summary>
+    Task AddAsync(RestaurantReservation reservation, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns a reservation by id, or <c>null</c>.
+    /// </summary>
+    Task<RestaurantReservation?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Lists reservations, optionally filtered by status.
+    /// </summary>
+    Task<IReadOnlyList<RestaurantReservation>> ListAsync(
+        RestaurantReservationStatus? status,
+        int skip,
+        int take,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Counts reservations, optionally filtered by status.
+    /// </summary>
+    Task<int> CountAsync(RestaurantReservationStatus? status, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Persists pending changes.
+    /// </summary>
+    Task SaveChangesAsync(CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Persistence abstraction for visa applications.
+/// </summary>
+public interface IVisaApplicationRepository
+{
+    /// <summary>
+    /// Adds an application and saves changes.
+    /// </summary>
+    Task AddAsync(VisaApplication application, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns an application by id, or <c>null</c>.
+    /// </summary>
+    Task<VisaApplication?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Lists applications, optionally filtered by status.
+    /// </summary>
+    Task<IReadOnlyList<VisaApplication>> ListAsync(
+        VisaApplicationStatus? status,
+        int skip,
+        int take,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Counts applications, optionally filtered by status.
+    /// </summary>
+    Task<int> CountAsync(VisaApplicationStatus? status, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Persists pending changes.
+    /// </summary>
+    Task SaveChangesAsync(CancellationToken cancellationToken);
+}
+
+/// <summary>
 /// Persistence abstraction for price-discrepancy reports.
 /// </summary>
 public interface IPriceDiscrepancyRepository
@@ -98,6 +171,41 @@ public interface IPriceDiscrepancyRepository
     Task<int> CountAsync(
         PriceDiscrepancyStatus? status,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Persists pending changes.
+    /// </summary>
+    Task SaveChangesAsync(CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Persistence abstraction for hotel inquiries.
+/// </summary>
+public interface IHotelInquiryRepository
+{
+    /// <summary>
+    /// Adds an inquiry and saves changes.
+    /// </summary>
+    Task AddAsync(HotelInquiry inquiry, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns an inquiry by id, or <c>null</c>.
+    /// </summary>
+    Task<HotelInquiry?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Lists inquiries, optionally filtered by status.
+    /// </summary>
+    Task<IReadOnlyList<HotelInquiry>> ListAsync(
+        HotelInquiryStatus? status,
+        int skip,
+        int take,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Counts inquiries, optionally filtered by status.
+    /// </summary>
+    Task<int> CountAsync(HotelInquiryStatus? status, CancellationToken cancellationToken);
 
     /// <summary>
     /// Persists pending changes.

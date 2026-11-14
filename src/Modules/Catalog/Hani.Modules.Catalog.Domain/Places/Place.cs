@@ -18,6 +18,7 @@ public sealed class Place : AggregateRoot<Guid>
 {
     private readonly List<PlaceTranslation> _translations = [];
     private readonly List<PlaceAmenity> _amenities = [];
+    private readonly List<PlaceMenuItem> _menuItems = [];
 
     private Place()
     {
@@ -121,6 +122,11 @@ public sealed class Place : AggregateRoot<Guid>
     public IReadOnlyCollection<PlaceAmenity> Amenities => _amenities;
 
     /// <summary>
+    /// Menu items for restaurants; empty for attractions.
+    /// </summary>
+    public IReadOnlyCollection<PlaceMenuItem> MenuItems => _menuItems;
+
+    /// <summary>
     /// Creates a validated place.
     /// </summary>
     public static Place Create(
@@ -199,6 +205,44 @@ public sealed class Place : AggregateRoot<Guid>
         Touch();
     }
 
+    /// <summary>
+    /// Replaces restaurant menu items.
+    /// </summary>
+    public void ReplaceMenuItems(IIdGenerator ids, IEnumerable<PlaceMenuItemInput> items)
+    {
+        if (Type != PlaceType.Restaurant && items.Any())
+        {
+            throw new InvalidOperationException("Only restaurants can have menu items.");
+        }
+
+        _menuItems.Clear();
+
+        foreach (var item in items)
+        {
+            if (string.IsNullOrWhiteSpace(item.Name) || string.IsNullOrWhiteSpace(item.Section))
+            {
+                throw new ArgumentException("Menu section and name are required.", nameof(items));
+            }
+
+            if (item.Price < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(items), "Menu price cannot be negative.");
+            }
+
+            _menuItems.Add(new PlaceMenuItem(
+                ids.NewId(),
+                Id,
+                item.Section,
+                item.Name,
+                item.Description,
+                item.Price,
+                item.Currency,
+                item.SortOrder));
+        }
+
+        Touch();
+    }
+
     private void Touch() => UpdatedAt = DateTimeOffset.UtcNow;
 }
 
@@ -271,3 +315,64 @@ public sealed class PlaceAmenity : Entity<Guid>
 /// Translation input for place creation.
 /// </summary>
 public sealed record PlaceTranslationInput(string Locale, string Name, string? Description = null);
+
+/// <summary>
+/// Restaurant menu item.
+/// </summary>
+public sealed class PlaceMenuItem : Entity<Guid>
+{
+    private PlaceMenuItem()
+    {
+    }
+
+    internal PlaceMenuItem(
+        Guid id,
+        Guid placeId,
+        string section,
+        string name,
+        string? description,
+        decimal price,
+        string currency,
+        int sortOrder) : base(id)
+    {
+        PlaceId = placeId;
+        Section = section.Trim();
+        Name = name.Trim();
+        Description = description?.Trim();
+        Price = price;
+        Currency = currency.Trim().ToUpperInvariant();
+        SortOrder = sortOrder;
+    }
+
+    /// <summary>Parent place.</summary>
+    public Guid PlaceId { get; private set; }
+
+    /// <summary>Menu section such as Starters or Main courses.</summary>
+    public string Section { get; private set; } = string.Empty;
+
+    /// <summary>Item name.</summary>
+    public string Name { get; private set; } = string.Empty;
+
+    /// <summary>Optional description.</summary>
+    public string? Description { get; private set; }
+
+    /// <summary>Item price.</summary>
+    public decimal Price { get; private set; }
+
+    /// <summary>Price currency.</summary>
+    public string Currency { get; private set; } = string.Empty;
+
+    /// <summary>Display order within the section.</summary>
+    public int SortOrder { get; private set; }
+}
+
+/// <summary>
+/// Restaurant menu item input.
+/// </summary>
+public sealed record PlaceMenuItemInput(
+    string Section,
+    string Name,
+    decimal Price,
+    string Currency,
+    string? Description = null,
+    int SortOrder = 0);

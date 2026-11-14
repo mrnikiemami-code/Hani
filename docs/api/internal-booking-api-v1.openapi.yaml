@@ -230,6 +230,148 @@ paths:
         '409': { description: Order is not configured for offline collection }
         default: { $ref: '#/components/responses/Problem' }
 
+  /internal/v1/hotel-inquiries:
+    get:
+      tags: [HotelInquiries]
+      summary: List hotel inquiries for operations
+      parameters:
+        - { name: status, in: query, required: false, schema: { type: string, enum: [Pending, Responded, Closed, Cancelled] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: Paged hotel inquiries
+          content:
+            application/json:
+              schema: { type: object }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/hotel-inquiries/{inquiryId}/respond:
+    post:
+      tags: [HotelInquiries]
+      summary: Record an operator response to a hotel inquiry
+      parameters:
+        - { name: inquiryId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [responseNote]
+              properties:
+                responseNote: { type: string, maxLength: 2000 }
+                quotedTotal: { type: [number, 'null'] }
+                quotedCurrency: { type: [string, 'null'], minLength: 3, maxLength: 3 }
+      responses:
+        '200':
+          description: Responded
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { description: Not found }
+        '409': { description: Not pending }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/restaurant-reservations:
+    get:
+      tags: [RestaurantReservations]
+      summary: List restaurant reservations for operations
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [Requested, Confirmed, Rejected, Cancelled] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: Paged reservations
+          content:
+            application/json:
+              schema: { type: object }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/restaurant-reservations/{reservationId}/confirm:
+    post:
+      tags: [RestaurantReservations]
+      summary: Confirm a restaurant reservation
+      parameters:
+        - { name: reservationId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Confirmed
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { description: Not found }
+        '409': { description: Not requested }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/restaurant-reservations/{reservationId}/reject:
+    post:
+      tags: [RestaurantReservations]
+      summary: Reject a restaurant reservation
+      parameters:
+        - { name: reservationId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, maxLength: 500 }
+      responses:
+        '200':
+          description: Rejected
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { description: Not found }
+        '409': { description: Not requested }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/visa-applications:
+    get:
+      tags: [VisaApplications]
+      summary: List visa applications for operations
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [Submitted, UnderReview, Approved, Rejected, Cancelled] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: Paged visa applications
+          content:
+            application/json:
+              schema: { type: object }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /internal/v1/visa-applications/{applicationId}/status:
+    post:
+      tags: [VisaApplications]
+      summary: Update visa application status
+      parameters:
+        - { name: applicationId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [Submitted, UnderReview, Approved, Rejected, Cancelled] }
+                rejectionReason: { type: [string, 'null'], maxLength: 1000 }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { type: boolean }
+        '404': { description: Not found }
+        '409': { description: Finalized }
+        default: { $ref: '#/components/responses/Problem' }
+
 components:
   responses:
     Problem:

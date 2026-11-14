@@ -35,6 +35,26 @@ public sealed class GetLandingSeoQueryValidator : AbstractValidator<GetLandingSe
 }
 
 /// <summary>
+/// Validation rules for vertical SEO requests.
+/// </summary>
+public sealed class GetVerticalSeoQueryValidator : AbstractValidator<GetVerticalSeoQuery>
+{
+    /// <summary>
+    /// Creates validation rules for vertical type and slug.
+    /// </summary>
+    public GetVerticalSeoQueryValidator()
+    {
+        RuleFor(query => query.Type)
+            .Must(type => type is "hotel" or "restaurant" or "attraction" or "visa" or "flight")
+            .WithErrorCode("HANI-MARKET-1306");
+        RuleFor(query => query.Slug)
+            .NotEmpty()
+            .MaximumLength(120)
+            .WithErrorCode("HANI-MARKET-1307");
+    }
+}
+
+/// <summary>
 /// Validation rules for the sitemap query.
 /// </summary>
 public sealed class GetSitemapQueryValidator : AbstractValidator<GetSitemapQuery>

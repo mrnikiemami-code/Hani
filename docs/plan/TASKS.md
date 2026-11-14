@@ -3,7 +3,7 @@
 > وضعیت‌ها: ✅ Done | 🚧 In Progress | ⚠️ Partial | ⏳ Next | ❌ Not Started
 > هر تسک باید حداکثر ۱ روز کاری باشد.
 
-> **Baseline:** از این لحظه هر تسک باید به یک `GAP-xx` در [`baseline.json`](baseline.json) متصل باشد. Gate 5 فعال است: GAP-13/14/15/16/21/25/29.
+> **Baseline:** از این لحظه هر تسک باید به یک `GAP-xx` در [`baseline.json`](baseline.json) متصل باشد. Gate 6 فعال است: GAP-12/22/23/24/30/33/34.
 
 ## Baseline Task Index
 
@@ -19,19 +19,19 @@
 | 3 | TC-089 | Reviews + Photos + Claims | ✅ | GAP-11/20/32 | UGC/اعتماد |
 | 4 | TC-088 | BookingMode + Request/Lead + RFQ | ✅ | GAP-05/06/19 | Online + Request + Lead |
 | 4 | TC-098 | Installments + Offline Payment | ✅ | GAP-17/18 | اقساط/آفلاین |
-| 5 | TC-090 | Hotels + Inquiry | ❌ | GAP-14 | هتل/استعلام |
-| 5 | TC-091 | Visa + Documents | ❌ | GAP-15/21 | ویزا/مدارک |
-| 5 | TC-092 | Flights Metasearch | ❌ | GAP-16 | جستجو/ارجاع |
-| 5 | TC-094 | Places + Geo + Restaurant Reservation | ❌ | GAP-13/25/29 | دایرکتوری/نقشه |
-| 6 | TC-093 | Content: Itineraries/Blog/Videos | ❌ | GAP-12 | محتوا |
-| 6 | TC-095 | Media + Moderation | ❌ | GAP-32 | آپلود/مدیریت |
-| 6 | TC-096 | SMS + Newsletter + Notifications | ❌ | GAP-22/33 | OTP/خبرنامه |
-| 6 | TC-099 | Ranking + Ads + Analytics | ❌ | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
-| 6 | TC-100 | Campaigns + BlindTour | ❌ | GAP-23 | کمپین |
+| 5 | TC-090 | Hotels + Inquiry | ✅ | GAP-14 | هتل/استعلام |
+| 5 | TC-091 | Visa + Documents | ✅ | GAP-15/21 | ویزا/مدارک |
+| 5 | TC-092 | Flights Metasearch | ✅ | GAP-16 | جستجو/ارجاع |
+| 5 | TC-094 | Places + Geo + Restaurant Reservation | ✅ | GAP-13/25/29 | دایرکتوری/نقشه |
+| 6 | TC-093 | Content: Itineraries/Blog/Videos | ⏳ | GAP-12 | محتوا |
+| 6 | TC-095 | Media + Moderation | ⏳ | GAP-32 | آپلود/مدیریت |
+| 6 | TC-096 | SMS + Newsletter + Notifications | ⏳ | GAP-22/33 | OTP/خبرنامه |
+| 6 | TC-099 | Ranking + Ads + Analytics | ⏳ | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
+| 6 | TC-100 | Campaigns + BlindTour | ⏳ | GAP-23 | کمپین |
 
 > Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
-> **Gate 5 Ready است.** Audit Remediation A-01..A-08 در [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md) کامل شد.
+> **Gate 5 PASSED است.** Audit Remediation A-01..A-08 و B-01..B-08 در [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md) کامل شد. Gate 6 آماده شروع است.
 
 ## Phase 0 — Foundation ✅
 

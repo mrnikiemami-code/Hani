@@ -18,7 +18,8 @@ public sealed record CreatePlaceCommand(
     decimal? Latitude,
     decimal? Longitude,
     IReadOnlyList<PlaceTranslationInput> Translations,
-    IReadOnlyList<string> Amenities) : ICommand<Guid>;
+    IReadOnlyList<string> Amenities,
+    IReadOnlyList<PlaceMenuItemInput> MenuItems) : ICommand<Guid>;
 
 /// <summary>
 /// Place read model.
@@ -36,12 +37,26 @@ public sealed record PlaceDto(
     decimal? Latitude,
     decimal? Longitude,
     IReadOnlyList<PlaceTranslationDto> Translations,
-    IReadOnlyList<string> Amenities);
+    IReadOnlyList<string> Amenities,
+    IReadOnlyList<PlaceMenuItemDto> MenuItems,
+    decimal? AverageRating = null,
+    int ReviewCount = 0);
 
 /// <summary>
 /// Place translation read model.
 /// </summary>
 public sealed record PlaceTranslationDto(string Locale, string Name, string? Description);
+
+/// <summary>
+/// Restaurant menu item read model.
+/// </summary>
+public sealed record PlaceMenuItemDto(
+    string Section,
+    string Name,
+    string? Description,
+    decimal Price,
+    string Currency,
+    int SortOrder);
 
 /// <summary>
 /// Nearby place result with distance in kilometres.

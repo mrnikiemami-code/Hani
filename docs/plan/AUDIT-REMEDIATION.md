@@ -38,14 +38,14 @@
 
 | ID | عنوان | GAP | Priority | وابستگی | Acceptance | Status |
 |---|---|---|---|---|---|---|
-| B-01 | Hotel page + Inquiry + Hotel Review | GAP-14 | P0 | A-05/A-03 | Hotel page API، inquiry form، review criteria، gallery | ⏳ Planned |
-| B-02 | Restaurant domain + menu/amenity/reservation | GAP-13/29 | P0 | A-06/A-03 | Restaurant page، reservation، filters | ⏳ Planned |
-| B-03 | Attraction domain + nearby | GAP-13/25 | P1 | A-06 | Attraction page، nearby graph، map | ⏳ Planned |
-| B-04 | VisaCountry/VisaType/VisaApplication | GAP-15/21 | P0 | — | Visa page، price table، documents، FAQ، request | ⏳ Planned |
-| B-05 | FlightRoute/FlightOffer + deep link | GAP-16 | P1 | A-07 | Metasearch provider abstraction + route page | ⏳ Planned |
-| B-06 | Geo search + city/province landing | GAP-13/25 | P1 | A-06 | Geo filter/distance + landing | ⏳ Planned |
-| B-07 | Vertical SEO + sitemap | GAP-28 | P0 | B-01..B-05 | Schema/JSON-LD + sitemap per vertical | ⏳ Planned |
-| B-08 | Vertical review aggregation/rank | GAP-11 | P1 | A-03 | Aggregate rating + rank per city | ⏳ Planned |
+| B-01 | Hotel page + Inquiry + Hotel Review | GAP-14 | P0 | A-05/A-03 | Hotel page API، inquiry form، review criteria، gallery | ✅ Done |
+| B-02 | Restaurant domain + menu/amenity/reservation | GAP-13/29 | P0 | A-06/A-03 | Restaurant page، reservation، filters | ✅ Done |
+| B-03 | Attraction domain + nearby | GAP-13/25 | P1 | A-06 | Attraction page، nearby graph، map | ✅ Done |
+| B-04 | VisaCountry/VisaType/VisaApplication | GAP-15/21 | P0 | — | Visa page، price table، documents، FAQ، request | ✅ Done |
+| B-05 | FlightRoute/FlightOffer + deep link | GAP-16 | P1 | A-07 | Metasearch provider abstraction + route page | ✅ Done |
+| B-06 | Geo search + city/province landing | GAP-13/25 | P1 | A-06 | Geo filter/distance + landing | ✅ Done |
+| B-07 | Vertical SEO + sitemap | GAP-28 | P0 | B-01..B-05 | Schema/JSON-LD + sitemap per vertical | ✅ Done |
+| B-08 | Vertical review aggregation/rank | GAP-11 | P1 | A-03 | Aggregate rating + rank per city | ✅ Done |
 
 ---
 
@@ -104,7 +104,20 @@
 | A-07 | `docs/adr/0027-flight-metasearch-redirect.md` |
 | A-08 | `TourEnums.cs`, `TourProduct.cs`, `CatalogReadService.cs`, `SearchProductsQueryHandler.cs`, `20261114045534_AddHotelsPlacesAndTourTaxonomy` |
 
-## ۸. وضعیت Baseline
+## ۸. Evidence — B-01..B-08
+
+| ID | Evidence |
+|---|---|
+| B-01 | `Hotel.cs`, `HotelImage`, `HotelConfiguration.cs`, `HotelRepository.cs`, `HotelInquiry.cs`, `RequestEndpoints.cs`, `20261114053204_AddGate5VerticalMedia`, `20261114052322_AddGate5Requests` |
+| B-02 | `Place.cs`, `PlaceMenuItem`, `PlaceConfiguration.cs`, `PlaceRepository.cs`, `RestaurantReservation.cs`, `SearchPlacesQueryHandler.cs`, `20261114053204_AddGate5VerticalMedia` |
+| B-03 | `Place.cs`, `GetPlaceQueryHandlers.cs`, `GetGeoNearbyQueryHandler.cs`, `20261114045534_AddHotelsPlacesAndTourTaxonomy` |
+| B-04 | `VisaCountry.cs`, `VisaCountryConfiguration.cs`, `VisaRepository.cs`, `VisaApplication.cs`, `VisaApplicationConfiguration.cs`, `20261114052316_AddGate5Verticals`, `20261114052322_AddGate5Requests` |
+| B-05 | `FlightRoute.cs`, `FlightRouteConfiguration.cs`, `FlightRouteRepository.cs`, `IFlightProvider`, `CatalogFlightProvider`, `ADR-0027`, `20261114052316_AddGate5Verticals` |
+| B-06 | `GetGeoNearbyQueryHandler.cs`, `/market/v1/geo/nearby`, `SeoQueryHandlers.cs` destination landing |
+| B-07 | `GetVerticalSeoQueryHandler`, `SeoMetadataBuilder.BuildVerticalJsonLd`, `CatalogReadService.GetVerticalSitemapEntriesAsync`, `20261114052316_AddGate5Verticals` |
+| B-08 | `IReviewSummaryReadService`, `ReviewSummaryReadService.cs`, `HotelSearchQueryHandler`, `SearchPlacesQueryHandler`, `sort=rating` |
+
+## ۹. وضعیت Baseline
 
 - `baseline.json` فعلاً ۳۴ GAP دارد و تغییر نکرده است.
 - GAPهای جدید (`GAP-35..46`) فقط در این سند و Audit Report پیشنهاد شده‌اند.

@@ -53,5 +53,20 @@ internal sealed class HotelConfiguration : IEntityTypeConfiguration<Hotel>
                 .HasDatabaseName("ux_hotel_amenities_hotel_category_name");
             amenities.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
+
+        builder.OwnsMany(hotel => hotel.Images, images =>
+        {
+            images.ToTable("hotel_images");
+            images.WithOwner().HasForeignKey(item => item.HotelId);
+            images.HasKey(item => item.Id);
+            images.Property(item => item.Id).HasColumnName("id").ValueGeneratedNever();
+            images.Property(item => item.HotelId).HasColumnName("hotel_id");
+            images.Property(item => item.Url).HasColumnName("url").HasMaxLength(1000).IsRequired();
+            images.Property(item => item.Caption).HasColumnName("caption").HasMaxLength(300);
+            images.Property(item => item.SortOrder).HasColumnName("sort_order").IsRequired();
+            images.HasIndex(item => new { item.HotelId, item.SortOrder })
+                .HasDatabaseName("ix_hotel_images_hotel_sort");
+            images.UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
     }
 }

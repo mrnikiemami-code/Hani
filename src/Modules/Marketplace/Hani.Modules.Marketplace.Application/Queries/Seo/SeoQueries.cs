@@ -13,6 +13,12 @@ public sealed record GetProductSeoQuery(Guid ProductId, string? Locale) : IQuery
 public sealed record GetLandingSeoQuery(string DestinationSlug, string? Locale) : IQuery<LandingSeoDto>;
 
 /// <summary>
+/// Query that returns SEO metadata for one vertical page.
+/// </summary>
+public sealed record GetVerticalSeoQuery(string Type, string Slug, string? Locale)
+    : IQuery<VerticalSeoDto>;
+
+/// <summary>
 /// Query that returns the public sitemap XML.
 /// </summary>
 public sealed record GetSitemapQuery : IQuery<string>;
@@ -63,3 +69,19 @@ public sealed record LandingSeoDto(
     IReadOnlyList<BreadcrumbItemDto> Breadcrumbs,
     string BreadcrumbJsonLd,
     string CollectionJsonLd);
+
+/// <summary>
+/// SEO metadata returned for one hotel, restaurant, attraction, visa, or flight page.
+/// </summary>
+public sealed record VerticalSeoDto(
+    string Type,
+    string Slug,
+    string Locale,
+    string CanonicalUrl,
+    string Title,
+    string Description,
+    string Robots,
+    IReadOnlyList<AlternateUrlDto> Alternates,
+    IReadOnlyList<BreadcrumbItemDto> Breadcrumbs,
+    string BreadcrumbJsonLd,
+    string EntityJsonLd);

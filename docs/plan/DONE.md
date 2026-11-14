@@ -121,6 +121,12 @@
 | D-104 | Place/Geo/Nearby | Restaurant/Attraction aggregate + Haversine nearby API | Audit Remediation |
 | D-105 | Flight ADR | Metasearch/Redirect decision (ADR-0027) | Audit Remediation |
 | D-106 | Tour taxonomy | TourCategory/TravelType + search filters | Audit Remediation |
+| D-107 | Hotel vertical | Catalog hotel search/detail/nearby + gallery + rating; Booking hotel inquiry | Gate 5 |
+| D-108 | Restaurant/Attraction vertical | Place search/detail/nearby + restaurant menu + reservation | Gate 5 |
+| D-109 | Visa vertical | VisaCountry/Type + price/documents/FAQ + VisaApplication workflow | Gate 5 |
+| D-110 | Flight metasearch | FlightRoute/Offer + IFlightProvider + deep link (ADR-0027) | Gate 5 |
+| D-111 | Geo + Vertical SEO | `/geo/nearby` + `/seo/{type}/{slug}` + full vertical sitemap | Gate 5 |
+| D-112 | Vertical review aggregation | `IReviewSummaryReadService` + averageRating/reviewCount + `sort=rating` | Gate 5 |
 
 ## ۳. مستندات
 
@@ -140,10 +146,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۲۲ passed |
-| Architecture Tests | ۳۴ passed |
-| Total | **۱۵۶ passed** |
-| Migrations | Supply (۸) + Catalog (۴) + Identity (۵) + Booking (۸) + Payments (۶) + Settlement (۳) |
+| Unit Tests | 131 passed |
+| Architecture Tests | 34 passed |
+| Total | **165 passed** |
+| Migrations | Supply (8) + Catalog (6) + Identity (5) + Booking (9) + Payments (6) + Settlement (3) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API `/health` | Healthy |
@@ -159,7 +165,7 @@
 | MassTransit | wired + Outbox entities | Outbox فعال + Consumer |
 | Localization | عنوان محلی config-driven | resx per-code (Phase 5) |
 | Identity | Agency + ApiClient | User + Role + JWT |
-| Catalog | TourProduct + Destination | Hotel + Attraction + Visa |
+| Catalog + Verticals | TourProduct + Destination + Hotel/Place/Visa/Flight | Blog/Content → Gate 6 |
 | Tenant | Context + Middleware + demo | تست Integration DB |
 
 ## ۶. Commitهای کد

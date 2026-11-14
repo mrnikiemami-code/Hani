@@ -4,8 +4,8 @@
 - **Report:** `docs/reports/lastsecond-gap-analysis-2026-11-12.md`
 - **Machine-readable:** `docs/plan/baseline.json`
 - **Status:** Locked for planning
-- **Current gate:** Gate 5 — Verticals (Gate 1/2/3 ✅ Passed؛ Gate 4 ✅ Remediated)
-- **Gate 5 status:** ✅ Ready — Audit Remediation A-01..A-08 Done
+- **Current gate:** Gate 6 — Content & Growth (Gate 1/2/3 ✅ Passed, Gate 4 ✅ Remediated, Gate 5 ✅ Passed)
+- **Gate 5 status:** ✅ Passed — GAP-13/14/15/16/21/25/29 + B-01..B-08 Done
 
 > این فایل مرجع برنامه‌ریزی است. هر GAP باید یک Gate، Task، وضعیت و Evidence داشته باشد.
 > ترتیب Gateها از گزارش Lastsecond و وابستگی‌های واقعی محصول پیروی می‌کند؛ هیچ GAP حذف نمی‌شود.
@@ -48,23 +48,23 @@
 | GAP-10 | Profiles/Authors | P1 | 3 | TC-086 | Done |
 | GAP-11 | Reviews/UGC | P0 | 3 | TC-089 | Done |
 | GAP-12 | Content/Itineraries/Blog/Video | P1 | 6 | TC-093 | Planned |
-| GAP-13 | Attractions/Restaurants | P1 | 5 | TC-094 | Planned |
-| GAP-14 | Hotels | P1 | 5 | TC-090 | Planned |
-| GAP-15 | Visa | P1 | 5 | TC-091 | Planned |
-| GAP-16 | Flights | P1 | 5 | TC-092 | Planned |
+| GAP-13 | Attractions/Restaurants | P1 | 5 | TC-094 | Done |
+| GAP-14 | Hotels | P1 | 5 | TC-090 | Done |
+| GAP-15 | Visa | P1 | 5 | TC-091 | Done |
+| GAP-16 | Flights | P1 | 5 | TC-092 | Done |
 | GAP-17 | Installments | P1 | 4 | TC-098 | Done |
 | GAP-18 | Offline Payment | P0 | 4 | TC-098 | Done |
 | GAP-19 | Price Mismatch | P1 | 4 | TC-088 | Done |
 | GAP-20 | Ownership Claims | P1 | 3 | TC-089 | Done |
-| GAP-21 | Visa Documents | P1 | 5 | TC-091 | Planned |
+| GAP-21 | Visa Documents | P1 | 5 | TC-091 | Done |
 | GAP-22 | SMS/Newsletter | P1 | 6 | TC-096 | Planned |
 | GAP-23 | Campaigns | P2 | 6 | TC-100 | Planned |
 | GAP-24 | Ranking/Recommendation | P1 | 6 | TC-099 | Planned |
-| GAP-25 | Geo/Maps | P1 | 5 | TC-094 | Planned |
+| GAP-25 | Geo/Maps | P1 | 5 | TC-094 | Done |
 | GAP-26 | Agency Onboarding | P0 | 3 | TC-087 | Done |
 | GAP-27 | Agency/Admin Panels | P1 | 3 | TC-087 | Done |
 | GAP-28 | SEO | P0 | 2 | TC-097 | Done |
-| GAP-29 | Restaurant Reservation | P2 | 5 | TC-094 | Planned |
+| GAP-29 | Restaurant Reservation | P2 | 5 | TC-094 | Done |
 | GAP-30 | Ads | P2 | 6 | TC-099 | Planned |
 | GAP-31 | Trust/Legal | P1 | 3 | TC-087 | Done |
 | GAP-32 | Media/UGC | P1 | 3 | TC-089 | Done |
