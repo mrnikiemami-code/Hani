@@ -126,6 +126,26 @@ paths:
         - { name: to, in: query, schema: { type: [string, 'null'], format: date-time } }
       responses:
         '200': { description: Analytics summary }
+  /market/v1/dashboard/{userId}:
+    get:
+      tags: [Dashboard]
+      summary: Read a user's dashboard summary
+      parameters:
+        - { name: userId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Dashboard summary }
+  /market/v1/dashboard/{userId}/messages:
+    get:
+      tags: [Dashboard]
+      summary: List a user's messages
+      responses:
+        '200': { description: Paged messages }
+  /market/v1/dashboard/{userId}/documents:
+    get:
+      tags: [Dashboard]
+      summary: List a user's documents
+      responses:
+        '200': { description: Paged documents }
   /market/v1/growth/ads/{slotCode}:
     get:
       tags: [Growth]

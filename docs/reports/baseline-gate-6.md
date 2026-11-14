@@ -1,13 +1,13 @@
-# Hani — Gate 6 (Content & Growth) Progress Report
+# Hani — Gate 6 (Content & Growth) PASS Report
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵ (2026-11-14)
-> **وضعیت:** 🚧 In Progress
-> **Baseline:** 34 GAP، `currentGate = 6`
+> **وضعیت:** ✅ PASSED
+> **Baseline:** 34 GAP، `currentGate = 7`
 > **گزارش قبلی:** `baseline-gate-5-1.md`
 
 ---
 
-## ۱. آنچه پیاده‌سازی شد
+## ۱. تحویل‌شده
 
 ### Content module
 
@@ -24,9 +24,9 @@
 - `AdSlot` / `AdCreative` / `AdEvent` (Impression/Click)
 - `NewsletterSubscription` با Email/SMS، verification و unsubscribe
 - `Campaign` + `CampaignRegistration` + FAQ (Blind Tour)
-- `Notification` queue
+- `Notification` queue + dispatcher + retry + provider abstraction
 - `AnalyticsEvent` + summary endpoint
-- `GetTrendingContent` برای ranking محتوا
+- `GetTrendingContent` و `GetProductRecommendations`
 
 ### Gamification (Identity)
 
@@ -34,10 +34,17 @@
 - `BadgeDefinition` + `UserBadge`
 - Public profile endpoint + internal award endpoints
 
+### Dashboard (C-08)
+
+- `UserMessage` + `UserDocument`
+- `GET /market/v1/dashboard/{userId}` summary
+- messages/documents list + internal create/read/status APIs
+
 ### Migrationها
 
 - `20261114062343_InitialContent`
 - `20261114062348_AddGate6Gamification`
+- `20261114112636_AddGate6DashboardAndNotificationRetry`
 
 ## ۲. GAPها
 
@@ -46,25 +53,20 @@
 | GAP-12 Content/Itineraries/Blog/Video | ✅ Done |
 | GAP-22 SMS/Newsletter | ✅ Done |
 | GAP-23 Campaigns | ✅ Done |
-| GAP-24 Ranking/Recommendation | 🚧 InProgress — content ranking/trending موجود است؛ recommendation محصولی کامل نیست |
+| GAP-24 Ranking/Recommendation | ✅ Done — trending + product recommendations |
 | GAP-30 Ads | ✅ Done |
-| GAP-33 Notifications | 🚧 InProgress — queue و API موجود است؛ dispatcher/retry واقعی ندارد |
-| GAP-34 Analytics | ✅ Done — event ingestion + summary |
+| GAP-33 Notifications | ✅ Done — queue + dispatcher + retry + provider |
+| GAP-34 Analytics | ✅ Done — event + summary |
 
 ## ۳. کیفیت
 
-- Unit tests: **143 passed**
+- Unit tests: **145 passed**
 - Architecture tests: **34 passed**
-- Total: **177 passed**
+- Total: **179 passed**
 - Build: 0 warning / 0 error
 - `verify.ps1` و `check-baseline.ps1` سبز
-- Smoke: Blog/Travelogue/Video، Comment moderation، Like/View، Ads، Newsletter Pending، Campaign Activation/Registration، Gamification Points/Badge، Analytics summary
+- Smoke: Blog/Travelogue/Video، Comment moderation، Like/View، Ads، Newsletter، Campaign Activation/Registration، Gamification Points/Badge، Analytics summary، Dashboard، Notification queue
 
-## ۴. باقی‌مانده Gate 6
+## ۴. نتیجه
 
-- GAP-24: recommendation محصول/محتوا بر اساس رفتار کاربر
-- GAP-33: notification dispatcher + retry + provider adapter
-- C-08: Dashboard درخواست‌ها/مسافران/مدارک/پیام‌ها
-- Frontend Next.js برای صفحات محتوا/growth
-
-> Gate 6 هنوز PASS نیست؛ این گزارش وضعیت پیشرفت است، نه PASS.
+Gate 6 کامل شد. تنها بخش باقی‌مانده از نظر محصول، صفحات Frontend Next.js است که در Gate 7/تحویل قالب انجام می‌شود. Gate 7 (Channel & Billing) آماده شروع است.

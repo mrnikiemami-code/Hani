@@ -628,6 +628,15 @@ public sealed class Notification : AggregateRoot<Guid>
     /// <summary>Send time.</summary>
     public DateTimeOffset? SentAt { get; private set; }
 
+    /// <summary>Number of delivery attempts.</summary>
+    public int AttemptCount { get; private set; }
+
+    /// <summary>Last delivery error.</summary>
+    public string? LastError { get; private set; }
+
+    /// <summary>Next retry time.</summary>
+    public DateTimeOffset? NextAttemptAt { get; private set; }
+
     /// <summary>Creates a pending notification.</summary>
     public static Notification Create(
         IIdGenerator ids,
@@ -656,10 +665,26 @@ public sealed class Notification : AggregateRoot<Guid>
     {
         Status = NotificationStatus.Sent;
         SentAt = now ?? DateTimeOffset.UtcNow;
+        LastError = null;
+        NextAttemptAt = null;
     }
 
-    /// <summary>Marks the notification failed.</summary>
-    public void MarkFailed() => Status = NotificationStatus.Failed;
+    /// <summary>Marks the notification failed permanently.</summary>
+    public void MarkFailed(string? error = null)
+    {
+        Status = NotificationStatus.Failed;
+        LastError = error;
+        NextAttemptAt = null;
+    }
+
+    /// <summary>Records a retryable delivery failure.</summary>
+    public void MarkRetry(string error, DateTimeOffset nextAttemptAt)
+    {
+        AttemptCount++;
+        LastError = error;
+        NextAttemptAt = nextAttemptAt.ToUniversalTime();
+        Status = NotificationStatus.Pending;
+    }
 }
 
 /// <summary>Recorded product/content analytics event.</summary>

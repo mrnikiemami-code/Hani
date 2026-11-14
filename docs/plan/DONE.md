@@ -138,6 +138,9 @@
 | D-121 | Content module | Blog/Category/Travelogue/Video/Comment + migration | Gate 6 |
 | D-122 | Growth | Ads/Newsletter/Campaign/Notification/Analytics | Gate 6 |
 | D-123 | Gamification | UserGamification + BadgeDefinition/UserBadge | Gate 6 |
+| D-124 | Recommendations | Product recommendations + trending content | Gate 6 |
+| D-125 | Notification dispatcher | queue + retry + provider abstraction | Gate 6 |
+| D-126 | Dashboard C-08 | UserMessage/UserDocument + summary/list APIs | Gate 6 |
 
 ## ۳. مستندات
 
@@ -157,10 +160,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | 143 passed |
+| Unit Tests | 145 passed |
 | Architecture Tests | 34 passed |
-| Total | **177 passed** |
-| Migrations | Supply (8) + Catalog (6) + Content (1) + Identity (6) + Booking (9) + Payments (6) + Settlement (3) |
+| Total | **179 passed** |
+| Migrations | Supply (8) + Catalog (6) + Content (2) + Identity (6) + Booking (9) + Payments (6) + Settlement (3) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API `/health` | Healthy |
@@ -215,4 +218,5 @@
 | `1c202bd` | Gate 5 verticals, geo, vertical SEO, review aggregation |
 | `f6d65ce` | Gate 5.1 vertical depth and parity residuals |
 | `1a35e3c` | Gate 6 content, growth, and gamification foundation |
+| `pending` | Gate 6 recommendation, notification dispatcher, dashboard |
 | `7df2265` | Phase roadmap + status + tasks |

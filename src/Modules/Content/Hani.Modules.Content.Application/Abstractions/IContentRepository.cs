@@ -1,4 +1,5 @@
 using Hani.Modules.Content.Domain.Content;
+using Hani.Modules.Content.Domain.Dashboard;
 using Hani.Modules.Content.Domain.Growth;
 
 namespace Hani.Modules.Content.Application.Abstractions;
@@ -73,6 +74,15 @@ public interface IContentRepository
 
     /// <summary>Adds a notification and saves changes.</summary>
     Task AddNotificationAsync(Notification notification, CancellationToken cancellationToken);
+
+    /// <summary>Returns a notification by id.</summary>
+    Task<Notification?> GetNotificationAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>Lists pending or retryable notifications due before the supplied time.</summary>
+    Task<IReadOnlyList<Notification>> ListDueNotificationsAsync(
+        DateTimeOffset dueBefore,
+        int take,
+        CancellationToken cancellationToken);
     /// <summary>Adds an analytics event and saves changes.</summary>
     Task AddAnalyticsEventAsync(AnalyticsEvent analyticsEvent, CancellationToken cancellationToken);
 
@@ -92,6 +102,23 @@ public interface IContentRepository
 
     /// <summary>Counts content by author and family for author stats.</summary>
     Task<AuthorContentCounts> CountByAuthorAsync(Guid authorUserId, CancellationToken cancellationToken);
+
+    /// <summary>Adds a dashboard message.</summary>
+    Task AddUserMessageAsync(UserMessage message, CancellationToken cancellationToken);
+    /// <summary>Returns a dashboard message by id.</summary>
+    Task<UserMessage?> GetUserMessageAsync(Guid id, CancellationToken cancellationToken);
+    /// <summary>Lists messages for a user.</summary>
+    Task<IReadOnlyList<UserMessage>> ListUserMessagesAsync(Guid userId, int skip, int take, CancellationToken cancellationToken);
+    /// <summary>Counts messages for a user.</summary>
+    Task<int> CountUserMessagesAsync(Guid userId, CancellationToken cancellationToken);
+    /// <summary>Adds a user document.</summary>
+    Task AddUserDocumentAsync(UserDocument document, CancellationToken cancellationToken);
+    /// <summary>Returns a user document by id.</summary>
+    Task<UserDocument?> GetUserDocumentAsync(Guid id, CancellationToken cancellationToken);
+    /// <summary>Lists documents for a user.</summary>
+    Task<IReadOnlyList<UserDocument>> ListUserDocumentsAsync(Guid userId, int skip, int take, CancellationToken cancellationToken);
+    /// <summary>Counts documents for a user.</summary>
+    Task<int> CountUserDocumentsAsync(Guid userId, CancellationToken cancellationToken);
 
     /// <summary>Persists pending changes.</summary>
     Task SaveChangesAsync(CancellationToken cancellationToken);

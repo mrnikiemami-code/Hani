@@ -4,8 +4,9 @@
 - **Report:** `docs/reports/lastsecond-gap-analysis-2026-11-12.md`
 - **Machine-readable:** `docs/plan/baseline.json`
 - **Status:** Locked for planning
-- **Current gate:** Gate 6 — Content & Growth (Gate 1/2/3 ✅ Passed, Gate 4 ✅ Remediated, Gate 5 ✅ Passed)
+- **Current gate:** Gate 7 — Channel & Billing (Gate 1/2/3 ✅ Passed, Gate 4 ✅ Remediated, Gate 5/5.1 ✅ Passed, Gate 6 ✅ Passed)
 - **Gate 5 status:** ✅ Passed — GAP-13/14/15/16/21/25/29 + B-01..B-08 Done
+- **Gate 6 status:** ✅ Passed — GAP-12/22/23/24/30/33/34 + C-01..C-08 Done
 
 > این فایل مرجع برنامه‌ریزی است. هر GAP باید یک Gate، Task، وضعیت و Evidence داشته باشد.
 > ترتیب Gateها از گزارش Lastsecond و وابستگی‌های واقعی محصول پیروی می‌کند؛ هیچ GAP حذف نمی‌شود.
@@ -59,7 +60,7 @@
 | GAP-21 | Visa Documents | P1 | 5 | TC-091 | Done |
 | GAP-22 | SMS/Newsletter | P1 | 6 | TC-096 | Done |
 | GAP-23 | Campaigns | P2 | 6 | TC-100 | Done |
-| GAP-24 | Ranking/Recommendation | P1 | 6 | TC-099 | InProgress |
+| GAP-24 | Ranking/Recommendation | P1 | 6 | TC-099 | Done |
 | GAP-25 | Geo/Maps | P1 | 5 | TC-094 | Done |
 | GAP-26 | Agency Onboarding | P0 | 3 | TC-087 | Done |
 | GAP-27 | Agency/Admin Panels | P1 | 3 | TC-087 | Done |
@@ -68,7 +69,7 @@
 | GAP-30 | Ads | P2 | 6 | TC-099 | Done |
 | GAP-31 | Trust/Legal | P1 | 3 | TC-087 | Done |
 | GAP-32 | Media/UGC | P1 | 3 | TC-089 | Done |
-| GAP-33 | Notifications | P1 | 6 | TC-096 | InProgress |
+| GAP-33 | Notifications | P1 | 6 | TC-096 | Done |
 | GAP-34 | Analytics | P2 | 6 | TC-099 | Done |
 
 ## ۴. Gate Evidence Pack

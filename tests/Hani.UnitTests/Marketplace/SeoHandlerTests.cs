@@ -1,5 +1,6 @@
 using Hani.Contracts.Catalog;
 using Hani.Modules.Marketplace.Application;
+using Hani.Modules.Marketplace.Application.Queries.GetProductRecommendations;
 using Hani.Modules.Marketplace.Application.Queries.Seo;
 using Microsoft.Extensions.Options;
 using Shouldly;
@@ -114,6 +115,58 @@ public sealed class SeoHandlerTests
         xml.ShouldContain("https://hani.test/fa/tours/istanbul-tour");
         xml.ShouldContain("https://hani.test/fa/tours/istanbul");
         xml.ShouldContain("hreflang=\"en\"");
+    }
+
+    [Fact]
+    public async Task Product_Recommendations_Should_Prefer_Shared_Destinations()
+    {
+        var catalog = new FakeCatalogReadService();
+        var targetId = Guid.CreateVersion7();
+        var sharedDestination = Guid.CreateVersion7();
+        catalog.Details[targetId] = new CatalogProductDetails(
+            targetId,
+            "target",
+            5,
+            "city-break",
+            new Dictionary<string, string> { ["en"] = "Target" },
+            new Dictionary<string, string> { ["en"] = "Summary" },
+            new Dictionary<string, string> { ["en"] = "Description" },
+            [sharedDestination],
+            TravelType: "Air",
+            Category: "Normal");
+        catalog.Products.Add(new CatalogProductSummary(
+            Guid.CreateVersion7(),
+            "shared",
+            5,
+            "city-break",
+            new Dictionary<string, string> { ["en"] = "Shared" },
+            [sharedDestination],
+            DateTimeOffset.UtcNow,
+            TravelType: "Air",
+            Category: "Normal"));
+        catalog.Products.Add(new CatalogProductSummary(
+            Guid.CreateVersion7(),
+            "unrelated",
+            9,
+            "adventure",
+            new Dictionary<string, string> { ["en"] = "Unrelated" },
+            [Guid.CreateVersion7()],
+            DateTimeOffset.UtcNow,
+            TravelType: "Bus",
+            Category: "Luxury"));
+
+        var handler = new GetProductRecommendationsQueryHandler(
+            catalog,
+            new FakeLanguageCatalog());
+        var result = await handler.Handle(
+            new GetProductRecommendationsQuery(targetId, "en", 8),
+            CancellationToken.None);
+
+        result.IsSuccess.ShouldBeTrue();
+        var recommendations = result.Value!;
+        recommendations.ShouldNotBeEmpty();
+        recommendations[0].Slug.ShouldBe("shared");
+        recommendations[0].SharedDestinationCount.ShouldBe(1);
     }
 
     [Fact]

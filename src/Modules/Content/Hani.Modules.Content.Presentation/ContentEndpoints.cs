@@ -2,9 +2,11 @@ using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Content.Application.Commands.Editorial;
 using Hani.Modules.Content.Application.Commands.Growth;
+using Hani.Modules.Content.Application.Queries.Dashboard;
 using Hani.Modules.Content.Application.Queries.Editorial;
 using Hani.Modules.Content.Application.Queries.Growth;
 using Hani.Modules.Content.Domain.Content;
+using Hani.Modules.Content.Domain.Dashboard;
 using Hani.Modules.Content.Domain.Growth;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -28,6 +30,8 @@ public static class ContentEndpoints
         var growth = app.MapGroup("/market/v1/growth").WithTags("Growth");
         var internalContent = app.MapGroup("/internal/v1/content").WithTags("Internal.Content");
         var internalGrowth = app.MapGroup("/internal/v1/growth").WithTags("Internal.Growth");
+        var dashboard = app.MapGroup("/market/v1/dashboard").WithTags("Dashboard");
+        var internalDashboard = app.MapGroup("/internal/v1/dashboard").WithTags("Internal.Dashboard");
 
         content.MapGet("/blog", SearchBlogAsync).WithName("Marketplace.SearchBlog");
         content.MapGet("/blog/{slug}", GetBlogAsync).WithName("Marketplace.GetBlog");
@@ -70,6 +74,14 @@ public static class ContentEndpoints
         internalGrowth.MapPost("/notifications", CreateNotificationAsync).WithName("Internal.CreateNotification");
         internalGrowth.MapPost("/analytics", RecordAnalyticsAsync).WithName("Internal.RecordAnalytics");
         growth.MapGet("/analytics/summary", GetAnalyticsSummaryAsync).WithName("Marketplace.GetAnalyticsSummary");
+
+        dashboard.MapGet("/{userId:guid}", GetDashboardAsync).WithName("Marketplace.GetDashboard");
+        dashboard.MapGet("/{userId:guid}/messages", ListMessagesAsync).WithName("Marketplace.ListDashboardMessages");
+        dashboard.MapGet("/{userId:guid}/documents", ListDocumentsAsync).WithName("Marketplace.ListDashboardDocuments");
+        internalDashboard.MapPost("/messages", CreateMessageAsync).WithName("Internal.CreateUserMessage");
+        internalDashboard.MapPost("/messages/{messageId:guid}/read", MarkMessageReadAsync).WithName("Internal.MarkUserMessageRead");
+        internalDashboard.MapPost("/documents", CreateDocumentAsync).WithName("Internal.CreateUserDocument");
+        internalDashboard.MapPost("/documents/{documentId:guid}/status", SetDocumentStatusAsync).WithName("Internal.SetUserDocumentStatus");
 
         return app;
     }
@@ -550,6 +562,106 @@ public static class ContentEndpoints
         return result.IsSuccess ? Results.Created("/internal/v1/growth/notifications", result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>Returns a user's dashboard summary.</summary>
+    private static async Task<IResult> GetDashboardAsync(
+        Guid userId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetDashboardSummaryQuery(userId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Lists a user's dashboard messages.</summary>
+    private static async Task<IResult> ListMessagesAsync(
+        Guid userId,
+        int? page,
+        int? pageSize,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new ListUserMessagesQuery(userId, page ?? 1, pageSize ?? 20),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Lists a user's documents.</summary>
+    private static async Task<IResult> ListDocumentsAsync(
+        Guid userId,
+        int? page,
+        int? pageSize,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new ListUserDocumentsQuery(userId, page ?? 1, pageSize ?? 20),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Creates a dashboard message.</summary>
+    private static async Task<IResult> CreateMessageAsync(
+        CreateUserMessageRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateUserMessageCommand(request.UserId, request.Subject, request.Body),
+            cancellationToken);
+        return result.IsSuccess
+            ? Results.Created("/internal/v1/dashboard/messages", result.Value)
+            : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Marks a dashboard message as read.</summary>
+    private static async Task<IResult> MarkMessageReadAsync(
+        Guid messageId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new MarkUserMessageReadCommand(messageId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Creates a user document.</summary>
+    private static async Task<IResult> CreateDocumentAsync(
+        CreateUserDocumentRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateUserDocumentCommand(
+                request.UserId,
+                request.Name,
+                request.FileUrl,
+                request.DocumentType),
+            cancellationToken);
+        return result.IsSuccess
+            ? Results.Created("/internal/v1/dashboard/documents", result.Value)
+            : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Sets a document verification status.</summary>
+    private static async Task<IResult> SetDocumentStatusAsync(
+        Guid documentId,
+        SetDocumentStatusRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new SetUserDocumentStatusCommand(documentId, request.Status),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
     /// <summary>Records an analytics event.</summary>
     private static async Task<IResult> RecordAnalyticsAsync(
         RecordAnalyticsRequest request,
@@ -781,3 +893,16 @@ public sealed record RecordAnalyticsRequest(
     Guid? EntityId = null,
     Guid? UserId = null,
     string? Metadata = null);
+
+/// <summary>Dashboard message request.</summary>
+public sealed record CreateUserMessageRequest(Guid UserId, string Subject, string Body);
+
+/// <summary>Dashboard document request.</summary>
+public sealed record CreateUserDocumentRequest(
+    Guid UserId,
+    string Name,
+    string FileUrl,
+    string DocumentType);
+
+/// <summary>Document status request.</summary>
+public sealed record SetDocumentStatusRequest(UserDocumentStatus Status);

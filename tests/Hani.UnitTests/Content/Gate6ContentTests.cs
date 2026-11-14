@@ -123,6 +123,26 @@ public sealed class Gate6ContentTests
     }
 
     [Fact]
+    public void Notification_Should_Retry_And_Then_Send()
+    {
+        var notification = Notification.Create(
+            TestIds.Generator,
+            null,
+            ContactChannel.Email,
+            "welcome",
+            "{}");
+        var next = DateTimeOffset.UtcNow.AddMinutes(1);
+        notification.MarkRetry("provider unavailable", next);
+
+        notification.Status.ShouldBe(NotificationStatus.Pending);
+        notification.AttemptCount.ShouldBe(1);
+        notification.NextAttemptAt.ShouldBe(next.ToUniversalTime());
+
+        notification.MarkSent();
+        notification.Status.ShouldBe(NotificationStatus.Sent);
+    }
+
+    [Fact]
     public void Ad_Slot_Should_Return_Available_Creatives()
     {
         var slot = AdSlot.Create(TestIds.Generator, "home-below-tours", "Home");

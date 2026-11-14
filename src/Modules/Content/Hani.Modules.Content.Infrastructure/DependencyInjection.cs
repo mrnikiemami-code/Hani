@@ -1,4 +1,5 @@
 using Hani.Modules.Content.Application.Abstractions;
+using Hani.Modules.Content.Infrastructure.Notifications;
 using Hani.Modules.Content.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,8 @@ public static class DependencyInjection
     public static IServiceCollection AddContentInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IContentRepository, ContentRepository>();
+        services.AddScoped<INotificationSender, LoggingNotificationSender>();
+        services.AddHostedService<NotificationDispatcher>();
         return services;
     }
 }

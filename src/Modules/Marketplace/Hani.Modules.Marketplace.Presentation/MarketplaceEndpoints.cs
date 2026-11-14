@@ -2,6 +2,7 @@ using System.Text;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
+using Hani.Modules.Marketplace.Application.Queries.GetProductRecommendations;
 using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 using Hani.Modules.Marketplace.Application.Queries.Seo;
 using MediatR;
@@ -32,6 +33,11 @@ public static class MarketplaceEndpoints
         market.MapGet("/products/{productId:guid}/compare", CompareAsync)
             .WithName("Marketplace.CompareProductOffers")
             .Produces<ProductComparisonDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        market.MapGet("/products/{productId:guid}/recommendations", GetRecommendationsAsync)
+            .WithName("Marketplace.GetProductRecommendations")
+            .Produces<IReadOnlyList<RecommendedProductDto>>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 
         market.MapGet("/products/{productId:guid}/seo", GetProductSeoAsync)
@@ -175,6 +181,23 @@ public static class MarketplaceEndpoints
             new GetVerticalSeoQuery(type, slug, locale),
             cancellationToken);
 
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns related published tours for a product.
+    /// </summary>
+    private static async Task<IResult> GetRecommendationsAsync(
+        Guid productId,
+        string? locale,
+        int? limit,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetProductRecommendationsQuery(productId, locale, limit ?? 8),
+            cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 

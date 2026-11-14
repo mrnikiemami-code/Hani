@@ -25,13 +25,13 @@
 | 5 | TC-094 | Places + Geo + Restaurant Reservation | ✅ | GAP-13/25/29 | دایرکتوری/نقشه |
 | 6 | TC-093 | Content: Itineraries/Blog/Videos | ✅ | GAP-12 | محتوا |
 | 6 | TC-095 | Media + Moderation | ✅ | GAP-32 | آپلود/مدیریت |
-| 6 | TC-096 | SMS + Newsletter + Notifications | 🚧 | GAP-22/33 | OTP/خبرنامه |
-| 6 | TC-099 | Ranking + Ads + Analytics | 🚧 | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
+| 6 | TC-096 | SMS + Newsletter + Notifications | ✅ | GAP-22/33 | OTP/خبرنامه |
+| 6 | TC-099 | Ranking + Ads + Analytics | ✅ | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
 | 6 | TC-100 | Campaigns + BlindTour | ✅ | GAP-23 | کمپین |
 
 > Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
-> **Gate 6 در حال اجراست.** Content module (Blog/Travelogue/Video)، Gamification، Ads، Newsletter/SMS، Campaign و Analytics پیاده‌سازی شد. GAP-24 (recommendation) و GAP-33 (notification dispatch) و C-08 (dashboard) باقی است.
+> **Gate 6 PASSED است.** Content/Growth/Gamification/Recommendation/Notification/Dashboard کامل شد. Gate 7 (Channel & Billing) آماده شروع است.
 
 ## Phase 0 — Foundation ✅
 

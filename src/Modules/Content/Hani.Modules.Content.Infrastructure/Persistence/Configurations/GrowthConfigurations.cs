@@ -142,6 +142,9 @@ internal sealed class NotificationConfiguration : IEntityTypeConfiguration<Notif
         builder.Property(item => item.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(item => item.SentAt).HasColumnName("sent_at");
+        builder.Property(item => item.AttemptCount).HasColumnName("attempt_count").IsRequired();
+        builder.Property(item => item.LastError).HasColumnName("last_error").HasMaxLength(2000);
+        builder.Property(item => item.NextAttemptAt).HasColumnName("next_attempt_at");
         builder.HasIndex(item => new { item.UserId, item.Status }).HasDatabaseName("ix_notifications_user_status");
     }
 }

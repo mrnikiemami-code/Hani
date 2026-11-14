@@ -102,6 +102,30 @@ paths:
       summary: Record an analytics event
       responses:
         '201': { description: Event id }
+  /internal/v1/dashboard/messages:
+    post:
+      tags: [Dashboard]
+      summary: Create a dashboard message
+      responses:
+        '201': { description: Message id }
+  /internal/v1/dashboard/messages/{messageId}/read:
+    post:
+      tags: [Dashboard]
+      summary: Mark a message as read
+      responses:
+        '200': { description: Read }
+  /internal/v1/dashboard/documents:
+    post:
+      tags: [Dashboard]
+      summary: Create a user document
+      responses:
+        '201': { description: Document id }
+  /internal/v1/dashboard/documents/{documentId}/status:
+    post:
+      tags: [Dashboard]
+      summary: Set a document verification status
+      responses:
+        '200': { description: Updated }
   /internal/v1/gamification/points:
     post:
       tags: [Gamification]

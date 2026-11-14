@@ -1,9 +1,9 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 6 — Content & Growth (In Progress)
-> **آخرین commit کد:** `1a35e3c`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 🚧 In Progress
+> **فاز فعال:** Gate 7 — Channel & Billing (Ready)
+> **آخرین commit کد:** `1a35e3c` + Gate 6
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ⏳ Ready
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 > **گزارش Gate:** [`../reports/baseline-gate-6.md`](../reports/baseline-gate-6.md)
@@ -22,7 +22,7 @@
 | 2 | Marketplace Read + Booking | ✅ Baseline Gate 4 Remediated | 100% |
 | 3 | Channel + Billing + Settlement | ⏳ Gate 7 | 0% |
 | 4 | Flights | ✅ Gate 5 | 100% |
-| 5 | Content + Hotels + Visa + SEO/i18n | ✅ Gate 5 (Hotels/Visa/Flights/Places) / 🚧 Gate 6 (Content) | 85% |
+| 5 | Content + Hotels + Visa + SEO/i18n | ✅ Gate 5/5.1 + Gate 6 | 100% |
 | 6 | Hardening & Scale | ⏳ Gate 8 | 0% |
 
 > از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۱ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 1 به‌عنوان وضعیت تاریخی باقی می‌ماند.
@@ -188,10 +188,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۴۳ passed |
+| Unit Tests | ۱۴۵ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۷۷ passed** |
-| Migrations | Supply (۸) / Catalog (۶) / Content (۱) / Identity (۶) / Booking (۹) / Payments (۶) / Settlement (۳) |
+| Total | **۱۷۹ passed** |
+| Migrations | Supply (۸) / Catalog (۶) / Content (۲) / Identity (۶) / Booking (۹) / Payments (۶) / Settlement (۳) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -200,14 +200,14 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 6 — Content & Growth (In Progress)
+**تسک فعال:** Gate 7 — Channel & Billing (Ready)
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
 **GAPهای Gate 4:** ✅ GAP-05/06/19 (TC-088), GAP-17/18 (TC-098)
 **GAPهای Gate 5:** ✅ GAP-13/25/29 (TC-094), GAP-14 (TC-090), GAP-15/21 (TC-091), GAP-16 (TC-092)
-**GAPهای Gate 6:** ✅ GAP-12/22/23/30/34؛ 🚧 GAP-24/33
-**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 6`؛ Audit Remediation A/B کامل و C-01..C-07 اعمال شد
+**GAPهای Gate 6:** ✅ GAP-12/22/23/24/30/33/34
+**Baseline:** ۳۴ GAP ثبت‌شده؛ `currentGate = 7`؛ Audit Remediation A/B/C-01..C-08 کامل شد
 
 ### Audit 2026-11-14 — Lastsecond Full Architecture
 
@@ -227,7 +227,7 @@
 
 **شکاف‌های اصلی Gate 6/7:** Blog/Travelogue/Video، Gamification، Ads/Newsletter/Campaign، Dashboard Requests/Passengers/Documents/Messages، Refund/Cancellation/Invoice/Payout.
 
-### Gate 6 — Progress Checklist 🚧
+### Gate 6 — Exit Checklist ✅ PASSED
 
 - [x] Blog + category + translation + SEO + comments + like
 - [x] Travelogue + series + destination tags + comments
@@ -237,10 +237,11 @@
 - [x] Newsletter/SMS consent + verification + unsubscribe
 - [x] Campaign/Blind Tour + registration
 - [x] Analytics event + summary
-- [x] Content module + migration + OpenAPI + README
-- [ ] GAP-24 product recommendation completion
-- [ ] GAP-33 notification dispatch/retry
-- [ ] C-08 dashboard requests/passengers/documents/messages
+- [x] Recommendation محصول بر اساس مقصد/نوع سفر/مدت
+- [x] Notification dispatcher + retry + provider abstraction
+- [x] Dashboard messages/documents + summary
+- [x] Content module + migrations + OpenAPI + README
+- [x] `verify.ps1` + `check-baseline.ps1` سبز
 
 ### Gate 5.1 — Exit Checklist ✅ PASSED
 

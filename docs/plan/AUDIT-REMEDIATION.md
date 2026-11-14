@@ -60,7 +60,7 @@
 | C-05 | Ads/AdSlot/AdEvent | GAP-30 | P2 | — | Ad model + click tracking | ✅ Done |
 | C-06 | Newsletter/SMS consent/campaign | GAP-22 | P1 | — | Subscription + verification + campaign | ✅ Done |
 | C-07 | BlindTour/Campaign | GAP-23 | P2 | C-06 | Campaign + registration + FAQ | ✅ Done |
-| C-08 | Dashboard requests/passengers/documents/messages | GAP-27 (New) | P1 | A-04 | Request/passenger/document/message aggregates | ⏳ Planned |
+| C-08 | Dashboard requests/passengers/documents/messages | GAP-27 (New) | P1 | A-04 | Request/passenger/document/message aggregates | ✅ Done |
 
 ---
 
@@ -142,6 +142,7 @@
 | C-05 | `GrowthAggregates.cs` (`AdSlot`, `AdEvent`), `ContentEndpoints.cs`, `20261114062343_InitialContent` |
 | C-06 | `NewsletterSubscription`, `SubscribeNewsletterCommandHandler`, `ContentEndpoints.cs` |
 | C-07 | `Campaign`, `CampaignRegistration`, `CreateCampaignCommandHandler`, `ContentEndpoints.cs` |
+| C-08 | `UserMessage`, `UserDocument`, `GetDashboardSummaryQueryHandler`, `ContentEndpoints.cs`, `20261114112636_AddGate6DashboardAndNotificationRetry` |
 
 ## ۹. وضعیت Baseline
 

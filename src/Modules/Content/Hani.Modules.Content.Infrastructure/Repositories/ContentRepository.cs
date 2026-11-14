@@ -1,5 +1,6 @@
 using Hani.Modules.Content.Application.Abstractions;
 using Hani.Modules.Content.Domain.Content;
+using Hani.Modules.Content.Domain.Dashboard;
 using Hani.Modules.Content.Domain.Growth;
 using Hani.Modules.Content.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -344,6 +345,21 @@ internal sealed class ContentRepository(ContentDbContext dbContext) : IContentRe
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public Task<Notification?> GetNotificationAsync(Guid id, CancellationToken cancellationToken)
+        => dbContext.Notifications.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+    public async Task<IReadOnlyList<Notification>> ListDueNotificationsAsync(
+        DateTimeOffset dueBefore,
+        int take,
+        CancellationToken cancellationToken)
+        => await dbContext.Notifications
+            .Where(item =>
+                item.Status == NotificationStatus.Pending &&
+                (item.NextAttemptAt == null || item.NextAttemptAt <= dueBefore))
+            .OrderBy(item => item.CreatedAt)
+            .Take(take)
+            .ToArrayAsync(cancellationToken);
+
     public async Task AddAnalyticsEventAsync(AnalyticsEvent analyticsEvent, CancellationToken cancellationToken)
     {
         await dbContext.AnalyticsEvents.AddAsync(analyticsEvent, cancellationToken);
@@ -419,4 +435,54 @@ internal sealed class ContentRepository(ContentDbContext dbContext) : IContentRe
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)
         => dbContext.SaveChangesAsync(cancellationToken);
+
+    public async Task AddUserMessageAsync(UserMessage message, CancellationToken cancellationToken)
+    {
+        await dbContext.UserMessages.AddAsync(message, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<UserMessage?> GetUserMessageAsync(Guid id, CancellationToken cancellationToken)
+        => dbContext.UserMessages.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+    public async Task<IReadOnlyList<UserMessage>> ListUserMessagesAsync(
+        Guid userId,
+        int skip,
+        int take,
+        CancellationToken cancellationToken)
+        => await dbContext.UserMessages
+            .AsNoTracking()
+            .Where(item => item.UserId == userId)
+            .OrderByDescending(item => item.CreatedAt)
+            .Skip(skip)
+            .Take(take)
+            .ToArrayAsync(cancellationToken);
+
+    public Task<int> CountUserMessagesAsync(Guid userId, CancellationToken cancellationToken)
+        => dbContext.UserMessages.CountAsync(item => item.UserId == userId, cancellationToken);
+
+    public async Task AddUserDocumentAsync(UserDocument document, CancellationToken cancellationToken)
+    {
+        await dbContext.UserDocuments.AddAsync(document, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<UserDocument?> GetUserDocumentAsync(Guid id, CancellationToken cancellationToken)
+        => dbContext.UserDocuments.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+    public async Task<IReadOnlyList<UserDocument>> ListUserDocumentsAsync(
+        Guid userId,
+        int skip,
+        int take,
+        CancellationToken cancellationToken)
+        => await dbContext.UserDocuments
+            .AsNoTracking()
+            .Where(item => item.UserId == userId)
+            .OrderByDescending(item => item.CreatedAt)
+            .Skip(skip)
+            .Take(take)
+            .ToArrayAsync(cancellationToken);
+
+    public Task<int> CountUserDocumentsAsync(Guid userId, CancellationToken cancellationToken)
+        => dbContext.UserDocuments.CountAsync(item => item.UserId == userId, cancellationToken);
 }

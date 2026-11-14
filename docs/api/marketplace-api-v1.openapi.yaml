@@ -91,6 +91,25 @@ paths:
               schema: { $ref: '#/components/schemas/TourProduct' }
         default: { $ref: '#/components/responses/Problem' }
 
+  /products/{productId}/recommendations:
+    get:
+      tags: [Marketplace]
+      summary: List related published tours
+      parameters:
+        - { name: productId, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: limit, in: query, schema: { type: integer, default: 8, maximum: 20 } }
+      responses:
+        '200':
+          description: Recommended products
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/RecommendedProduct' }
+        '404': { description: Product not found }
+        default: { $ref: '#/components/responses/Problem' }
+
   /products/{productId}/compare:
     get:
       tags: [Catalog]
@@ -1878,6 +1897,18 @@ components:
         installments:
           type: array
           items: { $ref: '#/components/schemas/Installment' }
+
+    RecommendedProduct:
+      type: object
+      properties:
+        productId: { type: string, format: uuid }
+        slug: { type: string }
+        title: { type: string }
+        durationDays: { type: integer }
+        tourType: { type: string }
+        travelType: { type: string }
+        category: { type: string }
+        sharedDestinationCount: { type: integer }
 
     HotelSummary:
       type: object

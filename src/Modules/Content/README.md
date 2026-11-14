@@ -43,6 +43,9 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 | GET | `/market/v1/growth/campaigns` | کمپین‌های فعال |
 | GET | `/market/v1/growth/campaigns/{slug}` | جزئیات کمپین |
 | POST | `/market/v1/growth/campaigns/{slug}/register` | ثبت‌نام |
+| GET | `/market/v1/dashboard/{userId}` | Dashboard summary |
+| GET | `/market/v1/dashboard/{userId}/messages` | پیام‌ها |
+| GET | `/market/v1/dashboard/{userId}/documents` | مدارک |
 | GET | `/market/v1/gamification/users/{userId}` | points/level/travelStyle/badges |
 | GET | `/market/v1/gamification/badges` | تعریف نشان‌ها |
 

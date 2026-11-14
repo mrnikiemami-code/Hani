@@ -62,6 +62,7 @@ using Hani.Modules.Identity.Infrastructure.Persistence;
 using Hani.Modules.Identity.Presentation;
 using Hani.Modules.Marketplace.Application;
 using Hani.Modules.Marketplace.Application.Queries.GetProductComparison;
+using Hani.Modules.Marketplace.Application.Queries.GetProductRecommendations;
 using Hani.Modules.Marketplace.Application.Queries.SearchProducts;
 using Hani.Modules.Marketplace.Application.Queries.Seo;
 using Hani.Modules.Marketplace.Infrastructure;
@@ -294,6 +295,7 @@ builder.Services.AddScoped<IValidator<GetVerticalLandingSeoQuery>, GetVerticalLa
 builder.Services.AddScoped<IValidator<GetSitemapQuery>, GetSitemapQueryValidator>();
 builder.Services.AddScoped<IValidator<GetRobotsQuery>, GetRobotsQueryValidator>();
 builder.Services.AddScoped<IValidator<GetProductComparisonQuery>, GetProductComparisonQueryValidator>();
+builder.Services.AddScoped<IValidator<GetProductRecommendationsQuery>, GetProductRecommendationsQueryValidator>();
 builder.Services.AddScoped<IValidator<CreateQuoteCommand>, CreateQuoteCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateHoldCommand>, CreateHoldCommandValidator>();
 builder.Services.AddScoped<IValidator<ReleaseHoldCommand>, ReleaseHoldCommandValidator>();
