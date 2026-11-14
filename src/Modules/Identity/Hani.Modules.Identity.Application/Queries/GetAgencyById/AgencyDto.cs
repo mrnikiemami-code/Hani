@@ -1,6 +1,16 @@
 namespace Hani.Modules.Identity.Application.Queries.GetAgencyById;
 
 /// <summary>
+/// Agency document read model.
+/// </summary>
+public sealed record AgencyDocumentDto(
+    Guid DocumentId,
+    string Type,
+    string FileUrl,
+    string Status,
+    DateTimeOffset UploadedAt);
+
+/// <summary>
 /// Agency read model returned to clients.
 /// </summary>
 public sealed record AgencyDto(
@@ -11,4 +21,13 @@ public sealed record AgencyDto(
     string City,
     string Status,
     DateOnly? SubscriptionValidUntil,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    Guid? OwnerUserId,
+    string? Website,
+    string? ContactEmail,
+    string? ContactPhone,
+    string? About,
+    DateTimeOffset? SubmittedAt,
+    DateTimeOffset? ReviewedAt,
+    string? RejectionReason,
+    IReadOnlyList<AgencyDocumentDto> Documents);

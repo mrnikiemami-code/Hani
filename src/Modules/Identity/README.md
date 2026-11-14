@@ -75,12 +75,41 @@ Client → X-Api-Key + X-Api-Secret
 | GET/PUT | `/market/v1/auth/me` |
 | PUT | `/market/v1/auth/me/username` |
 | GET | `/market/v1/authors/{username}` |
+| POST | `/market/v1/agencies/onboarding` |
+| GET | `/market/v1/agencies/me` |
+| GET | `/market/v1/agencies/{slug}` |
+| GET | `/market/v1/trust` |
+| GET/POST | `/market/v1/reviews` |
+| POST | `/market/v1/reviews/{id}/helpful` |
+| POST | `/market/v1/reviews/{id}/report` |
+| POST | `/market/v1/claims` |
+| POST | `/market/v1/media` |
+| GET | `/internal/v1/agencies?status=` |
+| POST | `/internal/v1/agencies/{id}/approve` |
+| POST | `/internal/v1/agencies/{id}/reject` |
+| GET | `/internal/v1/reviews` |
+| POST | `/internal/v1/reviews/{id}/publish` |
+| POST | `/internal/v1/reviews/{id}/reject` |
+| GET | `/internal/v1/claims` |
+| POST | `/internal/v1/claims/{id}/approve` |
+| POST | `/internal/v1/claims/{id}/reject` |
+| GET | `/internal/v1/media` |
+| POST | `/internal/v1/media/{id}/approve` |
+| POST | `/internal/v1/media/{id}/reject` |
 | POST | `/internal/v1/agencies` |
 | GET | `/internal/v1/agencies/{id}` |
 | POST | `/internal/v1/agencies/{id}/api-clients` |
 
+## Trust, Reviews, Claims, Media
+
+- Onboarding آژانس با مدارک License/Website/Contract/Other و وضعیت Pending/Active/Rejected/Suspended.
+- Review چندمعیاره با عکس، helpful vote، report و moderation.
+- Claim مالکیت/اصلاح اطلاعات با evidence و moderation.
+- MediaAsset با محدودیت ۲۰MB و moderation.
+- `/market/v1/trust` اطلاعات پشتیبانی/Enamad/قوانین را از `Trust` config می‌خواند.
+
 ## Persistence
 
 - Schema: `identity`
-- جدول‌ها: `users`, `user_otp_codes`, `user_refresh_tokens`, `agencies`, `api_clients`
-- Migrationها: `InitialIdentity`, `AddUsersAndOtp`
+- جدول‌ها: `users`, `user_otp_codes`, `user_refresh_tokens`, `agencies`, `agency_documents`, `api_clients`, `reviews`, `review_photos`, `review_helpful_votes`, `review_reports`, `ownership_claims`, `media_assets`
+- Migrationها: `InitialIdentity`, `AddUsersAndOtp`, `AddTrustAgencyAndEngagement`

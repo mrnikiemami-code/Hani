@@ -30,11 +30,26 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("About")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("about");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)")
                         .HasColumnName("city");
+
+                    b.Property<string>("ContactEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("contact_email");
+
+                    b.Property<string>("ContactPhone")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("contact_phone");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -52,6 +67,19 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("name");
 
+                    b.Property<Guid?>("OwnerUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_user_id");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("rejection_reason");
+
+                    b.Property<DateTimeOffset?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reviewed_at");
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(80)
@@ -64,15 +92,30 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(32)")
                         .HasColumnName("status");
 
+                    b.Property<DateTimeOffset?>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at");
+
                     b.Property<DateOnly?>("SubscriptionValidUntil")
                         .HasColumnType("date")
                         .HasColumnName("subscription_valid_until");
 
+                    b.Property<string>("Website")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("website");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerUserId")
+                        .HasDatabaseName("ix_agencies_owner_user_id");
 
                     b.HasIndex("Slug")
                         .IsUnique()
                         .HasDatabaseName("ux_agencies_slug");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_agencies_status");
 
                     b.ToTable("agencies", "identity");
                 });
@@ -136,6 +179,263 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ux_api_clients_client_id");
 
                     b.ToTable("api_clients", "identity");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Claims.OwnershipClaim", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ClaimType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("claim_type");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("EvidenceUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("evidence_url");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("full_name");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("message");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("rejection_reason");
+
+                    b.Property<DateTimeOffset?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reviewed_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_id");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("target_type");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_ownership_claims_status");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_ownership_claims_user_id");
+
+                    b.ToTable("ownership_claims", "identity");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Media.MediaAsset", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("kind");
+
+                    b.Property<DateTimeOffset?>("ModeratedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("moderated_at");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_user_id");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("rejection_reason");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("size_bytes");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerUserId")
+                        .HasDatabaseName("ix_media_assets_owner_user_id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_media_assets_status");
+
+                    b.ToTable("media_assets", "identity");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Reviews.Review", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int?>("CleanlinessRating")
+                        .HasColumnType("integer")
+                        .HasColumnName("cleanliness_rating");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("comment");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("EntertainmentRating")
+                        .HasColumnType("integer")
+                        .HasColumnName("entertainment_rating");
+
+                    b.Property<int?>("FoodRating")
+                        .HasColumnType("integer")
+                        .HasColumnName("food_rating");
+
+                    b.Property<int>("HelpfulCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("helpful_count");
+
+                    b.Property<int?>("LocationRating")
+                        .HasColumnType("integer")
+                        .HasColumnName("location_rating");
+
+                    b.Property<string>("ModerationReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("moderation_reason");
+
+                    b.Property<DateTimeOffset?>("PublishedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published_at");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer")
+                        .HasColumnName("rating");
+
+                    b.Property<int>("ReportCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("report_count");
+
+                    b.Property<int?>("StaffRating")
+                        .HasColumnType("integer")
+                        .HasColumnName("staff_rating");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_id");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("target_type");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("title");
+
+                    b.Property<string>("TravelType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("travel_type");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int?>("ValueRating")
+                        .HasColumnType("integer")
+                        .HasColumnName("value_rating");
+
+                    b.Property<DateOnly?>("VisitDate")
+                        .HasColumnType("date")
+                        .HasColumnName("visit_date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_reviews_status");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_reviews_user_id");
+
+                    b.HasIndex("TargetType", "TargetId", "Status")
+                        .HasDatabaseName("ix_reviews_target_status");
+
+                    b.ToTable("reviews", "identity");
                 });
 
             modelBuilder.Entity("Hani.Modules.Identity.Domain.Users.User", b =>
@@ -224,12 +524,174 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.ToTable("users", "identity");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Agencies.Agency", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Identity.Domain.Agencies.AgencyDocument", "Documents", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("AgencyId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("agency_id");
+
+                            b1.Property<string>("FileUrl")
+                                .IsRequired()
+                                .HasMaxLength(1000)
+                                .HasColumnType("character varying(1000)")
+                                .HasColumnName("file_url");
+
+                            b1.Property<string>("Status")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("status");
+
+                            b1.Property<string>("Type")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("type");
+
+                            b1.Property<DateTimeOffset>("UploadedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("uploaded_at");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("AgencyId");
+
+                            b1.ToTable("agency_documents", "identity");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AgencyId");
+                        });
+
+                    b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Reviews.Review", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Identity.Domain.Reviews.ReviewHelpful", "HelpfulVotes", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_at");
+
+                            b1.Property<Guid>("ReviewId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("review_id");
+
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("user_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ReviewId", "UserId")
+                                .IsUnique()
+                                .HasDatabaseName("ux_review_helpful_votes_review_user");
+
+                            b1.ToTable("review_helpful_votes", "identity");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReviewId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Identity.Domain.Reviews.ReviewPhoto", "Photos", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Caption")
+                                .HasMaxLength(300)
+                                .HasColumnType("character varying(300)")
+                                .HasColumnName("caption");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_at");
+
+                            b1.Property<Guid>("ReviewId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("review_id");
+
+                            b1.Property<string>("Status")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("status");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasMaxLength(1000)
+                                .HasColumnType("character varying(1000)")
+                                .HasColumnName("url");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ReviewId");
+
+                            b1.ToTable("review_photos", "identity");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReviewId");
+                        });
+
+                    b.OwnsMany("Hani.Modules.Identity.Domain.Reviews.ReviewReport", "Reports", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_at");
+
+                            b1.Property<string>("Reason")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("reason");
+
+                            b1.Property<Guid>("ReviewId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("review_id");
+
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("user_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ReviewId", "UserId")
+                                .IsUnique()
+                                .HasDatabaseName("ux_review_reports_review_user");
+
+                            b1.ToTable("review_reports", "identity");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReviewId");
+                        });
+
+                    b.Navigation("HelpfulVotes");
+
+                    b.Navigation("Photos");
+
+                    b.Navigation("Reports");
+                });
+
             modelBuilder.Entity("Hani.Modules.Identity.Domain.Users.User", b =>
                 {
                     b.OwnsMany("Hani.Modules.Identity.Domain.Users.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
 
@@ -277,7 +739,6 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.OwnsMany("Hani.Modules.Identity.Domain.Users.UserOtp", "OtpCodes", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
 

@@ -15,8 +15,8 @@
 | 2 | TC-085 | Faceted Search + Sort | ✅ | GAP-04 | فیلترهای کامل |
 | 2 | TC-097 | SEO + Landing + Sitemap | ✅ | GAP-28 | Canonical/JSON-LD |
 | 3 | TC-086 | User Identity + OTP + Profile | ✅ | GAP-09/10 | auth/profile |
-| 3 | TC-087 | Agency Onboarding + Panel | ❌ | GAP-26/27/31 | مجوز/پنل |
-| 3 | TC-089 | Reviews + Photos + Claims | ❌ | GAP-11/20/32 | UGC/اعتماد |
+| 3 | TC-087 | Agency Onboarding + Panel | ✅ | GAP-26/27/31 | مجوز/پنل |
+| 3 | TC-089 | Reviews + Photos + Claims | ✅ | GAP-11/20/32 | UGC/اعتماد |
 | 4 | TC-088 | BookingMode + Request/Lead + RFQ | ❌ | GAP-05/06/19 | Online + Request |
 | 4 | TC-098 | Installments + Offline Payment | ❌ | GAP-17/18 | اقساط/آفلاین |
 | 5 | TC-090 | Hotels + Inquiry | ❌ | GAP-14 | هتل/استعلام |

@@ -31,9 +31,11 @@ using Hani.Modules.Catalog.Infrastructure;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
 using Hani.Modules.Catalog.Presentation;
 using Hani.Modules.Identity.Application;
+using Hani.Modules.Identity.Application.Commands.AgencyOnboarding;
 using Hani.Modules.Identity.Application.Commands.Auth;
 using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Identity.Application.Commands.CreateApiClient;
+using Hani.Modules.Identity.Application.Commands.Engagement;
 using Hani.Modules.Identity.Application.Queries.GetAgencyById;
 using Hani.Modules.Identity.Infrastructure;
 using Hani.Modules.Identity.Infrastructure.Persistence;
@@ -153,6 +155,7 @@ builder.Services.Configure<CommissionOptions>(builder.Configuration.GetSection("
 builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<OtpOptions>(builder.Configuration.GetSection("Otp"));
+builder.Services.Configure<TrustOptions>(builder.Configuration.GetSection("Trust"));
 
 // ---------------------------------------------------------------------------
 // Cross-cutting infrastructure: cache, messaging, tenant, idempotency, telemetry
@@ -210,6 +213,27 @@ builder.Services.AddScoped<IValidator<UpdateProfileCommand>, UpdateProfileComman
 builder.Services.AddScoped<IValidator<ChangeUsernameCommand>, ChangeUsernameCommandValidator>();
 builder.Services.AddScoped<IValidator<GetMeQuery>, GetMeQueryValidator>();
 builder.Services.AddScoped<IValidator<GetAuthorQuery>, GetAuthorQueryValidator>();
+builder.Services.AddScoped<IValidator<CreateAgencyOnboardingCommand>, CreateAgencyOnboardingCommandValidator>();
+builder.Services.AddScoped<IValidator<GetMyAgencyQuery>, GetMyAgencyQueryValidator>();
+builder.Services.AddScoped<IValidator<GetPublicAgencyQuery>, GetPublicAgencyQueryValidator>();
+builder.Services.AddScoped<IValidator<ListAgenciesQuery>, ListAgenciesQueryValidator>();
+builder.Services.AddScoped<IValidator<ApproveAgencyCommand>, ApproveAgencyCommandValidator>();
+builder.Services.AddScoped<IValidator<RejectAgencyCommand>, RejectAgencyCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateReviewCommand>, CreateReviewCommandValidator>();
+builder.Services.AddScoped<IValidator<GetReviewsQuery>, GetReviewsQueryValidator>();
+builder.Services.AddScoped<IValidator<GetPendingReviewsQuery>, GetPendingReviewsQueryValidator>();
+builder.Services.AddScoped<IValidator<PublishReviewCommand>, PublishReviewCommandValidator>();
+builder.Services.AddScoped<IValidator<RejectReviewCommand>, RejectReviewCommandValidator>();
+builder.Services.AddScoped<IValidator<MarkReviewHelpfulCommand>, MarkReviewHelpfulCommandValidator>();
+builder.Services.AddScoped<IValidator<ReportReviewCommand>, ReportReviewCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateClaimCommand>, CreateClaimCommandValidator>();
+builder.Services.AddScoped<IValidator<GetClaimsQuery>, GetClaimsQueryValidator>();
+builder.Services.AddScoped<IValidator<ApproveClaimCommand>, ApproveClaimCommandValidator>();
+builder.Services.AddScoped<IValidator<RejectClaimCommand>, RejectClaimCommandValidator>();
+builder.Services.AddScoped<IValidator<RegisterMediaCommand>, RegisterMediaCommandValidator>();
+builder.Services.AddScoped<IValidator<GetMediaQuery>, GetMediaQueryValidator>();
+builder.Services.AddScoped<IValidator<ApproveMediaCommand>, ApproveMediaCommandValidator>();
+builder.Services.AddScoped<IValidator<RejectMediaCommand>, RejectMediaCommandValidator>();
 builder.Services.AddScoped<IValidator<SearchProductsQuery>, SearchProductsQueryValidator>();
 builder.Services.AddScoped<IValidator<GetProductSeoQuery>, GetProductSeoQueryValidator>();
 builder.Services.AddScoped<IValidator<GetLandingSeoQuery>, GetLandingSeoQueryValidator>();
@@ -335,6 +359,9 @@ app.MapSupplyEndpoints();
 app.MapCatalogEndpoints();
 app.MapIdentityEndpoints();
 app.MapIdentityAuthEndpoints();
+app.MapAgencyOnboardingEndpoints();
+app.MapEngagementEndpoints();
+app.MapTrustEndpoints();
 app.MapMarketplaceEndpoints();
 app.MapBookingEndpoints();
 app.MapPaymentEndpoints();

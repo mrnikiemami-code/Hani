@@ -1,0 +1,289 @@
+openapi: 3.1.0
+info:
+  title: Hani Internal Identity & Engagement API
+  version: 1.0.0
+  description: Agency onboarding, review, claim, and media moderation endpoints.
+servers:
+  - url: https://api.example.com
+    description: Production
+  - url: http://localhost:5099
+    description: Local
+
+tags:
+  - name: Agency
+  - name: Reviews
+  - name: Claims
+  - name: Media
+
+paths:
+  /internal/v1/agencies:
+    get:
+      tags: [Agency]
+      summary: List agencies for the admin panel
+      parameters:
+        - { name: status, in: query, schema: { type: [string, 'null'], enum: [Active, Suspended, Pending, Rejected, null] } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Agency' }
+
+  /internal/v1/agencies/{agencyId}/approve:
+    post:
+      tags: [Agency]
+      summary: Approve a pending agency
+      parameters:
+        - { name: agencyId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Approved
+          content:
+            application/json:
+              schema: { type: boolean }
+
+  /internal/v1/agencies/{agencyId}/reject:
+    post:
+      tags: [Agency]
+      summary: Reject a pending agency
+      parameters:
+        - { name: agencyId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ModerationRequest' }
+      responses:
+        '200':
+          description: Rejected
+          content:
+            application/json:
+              schema: { type: boolean }
+
+  /internal/v1/reviews:
+    get:
+      tags: [Reviews]
+      summary: List reviews awaiting moderation
+      parameters:
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReviewPage' }
+
+  /internal/v1/reviews/{reviewId}/publish:
+    post:
+      tags: [Reviews]
+      summary: Publish a pending review
+      parameters:
+        - { name: reviewId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Published
+          content:
+            application/json:
+              schema: { type: boolean }
+
+  /internal/v1/reviews/{reviewId}/reject:
+    post:
+      tags: [Reviews]
+      summary: Reject a pending review
+      parameters:
+        - { name: reviewId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ModerationRequest' }
+      responses:
+        '200':
+          description: Rejected
+          content:
+            application/json:
+              schema: { type: boolean }
+
+  /internal/v1/claims:
+    get:
+      tags: [Claims]
+      summary: List ownership/correction claims
+      parameters:
+        - { name: status, in: query, schema: { type: [string, 'null'], enum: [Pending, Approved, Rejected, null] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ClaimPage' }
+
+  /internal/v1/claims/{claimId}/approve:
+    post:
+      tags: [Claims]
+      summary: Approve a pending claim
+      parameters:
+        - { name: claimId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Approved
+          content:
+            application/json:
+              schema: { type: boolean }
+
+  /internal/v1/claims/{claimId}/reject:
+    post:
+      tags: [Claims]
+      summary: Reject a pending claim
+      parameters:
+        - { name: claimId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ModerationRequest' }
+      responses:
+        '200':
+          description: Rejected
+          content:
+            application/json:
+              schema: { type: boolean }
+
+  /internal/v1/media:
+    get:
+      tags: [Media]
+      summary: List media assets for moderation
+      parameters:
+        - { name: status, in: query, schema: { type: [string, 'null'], enum: [Pending, Approved, Rejected, null] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MediaPage' }
+
+  /internal/v1/media/{mediaId}/approve:
+    post:
+      tags: [Media]
+      summary: Approve a pending media asset
+      parameters:
+        - { name: mediaId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Approved
+          content:
+            application/json:
+              schema: { type: boolean }
+
+  /internal/v1/media/{mediaId}/reject:
+    post:
+      tags: [Media]
+      summary: Reject a pending media asset
+      parameters:
+        - { name: mediaId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ModerationRequest' }
+      responses:
+        '200':
+          description: Rejected
+          content:
+            application/json:
+              schema: { type: boolean }
+
+components:
+  schemas:
+    ModerationRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    Agency:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        name: { type: string }
+        status: { type: string }
+        city: { type: string }
+        submittedAt: { type: [string, 'null'], format: date-time }
+        reviewedAt: { type: [string, 'null'], format: date-time }
+        rejectionReason: { type: [string, 'null'] }
+
+    Review:
+      type: object
+      properties:
+        reviewId: { type: string, format: uuid }
+        userId: { type: string, format: uuid }
+        authorDisplayName: { type: string }
+        targetType: { type: string }
+        targetId: { type: string, format: uuid }
+        rating: { type: integer }
+        status: { type: string }
+        comment: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    ReviewPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Review' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalCount: { type: integer }
+        totalPages: { type: integer }
+
+    Claim:
+      type: object
+      properties:
+        claimId: { type: string, format: uuid }
+        userId: { type: string, format: uuid }
+        targetType: { type: string }
+        targetId: { type: string, format: uuid }
+        claimType: { type: string }
+        status: { type: string }
+        fullName: { type: string }
+        message: { type: string }
+
+    ClaimPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Claim' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalCount: { type: integer }
+        totalPages: { type: integer }
+
+    Media:
+      type: object
+      properties:
+        mediaId: { type: string, format: uuid }
+        ownerUserId: { type: string, format: uuid }
+        url: { type: string }
+        contentType: { type: string }
+        sizeBytes: { type: integer }
+        kind: { type: string }
+        status: { type: string }
+
+    MediaPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Media' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalCount: { type: integer }
+        totalPages: { type: integer }

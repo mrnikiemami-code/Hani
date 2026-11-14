@@ -312,6 +312,184 @@ paths:
           description: Author not found
         default: { $ref: '#/components/responses/Problem' }
 
+  /agencies/onboarding:
+    post:
+      tags: [Identity]
+      summary: Submit an agency onboarding request
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateAgencyOnboardingRequest' }
+      responses:
+        '200':
+          description: Created pending agency
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Agency' }
+        '400':
+          description: Invalid onboarding
+        '409':
+          description: Slug already used
+        default: { $ref: '#/components/responses/Problem' }
+
+  /agencies/me:
+    get:
+      tags: [Identity]
+      summary: Read the current user's agency onboarding state
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Agency' }
+        '404':
+          description: No onboarding found
+        default: { $ref: '#/components/responses/Problem' }
+
+  /agencies/{slug}:
+    get:
+      tags: [Identity]
+      summary: Read a public approved agency profile
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PublicAgency' }
+        '404':
+          description: Agency not found
+        default: { $ref: '#/components/responses/Problem' }
+
+  /trust:
+    get:
+      tags: [Identity]
+      summary: Read public trust and support information
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Trust' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /reviews:
+    get:
+      tags: [Identity]
+      summary: Read published reviews for a target
+      parameters:
+        - { name: targetType, in: query, required: true, schema: { type: string, enum: [Tour, Hotel, Agency, Attraction, Restaurant] } }
+        - { name: targetId, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: minRating, in: query, schema: { type: [integer, 'null'], minimum: 1, maximum: 5 } }
+        - { name: sort, in: query, schema: { type: [string, 'null'], enum: [newest, helpful, rating, null] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReviewPage' }
+        default: { $ref: '#/components/responses/Problem' }
+    post:
+      tags: [Identity]
+      summary: Create a pending review for the authenticated user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateReviewRequest' }
+      responses:
+        '200':
+          description: Pending review
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Review' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /reviews/{reviewId}/helpful:
+    post:
+      tags: [Identity]
+      summary: Mark a review helpful
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: reviewId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Vote result
+          content:
+            application/json:
+              schema: { type: boolean }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /reviews/{reviewId}/report:
+    post:
+      tags: [Identity]
+      summary: Report a published review
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: reviewId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ModerationRequest' }
+      responses:
+        '200':
+          description: Report result
+          content:
+            application/json:
+              schema: { type: boolean }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /claims:
+    post:
+      tags: [Identity]
+      summary: Create an ownership or correction claim
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateClaimRequest' }
+      responses:
+        '200':
+          description: Pending claim
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Claim' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /media:
+    post:
+      tags: [Identity]
+      summary: Register a media asset for moderation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterMediaRequest' }
+      responses:
+        '200':
+          description: Pending media
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Media' }
+        default: { $ref: '#/components/responses/Problem' }
+
   /quotes:
     post:
       tags: [Booking]
@@ -1055,6 +1233,215 @@ components:
         refreshToken: { type: string }
         accessTokenExpiresAt: { type: string, format: date-time }
         user: { $ref: '#/components/schemas/User' }
+
+    AgencyDocument:
+      type: object
+      properties:
+        documentId: { type: string, format: uuid }
+        type: { type: string, enum: [License, Website, Contract, Other] }
+        fileUrl: { type: string, format: uri }
+        status: { type: string, enum: [Pending, Approved, Rejected] }
+        uploadedAt: { type: string, format: date-time }
+
+    Agency:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        name: { type: string }
+        licenseNo: { type: string }
+        city: { type: string }
+        status: { type: string, enum: [Active, Suspended, Pending, Rejected] }
+        ownerUserId: { type: [string, 'null'], format: uuid }
+        website: { type: [string, 'null'] }
+        contactEmail: { type: [string, 'null'] }
+        contactPhone: { type: [string, 'null'] }
+        about: { type: [string, 'null'] }
+        submittedAt: { type: [string, 'null'], format: date-time }
+        reviewedAt: { type: [string, 'null'], format: date-time }
+        rejectionReason: { type: [string, 'null'] }
+        documents:
+          type: array
+          items: { $ref: '#/components/schemas/AgencyDocument' }
+
+    CreateAgencyOnboardingRequest:
+      type: object
+      required: [slug, name, licenseNo, city, documents]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        licenseNo: { type: string }
+        city: { type: string }
+        website: { type: [string, 'null'] }
+        contactEmail: { type: [string, 'null'] }
+        contactPhone: { type: [string, 'null'] }
+        about: { type: [string, 'null'] }
+        documents:
+          type: array
+          items:
+            type: object
+            required: [type, fileUrl]
+            properties:
+              type: { type: string, enum: [License, Website, Contract, Other] }
+              fileUrl: { type: string, format: uri }
+
+    PublicAgency:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        name: { type: string }
+        city: { type: string }
+        website: { type: [string, 'null'] }
+        contactEmail: { type: [string, 'null'] }
+        contactPhone: { type: [string, 'null'] }
+        about: { type: [string, 'null'] }
+        memberSince: { type: string, format: date-time }
+
+    Trust:
+      type: object
+      properties:
+        supportPhone: { type: string }
+        supportEmail: { type: string }
+        enamadUrl: { type: string }
+        termsUrl: { type: string }
+        aboutUrl: { type: string }
+
+    ReviewPhoto:
+      type: object
+      properties:
+        photoId: { type: string, format: uuid }
+        url: { type: string, format: uri }
+        caption: { type: [string, 'null'] }
+        status: { type: string, enum: [Pending, Approved, Rejected] }
+
+    Review:
+      type: object
+      properties:
+        reviewId: { type: string, format: uuid }
+        userId: { type: string, format: uuid }
+        authorUsername: { type: string }
+        authorDisplayName: { type: string }
+        authorAvatarUrl: { type: [string, 'null'] }
+        targetType: { type: string, enum: [Tour, Hotel, Agency, Attraction, Restaurant] }
+        targetId: { type: string, format: uuid }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        foodRating: { type: [integer, 'null'] }
+        cleanlinessRating: { type: [integer, 'null'] }
+        staffRating: { type: [integer, 'null'] }
+        entertainmentRating: { type: [integer, 'null'] }
+        locationRating: { type: [integer, 'null'] }
+        valueRating: { type: [integer, 'null'] }
+        title: { type: [string, 'null'] }
+        comment: { type: string }
+        travelType: { type: string, enum: [Family, Solo, Couple, Business, Other] }
+        visitDate: { type: [string, 'null'], format: date }
+        status: { type: string, enum: [Pending, Published, Rejected] }
+        helpfulCount: { type: integer }
+        reportCount: { type: integer }
+        createdAt: { type: string, format: date-time }
+        publishedAt: { type: [string, 'null'], format: date-time }
+        photos:
+          type: array
+          items: { $ref: '#/components/schemas/ReviewPhoto' }
+
+    ReviewPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Review' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalCount: { type: integer }
+        totalPages: { type: integer }
+
+    CreateReviewRequest:
+      type: object
+      required: [targetType, targetId, rating, comment, travelType]
+      properties:
+        targetType: { type: string, enum: [Tour, Hotel, Agency, Attraction, Restaurant] }
+        targetId: { type: string, format: uuid }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        foodRating: { type: [integer, 'null'] }
+        cleanlinessRating: { type: [integer, 'null'] }
+        staffRating: { type: [integer, 'null'] }
+        entertainmentRating: { type: [integer, 'null'] }
+        locationRating: { type: [integer, 'null'] }
+        valueRating: { type: [integer, 'null'] }
+        title: { type: [string, 'null'] }
+        comment: { type: string }
+        travelType: { type: string, enum: [Family, Solo, Couple, Business, Other] }
+        visitDate: { type: [string, 'null'], format: date }
+        photos:
+          type: array
+          items:
+            type: object
+            required: [url]
+            properties:
+              url: { type: string, format: uri }
+              caption: { type: [string, 'null'] }
+
+    Claim:
+      type: object
+      properties:
+        claimId: { type: string, format: uuid }
+        userId: { type: string, format: uuid }
+        targetType: { type: string }
+        targetId: { type: string, format: uuid }
+        claimType: { type: string, enum: [Ownership, Correction] }
+        fullName: { type: string }
+        email: { type: string }
+        phone: { type: [string, 'null'] }
+        message: { type: string }
+        evidenceUrl: { type: [string, 'null'] }
+        status: { type: string, enum: [Pending, Approved, Rejected] }
+        createdAt: { type: string, format: date-time }
+        reviewedAt: { type: [string, 'null'], format: date-time }
+        rejectionReason: { type: [string, 'null'] }
+
+    CreateClaimRequest:
+      type: object
+      required: [targetType, targetId, claimType, fullName, email, message]
+      properties:
+        targetType: { type: string, enum: [Tour, Hotel, Agency, Attraction, Restaurant] }
+        targetId: { type: string, format: uuid }
+        claimType: { type: string, enum: [Ownership, Correction] }
+        fullName: { type: string }
+        email: { type: string, format: email }
+        phone: { type: [string, 'null'] }
+        message: { type: string }
+        evidenceUrl: { type: [string, 'null'] }
+
+    Media:
+      type: object
+      properties:
+        mediaId: { type: string, format: uuid }
+        ownerUserId: { type: string, format: uuid }
+        url: { type: string, format: uri }
+        contentType: { type: string }
+        sizeBytes: { type: integer }
+        kind: { type: string, enum: [ReviewPhoto, ClaimEvidence, Avatar, Other] }
+        status: { type: string, enum: [Pending, Approved, Rejected] }
+        createdAt: { type: string, format: date-time }
+        moderatedAt: { type: [string, 'null'], format: date-time }
+        rejectionReason: { type: [string, 'null'] }
+
+    RegisterMediaRequest:
+      type: object
+      required: [url, contentType, sizeBytes, kind]
+      properties:
+        url: { type: string, format: uri }
+        contentType: { type: string }
+        sizeBytes: { type: integer, minimum: 1, maximum: 20971520 }
+        kind: { type: string, enum: [ReviewPhoto, ClaimEvidence, Avatar, Other] }
+
+    ModerationRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, maxLength: 500 }
+
 
   securitySchemes:
     bearerAuth:

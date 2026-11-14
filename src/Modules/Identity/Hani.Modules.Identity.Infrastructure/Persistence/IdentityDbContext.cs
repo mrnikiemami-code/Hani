@@ -1,5 +1,8 @@
 using Hani.Modules.Identity.Domain.Agencies;
 using Hani.Modules.Identity.Domain.ApiClients;
+using Hani.Modules.Identity.Domain.Claims;
+using Hani.Modules.Identity.Domain.Media;
+using Hani.Modules.Identity.Domain.Reviews;
 using Hani.Modules.Identity.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +18,12 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
     public DbSet<ApiClient> ApiClients => Set<ApiClient>();
 
     public DbSet<User> Users => Set<User>();
+
+    public DbSet<Review> Reviews => Set<Review>();
+
+    public DbSet<OwnershipClaim> Claims => Set<OwnershipClaim>();
+
+    public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

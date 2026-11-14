@@ -1,12 +1,12 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۱ آبان ۱۴۰۵
-> **فاز فعال:** Baseline Gate 3 — Identity, Trust & Agency
+> **فاز فعال:** Baseline Gate 4 — Booking, Request & Lead
 > **آخرین commit کد:** `026724a`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 — In Progress
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 — In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
-> **گزارش Gate:** [`../reports/baseline-gate-2.md`](../reports/baseline-gate-2.md)
+> **گزارش Gate:** [`../reports/baseline-gate-3.md`](../reports/baseline-gate-3.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
 ---
@@ -94,6 +94,7 @@
 | Lastsecond Re-audit | تأیید صفحات + اصلاح minPrice چندارزی + هتل/پرواز/مالیات در compare + هتل در Quote/Order/Contract | `13cf435` |
 | Discovery & SEO | Faceted Search/Sort + Canonical/JSON-LD/Sitemap/Landing + robots | `d7921ac` |
 | Identity Core | User + OTP + JWT/refresh + profile + author | `026724a` |
+| Trust & Agency | Onboarding/documents/admin panel/trust + reviews/claims/media | این تغییر |
 | Agent policy | `AGENTS.md` + Cursor rule + PR/DoD | AGENTS.md |
 
 ### خارج از Gate (به فاز بعد منتقل شد)
@@ -150,10 +151,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | ۱۰۳ passed |
+| Unit Tests | ۱۰۷ passed |
 | Architecture Tests | ۳۴ passed |
-| Total | **۱۳۷ passed** |
-| Migrations | Supply (۵) / Catalog (۲) / Identity (۲) / Booking (۴) / Payments (۴) / Settlement (۲) |
+| Total | **۱۴۱ passed** |
+| Migrations | Supply (۵) / Catalog (۲) / Identity (۳) / Booking (۴) / Payments (۴) / Settlement (۲) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API Health | Healthy |
@@ -162,27 +163,29 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 3 — Identity, Trust & Agency
+**تسک فعال:** Gate 4 — Booking, Request & Lead
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
-**GAPهای Gate 2:** ✅ GAP-04 (Faceted Search/Sort), GAP-28 (SEO/Landing/Sitemap)
-**GAPهای Gate 3:** ✅ GAP-09/10 (Identity/Profile) — باز: GAP-26/27/31 (Agency/Trust) و GAP-11/20/32 (Reviews/Claims/Media)
+**GAPهای Gate 2:** ✅ GAP-04, GAP-28
+**GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
+**GAPهای Gate 4 (باز):** GAP-05 (BookingMode), GAP-06 (Lead/RFQ), GAP-19 (Price discrepancy), GAP-17/18 (Installments/Offline)
 **Baseline:** ۳۴ GAP ثبت‌شده؛ ۰ P0 باز در Gateهای قبلی
-**قرارداد Gate 3:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
+**قرارداد Gate 4:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 
-### Gate 3 — Identity Core ✅ / Gate باز
+### Gate 3 — Exit Checklist ✅
 
 - [x] User + OTP + JWT + refresh rotation
 - [x] Profile + author endpoint
-- [x] OTP rate limit/cooldown/attempts + HMAC hash
-- [x] Migration `AddUsersAndOtp`
+- [x] Agency onboarding + documents
+- [x] Agency/Admin panel APIs
+- [x] Trust/Support
+- [x] Reviews + multi-criteria ratings + photos
+- [x] Claims/Corrections
+- [x] Media/UGC moderation
+- [x] Migration `AddTrustAgencyAndEngagement`
 - [x] OpenAPI + README
-- [ ] Agency onboarding + documents
-- [ ] Agency/Admin panel
-- [ ] Trust/Support
-- [ ] Reviews + Rating + Photos
-- [ ] Claims/Corrections
-- [ ] Media/UGC moderation
-- [ ] Gate 3 Deviation Audit + PASS report
+- [x] Gate 3 Deviation Audit + PASS report
+
+> Gate 3 **PASSED** شد. Gate 4 فقط با GAPهای BookingMode/Lead/RFQ/Installments شروع می‌شود.
 
 ### Gate 2 — Exit Checklist ✅
 

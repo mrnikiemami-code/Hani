@@ -20,6 +20,28 @@ public interface IAgencyRepository
     Task<Agency?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Returns the agency owned by a user, or <c>null</c>.
+    /// </summary>
+    Task<Agency?> GetByOwnerUserIdAsync(Guid userId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns an agency by public slug, or <c>null</c>.
+    /// </summary>
+    Task<Agency?> GetBySlugAsync(string slug, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Lists agencies, optionally filtered by status.
+    /// </summary>
+    Task<IReadOnlyList<Agency>> ListAsync(
+        AgencyStatus? status,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Persists pending changes.
+    /// </summary>
+    Task SaveChangesAsync(CancellationToken cancellationToken);
+
+    /// <summary>
     /// Checks whether a slug is already used.
     /// </summary>
     Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken);

@@ -17,6 +17,9 @@ public static class DependencyInjection
         services.AddScoped<IAgencyRepository, AgencyRepository>();
         services.AddScoped<IApiClientRepository, ApiClientRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<IClaimRepository, ClaimRepository>();
+        services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddSingleton<ISecretGenerator, SecretGenerator>();
         services.AddSingleton<ISecretHasher, SecretHasher>();
         services.AddSingleton<IOtpCodeGenerator, NumericOtpCodeGenerator>();

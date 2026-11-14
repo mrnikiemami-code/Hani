@@ -6,5 +6,7 @@ namespace Hani.Modules.Identity.Domain.Agencies;
 public enum AgencyStatus
 {
     Active = 0,
-    Suspended = 1
+    Suspended = 1,
+    Pending = 2,
+    Rejected = 3
 }

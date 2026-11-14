@@ -18,14 +18,6 @@ internal sealed class GetAgencyByIdQueryHandler(IAgencyRepository agencies)
                 Error.NotFound("HANI-IDENTITY-1010", "Agency was not found."));
         }
 
-        return Result<AgencyDto>.Success(new AgencyDto(
-            agency.Id,
-            agency.Slug,
-            agency.Name,
-            agency.LicenseNo,
-            agency.City,
-            agency.Status.ToString(),
-            agency.SubscriptionValidUntil,
-            agency.CreatedAt));
+        return Result<AgencyDto>.Success(AgencyMappings.ToDto(agency));
     }
 }
