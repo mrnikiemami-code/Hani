@@ -535,6 +535,38 @@
           "Hani.Modules.Catalog.Application": "[1.0.0, )"
         }
       },
+      "hani.modules.content.application": {
+        "type": "Project",
+        "dependencies": {
+          "FluentValidation": "[12.2.0, )",
+          "Hani.BuildingBlocks.Application": "[1.0.0, )",
+          "Hani.Modules.Content.Domain": "[1.0.0, )",
+          "MediatR": "[12.5.0, )"
+        }
+      },
+      "hani.modules.content.domain": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "hani.modules.content.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Content.Application": "[1.0.0, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.15, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
+      "hani.modules.content.presentation": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.AspNetCore": "[1.0.0, )",
+          "Hani.Modules.Content.Application": "[1.0.0, )",
+          "MediatR": "[12.5.0, )"
+        }
+      },
       "hani.modules.identity.application": {
         "type": "Project",
         "dependencies": {

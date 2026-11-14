@@ -531,6 +531,12 @@
           "Hani.BuildingBlocks.Domain": "[1.0.0, )"
         }
       },
+      "hani.modules.content.domain": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
       "hani.modules.identity.application": {
         "type": "Project",
         "dependencies": {

@@ -23,15 +23,15 @@
 | 5 | TC-091 | Visa + Documents | ✅ | GAP-15/21 | ویزا/مدارک |
 | 5 | TC-092 | Flights Metasearch | ✅ | GAP-16 | جستجو/ارجاع |
 | 5 | TC-094 | Places + Geo + Restaurant Reservation | ✅ | GAP-13/25/29 | دایرکتوری/نقشه |
-| 6 | TC-093 | Content: Itineraries/Blog/Videos | ⏳ | GAP-12 | محتوا |
-| 6 | TC-095 | Media + Moderation | ⏳ | GAP-32 | آپلود/مدیریت |
-| 6 | TC-096 | SMS + Newsletter + Notifications | ⏳ | GAP-22/33 | OTP/خبرنامه |
-| 6 | TC-099 | Ranking + Ads + Analytics | ⏳ | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
-| 6 | TC-100 | Campaigns + BlindTour | ⏳ | GAP-23 | کمپین |
+| 6 | TC-093 | Content: Itineraries/Blog/Videos | ✅ | GAP-12 | محتوا |
+| 6 | TC-095 | Media + Moderation | ✅ | GAP-32 | آپلود/مدیریت |
+| 6 | TC-096 | SMS + Newsletter + Notifications | 🚧 | GAP-22/33 | OTP/خبرنامه |
+| 6 | TC-099 | Ranking + Ads + Analytics | 🚧 | GAP-24/30/34 | رتبه/تبلیغ/آنالیتیکس |
+| 6 | TC-100 | Campaigns + BlindTour | ✅ | GAP-23 | کمپین |
 
 > Gate 7 (Channel/Billing) و Gate 8 (Hardening) در Baseline به‌عنوان Hani-Better تعریف شده‌اند و GAP مستقیم Lastsecond ندارند.
 
-> **Gate 5 و Gate 5.1 PASSED هستند.** Audit Remediation A-01..A-08 و B-01..B-08 کامل شد؛ Gate 5.1 residualهای صفحه‌به‌صفحه Lastsecond را بست. Gate 6 آماده شروع است.
+> **Gate 6 در حال اجراست.** Content module (Blog/Travelogue/Video)، Gamification، Ads، Newsletter/SMS، Campaign و Analytics پیاده‌سازی شد. GAP-24 (recommendation) و GAP-33 (notification dispatch) و C-08 (dashboard) باقی است.
 
 ## Phase 0 — Foundation ✅
 

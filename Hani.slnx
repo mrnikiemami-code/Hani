@@ -28,6 +28,12 @@
     <Project Path="src/Modules/Catalog/Hani.Modules.Catalog.Infrastructure/Hani.Modules.Catalog.Infrastructure.csproj" />
     <Project Path="src/Modules/Catalog/Hani.Modules.Catalog.Presentation/Hani.Modules.Catalog.Presentation.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Content/">
+    <Project Path="src/Modules/Content/Hani.Modules.Content.Application/Hani.Modules.Content.Application.csproj" />
+    <Project Path="src/Modules/Content/Hani.Modules.Content.Domain/Hani.Modules.Content.Domain.csproj" />
+    <Project Path="src/Modules/Content/Hani.Modules.Content.Infrastructure/Hani.Modules.Content.Infrastructure.csproj" />
+    <Project Path="src/Modules/Content/Hani.Modules.Content.Presentation/Hani.Modules.Content.Presentation.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Identity/">
     <Project Path="src/Modules/Identity/Hani.Modules.Identity.Application/Hani.Modules.Identity.Application.csproj" />
     <Project Path="src/Modules/Identity/Hani.Modules.Identity.Domain/Hani.Modules.Identity.Domain.csproj" />

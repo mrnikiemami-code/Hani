@@ -109,6 +109,7 @@ Client → X-Api-Key + X-Api-Secret
 - Review list فیلتر بازه تاریخ + sort دارد و media سوژه از عکس‌های تأییدشده Review خوانده می‌شود.
 - پروفایل عمومی آژانس شامل مجوز/تاریخ/مدیر/پرسنل/آدرس/فایل مجوز است.
 - MediaAsset با محدودیت ۲۰MB و moderation.
+- Gamification: `UserGamification` (points/level/travelStyle)، `BadgeDefinition` و `UserBadge`.
 - `/market/v1/trust` اطلاعات پشتیبانی/Enamad/قوانین را از `Trust` config می‌خواند.
 
 ## Persistence

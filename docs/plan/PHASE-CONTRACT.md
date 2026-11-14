@@ -28,7 +28,7 @@
 | 3 | Identity, Trust & Agency | GAP-09/10/26/27/31 (TC-086/087)، GAP-11/20/32 (TC-089) | ✅ PASSED |
 | 4 | Booking, Request & Lead | GAP-05/06/19 (TC-088)، GAP-17/18 (TC-098) | ✅ PASSED |
 | 5 | Verticals | GAP-13/25/29 (TC-094)، GAP-14 (TC-090)، GAP-15/21 (TC-091)، GAP-16 (TC-092) | ✅ PASSED + 5.1 |
-| 6 | Content & Growth | GAP-12 (TC-093)، GAP-22/33 (TC-096)، GAP-23 (TC-100)، GAP-24/30/34 (TC-099) | ⏳ Ready |
+| 6 | Content & Growth | GAP-12 (TC-093)، GAP-22/33 (TC-096)، GAP-23 (TC-100)، GAP-24/30/34 (TC-099) | 🚧 In Progress |
 | 7 | Channel & Billing | HB-02 — Supplier/Channel OAuth + contracts (بدون GAP در baseline) | ⏳ |
 | 8 | Hardening | Reliability/Security/Performance/NFR (بدون GAP در baseline) | ⏳ |
 
@@ -260,5 +260,5 @@
 - Gate 4: ✅ Remediated — GAP-05/06/19/17/18 بسته شدند و Audit Remediation A-01..A-08 اعمال شد.
 - Gate 5: ✅ PASSED — GAP-13/14/15/16/21/25/29 و B-01..B-08 بسته شدند.
 - Gate 5.1: ✅ PASSED — residualهای depth (rooms/meal/flight/visa/SEO/rank) بسته شدند.
-- Gate 6: ⏳ Ready — Content & Growth.
+- Gate 6: 🚧 In Progress — Content/Gamification/Ads/Newsletter/Campaign/Analytics پیاده شد؛ Recommendation/Notification dispatch/Dashboard باقی است.
 - Audit: [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)

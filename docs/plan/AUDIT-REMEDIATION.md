@@ -53,13 +53,13 @@
 
 | ID | عنوان | GAP | Priority | وابستگی | Acceptance | Status |
 |---|---|---|---|---|---|---|
-| C-01 | BlogPost/Category/Author/Comment | GAP-12 | P1 | A-04 | Blog model + API + SEO | ⏳ Planned |
-| C-02 | Travelogue + series + media + comments | GAP-12 | P1 | C-01 | Travelogue model + API | ⏳ Planned |
-| C-03 | Video + Aparat/MP4 + level/stats | GAP-12 | P1 | C-01 | Video model + API | ⏳ Planned |
-| C-04 | Badge/Level/Points/TravelStyle | GAP-24 (New) | P2 | A-04 | Gamification aggregate + profile | ⏳ Planned |
-| C-05 | Ads/AdSlot/AdEvent | GAP-30 | P2 | — | Ad model + click tracking | ⏳ Planned |
-| C-06 | Newsletter/SMS consent/campaign | GAP-22 | P1 | — | Subscription + verification + campaign | ⏳ Planned |
-| C-07 | BlindTour/Campaign | GAP-23 | P2 | C-06 | Campaign + registration + FAQ | ⏳ Planned |
+| C-01 | BlogPost/Category/Author/Comment | GAP-12 | P1 | A-04 | Blog model + API + SEO | ✅ Done |
+| C-02 | Travelogue + series + media + comments | GAP-12 | P1 | C-01 | Travelogue model + API | ✅ Done |
+| C-03 | Video + Aparat/MP4 + level/stats | GAP-12 | P1 | C-01 | Video model + API | ✅ Done |
+| C-04 | Badge/Level/Points/TravelStyle | GAP-24 (New) | P2 | A-04 | Gamification aggregate + profile | ✅ Done |
+| C-05 | Ads/AdSlot/AdEvent | GAP-30 | P2 | — | Ad model + click tracking | ✅ Done |
+| C-06 | Newsletter/SMS consent/campaign | GAP-22 | P1 | — | Subscription + verification + campaign | ✅ Done |
+| C-07 | BlindTour/Campaign | GAP-23 | P2 | C-06 | Campaign + registration + FAQ | ✅ Done |
 | C-08 | Dashboard requests/passengers/documents/messages | GAP-27 (New) | P1 | A-04 | Request/passenger/document/message aggregates | ⏳ Planned |
 
 ---
@@ -130,6 +130,18 @@
 | Visa depth | `VisaCountry.cs` (`IssuanceType`, document category), `VisaApplication.Applicants`, `20261114060158_AddGate51VisaApplicants` |
 | Landing/JSON-LD labels | `GetVerticalLandingSeoQueryHandler`, `SeoLabels.cs`, `BuildVerticalJsonLd`, appsettings `Seo:Labels` |
 | Violation/Amendment | `ClaimType.cs` enum values |
+
+### Gate 6 — C-01..C-07 evidence
+
+| ID | Evidence |
+|---|---|
+| C-01 | `BlogPost.cs`, `ContentRepository.cs`, `ContentEndpoints.cs`, `20261114062343_InitialContent`, `content-api-v1.openapi.yaml` |
+| C-02 | `Travelogue.cs`, `ContentComment.cs`, `ContentRepository.cs`, `20261114062343_InitialContent` |
+| C-03 | `Video.cs`, `ContentRepository.cs`, `ContentEndpoints.cs`, `20261114062343_InitialContent` |
+| C-04 | `Gamification.cs`, `GamificationRepository.cs`, `GamificationEndpoints.cs`, `20261114062348_AddGate6Gamification` |
+| C-05 | `GrowthAggregates.cs` (`AdSlot`, `AdEvent`), `ContentEndpoints.cs`, `20261114062343_InitialContent` |
+| C-06 | `NewsletterSubscription`, `SubscribeNewsletterCommandHandler`, `ContentEndpoints.cs` |
+| C-07 | `Campaign`, `CampaignRegistration`, `CreateCampaignCommandHandler`, `ContentEndpoints.cs` |
 
 ## ۹. وضعیت Baseline
 

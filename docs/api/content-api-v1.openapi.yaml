@@ -1,0 +1,203 @@
+openapi: 3.0.3
+info:
+  title: Hani Content & Growth API
+  version: 1.0.0
+  description: Public blog, travelogue, video, ads, newsletter, campaign, and gamification surfaces.
+servers:
+  - url: https://api.hani.ir
+paths:
+  /market/v1/content/blog:
+    get:
+      tags: [Content]
+      summary: Search published blog posts
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: categorySlug, in: query, schema: { type: [string, 'null'] } }
+        - { name: q, in: query, schema: { type: [string, 'null'] } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200': { description: Paged blog posts }
+        default: { description: Problem }
+  /market/v1/content/blog/{slug}:
+    get:
+      tags: [Content]
+      summary: Read one published blog post and increment views
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+      responses:
+        '200': { description: Blog detail }
+        '404': { description: Not found }
+  /market/v1/content/blog/{slug}/comments:
+    post:
+      tags: [Content]
+      summary: Create a pending blog comment
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Comment id }
+  /market/v1/content/blog/{slug}/like:
+    post:
+      tags: [Content]
+      summary: Increment a blog like counter
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Liked }
+  /market/v1/content/travelogues:
+    get:
+      tags: [Content]
+      summary: Search published travelogues
+      responses:
+        '200': { description: Paged travelogues }
+  /market/v1/content/travelogues/{slug}:
+    get:
+      tags: [Content]
+      summary: Read one travelogue
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Travelogue detail }
+  /market/v1/content/travelogues/{slug}/comments:
+    post:
+      tags: [Content]
+      summary: Create a pending travelogue comment
+      responses:
+        '200': { description: Comment id }
+  /market/v1/content/travelogues/{slug}/like:
+    post:
+      tags: [Content]
+      summary: Increment a travelogue like counter
+      responses:
+        '200': { description: Liked }
+  /market/v1/content/videos:
+    get:
+      tags: [Content]
+      summary: Search published videos
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: categoryId, in: query, schema: { type: [string, 'null'], format: uuid } }
+        - { name: level, in: query, schema: { type: [integer, 'null'], minimum: 0, maximum: 7 } }
+      responses:
+        '200': { description: Paged videos }
+  /market/v1/content/videos/{slug}:
+    get:
+      tags: [Content]
+      summary: Read one video and increment views
+      responses:
+        '200': { description: Video detail }
+  /market/v1/content/videos/{slug}/comments:
+    post:
+      tags: [Content]
+      summary: Create a pending video comment
+      responses:
+        '200': { description: Comment id }
+  /market/v1/content/videos/{slug}/like:
+    post:
+      tags: [Content]
+      summary: Increment a video like counter
+      responses:
+        '200': { description: Liked }
+  /market/v1/content/authors/{userId}/stats:
+    get:
+      tags: [Content]
+      summary: Read author content counts
+      parameters:
+        - { name: userId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Author stats }
+  /market/v1/content/trending:
+    get:
+      tags: [Growth]
+      summary: Rank trending content by views and likes
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: limit, in: query, schema: { type: integer, default: 10, maximum: 50 } }
+      responses:
+        '200': { description: Trending content }
+  /market/v1/growth/analytics/summary:
+    get:
+      tags: [Growth]
+      summary: Read aggregated analytics counts
+      parameters:
+        - { name: eventName, in: query, schema: { type: [string, 'null'] } }
+        - { name: from, in: query, schema: { type: [string, 'null'], format: date-time } }
+        - { name: to, in: query, schema: { type: [string, 'null'], format: date-time } }
+      responses:
+        '200': { description: Analytics summary }
+  /market/v1/growth/ads/{slotCode}:
+    get:
+      tags: [Growth]
+      summary: Read active creatives for an ad slot
+      parameters:
+        - { name: slotCode, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Ad slot }
+  /market/v1/growth/ads/events:
+    post:
+      tags: [Growth]
+      summary: Record an ad impression or click
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [creativeId, slotCode, type]
+              properties:
+                creativeId: { type: string, format: uuid }
+                slotCode: { type: string }
+                type: { type: string, enum: [Impression, Click] }
+      responses:
+        '200': { description: Event id }
+  /market/v1/growth/newsletter/subscribe:
+    post:
+      tags: [Growth]
+      summary: Start newsletter or SMS consent
+      responses:
+        '200': { description: Pending subscription }
+  /market/v1/growth/newsletter/verify:
+    post:
+      tags: [Growth]
+      summary: Verify a subscription
+      responses:
+        '200': { description: Verified }
+  /market/v1/growth/newsletter/unsubscribe:
+    post:
+      tags: [Growth]
+      summary: Unsubscribe a contact
+      responses:
+        '200': { description: Unsubscribed }
+  /market/v1/growth/campaigns:
+    get:
+      tags: [Growth]
+      summary: List active campaigns
+      responses:
+        '200': { description: Paged campaigns }
+  /market/v1/growth/campaigns/{slug}:
+    get:
+      tags: [Growth]
+      summary: Read one active campaign
+      responses:
+        '200': { description: Campaign detail }
+  /market/v1/growth/campaigns/{slug}/register:
+    post:
+      tags: [Growth]
+      summary: Register for a campaign
+      responses:
+        '200': { description: Registration id }
+  /market/v1/gamification/users/{userId}:
+    get:
+      tags: [Gamification]
+      summary: Read a user's points, level, travel style, and badges
+      parameters:
+        - { name: userId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Gamification profile }
+  /market/v1/gamification/badges:
+    get:
+      tags: [Gamification]
+      summary: List badge definitions
+      responses:
+        '200': { description: Badge definitions }

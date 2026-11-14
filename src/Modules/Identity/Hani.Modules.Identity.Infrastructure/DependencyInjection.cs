@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IClaimRepository, ClaimRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
+        services.AddScoped<IGamificationRepository, GamificationRepository>();
         services.AddSingleton<ISecretGenerator, SecretGenerator>();
         services.AddSingleton<ISecretHasher, SecretHasher>();
         services.AddSingleton<IOtpCodeGenerator, NumericOtpCodeGenerator>();

@@ -1,6 +1,7 @@
 using Hani.Modules.Identity.Domain.Agencies;
 using Hani.Modules.Identity.Domain.ApiClients;
 using Hani.Modules.Identity.Domain.Claims;
+using Hani.Modules.Identity.Domain.Gamification;
 using Hani.Modules.Identity.Domain.Media;
 using Hani.Modules.Identity.Domain.Reviews;
 using Hani.Modules.Identity.Domain.Users;
@@ -24,6 +25,12 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
     public DbSet<OwnershipClaim> Claims => Set<OwnershipClaim>();
 
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
+
+    public DbSet<UserGamification> UserGamifications => Set<UserGamification>();
+
+    public DbSet<BadgeDefinition> BadgeDefinitions => Set<BadgeDefinition>();
+
+    public DbSet<UserBadge> UserBadges => Set<UserBadge>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Hani.Modules.Content.Presentation</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hani.Modules.Content.Application\Hani.Modules.Content.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.AspNetCore\Hani.BuildingBlocks.AspNetCore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
+</Project>

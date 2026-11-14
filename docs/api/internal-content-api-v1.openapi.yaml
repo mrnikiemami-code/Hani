@@ -1,0 +1,128 @@
+openapi: 3.0.3
+info:
+  title: Hani Internal Content & Growth API
+  version: 1.0.0
+  description: Internal editorial, growth, and gamification operations.
+servers:
+  - url: https://api.hani.ir
+paths:
+  /internal/v1/content/categories:
+    post:
+      tags: [Content]
+      summary: Create a content category
+      responses:
+        '201': { description: Category id }
+  /internal/v1/content/blog:
+    post:
+      tags: [Content]
+      summary: Create a draft blog post
+      responses:
+        '201': { description: Blog id }
+  /internal/v1/content/blog/{slug}/publish:
+    post:
+      tags: [Content]
+      summary: Publish a blog post
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Published }
+  /internal/v1/content/travelogues:
+    post:
+      tags: [Content]
+      summary: Create a draft travelogue
+      responses:
+        '201': { description: Travelogue id }
+  /internal/v1/content/travelogues/{slug}/publish:
+    post:
+      tags: [Content]
+      summary: Publish a travelogue
+      responses:
+        '200': { description: Published }
+  /internal/v1/content/videos:
+    post:
+      tags: [Content]
+      summary: Create a draft video
+      responses:
+        '201': { description: Video id }
+  /internal/v1/content/videos/{slug}/publish:
+    post:
+      tags: [Content]
+      summary: Publish a video
+      responses:
+        '200': { description: Published }
+  /internal/v1/content/comments/{commentId}/publish:
+    post:
+      tags: [Content]
+      summary: Publish a pending comment
+      parameters:
+        - { name: commentId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Published }
+  /internal/v1/content/comments/{commentId}/reject:
+    post:
+      tags: [Content]
+      summary: Reject a pending comment
+      parameters:
+        - { name: commentId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Rejected }
+  /internal/v1/growth/ads/slots:
+    post:
+      tags: [Growth]
+      summary: Create an ad slot
+      responses:
+        '201': { description: Slot id }
+  /internal/v1/growth/ads/creatives:
+    post:
+      tags: [Growth]
+      summary: Add an ad creative
+      responses:
+        '201': { description: Creative id }
+  /internal/v1/growth/campaigns:
+    post:
+      tags: [Growth]
+      summary: Create a campaign
+      responses:
+        '201': { description: Campaign id }
+  /internal/v1/growth/campaigns/{slug}/activate:
+    post:
+      tags: [Growth]
+      summary: Activate a campaign
+      responses:
+        '200': { description: Activated }
+  /internal/v1/growth/notifications:
+    post:
+      tags: [Growth]
+      summary: Enqueue a notification
+      responses:
+        '201': { description: Notification id }
+  /internal/v1/growth/analytics:
+    post:
+      tags: [Growth]
+      summary: Record an analytics event
+      responses:
+        '201': { description: Event id }
+  /internal/v1/gamification/points:
+    post:
+      tags: [Gamification]
+      summary: Award points to a user
+      responses:
+        '200': { description: Updated profile }
+  /internal/v1/gamification/travel-style:
+    post:
+      tags: [Gamification]
+      summary: Set a user's travel style
+      responses:
+        '200': { description: Updated profile }
+  /internal/v1/gamification/badges:
+    post:
+      tags: [Gamification]
+      summary: Create a badge definition
+      responses:
+        '201': { description: Badge id }
+  /internal/v1/gamification/award:
+    post:
+      tags: [Gamification]
+      summary: Award a badge
+      responses:
+        '201': { description: User badge id }

@@ -7,6 +7,10 @@ using Hani.Modules.Catalog.Application.Commands.CreateTourProduct;
 using Hani.Modules.Catalog.Domain.TourProducts;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
 using Hani.Modules.Catalog.Presentation;
+using Hani.Modules.Content.Application.Commands.Editorial;
+using Hani.Modules.Content.Domain.Content;
+using Hani.Modules.Content.Infrastructure.Persistence;
+using Hani.Modules.Content.Presentation;
 using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Identity.Domain.Agencies;
 using Hani.Modules.Identity.Infrastructure.Persistence;
@@ -43,6 +47,10 @@ public sealed class ModuleBoundaryTests
         typeof(CreateTourProductCommand).Assembly,
         typeof(CatalogDbContext).Assembly,
         typeof(CatalogEndpoints).Assembly,
+        typeof(ContentCategory).Assembly,
+        typeof(CreateCategoryCommand).Assembly,
+        typeof(ContentDbContext).Assembly,
+        typeof(ContentEndpoints).Assembly,
         typeof(Agency).Assembly,
         typeof(CreateAgencyCommand).Assembly,
         typeof(IdentityDbContext).Assembly,

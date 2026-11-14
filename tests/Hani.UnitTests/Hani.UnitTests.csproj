@@ -8,6 +8,7 @@
     <ProjectReference Include="..\..\src\Hani.BuildingBlocks\Hani.BuildingBlocks.AspNetCore\Hani.BuildingBlocks.AspNetCore.csproj" />
     <ProjectReference Include="..\..\src\Modules\Catalog\Hani.Modules.Catalog.Domain\Hani.Modules.Catalog.Domain.csproj" />
     <ProjectReference Include="..\..\src\Modules\Catalog\Hani.Modules.Catalog.Application\Hani.Modules.Catalog.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Content\Hani.Modules.Content.Domain\Hani.Modules.Content.Domain.csproj" />
     <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Domain\Hani.Modules.Identity.Domain.csproj" />
     <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Application\Hani.Modules.Identity.Application.csproj" />
     <ProjectReference Include="..\..\src\Modules\Identity\Hani.Modules.Identity.Infrastructure\Hani.Modules.Identity.Infrastructure.csproj" />

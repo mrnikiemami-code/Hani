@@ -5,6 +5,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Catalog\Hani.Modules.Catalog.Infrastructure\Hani.Modules.Catalog.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Catalog\Hani.Modules.Catalog.Presentation\Hani.Modules.Catalog.Presentation.csproj" />
+    <ProjectReference Include="..\Modules\Content\Hani.Modules.Content.Infrastructure\Hani.Modules.Content.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Content\Hani.Modules.Content.Presentation\Hani.Modules.Content.Presentation.csproj" />
     <ProjectReference Include="..\Modules\Identity\Hani.Modules.Identity.Infrastructure\Hani.Modules.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Identity\Hani.Modules.Identity.Presentation\Hani.Modules.Identity.Presentation.csproj" />
     <ProjectReference Include="..\Modules\Marketplace\Hani.Modules.Marketplace.Infrastructure\Hani.Modules.Marketplace.Infrastructure.csproj" />

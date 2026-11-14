@@ -36,6 +36,11 @@ dotnet ef migrations has-pending-model-changes `
     --context CatalogDbContext --no-build
 
 dotnet ef migrations has-pending-model-changes `
+    --project src/Modules/Content/Hani.Modules.Content.Infrastructure `
+    --startup-project src/Hani.Api `
+    --context ContentDbContext --no-build
+
+dotnet ef migrations has-pending-model-changes `
     --project src/Modules/Identity/Hani.Modules.Identity.Infrastructure `
     --startup-project src/Hani.Api `
     --context IdentityDbContext --no-build

@@ -47,7 +47,7 @@
 | GAP-09 | User Auth/OTP | P0 | 3 | TC-086 | Done |
 | GAP-10 | Profiles/Authors | P1 | 3 | TC-086 | Done |
 | GAP-11 | Reviews/UGC | P0 | 3 | TC-089 | Done |
-| GAP-12 | Content/Itineraries/Blog/Video | P1 | 6 | TC-093 | Planned |
+| GAP-12 | Content/Itineraries/Blog/Video | P1 | 6 | TC-093 | Done |
 | GAP-13 | Attractions/Restaurants | P1 | 5 | TC-094 | Done |
 | GAP-14 | Hotels | P1 | 5 | TC-090 | Done |
 | GAP-15 | Visa | P1 | 5 | TC-091 | Done |
@@ -57,19 +57,19 @@
 | GAP-19 | Price Mismatch | P1 | 4 | TC-088 | Done |
 | GAP-20 | Ownership Claims | P1 | 3 | TC-089 | Done |
 | GAP-21 | Visa Documents | P1 | 5 | TC-091 | Done |
-| GAP-22 | SMS/Newsletter | P1 | 6 | TC-096 | Planned |
-| GAP-23 | Campaigns | P2 | 6 | TC-100 | Planned |
-| GAP-24 | Ranking/Recommendation | P1 | 6 | TC-099 | Planned |
+| GAP-22 | SMS/Newsletter | P1 | 6 | TC-096 | Done |
+| GAP-23 | Campaigns | P2 | 6 | TC-100 | Done |
+| GAP-24 | Ranking/Recommendation | P1 | 6 | TC-099 | InProgress |
 | GAP-25 | Geo/Maps | P1 | 5 | TC-094 | Done |
 | GAP-26 | Agency Onboarding | P0 | 3 | TC-087 | Done |
 | GAP-27 | Agency/Admin Panels | P1 | 3 | TC-087 | Done |
 | GAP-28 | SEO | P0 | 2 | TC-097 | Done |
 | GAP-29 | Restaurant Reservation | P2 | 5 | TC-094 | Done |
-| GAP-30 | Ads | P2 | 6 | TC-099 | Planned |
+| GAP-30 | Ads | P2 | 6 | TC-099 | Done |
 | GAP-31 | Trust/Legal | P1 | 3 | TC-087 | Done |
 | GAP-32 | Media/UGC | P1 | 3 | TC-089 | Done |
-| GAP-33 | Notifications | P1 | 6 | TC-096 | Planned |
-| GAP-34 | Analytics | P2 | 6 | TC-099 | Planned |
+| GAP-33 | Notifications | P1 | 6 | TC-096 | InProgress |
+| GAP-34 | Analytics | P2 | 6 | TC-099 | Done |
 
 ## ۴. Gate Evidence Pack
 

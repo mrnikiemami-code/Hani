@@ -45,12 +45,17 @@ using Hani.Modules.Catalog.Infrastructure;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
 using Hani.Modules.Catalog.Infrastructure.Providers;
 using Hani.Modules.Catalog.Presentation;
+using Hani.Modules.Content.Application.Commands.Editorial;
+using Hani.Modules.Content.Infrastructure;
+using Hani.Modules.Content.Infrastructure.Persistence;
+using Hani.Modules.Content.Presentation;
 using Hani.Modules.Identity.Application;
 using Hani.Modules.Identity.Application.Commands.AgencyOnboarding;
 using Hani.Modules.Identity.Application.Commands.Auth;
 using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Identity.Application.Commands.CreateApiClient;
 using Hani.Modules.Identity.Application.Commands.Engagement;
+using Hani.Modules.Identity.Application.Commands.Gamification;
 using Hani.Modules.Identity.Application.Queries.GetAgencyById;
 using Hani.Modules.Identity.Infrastructure;
 using Hani.Modules.Identity.Infrastructure.Persistence;
@@ -155,12 +160,14 @@ var connectionString = builder.Configuration.GetConnectionString("Default")
 
 builder.Services.AddDbContext<SupplyDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<CatalogDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ContentDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<IdentityDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<BookingDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<PaymentsDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<SettlementDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddSupplyInfrastructure();
 builder.Services.AddCatalogInfrastructure();
+builder.Services.AddContentInfrastructure();
 builder.Services.AddIdentityInfrastructure();
 builder.Services.AddMarketplaceInfrastructure();
 builder.Services.AddBookingInfrastructure();
@@ -196,7 +203,8 @@ builder.Services.AddMediatR(configuration =>
         typeof(SearchProductsQuery).Assembly,
         typeof(CreateQuoteCommand).Assembly,
         typeof(CreatePaymentIntentCommand).Assembly,
-        typeof(CreateCommissionRuleCommand).Assembly));
+        typeof(CreateCommissionRuleCommand).Assembly,
+        typeof(CreateCategoryCommand).Assembly));
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -257,6 +265,12 @@ builder.Services.AddScoped<IValidator<ListAgenciesQuery>, ListAgenciesQueryValid
 builder.Services.AddScoped<IValidator<ApproveAgencyCommand>, ApproveAgencyCommandValidator>();
 builder.Services.AddScoped<IValidator<RejectAgencyCommand>, RejectAgencyCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateReviewCommand>, CreateReviewCommandValidator>();
+builder.Services.AddScoped<IValidator<AwardPointsCommand>, AwardPointsCommandValidator>();
+builder.Services.AddScoped<IValidator<SetTravelStyleCommand>, SetTravelStyleCommandValidator>();
+builder.Services.AddScoped<IValidator<CreateBadgeDefinitionCommand>, CreateBadgeDefinitionCommandValidator>();
+builder.Services.AddScoped<IValidator<AwardBadgeCommand>, AwardBadgeCommandValidator>();
+builder.Services.AddScoped<IValidator<GetUserGamificationQuery>, GetUserGamificationQueryValidator>();
+builder.Services.AddScoped<IValidator<ListBadgeDefinitionsQuery>, ListBadgeDefinitionsQueryValidator>();
 builder.Services.AddScoped<IValidator<ReplyToReviewCommand>, ReplyToReviewCommandValidator>();
 builder.Services.AddScoped<IValidator<GetReviewsQuery>, GetReviewsQueryValidator>();
 builder.Services.AddScoped<IValidator<GetPendingReviewsQuery>, GetPendingReviewsQueryValidator>();
@@ -325,6 +339,19 @@ builder.Services.AddScoped<IValidator<RecordOfflinePaymentCommand>, RecordOfflin
 builder.Services.AddScoped<IValidator<CreateCommissionRuleCommand>, CreateCommissionRuleCommandValidator>();
 builder.Services.AddScoped<IValidator<GetCommissionQuery>, GetCommissionQueryValidator>();
 builder.Services.AddScoped<IValidator<GetLedgerTransactionQuery>, GetLedgerTransactionQueryValidator>();
+
+// Content module validators are registered by convention from the module assembly.
+foreach (var validatorType in typeof(CreateCategoryCommand).Assembly
+             .GetTypes()
+             .Where(type => !type.IsAbstract && !type.IsGenericTypeDefinition))
+{
+    foreach (var contract in validatorType.GetInterfaces().Where(type =>
+                 type.IsGenericType &&
+                 type.GetGenericTypeDefinition() == typeof(IValidator<>)))
+    {
+        builder.Services.AddScoped(contract, validatorType);
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Authentication: JWT for marketplace users + API key scheme for Supplier API
@@ -436,7 +463,9 @@ app.UseAuthorization();
 app.MapHealthChecks("/health");
 app.MapSupplyEndpoints();
 app.MapCatalogEndpoints();
+app.MapContentEndpoints();
 app.MapIdentityEndpoints();
+app.MapGamificationEndpoints();
 app.MapIdentityAuthEndpoints();
 app.MapAgencyOnboardingEndpoints();
 app.MapEngagementEndpoints();

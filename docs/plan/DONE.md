@@ -135,6 +135,9 @@
 | D-118 | Flight depth | Airline/Airport + filters + external provider adapter | Gate 5.1 |
 | D-119 | Visa depth | issuance type, document category, multi-applicant | Gate 5.1 |
 | D-120 | Landing SEO/JSON-LD | vertical landing + AggregateRating/FAQPage + labels | Gate 5.1 |
+| D-121 | Content module | Blog/Category/Travelogue/Video/Comment + migration | Gate 6 |
+| D-122 | Growth | Ads/Newsletter/Campaign/Notification/Analytics | Gate 6 |
+| D-123 | Gamification | UserGamification + BadgeDefinition/UserBadge | Gate 6 |
 
 ## ۳. مستندات
 
@@ -154,10 +157,10 @@
 | شاخص | مقدار |
 |---|---|
 | Build | ۰ warning / ۰ error |
-| Unit Tests | 133 passed |
+| Unit Tests | 143 passed |
 | Architecture Tests | 34 passed |
-| Total | **167 passed** |
-| Migrations | Supply (8) + Catalog (6) + Identity (5) + Booking (9) + Payments (6) + Settlement (3) |
+| Total | **177 passed** |
+| Migrations | Supply (8) + Catalog (6) + Content (1) + Identity (6) + Booking (9) + Payments (6) + Settlement (3) |
 | Format | clean |
 | Vulnerable Packages | none |
 | API `/health` | Healthy |
@@ -211,4 +214,5 @@
 | `7083b45` | Audit remediation A-01..A-08 (CollectionMode v2, installments, reviews, hotel/place, taxonomy) |
 | `1c202bd` | Gate 5 verticals, geo, vertical SEO, review aggregation |
 | `f6d65ce` | Gate 5.1 vertical depth and parity residuals |
+| `pending` | Gate 6 content, growth, and gamification foundation |
 | `7df2265` | Phase roadmap + status + tasks |
