@@ -60,7 +60,7 @@
 | C-05 | Ads/AdSlot/AdEvent | GAP-30 | P2 | — | Ad model + click tracking | ✅ Done |
 | C-06 | Newsletter/SMS consent/campaign | GAP-22 | P1 | — | Subscription + verification + campaign | ✅ Done |
 | C-07 | BlindTour/Campaign | GAP-23 | P2 | C-06 | Campaign + registration + FAQ | ✅ Done |
-| C-08 | Dashboard requests/passengers/documents/messages | GAP-27 (New) | P1 | A-04 | Request/passenger/document/message aggregates | ✅ Done |
+| C-08 | Dashboard requests/passengers/documents/messages | GAP-27 (New) | P1 | A-04 | Request/passenger/document/message aggregates | ⚠️ Partial (messages/documents/content stats; Booking request/passenger aggregation pending) |
 
 ---
 

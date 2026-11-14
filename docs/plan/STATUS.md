@@ -9,6 +9,7 @@
 > **گزارش Gate:** [`../reports/baseline-gate-6.md`](../reports/baseline-gate-6.md)
 > **Audit کامل Lastsecond:** [`../reports/lastsecond-full-architecture-audit-2026-11-14.md`](../reports/lastsecond-full-architecture-audit-2026-11-14.md)
 > **برنامه Remediation:** [`AUDIT-REMEDIATION.md`](AUDIT-REMEDIATION.md)
+> **Deviation Audit پس از Gate 6:** [`../reports/lastsecond-deviation-audit-post-gate6-2026-11-14.md`](../reports/lastsecond-deviation-audit-post-gate6-2026-11-14.md)
 > **دفتر کارهای انجام‌شده:** [`DONE.md`](DONE.md)
 
 ---

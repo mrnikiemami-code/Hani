@@ -39,6 +39,7 @@
 - `UserMessage` + `UserDocument`
 - `GET /market/v1/dashboard/{userId}` summary
 - messages/documents list + internal create/read/status APIs
+- **Residual:** aggregation درخواست‌ها/مسافران Booking در dashboard وجود ندارد؛ در گزارش Deviation Audit ثبت شده است.
 
 ### Migrationها
 
@@ -69,4 +70,4 @@
 
 ## ۴. نتیجه
 
-Gate 6 کامل شد. تنها بخش باقی‌مانده از نظر محصول، صفحات Frontend Next.js است که در Gate 7/تحویل قالب انجام می‌شود. Gate 7 (Channel & Billing) آماده شروع است.
+Gate 6 از نظر GAPهای Baseline کامل شد. یک residual در C-08 (aggregation درخواست‌ها/مسافران) باقی است که در `lastsecond-deviation-audit-post-gate6-2026-11-14.md` ثبت شده. صفحات Frontend Next.js نیز خارج از این Gate هستند. Gate 7 (Channel & Billing) با ثبت این انحراف‌ها قابل شروع است.
