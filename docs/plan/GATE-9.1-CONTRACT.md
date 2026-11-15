@@ -77,10 +77,13 @@ a controlled integration of the purchased template with Hani platform code.
 - Header/footer duplication on home fixed; home has one header and one footer.
 - Settings page performs a server-side Hani API health call and shows
   connected/unavailable status.
+- Legacy template copy externalized into `template.fa.json` / `template.ar.json`
+  and applied by `TemplateTranslationProvider` in FA/AR.
+- Hani-owned UI uses `next-intl` message catalogs directly.
 - RTL/LTR smoke verified for home, tour grid, visa grid, and settings.
 
-> **Next:** template hard-coded copy → FA/AR message catalogs; template pages
-> → Hani API adapters; missing fields → DTO/OpenAPI + template cards/forms.
+> **Next:** template pages → Hani API adapters; missing fields →
+> DTO/OpenAPI + template cards/forms; editorial review of generated FA/AR copy.
 
 ## 4. Phase Plan
 

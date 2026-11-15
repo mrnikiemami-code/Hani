@@ -11,6 +11,13 @@ and text direction are architectural inputs, not visual afterthoughts.
 > template. RTL fixes patch the template layout and SCSS; they do not justify
 > a custom replacement design.
 
+> **Legacy template copy:** the purchased template still contains English
+> copy in its legacy components. During migration, that copy is externalized
+> into `src/messages/template.fa.json` / `template.ar.json` and applied by
+> `TemplateTranslationProvider`. This is a transitional adapter only. New Hani
+> components must use `next-intl` keys directly; the legacy adapter is removed
+> as pages are migrated.
+
 ---
 
 ## 1. Supported Locales

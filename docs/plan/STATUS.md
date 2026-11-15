@@ -274,7 +274,8 @@
 - [x] Settings انتخاب Home Experience + Cookie (مهمان)
 - [x] اتصال Health Check به Hani API در Settings
 - [ ] UserPreferences API برای کاربر لاگین‌کرده
-- [ ] ترجمه متن‌های Hard-coded قالب به FA/AR
+- [x] ترجمه متن‌های ثابت قالب به FA/AR (`template.fa/ar.json`)
+- [ ] پاس ویرایشی ترجمه و پوشش متن‌های پویا
 - [ ] اتصال داده‌های واقعی Hani به صفحات قالب
 - [ ] OTP Login + HttpOnly Session
 - [ ] Traveler Dashboard حداقلی

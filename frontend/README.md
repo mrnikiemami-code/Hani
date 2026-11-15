@@ -42,6 +42,18 @@ Locale-prefixed:
   `src/features/home-experience/infrastructure/registry.ts`
 - Locale routing: `src/i18n/routing.ts`, `src/proxy.ts`
 
+## i18n
+
+- Hani-owned UI uses `next-intl` message catalogs in `src/messages/{fa,en,ar}.json`.
+- Legacy template copy is externalized into
+  `src/messages/template.{fa,ar}.json` and applied by
+  `TemplateTranslationProvider` as a transitional adapter.
+- Generated copy can be refreshed with:
+  `node scripts/translate-template-copy.mjs`
+  and `node scripts/extract-rendered-copy.mjs`.
+- New components must use `next-intl`; do not add new hard-coded target-language
+  strings.
+
 ## Build
 
 ```powershell

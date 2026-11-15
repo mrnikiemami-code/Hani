@@ -7,7 +7,10 @@ import StoreProvider from "@/providers/StoreProvider";
 import ThemeSync from "@/providers/ThemeSync";
 import BootstrapJs from "@/providers/BootstrapJs";
 import RouteLoader from "@/components/loader/loader";
+import { TemplateTranslationProvider } from "@/components/hani/TemplateTranslationProvider";
 import { routing } from "@/i18n/routing";
+import templateFa from "../../messages/template.fa.json";
+import templateAr from "../../messages/template.ar.json";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../style/css/animate.css";
@@ -81,6 +84,12 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const messages = await getMessages();
+  const templateDictionary =
+    locale === "fa"
+      ? (templateFa as Record<string, string>)
+      : locale === "ar"
+        ? (templateAr as Record<string, string>)
+        : {};
   const dir = locale === "en" ? "ltr" : "rtl";
 
   return (
@@ -95,7 +104,9 @@ export default async function LocaleLayout({
           <ThemeSync />
           <RouteLoader />
           <NextIntlClientProvider messages={messages}>
-            {children}
+            <TemplateTranslationProvider dictionary={templateDictionary}>
+              {children}
+            </TemplateTranslationProvider>
           </NextIntlClientProvider>
         </StoreProvider>
         <BootstrapJs />
