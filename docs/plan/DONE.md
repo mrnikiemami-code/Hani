@@ -262,4 +262,5 @@
 | `1a8f2a3` | Gate 9.1 Visa Grid API binding and localized visa labels |
 | `589ae13` | Gate 9.1 Home BFF and Blog Grid API binding |
 | `54d8072` | Gate 9.1 Canonical Lastsecond routes + duplicate component tree removal |
+| `c717ef2` | Gate 9.1 Lastsecond pages: restaurants, attractions, content, agencies, author, badges |
 | `7df2265` | Phase roadmap + status + tasks |
