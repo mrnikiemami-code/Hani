@@ -6,10 +6,51 @@ const root = path.resolve(process.cwd());
 const edge = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
 const urls = [
   "http://localhost:3000/en",
+  "http://localhost:3000/en/index-1",
+  "http://localhost:3000/en/index-2",
+  "http://localhost:3000/en/index-3",
+  "http://localhost:3000/en/index-4",
+  "http://localhost:3000/en/index-5",
+  "http://localhost:3000/en/index-6",
+  "http://localhost:3000/en/index-7",
+  "http://localhost:3000/en/index-8",
+  "http://localhost:3000/en/index-9",
+  "http://localhost:3000/en/index-10",
+  "http://localhost:3000/en/index-11",
+  "http://localhost:3000/en/index-12",
   "http://localhost:3000/en/tour/tour-grid",
-  "http://localhost:3000/en/visa/visa-grid",
-  "http://localhost:3000/en/hotel/hotel-grid",
+  "http://localhost:3000/en/tour/tour-list",
   "http://localhost:3000/en/tour/tour-details",
+  "http://localhost:3000/en/tour/tour-booking",
+  "http://localhost:3000/en/hotel/hotel-grid",
+  "http://localhost:3000/en/hotel/hotel-list",
+  "http://localhost:3000/en/hotel/hotel-details",
+  "http://localhost:3000/en/hotel/hotel-room-selection",
+  "http://localhost:3000/en/visa/visa-grid",
+  "http://localhost:3000/en/visa/visa-list",
+  "http://localhost:3000/en/visa/visa-details",
+  "http://localhost:3000/en/visa/visa-requirements",
+  "http://localhost:3000/en/blog/blog-grid",
+  "http://localhost:3000/en/blog/blog-list",
+  "http://localhost:3000/en/blog/blog-details",
+  "http://localhost:3000/en/login",
+  "http://localhost:3000/en/register",
+  "http://localhost:3000/en/forgot-password",
+  "http://localhost:3000/en/user/dashboard",
+  "http://localhost:3000/en/user/customer-all-bookings",
+  "http://localhost:3000/en/user/customer-invoices",
+  "http://localhost:3000/en/user/wallet",
+  "http://localhost:3000/en/user/wishlist",
+  "http://localhost:3000/en/user/my-profile",
+  "http://localhost:3000/en/agent/agent-dashboard",
+  "http://localhost:3000/en/agent/agent-listings",
+  "http://localhost:3000/en/agent/agent-earnings",
+  "http://localhost:3000/en/agent/agent-settings",
+  "http://localhost:3000/en/pages/about-us",
+  "http://localhost:3000/en/pages/contact-us",
+  "http://localhost:3000/en/pages/faq",
+  "http://localhost:3000/en/pages/terms-conditions",
+  "http://localhost:3000/en/pages/privacy-policy",
   "http://localhost:3000/en/settings/experience"
 ];
 
@@ -108,13 +149,13 @@ async function translateBatch(batch, target) {
 }
 
 async function translateAll(target, output) {
-  for (let index = 0; index < values.length; index += 15) {
-    const batch = values.slice(index, index + 15);
+  for (let index = 0; index < values.length; index += 25) {
+    const batch = values.slice(index, index + 25);
     const parts = await translateBatch(batch, target);
     batch.forEach((source, i) => {
       if (parts[i]) output[source] = parts[i];
     });
-    console.log(`${target}: ${Math.min(index + 15, values.length)}/${values.length}`);
+    console.log(`${target}: ${Math.min(index + 25, values.length)}/${values.length}`);
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
 }

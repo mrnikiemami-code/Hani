@@ -94,7 +94,7 @@ const VisaDetails = () => {
                     <span className="avatar avatar-md rounded-circle bg-primary me-2">
                       <i className="isax isax-airplane5" />
                     </span>
-                    Bus Information
+                    Visa Information
                   </h5>
                   <div className="row">
                     <div className="col-xl col-lg-4 col-md-4 col-sm-6">

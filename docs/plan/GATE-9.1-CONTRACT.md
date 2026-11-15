@@ -79,6 +79,9 @@ a controlled integration of the purchased template with Hani platform code.
   connected/unavailable status.
 - Legacy template copy externalized into `template.fa.json` / `template.ar.json`
   and applied by `TemplateTranslationProvider` in FA/AR.
+- Translation coverage expanded to all home variants, tour/hotel/visa pages,
+  auth, user/agent dashboards, and static pages (2,890 entries per language).
+- RTL offcanvas bug fixed; Wishlist no longer overlays the Persian home.
 - Hani-owned UI uses `next-intl` message catalogs directly.
 - RTL/LTR smoke verified for home, tour grid, hotel grid, visa grid, and settings.
 - Tour Grid and Hotel Grid are bound to real Hani APIs.
