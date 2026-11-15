@@ -65,3 +65,19 @@
 5. commit و push شده است.
 
 > اگر یکی از این‌ها نباشد، تسک Done نیست — حتی اگر کد کار کند.
+
+
+## 6. Frontend design consistency (mandatory)
+
+- The purchased Dreamstour template is the only visual source of truth.
+- Missing fields must be placed into existing template slots (title, meta,
+  badge, price, CTA, image area), not into a new custom design.
+- Do not create a parallel design system, a new card style, or a new button/
+  form style when the template already has an equivalent.
+- New Hani wrappers are allowed only for data binding, i18n, RTL, accessibility,
+  and loading/empty/error states. They must not fork the template structure.
+- Every UI change must be checked in FA/AR (RTL) and EN (LTR).
+- Every UI change requires a screenshot and a visual review against the
+  original template component.
+- Read and follow `docs/architecture/FRONTEND-DESIGN-CONSISTENCY.md` before
+  changing frontend cards, forms, tables, or home sections.
