@@ -11,18 +11,20 @@
 
 ## 1. Goal
 
-Integrate the purchased Dreamstour UI into the existing Hani `frontend/`
-without copying its broken application tree, while:
+Use the purchased Dreamstour template as the **actual frontend base** and the
+single visual source of truth, while:
 
-- retaining all 12 home experiences as user-selectable layouts;
-- delivering Lastsecond-equivalent public pages;
-- connecting pages to real Hani APIs;
-- adding missing backend fields;
+- retaining all 12 home experiences as user-selectable layouts mapped to the
+  template's real home views;
+- delivering Lastsecond-equivalent public pages using template pages;
+- connecting template pages to real Hani APIs;
+- adding missing backend fields and rendering them through template cards,
+  forms, and tables;
 - enforcing clean architecture, FA/EN/AR, and RTL;
 - keeping the UI consistent and accessible.
 
-This gate is **not** a visual copy of 183 demo routes. It is a controlled
-product frontend built on Hani contracts.
+This gate is **not** a redesign and **not** a parallel Hani design system. It is
+a controlled integration of the purchased template with Hani platform code.
 
 ---
 
@@ -31,10 +33,10 @@ product frontend built on Hani contracts.
 ### In scope
 
 - Frontend architecture cleanup
-- Home Experience Registry + settings
-- Design system extraction
-- i18n/RTL foundation
-- Public Lastsecond simulation pages
+- Home Experience Registry + settings, mapped to real template home views
+- Template integration and defect patching (no parallel design system)
+- i18n/RTL foundation applied to template layout and styles
+- Public Lastsecond simulation pages using template pages
 - OTP auth UI
 - Traveler dashboard subset
 - Agency dashboard subset
@@ -65,18 +67,27 @@ product frontend built on Hani contracts.
 - RTL/LTR smoke verified: `/fa` => `lang=fa dir=rtl`, `/en/tours` => `lang=en dir=ltr`, `/ar/visa` => `lang=ar dir=rtl`.
 - `npm run build` green with 41 routes.
 
+> **Migration note:** the current `HomeExperienceFrame` and custom Hani pages
+> are a temporary prototype. They are not the target UI. The target is the
+> purchased template as the application base; registry loaders will point to
+> `@/views/home-*` template views, and template pages will be patched in place.
+
 ## 4. Phase Plan
 
-### Phase 0 — Architecture Freeze and Build Cleanup
+### Phase 0 — Template Freeze and Build Cleanup
 
 Deliverables:
 
-- One application tree; no duplicate route groups.
+- Copy the template Next.js app into `frontend` as the application base.
+- Freeze one template app tree; delete the duplicate route tree.
+- Delete duplicate header/footer/page component trees.
 - No `output: "export"` for the Hani app.
 - No `basePath=/nextjs` in production.
 - `frontend/` builds with `npm run build`.
-- `features/`, `components/ui/`, `styles/tokens.scss` skeleton.
-- Reference assets copied into `frontend/public/assets` and `frontend/styles`.
+- Hani integration skeleton inside the template tree:
+  `src/features`, `src/lib/hani`, `src/i18n`, `src/messages`.
+- Template assets remain in `public/assets`; template SCSS remains in
+  `src/style`.
 - No imports from `reference/`.
 
 Exit criteria:
@@ -84,17 +95,18 @@ Exit criteria:
 - `npm run build` green.
 - `npm run lint` green.
 - No duplicate routes.
-- No demo pages in production route table.
+- No demo-only pages in the production route table.
+- Template visual components remain the base.
 
 ### Phase 1 — Home Experience Registry and Settings
 
 Deliverables:
 
 - `HOME_EXPERIENCE_IDS` registry with all 12 layouts.
-- `HomeExperienceRenderer` with lazy loading.
-- Shared `HomeViewModel` contract.
+- Registry loaders point to actual template views:
+  `@/views/home-service-one/homeServiceOne` ... `@/views/home-twelve/homeTwelve`.
 - `resolveHomeExperience` precedence function.
-- `/[locale]/settings/experience` page.
+- `/[locale]/settings/experience` page, styled with template components.
 - Anonymous cookie persistence.
 - `GET/PUT /market/v1/me/preferences` backend endpoint.
 - Agency/channel default home experience field.
@@ -102,11 +114,12 @@ Deliverables:
 
 Exit criteria:
 
-- All 12 experiences render.
+- All 12 template home views render.
 - User can switch and persist selection.
 - Unknown ID falls back safely.
 - Only selected experience is in the initial bundle.
 - FA/EN/AR + RTL verified for each experience.
+- No custom `HomeExperienceFrame` remains in the final path.
 
 ### Phase 2 — Design System and UI Standard
 
@@ -376,22 +389,23 @@ Gate 9.1 is PASSED (Core) only when:
 
 | Risk | Mitigation |
 |---|---|
-| Copying the template app tree | Use design kit extraction only |
-| 12 home variants causing bundle bloat | lazy load + registry |
+| Duplicate route/UI trees | Freeze one template tree and delete the duplicate |
+| Building a parallel design system | Template is the only visual source; wrappers are thin |
+| 12 home variants causing bundle bloat | lazy load actual template views + registry |
 | Home variant hydration mismatch | resolve on server, pass ID |
-| RTL regressions | logical properties + visual tests |
+| RTL regressions | patch template CSS with logical properties + visual tests |
 | Field drift between frontend/backend | generated OpenAPI types |
 | Fake checkout behavior | server is price/state authority |
 | Dashboard scope explosion | MVP subset, hide unsupported pages |
-| Template legacy Bootstrap/SCSS | isolate in `styles/` and `components/ui` |
+| Template legacy Bootstrap/SCSS | keep template `src/style` as canonical |
 
 ---
 
 ## 8. Immediate Next Actions
 
-1. Approve the architecture in
+1. Approve the template-first architecture in
    [`FRONTEND-ARCHITECTURE.md`](../architecture/FRONTEND-ARCHITECTURE.md).
-2. Choose the base application tree from the template.
+2. Freeze the base application tree from the template.
 3. Approve the 12 Home Experience IDs and default.
 4. Approve the preference API and DTO additions.
-5. Start Phase 0: build cleanup and folder skeleton.
+5. Start Phase 0: build cleanup and template integration skeleton.

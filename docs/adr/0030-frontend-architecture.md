@@ -1,13 +1,13 @@
-# ADR-0030: Frontend architecture and Home Experience Registry
+# ADR-0030: Frontend architecture — template-first UI with Hani platform layer
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-11-15
 - Gate: 9.1
 
 ## Context
 
 Hani has a minimal Next.js frontend from Gate 9. A commercial Bootstrap/Next.js
-template (Dreamstour) was purchased to accelerate the Lastsecond-style UI.
+template (Dreamstour) was purchased to become the Lastsecond-style frontend.
 
 The template provides 183 unique URLs and 12 home layouts, but it is not a
 production frontend:
@@ -22,53 +22,74 @@ production frontend:
 - it uses `output: "export"` together with unsupported redirects;
 - its auth is email/password, while Hani requires OTP.
 
-The business wants to keep the 12 home layouts and allow users to select one
-from settings.
+The business wants to keep the 12 home layouts, allow users to select one from
+settings, and use the purchased template as the actual frontend — not as loose
+inspiration for a new design.
 
 ## Decision
 
-1. Use the purchased template as a **design kit**, not as an application tree.
-2. Keep the Hani `frontend/` application shell, locale routing, API client,
-   and auth flows.
-3. Introduce a **Home Experience Registry**:
+1. **Template-first UI**
+   The Dreamstour template is the application base and the single visual source
+   of truth. Hani adds platform concerns inside it; Hani does not build a
+   parallel design system or redesign pages from scratch.
+
+2. **One app tree**
+   Keep exactly one of the template's route trees. Default candidate:
+   `(feature-module)` + `views` + `core/common`. The duplicate tree is deleted
+   after build verification.
+
+3. **Hani platform layer**
+   Add Hani API contracts, OTP/session, i18n, RTL, preferences, checkout, and
+   SEO inside the template structure. Patch the template in place.
+
+4. **Home Experience Registry**
    - one public home route `/[locale]`;
-   - all 12 layouts remain as lazy-loaded presentation variants;
-   - all variants consume the same `HomeViewModel`;
+   - all 12 layouts remain, mapped to their actual template views
+     (`index-1` ... `index-12`);
    - the selected variant is persisted in user preferences or a signed
      anonymous cookie;
    - resolution precedence is user preference, anonymous cookie, agency
-     default, experiment, system default.
-4. Apply a vertical-slice/Clean Architecture structure:
-   - `app` is delivery;
-   - `features/*/{domain,application,infrastructure,ui}`;
-   - `components/ui` is the design system;
-   - `lib` is cross-cutting;
-   - UI never calls `fetch` directly.
-5. Generate TypeScript API types from Hani OpenAPI and map DTOs to ViewModels.
-6. Keep FA/EN/AR and RTL as first-class architecture concerns, not a theme
-   toggle.
-7. Do not copy the template's route tree or its 183 demo pages.
-8. Do not remove the 12 home layouts; keep unused vertical variants behind
-   feature flags without deleting them.
+     default, experiment, system default;
+   - no custom `HomeExperienceFrame` remains as the final implementation.
+
+5. **Missing fields and features**
+   Add missing fields to Hani DTOs and OpenAPI, then render them through the
+   template's existing cards, forms, tables, and page layouts. Do not invent a
+   new visual pattern.
+
+6. **Clean integration architecture**
+   Hani integration code lives in `src/features`, `src/lib/hani`, `src/i18n`,
+   and `src/messages`. Template code lives in `src/app`, `src/views`,
+   `src/components`, `src/core`, `src/style`, and `public/assets`.
+   UI never calls `fetch` directly.
+
+7. **RTL and i18n are non-negotiable**
+   FA/EN/AR and RTL/LTR are applied to the template layout and styles. A page
+   is not done without both directions.
+
+8. **Remove template defects**
+   Remove duplicate routes, `output: "export"`, demo-only RTL, static language
+   and currency dropdowns, and mock data in production.
+
+9. **Keep all 12 home layouts**
+   No home layout is deleted. Unused vertical variants can be feature-flagged.
 
 ## Consequences
 
 Positive:
 
-- The UI can reuse the template's visual investment without inheriting its
-  technical debt.
+- The purchased visual investment is preserved.
+- Pages remain visually consistent because there is one design source.
+- Backend fields and missing features are added inside existing patterns.
 - Users can choose a home experience without 12 duplicate routes.
-- Home variants share one data contract, so API changes are implemented once.
-- i18n, RTL, auth, SEO, and checkout remain under Hani control.
-- The frontend becomes testable with repository ports and mock adapters.
+- i18n, RTL, auth, checkout, and SEO are integrated rather than rebuilt.
 
 Negative:
 
-- The template's components must be ported and cleaned rather than used
-  directly.
-- The Home Experience Registry adds one abstraction layer.
-- The initial migration requires a build-cleanup phase.
+- The template has technical debt that must be patched first.
+- One route tree and one component tree must be selected and frozen.
 - Some template pages and verticals will not be shipped in the MVP.
+- Hani wrappers must stay thin to avoid forking the template.
 
 ## Compliance
 
@@ -76,4 +97,5 @@ Negative:
 - All API fields used by the UI must exist in DTOs and OpenAPI.
 - Public pages must render metadata, canonical, hreflang, and JSON-LD.
 - No mock repository may be selected in a deployed environment.
+- No parallel design system or custom replacement page.
 - A page is not done without RTL, accessibility, and error-state verification.

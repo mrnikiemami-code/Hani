@@ -1,7 +1,7 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 9.1 — Template Integration & Lastsecond Simulation (IN_PROGRESS — Home Experience Registry + i18n/RTL)
+> **فاز فعال:** Gate 9.1 — Template-First Integration (IN_PROGRESS — Home Experience Registry + i18n/RTL)
 > **آخرین commit کد:** `87827ef`
 > **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core) / Gate 8.1 ✅ PASSED (Core) / Gate 9 ✅ PASSED (Core) / Gate 9.1 ⏳ In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
@@ -215,7 +215,7 @@
 
 > **Gate 8.1 (2026-11-14):** ۱۲ انحراف Backend بسته شد (Continent/هیبرارشی، Hotel sort/rank، Agency directory/profile، Author aggregate، Home BFF، Content JSON-LD، Review criteria، Blog tags/related، Visa related articles، Media upload، HTTP Email/SMS). E-07 (credential پرووایدر پرواز) و A-15 (Lastgram SSO/Competition) به‌عنوان تحویل خارجی باقی ماندند؛ E-01 در Gate 9 بسته شد. قرارداد: [`GATE-8.1-CONTRACT.md`](GATE-8.1-CONTRACT.md).
 > **Gate 9 (2026-11-14):** Frontend Next.js 16 / React 19 با routing سه‌زبانه FA/EN/AR، RTL/LTR، صفحات Home/Tours/Hotels/Visa/Blog/Itineraries/Videos/Agencies/Author/Restaurants/Attractions/Flights ساخته شد. Contract: [`GATE-9-CONTRACT.md`](GATE-9-CONTRACT.md).
-> **Gate 9.1 (IN_PROGRESS):** Home Experience Registry با ۱۲ variant، Settings انتخاب، Cookie، Locale Switcher، فونت‌های FA/AR/EN و RTL/LTR پایه پیاده شد. مراحل بعدی: اتصال UserPreferences، Design System، و صفحات Lastsecond. Contract: [`GATE-9.1-CONTRACT.md`](GATE-9.1-CONTRACT.md).
+> **Gate 9.1 (IN_PROGRESS):** قالب Dreamstour خودِ فرانت است و تنها منبع طراحی است. Home Experience Registry با ۱۲ variant فعلاً ساخته شده و در مهاجرت به Homeهای واقعی قالب وصل می‌شود. Locale Switcher و RTL/LTR پایه پیاده شد. مراحل بعدی: Template Build Cleanup، اتصال Homeهای واقعی، Design System قالب، و صفحات Lastsecond. Contract: [`GATE-9.1-CONTRACT.md`](GATE-9.1-CONTRACT.md).
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
@@ -265,14 +265,13 @@
 ### Gate 9.1 — Exit Checklist ⏳ IN_PROGRESS
 
 - [x] i18n/RTL foundation: locale switcher, FA/AR fonts, `html lang/dir`, hreflang metadata
-- [x] `Home Experience Registry` با ۱۲ variant
-- [x] Settings انتخاب Home Experience + Cookie (مهمان)
+- [x] Prototype `Home Experience Registry` با ۱۲ variant
+- [x] Prototype Settings انتخاب Home Experience + Cookie (مهمان)
+- [ ] Registry mapping به Homeهای واقعی قالب (`@/views/home-*`)
 - [ ] UserPreferences API برای کاربر لاگین‌کرده
-- [ ] یک درخت App و Build سبز
-- [ ] `Home Experience Registry` با ۱۲ variant
-- [ ] Settings انتخاب Home Experience + ذخیره‌سازی کاربر/کوکی
-- [ ] Design System + Tokens + RTL Logic
-- [ ] صفحات عمومی Lastsecond متصل به Hani API
+- [ ] یک درخت App قالب و Build سبز
+- [ ] Template Design System + RTL patch (بدون Design System موازی)
+- [ ] صفحات عمومی Lastsecond با صفحات واقعی قالب
 - [ ] OTP Login + HttpOnly Session
 - [ ] Traveler Dashboard حداقلی
 - [ ] Agency Dashboard حداقلی

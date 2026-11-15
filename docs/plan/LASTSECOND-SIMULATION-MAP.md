@@ -4,6 +4,11 @@
 - **Date:** 2026-11-15
 - **Purpose:** Map Lastsecond-style pages to Hani routes, APIs, data contracts, and delivery phases.
 
+> **Template-first note:** `DONE (basic)` marks the temporary Gate 9 prototype.
+> The target is to render the same route with the purchased Dreamstour template
+> page, patched for Hani data, i18n, RTL, and missing states. Prototype pages
+> are not the final design and must not be extended as a parallel UI.
+
 ---
 
 ## 1. Principles

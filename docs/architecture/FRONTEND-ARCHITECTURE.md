@@ -1,12 +1,18 @@
 # Hani Frontend Architecture
 
-- **Status:** Proposed — Gate 9.1
+- **Status:** Accepted — Template-First — Gate 9.1
 - **Date:** 2026-11-15
 - **Scope:** `frontend/` (Hani web app)
-- **Reference UI source:** `reference/dreamstour-v1.1.7/nextjs` (design kit only)
+- **Reference UI source:** `reference/dreamstour-v1.1.7/nextjs` — **application base and single visual source of truth**
 - **Related:** `docs/plan/GATE-9.1-CONTRACT.md`, `docs/plan/LASTSECOND-SIMULATION-MAP.md`, `docs/adr/0030-frontend-architecture.md`
 - **Mandatory i18n/RTL contract:** [`FRONTEND-I18N-RTL.md`](FRONTEND-I18N-RTL.md)
 
+> **Non-negotiable:** The purchased Dreamstour template is the visual base.
+> Hani adds platform concerns — API, auth, i18n, RTL, preferences, checkout —
+> inside the template. We do **not** build a parallel design system and we do
+> **not** redesign pages from scratch. Any missing feature or field is added
+> using the template's existing layout, spacing, components, and visual language.
+>
 > **Non-negotiable:** Hani is multilingual (FA/EN/AR) and direction-aware
 > (RTL/LTR). Locale and direction are architectural inputs, not a theme
 > toggle. No page or component is complete without FA/EN/AR and RTL/LTR
@@ -19,23 +25,31 @@
 This document defines the frontend architecture for Hani after the purchased
 Dreamstour template is introduced.
 
-The template is **not** copied as an application tree. It is consumed as a
-design and component source. Hani keeps its own routing, i18n, API client,
-authentication, and deployment model.
+The template is the **application base and the single visual source of truth**.
+Hani adds its platform layer (API, auth, i18n, RTL, preferences, checkout)
+inside the template. We do not build a parallel design system and we do not
+redesign pages from scratch.
 
 ### Goals
 
+- Use the purchased template as the only visual implementation.
 - Keep all 12 Dreamstour home experiences, selectable by the user in settings.
-- Make home experiences dynamic and code-split, without duplicating routes.
-- Deliver FA/EN/AR with first-class RTL.
-- Connect the frontend to Hani APIs with typed contracts.
-- Recreate Lastsecond page coverage without copying 183 demo routes.
+- Map each home experience to its actual template view.
+- Deliver FA/EN/AR and RTL/LTR by fixing and extending the template, not by
+  replacing it.
+- Connect template pages to Hani APIs with typed contracts.
+- Add missing fields and features inside the template's existing patterns.
+- Remove template defects: duplicate route trees, broken build, static export,
+  demo-only RTL, mock data.
 - Keep the UI consistent and accessible.
 - Keep business logic out of React components.
 - Make the frontend testable without a live backend.
 
 ### Non-goals
 
+- Redesigning the template or inventing a new visual language.
+- Building a second component library beside the template.
+- Replacing template pages with custom Hani pages.
 - Recreating every Dreamstour demo page.
 - Keeping car/cruise/bus/guide/activity verticals in the Hani MVP.
 - Building a second backend inside the frontend.
@@ -45,135 +59,132 @@ authentication, and deployment model.
 
 ## 2. Architecture Principles
 
-1. **Contract-first**
+1. **Template-first**
+   The Dreamstour template is the only visual source. Hani adds behavior,
+   data, auth, i18n, and RTL; it does not invent a parallel design.
+
+2. **Contract-first**
    Public DTOs come from Hani OpenAPI. TypeScript types are generated, not
    hand-copied.
 
-2. **Server-first**
+3. **Server-first**
    Public pages are Server Components. Client Components are used only for
    interaction.
 
-3. **Vertical slices**
+4. **Vertical slices**
    Each business capability owns its domain, application, infrastructure, and
    UI code.
 
-4. **One source of truth for UI**
+5. **One source of truth for UI**
    No duplicate page trees, no duplicate header/footer, no duplicate card
-   implementations.
+   implementations, no custom replacement for a template page.
 
-5. **Locale/RTL first**
+6. **Locale/RTL first**
    Direction and language are resolved on the server. RTL is not a client-side
    demo toggle.
 
-6. **No business logic in JSX**
+7. **No business logic in JSX**
    Pages compose. Use cases, mappers, and validation live outside components.
 
-7. **Progressive enhancement**
+8. **Progressive enhancement**
    Primary content must render without client-side JavaScript.
 
-8. **Accessibility by default**
+9. **Accessibility by default**
    WCAG 2.2 AA, keyboard-first, visible focus, semantic HTML.
 
 ---
 
 ## 3. Target Folder Structure
 
+The template's `src` tree is the application base. Hani integration code lives
+inside it; there is no second app tree and no parallel design system.
+
 ```text
 frontend/
-  app/
-    [locale]/
-      (public)/
-        page.tsx
-        tours/
-        hotels/
-        flights/
-        visa/
-        restaurants/
-        attractions/
-        destinations/
-        agencies/
-        u/[username]/
-        blog/
-        travelogues/
-        videos/
-        compare/
-        wishlist/
-        settings/
-      (auth)/
-        login/
-        verify/
-        logout/
-      (dashboard)/
-        traveler/
-        agency/
-      checkout/
-      payment/
-      api/
-        health/
-  components/
-    ui/                 # design-system primitives
-    patterns/           # cards, filters, empty/error/loading states
-    layout/             # header, footer, shell, breadcrumbs
-    seo/                # JSON-LD, metadata helpers
-  features/
-    home/
-    tours/
-    hotels/
-    flights/
-    visa/
-    places/
-    destinations/
-    content/
-    agencies/
-    authors/
-    reviews/
-    auth/
-    traveler/
-    agency/
-    checkout/
-    preferences/
-  lib/
-    api/                # HTTP client, generated schema, error mapping
-    auth/               # session, guards, token/cookie strategy
-    i18n/               # locale helpers
-    money/              # Intl currency and formatting
-    dates/              # locale-aware date/time
-    seo/                # canonical, hreflang, JSON-LD builders
-    analytics/          # event contracts
-    config/             # environment validation
-  messages/
-    fa.json
-    en.json
-    ar.json
-  styles/
-    tokens.scss
-    base.scss
-    rtl.scss
-    components/
+  src/
+    app/                    # TEMPLATE-OWNED route tree (one only)
+      [locale]/             # locale wrapper added by Hani
+        (public)/           # template public routes
+        (auth)/             # template auth routes, patched to OTP
+        (dashboard)/        # template user/agent dashboards
+        checkout/           # Hani checkout flow inside template shell
+    views/                  # TEMPLATE-OWNED page views
+      home-service-one/
+      home-service-two/
+      home-one/
+      home-two/
+      home-three/
+      home-four/
+      home-five/
+      home-six/
+      home-seven/
+      home-ten/
+      home-eleven/
+      home-twelve/
+    components/             # TEMPLATE-OWNED components
+      common-header/
+      common-footer/
+      common-sidebar/
+      pages/
+      ...
+    core/                   # TEMPLATE-OWNED shared core
+    style/                  # TEMPLATE-OWNED SCSS source of truth
+    config/                 # template config + Hani config merge
+    features/               # HANI-OWNED integration slices
+      home-experience/      # registry, resolver, settings
+      auth/                 # OTP/session integration
+      checkout/             # quote/order/payment integration
+      preferences/          # home experience, locale, currency
+    lib/
+      hani/                 # HANI-OWNED API client, generated types, mappers
+      i18n/                 # HANI-OWNED next-intl routing/messages helpers
+      seo/                  # HANI-OWNED metadata/JSON-LD builders
+      analytics/            # HANI-OWNED event contracts
+    messages/               # HANI-OWNED FA/EN/AR catalogs
+    hooks/                  # template hooks + Hani hooks
+    providers/              # template providers + Hani providers
+    types/                  # template types + Hani view models
+  public/
+    assets/                 # TEMPLATE-OWNED images/icons
   tests/
-    unit/
     e2e/
     visual/
 ```
 
+### Ownership Rule
+
+| Area | Owner | Rule |
+|---|---|---|
+| `src/app` | Template + Hani patch | One app tree only |
+| `src/views` | Template | Do not replace with custom pages |
+| `src/components` | Template | Reuse; patch RTL/i18n/API binding |
+| `src/core` | Template | Reuse; patch duplicated stores/headers |
+| `src/style` | Template | Canonical visual system |
+| `src/features` | Hani | Integration logic only |
+| `src/lib/hani` | Hani | API contracts and adapters |
+| `src/messages` | Hani | Locale catalogs |
+
 ### Dependency Rule
 
 ```text
-app  ->  features/ui  ->  features/application  ->  features/domain
-                              |
-                              v
-                    features/infrastructure  ->  lib/api
-components/ui  ->  styles/tokens only
+src/app  ->  template views/components
+src/app  ->  src/features/*  ->  src/lib/hani
+src/features/domain  ->  no React/Next/HTTP
+src/features/ui  ->  template components + view models
+src/lib/hani  ->  generated OpenAPI types + mappers
 ```
 
 Rules:
 
-- `app/**` may import feature entry points and UI composition.
-- `features/domain` must not import React, Next.js, or HTTP.
-- `features/ui` must not call `fetch`.
-- `features/infrastructure` is the only layer that knows Hani endpoints.
-- `components/ui` must not know business entities.
-- `lib` must not import features.
+- Template pages stay the visual source; Hani wraps them, not replaces them.
+- `src/features` may compose template components, but must not fork them.
+- `src/features/domain` must not import React, Next.js, or HTTP.
+- `src/features/ui` must not call `fetch`.
+- `src/lib/hani` is the only layer that knows Hani endpoints.
+- New UI components are allowed only when the template has no equivalent; they
+  must reuse template tokens, spacing, typography, and behavior.
+- No second `components/ui` design system.
+- No custom `HomeExperienceFrame`; registry loaders point to template views.
 
 ---
 
@@ -239,20 +250,41 @@ export type HomeExperienceDefinition = {
 };
 ```
 
-| ID | Source | Primary focus |
-|---|---|---|
-| `all-services-classic` | `index-1` | all services |
-| `all-services-modern` | `index-2` | all services |
-| `tour-classic` | `index-3` | tours |
-| `hotel` | `index-4` | hotels |
-| `car` | `index-5` | cars |
-| `flight` | `index-6` | flights |
-| `cruise` | `index-7` | cruises |
-| `tour-editorial` | `index-8` | tours/editorial |
-| `bus` | `index-9` | buses |
-| `guide` | `index-10` | guides |
-| `activity` | `index-11` | activities |
-| `visa` | `index-12` | visa |
+| ID | Source | Template view | Primary focus |
+|---|---|---|---|
+| `all-services-classic` | `index-1` | `@/views/home-service-one/homeServiceOne` | all services |
+| `all-services-modern` | `index-2` | `@/views/home-service-two/homeServiceTwo` | all services |
+| `tour-classic` | `index-3` | `@/views/home-one/homeOne` | tours |
+| `hotel` | `index-4` | `@/views/home-two/homeTwo` | hotels |
+| `car` | `index-5` | `@/views/home-three/homeThree` | cars |
+| `flight` | `index-6` | `@/views/home-four/homeFour` | flights |
+| `cruise` | `index-7` | `@/views/home-five/homeFive` | cruises |
+| `tour-editorial` | `index-8` | `@/views/home-six/homeSix` | tours/editorial |
+| `bus` | `index-9` | `@/views/home-seven/homeSeven` | buses |
+| `guide` | `index-10` | `@/views/home-ten/homeTen` | guides |
+| `activity` | `index-11` | `@/views/home-eleven/homeEleven` | activities |
+| `visa` | `index-12` | `@/views/home-twelve/homeTwelve` | visa |
+
+The registry is the only Hani abstraction around home layouts. Its loaders
+point to the actual template views. There is no custom replacement frame.
+
+```ts
+// src/features/home-experience/infrastructure/registry.ts
+export const HOME_EXPERIENCE_LOADERS = {
+  "all-services-classic": () => import("@/views/home-service-one/homeServiceOne"),
+  "all-services-modern": () => import("@/views/home-service-two/homeServiceTwo"),
+  "tour-classic": () => import("@/views/home-one/homeOne"),
+  "hotel": () => import("@/views/home-two/homeTwo"),
+  "car": () => import("@/views/home-three/homeThree"),
+  "flight": () => import("@/views/home-four/homeFour"),
+  "cruise": () => import("@/views/home-five/homeFive"),
+  "tour-editorial": () => import("@/views/home-six/homeSix"),
+  "bus": () => import("@/views/home-seven/homeSeven"),
+  "guide": () => import("@/views/home-ten/homeTen"),
+  "activity": () => import("@/views/home-eleven/homeEleven"),
+  "visa": () => import("@/views/home-twelve/homeTwelve")
+};
+```
 
 Out-of-scope verticals can remain disabled by feature flag without deleting
 their home experience.
@@ -515,20 +547,28 @@ Each page exports `generateMetadata`:
 
 ## 8. UI Standard
 
-### 8.1. Design Tokens
+### 8.1. Design Source of Truth
 
-`styles/tokens.scss` defines:
+The template's `src/style` SCSS is the canonical design system:
 
-- color palette and semantic colors
+- color palette
 - typography scale
-- spacing scale (`4px` base)
+- spacing scale
 - radius
 - shadow
 - z-index
 - breakpoints
 - motion durations
+- component classes
 
-No raw color or spacing values in feature components.
+Rules:
+
+- Do not create a second token system or a parallel component library.
+- Hani may add semantic aliases, but they must map to template tokens.
+- New UI must reuse template classes and components.
+- If the template lacks a component, extend its existing pattern; do not invent
+  a new visual language.
+- No raw color or spacing values in Hani integration code.
 
 ### 8.2. Typography
 
@@ -538,46 +578,49 @@ No raw color or spacing values in feature components.
 | AR | Noto Kufi Arabic / Noto Naskh Arabic |
 | EN | Inter |
 
-Use `font-display: swap`, self-hosted fonts, and subset where possible.
+The template font stack is patched by locale. Use `font-display: swap`,
+self-hosted fonts, and subset where possible.
 
 ### 8.3. Component Contract
 
-Every shared component has:
+Use template components first:
 
-- typed props
-- no business API calls
-- loading/empty/error variant where relevant
-- RTL story
-- mobile story
-- accessibility notes
+- Header / Footer / Sidebar
+- Cards
+- Forms
+- DatePicker / DateRangePicker
+- Tabs / Accordion / Dropdown
+- Modal / Drawer / Toast
+- DataTable / Pagination / Breadcrumb
+- SearchBar / FilterBar
+- Empty/Error/Loading patterns
 
-Primitives:
+Hani wrappers are allowed only for:
 
-- Button, IconButton, Link
-- Input, Textarea, Select, Checkbox, Radio, Switch
-- DatePicker, DateRangePicker
-- Tabs, Accordion, Dropdown
-- Card, Badge, Rating, Price
-- Breadcrumb, Pagination
-- Modal, Drawer, Toast
-- Skeleton, EmptyState, ErrorState
-- DataTable
-- SearchBar, FilterBar
+- API data binding
+- i18n text
+- RTL corrections
+- accessibility corrections
+- state handling
+
+Wrappers must not fork the template's visual structure.
 
 ### 8.4. Page Standard
 
-Every page follows:
+Every page follows the template's existing page composition, for example:
 
 ```text
-PageShell
-  Header
-  Breadcrumb (optional)
-  PageHeader (title, subtitle, actions)
-  FilterBar (optional)
-  Content
-  Pagination (optional)
-  Footer
+Header
+Breadcrumb
+Page title / hero
+Filterbar or search
+Content grid/list
+Pagination
+Footer
 ```
+
+Hani must not replace a template page with a custom page. The page is patched
+in place for data, locale, direction, and missing states.
 
 Every data page handles:
 
@@ -589,13 +632,13 @@ Every data page handles:
 
 ### 8.5. Forms
 
-- React Hook Form
-- Zod validation
-- field-level errors
-- server error mapping
-- disabled/pending state
-- success/error toast
-- no duplicate validation rules between client and server
+- Keep the template form layout and controls.
+- Add React Hook Form and Zod validation.
+- Field-level errors.
+- Server error mapping.
+- Disabled/pending state.
+- Success/error toast.
+- No duplicate validation rules between client and server.
 
 ### 8.6. Accessibility
 
@@ -665,21 +708,28 @@ Required suites:
 
 ### Do
 
-- Copy SCSS tokens, assets, icons, and selected components.
-- Port one home experience at a time into `features/home/ui/experiences`.
-- Reuse visual patterns, not page logic.
-- Replace demo data with Hani repositories.
-- Keep Hani `app/[locale]` and `lib/api`.
+- Copy the template Next.js app into `frontend/src` as the base.
+- Keep exactly one app tree. Default candidate: `(feature-module)` + `views` +
+  `core/common`; final freeze after build verification.
+- Delete the duplicate app tree and duplicate header/footer/page trees.
+- Keep the template's SCSS, assets, layout, cards, forms, and home views.
+- Patch the template for API, auth, i18n, RTL, preferences, and missing states.
+- Point Home Experience loaders at the actual template home views.
+- Add missing fields to Hani DTOs/OpenAPI, then bind them to the existing
+  template cards/forms.
+- Use template patterns for any new page or component.
 
 ### Do Not
 
-- Copy `src/app` route tree.
+- Redesign the template or create a parallel design system.
+- Replace template pages with custom Hani pages.
+- Keep a custom `HomeExperienceFrame` as the final home implementation.
 - Keep both `(feature-module)` and `(public-pages)`.
-- Copy 183 demo routes.
+- Keep `output: "export"`.
 - Keep hard-coded English text.
 - Keep static language/currency dropdowns.
-- Keep `output: "export"`.
 - Keep mock data in production.
+- Add a new card/button/form style when a template equivalent exists.
 
 ---
 
@@ -687,13 +737,15 @@ Required suites:
 
 A frontend task is done only when:
 
-1. It uses generated API types or a documented contract.
-2. It has loading, empty, error, and unauthorized states where relevant.
-3. FA/EN/AR strings exist; no hard-coded text.
-4. RTL is verified with a screenshot or test.
-5. Keyboard and axe checks pass.
-6. Metadata/hreflang/JSON-LD exist for public pages.
-7. Unit or E2E coverage exists for the changed behavior.
-8. `npm run build` and `npm run lint` pass.
-9. No direct `fetch` in UI components.
-10. Documentation/README is updated.
+1. It uses the template's visual components and tokens.
+2. It does not introduce a parallel design system or a custom replacement page.
+3. It uses generated API types or a documented contract.
+4. It has loading, empty, error, and unauthorized states where relevant.
+5. FA/EN/AR strings exist; no hard-coded text.
+6. RTL is verified with a screenshot or test.
+7. Keyboard and axe checks pass.
+8. Metadata/hreflang/JSON-LD exist for public pages.
+9. Unit or E2E coverage exists for the changed behavior.
+10. `npm run build` and `npm run lint` pass.
+11. No direct `fetch` in UI components.
+12. Documentation/README is updated.

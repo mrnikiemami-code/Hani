@@ -1,3 +1,9 @@
+/**
+ * Temporary Gate 9 prototype.
+ *
+ * Target architecture: this frame must be removed and the Home Experience
+ * registry must load the purchased template views (`@/views/home-*`).
+ */
 import { getTranslations } from "next-intl/server";
 import { formatMoney } from "@/lib/api";
 import type { HomeFeed } from "@/lib/types";

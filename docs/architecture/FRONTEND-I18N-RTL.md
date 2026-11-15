@@ -7,6 +7,10 @@
 This document is a **non-negotiable frontend contract**. Multilingual support
 and text direction are architectural inputs, not visual afterthoughts.
 
+> **Template-first:** these rules are applied to the purchased Dreamstour
+> template. RTL fixes patch the template layout and SCSS; they do not justify
+> a custom replacement design.
+
 ---
 
 ## 1. Supported Locales
