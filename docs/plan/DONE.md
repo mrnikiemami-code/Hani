@@ -256,4 +256,5 @@
 | `87827ef` | Gate 9 Next.js frontend: FA/EN/AR, core public pages, Docker build |
 | `5ab00a7` | Gate 9.1 template-first architecture: Dreamstour as single visual source |
 | `afaec28` | Gate 9.1 template base: one app tree, locale routing, 12 home views, build green |
+| `2898d00` | Gate 9.1 template copy externalized: FA/AR translations + locale provider |
 | `7df2265` | Phase roadmap + status + tasks |
