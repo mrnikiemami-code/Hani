@@ -1,17 +1,52 @@
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { Inter, Noto_Kufi_Arabic, Vazirmatn } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-export const metadata: Metadata = {
-  title: "Hani — سفر هوشمند",
-  description: "مقایسه تور، هتل، ویزا و تجربه مسافران در هانی"
-};
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap"
+});
+
+const vazirmatn = Vazirmatn({
+  subsets: ["arabic", "latin"],
+  variable: "--font-vazirmatn",
+  display: "swap"
+});
+
+const notoKufi = Noto_Kufi_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-noto-kufi",
+  display: "swap"
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const languages = Object.fromEntries(
+    routing.locales.map((item) => [item, `/${item}`])
+  );
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: {
+      canonical: `/${locale}`,
+      languages
+    }
+  };
 }
 
 export default async function LocaleLayout({
@@ -33,7 +68,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={dir}>
-      <body>
+      <body className={`${inter.variable} ${vazirmatn.variable} ${notoKufi.variable}`}>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>

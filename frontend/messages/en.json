@@ -43,6 +43,11 @@
     "flights": "Flights",
     "videos": "Videos",
     "login": "Login",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "language": "Language"
+  },
+  "meta": {
+    "title": "Hani ? Smart travel",
+    "description": "Compare tours, hotels, visas, and traveler experiences on Hani"
   }
 }

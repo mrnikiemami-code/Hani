@@ -5,6 +5,12 @@
 - **Scope:** `frontend/` (Hani web app)
 - **Reference UI source:** `reference/dreamstour-v1.1.7/nextjs` (design kit only)
 - **Related:** `docs/plan/GATE-9.1-CONTRACT.md`, `docs/plan/LASTSECOND-SIMULATION-MAP.md`, `docs/adr/0030-frontend-architecture.md`
+- **Mandatory i18n/RTL contract:** [`FRONTEND-I18N-RTL.md`](FRONTEND-I18N-RTL.md)
+
+> **Non-negotiable:** Hani is multilingual (FA/EN/AR) and direction-aware
+> (RTL/LTR). Locale and direction are architectural inputs, not a theme
+> toggle. No page or component is complete without FA/EN/AR and RTL/LTR
+> verification. See the mandatory contract above.
 
 ---
 

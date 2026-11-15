@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { LocaleSwitcher } from "./LocaleSwitcher";
 
 const navItems = [
   ["tours", "/tours"],
@@ -29,6 +30,9 @@ export async function SiteHeader({ locale }: { locale: string }) {
             {t(key)}
           </Link>
         ))}
+        <div className="nav-actions">
+          <LocaleSwitcher />
+        </div>
       </div>
     </header>
   );

@@ -1,9 +1,10 @@
 # Gate 9.1 — Template Integration & Lastsecond Simulation
 
-- **Status:** Planned
+- **Status:** In Progress — i18n/RTL foundation
 - **Date:** 2026-11-15
 - **Predecessor:** Gate 9 PASSED (Core)
 - **Architecture:** [`docs/architecture/FRONTEND-ARCHITECTURE.md`](../architecture/FRONTEND-ARCHITECTURE.md)
+- **Mandatory i18n/RTL contract:** [`docs/architecture/FRONTEND-I18N-RTL.md`](../architecture/FRONTEND-I18N-RTL.md)
 - **Parity map:** [`LASTSECOND-SIMULATION-MAP.md`](LASTSECOND-SIMULATION-MAP.md)
 
 ---
@@ -51,7 +52,16 @@ product frontend built on Hani contracts.
 
 ---
 
-## 3. Phase Plan
+## 3. Current Progress
+
+- Locale switcher added to the header (FA/EN/AR, path and query preserved).
+- Locale-specific fonts added: Vazirmatn (FA), Noto Kufi Arabic (AR), Inter (EN).
+- `html lang` / `dir` remains server-side.
+- Metadata alternates/hreflang added at locale layout level.
+- RTL/LTR smoke verified: `/fa` => `lang=fa dir=rtl`, `/en/tours` => `lang=en dir=ltr`, `/ar/visa` => `lang=ar dir=rtl`.
+- `npm run build` green.
+
+## 4. Phase Plan
 
 ### Phase 0 — Architecture Freeze and Build Cleanup
 
@@ -200,7 +210,7 @@ Exit criteria:
 
 ---
 
-## 4. Backend Field Gap Backlog
+## 5. Backend Field Gap Backlog
 
 The frontend must not invent fields. The following additions are required or
 must be confirmed in OpenAPI before UI implementation.
@@ -335,7 +345,7 @@ change. The frontend then regenerates types and maps to ViewModels.
 
 ---
 
-## 5. Acceptance Criteria
+## 6. Acceptance Criteria
 
 Gate 9.1 is PASSED (Core) only when:
 
@@ -345,6 +355,8 @@ Gate 9.1 is PASSED (Core) only when:
 - [ ] Public pages use real Hani APIs.
 - [ ] Farsi/English/Arabic routes work.
 - [ ] RTL visual tests pass for FA and AR.
+- [ ] Every shared component is verified in FA/EN/AR and RTL/LTR.
+- [ ] Every public page has localized metadata and hreflang.
 - [ ] Public pages have canonical, hreflang, and JSON-LD.
 - [ ] OTP login works with HttpOnly cookies.
 - [ ] Traveler and agency dashboards are role-scoped.
@@ -356,7 +368,7 @@ Gate 9.1 is PASSED (Core) only when:
 
 ---
 
-## 6. Key Risks
+## 7. Key Risks
 
 | Risk | Mitigation |
 |---|---|
@@ -371,7 +383,7 @@ Gate 9.1 is PASSED (Core) only when:
 
 ---
 
-## 7. Immediate Next Actions
+## 8. Immediate Next Actions
 
 1. Approve the architecture in
    [`FRONTEND-ARCHITECTURE.md`](../architecture/FRONTEND-ARCHITECTURE.md).

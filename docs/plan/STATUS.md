@@ -1,9 +1,9 @@
 # Hani — STATUS (وضعیت زنده)
 
 > **تاریخ:** ۲۳ آبان ۱۴۰۵
-> **فاز فعال:** Gate 9.1 — Template Integration & Lastsecond Simulation (PLANNED)
+> **فاز فعال:** Gate 9.1 — Template Integration & Lastsecond Simulation (IN_PROGRESS — i18n/RTL foundation)
 > **آخرین commit کد:** `87827ef`
-> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core) / Gate 8.1 ✅ PASSED (Core) / Gate 9 ✅ PASSED (Core) / Gate 9.1 ⏳ Planned
+> **وضعیت Gate:** Gate 1 ✅ / Gate 2 ✅ / Gate 3 ✅ / Gate 4 ✅ Remediated / Gate 5 ✅ PASSED / Gate 5.1 ✅ PASSED / Gate 6 ✅ PASSED / Gate 7 ✅ PASSED (Core) / Gate 8 ✅ PASSED (Core) / Gate 8.1 ✅ PASSED (Core) / Gate 9 ✅ PASSED (Core) / Gate 9.1 ⏳ In Progress
 > **Baseline:** [`BASELINE.md`](BASELINE.md) + [`baseline.json`](baseline.json)
 > **قرارداد فاز:** [`PHASE-CONTRACT.md`](PHASE-CONTRACT.md)
 > **گزارش Gate:** [`../reports/baseline-gate-8.md`](../reports/baseline-gate-8.md)
@@ -11,6 +11,7 @@
 > **قرارداد Gate 9:** [`GATE-9-CONTRACT.md`](GATE-9-CONTRACT.md)
 > **قرارداد Gate 9.1:** [`GATE-9.1-CONTRACT.md`](GATE-9.1-CONTRACT.md)
 > **معماری فرانت:** [`../architecture/FRONTEND-ARCHITECTURE.md`](../architecture/FRONTEND-ARCHITECTURE.md)
+> **قرارداد i18n/RTL:** [`../architecture/FRONTEND-I18N-RTL.md`](../architecture/FRONTEND-I18N-RTL.md)
 > **نقشه Lastsecond:** [`LASTSECOND-SIMULATION-MAP.md`](LASTSECOND-SIMULATION-MAP.md)
 > **ADR فرانت:** [`../adr/0030-frontend-architecture.md`](../adr/0030-frontend-architecture.md)
 > **بازبینی دوباره Lastsecond:** [`../reports/lastsecond-reaudit-post-gate8-2026-11-14.md`](../reports/lastsecond-reaudit-post-gate8-2026-11-14.md)
@@ -33,7 +34,7 @@
 | 5 | Content + Hotels + Visa + SEO/i18n | ✅ Gate 5/5.1 + Gate 6 | 100% |
 | 6 | Hardening & Scale | ✅ Gate 8 + 8.1 PASSED (Core) | 100% |
 | 7 | Frontend Launch | ✅ Gate 9 PASSED (Core) | 100% |
-| 8 | Template Integration & Lastsecond Simulation | ⏳ Gate 9.1 Planned | 0% |
+| 8 | Template Integration & Lastsecond Simulation | ⏳ Gate 9.1 In Progress | 10% |
 
 > از این لحظه، برنامه‌ریزی بر اساس `BASELINE.md` و Gateهای ۱ تا ۸ است. Phase 2 فعلی فقط تا زمان تکمیل Gate 1 به‌عنوان وضعیت تاریخی باقی می‌ماند.
 
@@ -210,11 +211,11 @@
 
 ## ۶. تسک فعال / بعدی
 
-**تسک فعال:** Gate 9.1 — Template Integration & Lastsecond Simulation (PLANNED)
+**تسک فعال:** Gate 9.1 — Template Integration & Lastsecond Simulation (i18n/RTL foundation started)
 
 > **Gate 8.1 (2026-11-14):** ۱۲ انحراف Backend بسته شد (Continent/هیبرارشی، Hotel sort/rank، Agency directory/profile، Author aggregate، Home BFF، Content JSON-LD، Review criteria، Blog tags/related، Visa related articles، Media upload، HTTP Email/SMS). E-07 (credential پرووایدر پرواز) و A-15 (Lastgram SSO/Competition) به‌عنوان تحویل خارجی باقی ماندند؛ E-01 در Gate 9 بسته شد. قرارداد: [`GATE-8.1-CONTRACT.md`](GATE-8.1-CONTRACT.md).
 > **Gate 9 (2026-11-14):** Frontend Next.js 16 / React 19 با routing سه‌زبانه FA/EN/AR، RTL/LTR، صفحات Home/Tours/Hotels/Visa/Blog/Itineraries/Videos/Agencies/Author/Restaurants/Attractions/Flights ساخته شد. Contract: [`GATE-9-CONTRACT.md`](GATE-9-CONTRACT.md).
-> **Gate 9.1 (PLANNED):** قالب Dreamstour به‌عنوان Design Kit وارد `frontend/` می‌شود؛ ۱۲ Home Experience حفظ و از Settings انتخاب می‌شوند؛ صفحات Lastsecond به APIهای واقعی Hani وصل می‌شوند؛ i18n/RTL/Accessibility/SEO استاندارد می‌شوند. Contract: [`GATE-9.1-CONTRACT.md`](GATE-9.1-CONTRACT.md).
+> **Gate 9.1 (IN_PROGRESS):** قالب Dreamstour به‌عنوان Design Kit وارد `frontend/` می‌شود؛ ۱۲ Home Experience حفظ و از Settings انتخاب می‌شوند؛ صفحات Lastsecond به APIهای واقعی Hani وصل می‌شوند؛ i18n/RTL/Accessibility/SEO استاندارد می‌شوند. Contract: [`GATE-9.1-CONTRACT.md`](GATE-9.1-CONTRACT.md).
 **GAPهای Gate 1:** ✅ GAP-01, GAP-02, GAP-03, GAP-07, GAP-08
 **GAPهای Gate 2:** ✅ GAP-04, GAP-28
 **GAPهای Gate 3:** ✅ GAP-09/10/26/27/31/11/20/32
@@ -261,8 +262,9 @@
 - [x] `npm run build` + HTTP smoke
 - [ ] Playwright E2E + production credentials/CDN/TLS (external)
 
-### Gate 9.1 — Exit Checklist ⏳ PLANNED
+### Gate 9.1 — Exit Checklist ⏳ IN_PROGRESS
 
+- [x] i18n/RTL foundation: locale switcher, FA/AR fonts, `html lang/dir`, hreflang metadata
 - [ ] یک درخت App و Build سبز
 - [ ] `Home Experience Registry` با ۱۲ variant
 - [ ] Settings انتخاب Home Experience + ذخیره‌سازی کاربر/کوکی
