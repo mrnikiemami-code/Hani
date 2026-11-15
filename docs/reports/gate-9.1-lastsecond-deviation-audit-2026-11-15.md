@@ -272,3 +272,12 @@ Route parity and deduplication are closed:
   `app/global.scss`.
 
 Remaining differences are data binding and visual consistency, not route shape.
+
+
+## 10. C2 Progress Update
+
+- Blog Grid/Detail and related posts are API-bound.
+- Restaurants/Attractions/Itineraries/Videos/Agencies/Author/Badges are API-bound.
+- Non-default Home Experiences receive a shared Hani data strip using template classes.
+- Hotel API now exposes `priceFrom` and `priceCurrency`; Hotel Grid uses the price slot.
+- Remaining: tour/visa cover images, author/reading time, and the formal visual consistency audit.

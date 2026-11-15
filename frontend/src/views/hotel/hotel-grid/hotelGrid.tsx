@@ -8,6 +8,7 @@ import SearchOption from '../searchOption';
 import AppSwiper from '../../../components/app-swiper'
 import type { HotelSearchItem } from "@/features/hotels/domain/hotel-search";
 import { useTranslations } from "next-intl";
+import { formatMoney } from "@/lib/hani/money";
 import HotelFilter from '../hotelFilter';
 
 const HotelGrid = ({
@@ -181,8 +182,8 @@ const HotelGrid = ({
                                                     </div>
                                                     <div className="d-flex align-items-center justify-content-between border-top pt-3">
                                                         <h5 className="text-primary text-nowrap me-2">
-                                                            {hotel.recommendationPercent ?? 0}%
-                                                            <span className="fs-14 fw-normal text-default"> {t("recommend")}</span>
+                                                            {formatMoney(hotel.priceFrom, hotel.priceCurrency, locale ?? "fa")}
+                                                            <span className="fs-14 fw-normal text-default"> / night</span>
                                                         </h5>
                                                         <Link href={detailHref} className="btn btn-sm btn-outline-primary">
                                                             {t("view")}

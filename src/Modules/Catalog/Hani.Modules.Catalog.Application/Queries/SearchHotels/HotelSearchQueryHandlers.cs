@@ -145,6 +145,10 @@ internal sealed class SearchHotelsQueryHandler(
         int? rankInCity = null)
     {
         var name = ResolveName(hotel, locale, languages);
+        var cheapestRoom = hotel.Rooms
+            .Where(room => room.Price > 0)
+            .OrderBy(room => room.Price)
+            .FirstOrDefault();
 
         summaries.TryGetValue(hotel.Id, out var summary);
 
@@ -162,7 +166,9 @@ internal sealed class SearchHotelsQueryHandler(
             RecommendedPercent(summary),
             rankInCity,
             hotel.DestinationId,
-            hotel.CreatedAt);
+            hotel.CreatedAt,
+            cheapestRoom?.Price,
+            cheapestRoom?.Currency);
     }
 
     private static decimal? RecommendedPercent(ReviewSummary? summary)
@@ -228,6 +234,10 @@ internal sealed class GetNearbyHotelsQueryHandler(
         int? rankInCity = null)
     {
         var name = ResolveName(hotel, locale, languages);
+        var cheapestRoom = hotel.Rooms
+            .Where(room => room.Price > 0)
+            .OrderBy(room => room.Price)
+            .FirstOrDefault();
 
         summaries.TryGetValue(hotel.Id, out var summary);
 
@@ -245,7 +255,9 @@ internal sealed class GetNearbyHotelsQueryHandler(
             RecommendedPercent(summary),
             rankInCity,
             hotel.DestinationId,
-            hotel.CreatedAt);
+            hotel.CreatedAt,
+            cheapestRoom?.Price,
+            cheapestRoom?.Currency);
     }
 
     private static decimal? RecommendedPercent(ReviewSummary? summary)

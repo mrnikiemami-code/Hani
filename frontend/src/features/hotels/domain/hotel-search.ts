@@ -10,6 +10,8 @@ export type HotelSearchItem = {
   recommendationPercent: number | null;
   rankInCity: number | null;
   destinationId: string;
+  priceFrom: number | null;
+  priceCurrency: string | null;
 };
 
 export type HotelPagedResult = {

@@ -6,6 +6,9 @@ import type { HomeExperienceDefinition } from "../domain/home-experience";
 import type { HomeFeed } from "../domain/home-feed";
 import { HOME_EXPERIENCE_LOADERS } from "../infrastructure/registry";
 import { HomeFeedProvider } from "./HomeFeedProvider";
+import { HaniTrendingTours } from "./HaniTrendingTours";
+import { HaniRecommendedVisas } from "./HaniRecommendedVisas";
+import { HaniLatestContent } from "./HaniLatestContent";
 
 type Props = {
   definition: HomeExperienceDefinition;
@@ -27,6 +30,13 @@ export function HomeExperienceRenderer({ definition, homeFeed }: Props) {
   return (
     <HomeFeedProvider value={homeFeed}>
       <Header />
+      {definition.id !== "all-services-classic" && (
+        <>
+          <HaniTrendingTours />
+          <HaniRecommendedVisas />
+          <HaniLatestContent />
+        </>
+      )}
       <Experience />
     </HomeFeedProvider>
   );

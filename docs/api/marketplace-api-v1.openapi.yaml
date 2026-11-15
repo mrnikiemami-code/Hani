@@ -2024,6 +2024,8 @@ components:
         rankInCity: { type: [integer, 'null'] }
         destinationId: { type: string, format: uuid }
         createdAt: { type: [string, 'null'], format: date-time }
+        priceFrom: { type: [number, 'null'] }
+        priceCurrency: { type: [string, 'null'] }
 
     GeoNearbyItem:
       type: object

@@ -41,7 +41,9 @@ public sealed record HotelSummaryDto(
     decimal? RecommendationPercent = null,
     int? RankInCity = null,
     Guid DestinationId = default,
-    DateTimeOffset? CreatedAt = null);
+    DateTimeOffset? CreatedAt = null,
+    decimal? PriceFrom = null,
+    string? PriceCurrency = null);
 
 /// <summary>
 /// Nearby hotel result with distance in kilometres.
