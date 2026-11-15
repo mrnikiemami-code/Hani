@@ -82,9 +82,9 @@
         }
     }
     .offcanvas-info {
-        left: 0;
-        right: auto;
-        @include mixins.transform(translateX(calc(-100% - 80px)));
+        left: auto !important;
+        right: 0 !important;
+        @include mixins.transform(translateX(calc(100% + 80px)));
         &.show {
             @include mixins.transform(translateX(0));
         }
