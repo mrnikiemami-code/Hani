@@ -260,4 +260,5 @@
 | `1d2f139` | Gate 9.1 data binding: Tour/Hotel API, search fields (destination/rating/agency/departure) |
 | `4a72517` | Gate 9.1 translation coverage: 2,890 template strings FA/AR, RTL offcanvas fix |
 | `1a8f2a3` | Gate 9.1 Visa Grid API binding and localized visa labels |
+| `589ae13` | Gate 9.1 Home BFF and Blog Grid API binding |
 | `7df2265` | Phase roadmap + status + tasks |
