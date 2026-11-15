@@ -6,10 +6,20 @@ import { all_routes } from "../../../routes/all_routes";
 import VisaSearch from "../visaSearch";
 import VisaFilter from "../visaFilter";
 import { useState } from "react";
+import type { VisaSearchItem } from "@/features/visa/domain/visa-search";
+import { formatMoney } from "@/lib/hani/money";
+import { useTranslations } from "next-intl";
 
 
-const VisaGrid = () => {
+const VisaGrid = ({
+  visas = [],
+  locale,
+}: {
+  visas?: VisaSearchItem[];
+  locale?: string;
+}) => {
   const routes = all_routes;
+  const t = useTranslations("common");
   const [fav, setFav] = useState<boolean[]>([]);
   const handleFav = (i: number) => {
     setFav((prev) => {
@@ -55,7 +65,7 @@ const VisaGrid = () => {
             <div className="col-xl-9 col-lg-8 theiaStickySidebar">
               <div className="d-flex align-items-center justify-content-between flex-wrap">
                 <div className="d-flex align-items-center mb-3">
-                  <h6 className="me-1">689 Visa</h6>
+                  <h6 className="me-1">{t("visasCount", { count: visas.length })}</h6>
                   <p> Found on Your Search</p>
                 </div>
                 <div className="d-flex align-items-center flex-wrap">
@@ -179,798 +189,85 @@ const VisaGrid = () => {
                 </div>
               </div>
               <div className="row justify-content-center">
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-01.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[1] ? '' : 'selected'}`} onClick={() => handleFav(1)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Business Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">5-7 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Electronic Visa for Tourism and Recreation
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Electronic
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 90 Days
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $500
+                {visas.map((visa, index) => {
+                  const image = `assets/img/visa/visa-0${(index % 6) + 1}.jpg`;
+                  const detailHref = `${routes.visaDetails}?slug=${encodeURIComponent(visa.slug)}`;
+
+                  return (
+                    <div className="col-xxl-4 col-md-6 d-flex" key={visa.countryId}>
+                      <div className="place-item mb-4 flex-fill">
+                        <div className="place-img">
+                          <div className="slide-images">
+                            <Link href={detailHref}>
+                              <ImageWithBasePath
+                                src={image}
+                                className="img-fluid w-100"
+                                alt={visa.name}
+                              />
+                            </Link>
+                          </div>
+                          <div className="fav-item">
+                            <button
+                              className={`fav-icon p-2 border-0 ${fav[index] ? "selected" : ""}`}
+                              onClick={() => handleFav(index)}
+                            >
+                              <i className="isax isax-heart5" />
+                            </button>
+                            <span className="badge bg-white text-dark d-inline-flex align-items-center">
+                              {visa.countryCode}
                             </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
+                          </div>
                         </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            USA
-                          </p>
+                        <div className="place-content">
+                          <div className="d-flex align-items-center justify-content-between mb-1">
+                            <div className="d-flex flex-wrap align-items-center me-2">
+                              <span className="me-1">
+                                <i className="isax isax-clock text-gray-6" />
+                              </span>
+                              <p className="fs-14 text-gray-9">
+                                {t("visaTypesCount", { count: visa.typeCount })}
+                              </p>
+                            </div>
+                          </div>
+                          <h5 className="mb-2">
+                            <Link href={detailHref}>{visa.name}</Link>
+                          </h5>
+                          <div className="d-flex align-items-center gap-0 mb-3">
+                            <p className="d-flex align-items-center fs-14 mb-0 me-2">
+                              {t("haniVisaServices")}
+                            </p>
+                          </div>
+                          <div className="d-flex align-items-center justify-content-between border-top pt-3">
+                            <div className="mb-0">
+                              <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
+                                From{" "}
+                                <span className="ms-1 fs-18 fw-semibold text-primary">
+                                  {formatMoney(
+                                    visa.minimumPrice,
+                                    visa.minimumPriceCurrency,
+                                    locale ?? "fa"
+                                  )}
+                                </span>
+                                <span className="ms-1 fs-14 text-gray-3">/ Person</span>
+                              </h6>
+                            </div>
+                            <div className="ms-2 d-flex align-items-center">
+                              <p className="d-flex align-items-center fs-14 mb-0">
+                                <i className="isax isax-location5 me-1" />
+                                {visa.countryCode}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  );
+                })}
+                {visas.length === 0 && (
+                  <div className="col-12">
+                    <p className="text-center text-gray-6">No visas found.</p>
                   </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-02.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[2] ? 'selected' : ''}`} onClick={() => handleFav(2)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Student Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">2-4 Weeks</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Long term for Academic with Health Insurance
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Consular Visa
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 1 Year
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $300
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Egypt
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-03.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[3] ? 'selected' : ''}`} onClick={() => handleFav(3)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Work Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">15-20 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Work Visa for Employment Opportunities
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Paper
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 2 Years
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $800
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Spain
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-04.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[4] ? 'selected' : ''}`} onClick={() => handleFav(4)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Transit Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">3-5 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Short term Visa for Travelers with Layovers
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Electronic
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 72 Hours
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $100
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Qatar
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-05.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[5] ? '' : 'selected'}`} onClick={() => handleFav(5)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Family Reunion Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">8-12 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Family Members to Join Relatives
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Paper
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 1 Year
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $600
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Spain
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-06.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[6] ? 'selected' : ''}`} onClick={() => handleFav(6)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Cultural Exchange Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">10-15 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Cultural Programs and Exchanges
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Electronic
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 6 Months
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $400
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            USA
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-07.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[7] ? 'selected' : ''}`} onClick={() => handleFav(7)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Research Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">4-6 Weeks</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Grown up E-visa with Cooling and Assurance.
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : e-Visa
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 1 Year
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $900
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Qatar
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-08.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[8] ? 'selected' : ''}`} onClick={() => handleFav(8)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Volunteer Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">6-8 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Voluntary Work with Medical Coverage Included
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Sticker Visa
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 6 Months
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $350
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Spain
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-09.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[9] ? 'selected' : ''}`} onClick={() => handleFav(9)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Skilled Worker Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">10-14 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Skilled Workers with Comprehensive Insurance
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Embassy Visa
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 3 Years
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $1200
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Australia
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-10.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[10] ? 'selected' : ''}`} onClick={() => handleFav(10)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Research Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">15-20 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Work Visa for Employment Opportunities
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Electronic
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 2 Years
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $800
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Turkey
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-11.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[9] ? 'selected' : ''}`} onClick={() => handleFav(9)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Tourist Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">5-7 Working Days</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Electronic Visa for Tourism and Recreation
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Electronic
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 90 Days
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $700
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            Egypt
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
-                {/* Tours Grid */}
-                <div className="col-xxl-4 col-md-6 d-flex">
-                  <div className="place-item mb-4 flex-fill">
-                    <div className="place-img">
-                      <div className="slide-images">
-                        <Link href={routes.visaDetails}>
-                          <ImageWithBasePath
-                            src="assets/img/visa/visa-12.jpg"
-                            className="img-fluid w-100"
-                            alt="img"
-                          />
-                        </Link>
-                      </div>
-                      <div className="fav-item">
-                        <button className={`fav-icon p-2 border-0 ${fav[10] ? 'selected' : ''}`} onClick={() => handleFav(10)}>
-                          <i className="isax isax-heart5" />
-                        </button>
-                        <span className="badge bg-white text-dark d-inline-flex align-items-center">
-                          Business Visa
-                        </span>
-                      </div>
-                    </div>
-                    <div className="place-content">
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <div className="d-flex flex-wrap align-items-center me-2">
-                          <span className="me-1">
-                            <i className="isax isax-clock text-gray-6" />
-                          </span>
-                          <p className="fs-14 text-gray-9">2-4 Weeks</p>
-                        </div>
-                      </div>
-                      <h5 className="mb-2">
-                        <Link href={routes.visaDetails}>
-                          Long-term for Academic with Health Insurance
-                        </Link>
-                      </h5>
-                      <div className="d-flex align-items-center gap-0 mb-3">
-                        <p className="d-flex align-items-center fs-14 mb-0 me-2">
-                          Mode : Paper
-                        </p>
-                        <p className="fs-14 mb-0">
-                          <i className="ti ti-point-filled text-primary me-2" />
-                          Validity : 1 Year
-                        </p>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                        <div className="mb-0">
-                          <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
-                            From{" "}
-                            <span className="ms-1 fs-18 fw-semibold text-primary">
-                              $300
-                            </span>
-                            <span className="ms-1 fs-14 text-gray-3">/ Person</span>
-                          </h6>
-                        </div>
-                        <div className="ms-2 d-flex align-items-center">
-                          <p className="d-flex align-items-center fs-14 mb-0">
-                            <i className="isax isax-location5 me-1" />
-                            USA
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /Tours Grid */}
+                )}
               </div>
               {/* Pagination */}
               <nav className="pagination-nav">
