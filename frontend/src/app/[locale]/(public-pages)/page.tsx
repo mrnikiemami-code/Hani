@@ -4,6 +4,7 @@ import {
   HOME_EXPERIENCE_COOKIE,
   resolveHomeExperience
 } from "@/features/home-experience/application/resolve-home-experience";
+import { getHomeFeed } from "@/features/home-experience/infrastructure/home-api";
 import { HomeExperienceRenderer } from "@/features/home-experience/ui/HomeExperienceRenderer";
 
 export default async function HomePage({
@@ -18,6 +19,7 @@ export default async function HomePage({
   const experience = resolveHomeExperience({
     cookie: cookieStore.get(HOME_EXPERIENCE_COOKIE)?.value
   });
+  const homeFeed = await getHomeFeed(locale);
 
-  return <HomeExperienceRenderer definition={experience} />;
+  return <HomeExperienceRenderer definition={experience} homeFeed={homeFeed} />;
 }

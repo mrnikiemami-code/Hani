@@ -6,15 +6,15 @@ import { DatePicker, TimePicker } from '../../components/common-date-picker/appD
 
 import { all_routes } from "../../routes/all_routes";
 import CommonDateRange from "../../components/common-date-range-picker/CommonDateRange";
-import TrendingList from "./trendingList";
 import ExperienceSection from "./experienceSection";
-import Recomanded from "./recomanded";
 import DeliverySection from "./deliverySection";
 import GuideSection from "./guideSection";
 import TestimonialSection from "./testimonialSection";
 import ChooseSection from "./chooseSection";
-import LatestSection from "./latestSection";
 import FooterSection from "./footerSection";
+import { HaniTrendingTours } from "@/features/home-experience/ui/HaniTrendingTours";
+import { HaniRecommendedVisas } from "@/features/home-experience/ui/HaniRecommendedVisas";
+import { HaniLatestContent } from "@/features/home-experience/ui/HaniLatestContent";
 import BookingDropdown from "../../components/booking-dropdown/bookingDropdown";
 import { parseTime } from '../../utils/dateFormat'
 import CircularText from '../../components/circular-text/circularText'
@@ -2965,14 +2965,14 @@ const guidePassenger =
           </div>
       </section>
       {/* /Hero Section */}
-      <TrendingList />
+      <HaniTrendingTours />
       <ExperienceSection />
-      <Recomanded />
+      <HaniRecommendedVisas />
       <DeliverySection />
       <GuideSection />
       <TestimonialSection />
       <ChooseSection />
-      <LatestSection />
+      <HaniLatestContent />
       <FooterSection />
 
 

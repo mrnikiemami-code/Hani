@@ -84,7 +84,8 @@ a controlled integration of the purchased template with Hani platform code.
 - RTL offcanvas bug fixed; Wishlist no longer overlays the Persian home.
 - Hani-owned UI uses `next-intl` message catalogs directly.
 - RTL/LTR smoke verified for home, tour grid, hotel grid, visa grid, and settings.
-- Tour Grid, Hotel Grid, and Visa Grid are bound to real Hani APIs.
+- Home BFF, Tour Grid, Hotel Grid, and Visa Grid are bound to real Hani APIs.
+- Blog Grid is bound to the Content API; seed content still needs cleanup.
 - Search DTO adds destination names, average rating, review count, agency
   name, and next departure date.
 

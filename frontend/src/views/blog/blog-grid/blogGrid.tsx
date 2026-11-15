@@ -4,10 +4,24 @@ import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import Link from "next/link";
 import ImageWithBasePath from '../../../components/image-with-base-path';
 import { all_routes } from '../../../routes/all_routes';
+import type { BlogSummaryItem } from "@/features/content/domain/blog";
+import { useLocale, useTranslations } from "next-intl";
 
-const BlogGrid = () => {
+const BlogGrid = ({
+    posts = [],
+    totalCount,
+    page,
+    locale,
+}: {
+    posts?: BlogSummaryItem[];
+    totalCount?: number;
+    page?: number;
+    locale?: string;
+}) => {
 
     const routes = all_routes
+    const t = useTranslations("common");
+    const currentLocale = useLocale();
 
     //Breadcrumb Data
     const breadcrumbs = [
@@ -39,352 +53,50 @@ const BlogGrid = () => {
                 <div className="content">
                     <div className="container">
                         <div className="row justify-content-center">
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-01.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">Travel</span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-01.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Bryan Bradfield</p>
-                                                </Link>
+                            {posts.map((post, index) => (
+                                <div className="col-xl-4 col-md-6" key={post.postId}>
+                                    <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
+                                        <Link
+                                            href={`/blog/blog-details?slug=${encodeURIComponent(post.slug)}`}
+                                            className="blog-img"
+                                        >
+                                            <ImageWithBasePath
+                                                src={post.coverUrl ?? `assets/img/blog/blog-0${(index % 6) + 1}.jpg`}
+                                                alt={post.title}
+                                            />
+                                        </Link>
+                                        <span className="badge bg-primary fs-13 fw-medium">
+                                            {t("blog")}
+                                        </span>
+                                        <div className="blog-info text-center">
+                                            <div className="d-inline-flex align-items-center justify-content-center">
+                                                <p className="text-white mb-2">
+                                                    <i className="isax isax-calendar-2 me-2" />
+                                                    {post.publishedAt
+                                                        ? new Intl.DateTimeFormat(locale ?? currentLocale, {
+                                                              dateStyle: "medium"
+                                                          }).format(new Date(post.publishedAt))
+                                                        : ""}
+                                                </p>
                                             </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                14 May 2025
-                                            </p>
+                                            <h5>
+                                                <Link
+                                                    href={`/blog/blog-details?slug=${encodeURIComponent(post.slug)}`}
+                                                >
+                                                    {post.title}
+                                                </Link>
+                                            </h5>
+                                            <p className="text-white-50 fs-14 mb-0">{post.excerpt}</p>
                                         </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                Top 10 Hidden Gems places in Central Europe in 2025
-                                            </Link>
-                                        </h5>
                                     </div>
                                 </div>
-                            </div>
-                            {/* /Blog Item*/}
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-02.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">Guide</span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-02.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Michell West</p>
-                                                </Link>
-                                            </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                12 May 2025
-                                            </p>
-                                        </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                Exploring the World: Your Ultimate Dream Tour Itinerary
-                                            </Link>
-                                        </h5>
-                                    </div>
+                            ))}
+                            {posts.length === 0 && (
+                                <div className="col-12">
+                                    <p className="text-center text-gray-6">No blog posts found.</p>
                                 </div>
-                            </div>
-                            {/* /Blog Item*/}
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-03.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">Rental</span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-03.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Patricia Hasbro</p>
-                                                </Link>
-                                            </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                14 May 2025
-                                            </p>
-                                        </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                New York City, USA - The City That Never Sleeps
-                                            </Link>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Blog Item*/}
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-09.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">Travel</span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-01.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Bryan Bradfield</p>
-                                                </Link>
-                                            </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                14 May 2025
-                                            </p>
-                                        </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                How to Travel on a Budget: Affordable Destinations &amp; Tips
-                                            </Link>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Blog Item*/}
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-05.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">Guide</span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-03.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Michell West</p>
-                                                </Link>
-                                            </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                12 May 2025
-                                            </p>
-                                        </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                The Ultimate Guide to Solo Travel: Tips for First-Time
-                                                Travelers
-                                            </Link>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Blog Item*/}
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-06.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">Adventure</span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-20.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Patricia Hasbro</p>
-                                                </Link>
-                                            </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                14 May 2025
-                                            </p>
-                                        </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                Top 10 Breath taking Destinations You Must Visit in 2025
-                                            </Link>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Blog Item*/}
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-10.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">Tips</span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-01.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Bryan Bradfield</p>
-                                                </Link>
-                                            </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                14 May 2025
-                                            </p>
-                                        </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                How to Plan the Perfect Weekend Getaway: Quick Travel Tips
-                                            </Link>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Blog Item*/}
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-08.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">Vacation</span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-02.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Michell West</p>
-                                                </Link>
-                                            </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                12 May 2025
-                                            </p>
-                                        </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                Top 7 Beach Destinations for a Relaxing Summer Vacation
-                                            </Link>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Blog Item*/}
-                            {/* Blog Item*/}
-                            <div className="col-xl-4 col-md-6">
-                                <div className="blog-item mb-4 wow fadeInUp" data-wow-delay="0.2s">
-                                    <Link href={routes.blogDetails} className="blog-img">
-                                        <ImageWithBasePath src="assets/img/blog/blog-07.jpg" alt="img" />
-                                    </Link>
-                                    <span className="badge bg-primary fs-13 fw-medium">
-                                        Flight Tours
-                                    </span>
-                                    <div className="blog-info text-center">
-                                        <div className="d-inline-flex align-items-center justify-content-center">
-                                            <div className="d-inline-flex align-items-center border-end pe-3 me-3 mb-2">
-                                                <Link
-                                                    href="#"
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <span className="avatar avatar-sm me-2">
-                                                        <ImageWithBasePath
-                                                            src="assets/img/users/user-18.jpg"
-                                                            className="rounded-circle border border-white"
-                                                            alt="img"
-                                                        />
-                                                    </span>
-                                                    <p>Patricia Hasbro</p>
-                                                </Link>
-                                            </div>
-                                            <p className="text-white mb-2">
-                                                <i className="isax isax-calendar-2 me-2" />
-                                                14 May 2025
-                                            </p>
-                                        </div>
-                                        <h5>
-                                            <Link href={routes.blogDetails}>
-                                                The Best Flight Tours Over Iconic Landmarks You Have to
-                                                Experience
-                                            </Link>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Blog Item*/}
+                            )}
+                        </div>
                             {/* Pagination */}
                             <nav className="pagination-nav">
                                 <ul className="pagination justify-content-center">
@@ -438,7 +150,6 @@ const BlogGrid = () => {
                                 </ul>
                             </nav>
                             {/* /Pagination */}
-                        </div>
                     </div>
                 </div>
                 {/* /Page Wrapper */}
