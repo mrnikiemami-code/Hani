@@ -49,7 +49,7 @@ export default async function TourDetailPage({
                         </div>
                       </div>
                       <div className="price">
-                        {formatMoney(offer.minPrice, offer.currency)}
+                        {formatMoney(offer.minPrice, offer.currency, locale)}
                       </div>
                     </article>
                   ))}

@@ -43,7 +43,7 @@ export default async function ToursPage({
                   {tour.durationDays} {t("nights")} · {tour.offerCount} offer
                 </div>
                 <div className="price">
-                  {t("from")} {formatMoney(tour.minPrice, tour.currency)}
+                  {t("from")} {formatMoney(tour.minPrice, tour.currency, locale)}
                 </div>
               </Link>
             ))}

@@ -22,7 +22,8 @@ export default async function VisaPage({ params }: { params: Promise<{ locale: s
                 <h3>{visa.name}</h3>
                 <div className="muted">{visa.typeCount} types</div>
                 <div className="price">
-                  {t("from")} {formatMoney(visa.minimumPrice, visa.minimumPriceCurrency)}
+                  {t("from")}{" "}
+                  {formatMoney(visa.minimumPrice, visa.minimumPriceCurrency, locale)}
                 </div>
               </Link>
             ))}

@@ -39,7 +39,9 @@ export default async function PlaceDetailPage({
                         <span>
                           {item.name} <span className="muted">({item.section})</span>
                         </span>
-                        <span className="price">{formatMoney(item.price, item.currency)}</span>
+                        <span className="price">
+                          {formatMoney(item.price, item.currency, locale)}
+                        </span>
                       </div>
                     ))}
                   </div>

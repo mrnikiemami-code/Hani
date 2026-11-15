@@ -12,7 +12,8 @@ const navItems = [
   ["itineraries", "/itineraries"],
   ["blog", "/blog"],
   ["videos", "/videos"],
-  ["agencies", "/agencies"]
+  ["agencies", "/agencies"],
+  ["settings", "/settings/experience"]
 ] as const;
 
 export async function SiteHeader({ locale }: { locale: string }) {

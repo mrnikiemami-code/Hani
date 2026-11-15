@@ -22,11 +22,24 @@ export async function apiGet<T>(path: string): Promise<T | null> {
 
 export function formatMoney(
   amount: number | null | undefined,
-  currency: string | null | undefined
+  currency: string | null | undefined,
+  locale = "fa"
 ): string {
   if (amount == null) {
     return "—";
   }
 
-  return `${new Intl.NumberFormat("fa-IR").format(amount)} ${currency ?? ""}`.trim();
+  if (!currency) {
+    return new Intl.NumberFormat(locale).format(amount);
+  }
+
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0
+    }).format(amount);
+  } catch {
+    return `${new Intl.NumberFormat(locale).format(amount)} ${currency}`;
+  }
 }

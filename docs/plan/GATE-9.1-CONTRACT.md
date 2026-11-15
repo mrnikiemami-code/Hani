@@ -1,6 +1,6 @@
 # Gate 9.1 — Template Integration & Lastsecond Simulation
 
-- **Status:** In Progress — i18n/RTL foundation
+- **Status:** In Progress — Home Experience Registry + i18n/RTL
 - **Date:** 2026-11-15
 - **Predecessor:** Gate 9 PASSED (Core)
 - **Architecture:** [`docs/architecture/FRONTEND-ARCHITECTURE.md`](../architecture/FRONTEND-ARCHITECTURE.md)
@@ -54,12 +54,16 @@ product frontend built on Hani contracts.
 
 ## 3. Current Progress
 
+- Home Experience Registry created with all 12 variants.
+- One public home route resolves a server-side experience; variants are lazy-loaded.
+- Settings page `/[locale]/settings/experience` lets the user select a variant.
+- Anonymous selection is persisted in the `hani_home_experience` cookie.
 - Locale switcher added to the header (FA/EN/AR, path and query preserved).
 - Locale-specific fonts added: Vazirmatn (FA), Noto Kufi Arabic (AR), Inter (EN).
 - `html lang` / `dir` remains server-side.
 - Metadata alternates/hreflang added at locale layout level.
 - RTL/LTR smoke verified: `/fa` => `lang=fa dir=rtl`, `/en/tours` => `lang=en dir=ltr`, `/ar/visa` => `lang=ar dir=rtl`.
-- `npm run build` green.
+- `npm run build` green with 41 routes.
 
 ## 4. Phase Plan
 

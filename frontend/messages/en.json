@@ -11,7 +11,8 @@
     "itineraries": "Itineraries",
     "blog": "Magazine",
     "videos": "Videos",
-    "agencies": "Agencies"
+    "agencies": "Agencies",
+    "settings": "Settings"
   },
   "home": {
     "title": "Choose your next trip with confidence",
@@ -47,7 +48,60 @@
     "language": "Language"
   },
   "meta": {
-    "title": "Hani ? Smart travel",
+    "title": "Hani — Smart travel",
     "description": "Compare tours, hotels, visas, and traveler experiences on Hani"
+  },
+  "homeExperiences": {
+    "title": "Choose your home experience",
+    "subtitle": "Pick a home layout. Every experience uses the same Hani data contract.",
+    "current": "Selected",
+    "allServicesClassic": {
+      "label": "All services — classic",
+      "description": "Classic layout focused on tours, visa, and editorial content."
+    },
+    "allServicesModern": {
+      "label": "All services — modern",
+      "description": "Modern split hero with featured cards."
+    },
+    "tourClassic": {
+      "label": "Tours — classic",
+      "description": "Focused on tour search and featured offers."
+    },
+    "hotel": {
+      "label": "Hotels",
+      "description": "Hotels, amenities, and stay offers."
+    },
+    "car": {
+      "label": "Cars",
+      "description": "Layout for car rental and transfer services."
+    },
+    "flight": {
+      "label": "Flights",
+      "description": "Flight search and metasearch offers."
+    },
+    "cruise": {
+      "label": "Cruises",
+      "description": "Editorial layout for sea travel."
+    },
+    "tourEditorial": {
+      "label": "Tours — editorial",
+      "description": "Visual storytelling for tour collections."
+    },
+    "bus": {
+      "label": "Bus",
+      "description": "Compact layout for bus travel."
+    },
+    "guide": {
+      "label": "Guides",
+      "description": "Local guides and experiences."
+    },
+    "activity": {
+      "label": "Activities",
+      "description": "Discover destination experiences and activities."
+    },
+    "visa": {
+      "label": "Visa",
+      "description": "Countries, requirements, and visa applications."
+    }
   }
 }

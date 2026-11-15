@@ -52,7 +52,9 @@ export default async function FlightsPage({
                     {route.originCity} → {route.destinationCity} · {offer.airlineName}{" "}
                     {offer.flightNumber}
                   </span>
-                  <span className="price">{formatMoney(offer.price, offer.currency)}</span>
+                  <span className="price">
+                    {formatMoney(offer.price, offer.currency, locale)}
+                  </span>
                 </a>
               ))
             )}

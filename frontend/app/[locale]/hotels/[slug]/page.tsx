@@ -57,7 +57,9 @@ export default async function HotelDetailPage({
                           {room.roomType} · {room.mealPlan}
                         </div>
                       </div>
-                      <div className="price">{formatMoney(room.price, room.currency)}</div>
+                      <div className="price">
+                        {formatMoney(room.price, room.currency, locale)}
+                      </div>
                     </div>
                   ))}
                 </div>

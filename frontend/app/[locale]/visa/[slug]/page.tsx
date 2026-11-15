@@ -33,9 +33,9 @@ export default async function VisaDetailPage({
                       {type.processingDaysMax} days
                     </div>
                     <div className="price">
-                      {formatMoney(type.priceAdult, type.currency)}
+                      {formatMoney(type.priceAdult, type.currency, locale)}
                       {type.priceChild != null
-                        ? ` / child ${formatMoney(type.priceChild, type.currency)}`
+                        ? ` / child ${formatMoney(type.priceChild, type.currency, locale)}`
                         : ""}
                     </div>
                     <ul>

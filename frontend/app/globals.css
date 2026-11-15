@@ -114,6 +114,50 @@ a {
   margin-bottom: 28px;
 }
 
+.home-experience .hero {
+  background: linear-gradient(135deg, var(--experience-accent, #0f6b5b), #102a26);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(240px, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.hero-panel {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  backdrop-filter: blur(6px);
+}
+
+.hero-panel span {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.hero-panel small {
+  opacity: 0.82;
+  font-size: 14px;
+}
+
+.home-compact .hero {
+  padding: 38px 0;
+}
+
+.home-editorial .hero h1 {
+  font-size: clamp(36px, 6vw, 64px);
+}
+
+.home-split .hero-grid {
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+}
+
 .hero h1 {
   font-size: clamp(30px, 5vw, 52px);
   margin: 0 0 12px;
@@ -257,4 +301,74 @@ a {
   padding: 28px 0;
   color: var(--muted);
   font-size: 13px;
+}
+
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.experience-card {
+  position: relative;
+  text-align: start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.experience-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(23, 32, 42, 0.08);
+}
+
+.experience-card.is-selected {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px var(--brand-soft);
+}
+
+.experience-card .badge {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+}
+
+.experience-preview {
+  display: block;
+  height: 112px;
+}
+
+.experience-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px 18px;
+}
+
+.experience-card-body strong {
+  font-size: 16px;
+}
+
+.experience-source {
+  color: var(--muted);
+  font-size: 11px;
+  direction: ltr;
+}
+
+@media (max-width: 800px) {
+  .hero-grid,
+  .home-split .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-panel {
+    display: none;
+  }
 }

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gate 9.1 — Visual Preview</title>
+    <style>
+      :root {
+        --bg: #f6f8fa;
+        --surface: #ffffff;
+        --text: #17202a;
+        --muted: #5c6b7a;
+        --line: #e3e8ee;
+        --brand: #0f6b5b;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Tahoma, Arial, sans-serif;
+        line-height: 1.8;
+      }
+      main { width: min(1200px, calc(100% - 32px)); margin: 32px auto 64px; }
+      h1 { margin: 0 0 8px; font-size: 30px; }
+      h2 { margin: 34px 0 12px; font-size: 20px; }
+      p { color: var(--muted); margin: 0 0 16px; }
+      .badge {
+        display: inline-block;
+        background: #e7f4f0;
+        color: var(--brand);
+        border-radius: 999px;
+        padding: 2px 12px;
+        font-size: 12px;
+        margin-inline-start: 8px;
+      }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .card header { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+      .card header strong { display: block; }
+      .card header span { color: var(--muted); font-size: 13px; }
+      .card img { display: block; width: 100%; height: 420px; object-fit: cover; object-position: top; }
+      .note {
+        background: #fff8e6;
+        border: 1px solid #f1d48a;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin: 18px 0;
+      }
+      ul { margin: 8px 0 0; padding-inline-start: 22px; }
+      li { margin: 4px 0; }
+      a { color: var(--brand); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Gate 9.1 — پیش‌نمایش دیداری</h1>
+      <p>
+        این صفحه وضعیت فعلی فرانت را نشان می‌دهد: چندزبانه بودن، RTL/LTR،
+        و انتخاب تجربه صفحه اصلی.
+      </p>
+
+      <div class="note">
+        <strong>وضعیت:</strong>
+        <ul>
+          <li>FA / EN / AR فعال است.</li>
+          <li>FA و AR با <code>dir="rtl"</code> و EN با <code>dir="ltr"</code> رندر می‌شوند.</li>
+          <li>انتخاب Home Experience از Settings انجام می‌شود و در Cookie ذخیره می‌شود.</li>
+          <li>هر ۱۲ Home Experience در Registry حفظ شده‌اند.</li>
+          <li>تست زنده: انتخاب «هتل» از Settings و تغییر صفحه اصلی به تجربه هتل انجام شد.</li>
+        </ul>
+      </div>
+
+      <h2>۱. Settings — انتخاب Home Experience</h2>
+      <div class="card">
+        <header>
+          <strong>صفحه انتخاب تجربه</strong>
+          <span>۱۲ گزینه، با وضعیت انتخاب‌شده و پیش‌نمایش</span>
+        </header>
+        <img src="gate-9.1-home-experience-settings.png" alt="Home experience settings" />
+      </div>
+
+      <h2>۲. RTL — فارسی</h2>
+      <div class="card">
+        <header>
+          <strong>صفحه اصلی فارسی</strong>
+          <span>dir="rtl" — lang="fa"</span>
+        </header>
+        <img src="gate-9.1-home-default.png" alt="Persian RTL home" />
+      </div>
+
+      <h2>۳. LTR — English</h2>
+      <div class="card">
+        <header>
+          <strong>English home</strong>
+          <span>dir="ltr" — lang="en"</span>
+        </header>
+        <img src="gate-9.1-home-en.png" alt="English LTR home" />
+      </div>
+
+      <h2>۴. RTL — العربية</h2>
+      <div class="card">
+        <header>
+          <strong>الصفحة الرئيسية العربية</strong>
+          <span>dir="rtl" — lang="ar"</span>
+        </header>
+        <img src="gate-9.1-home-ar.png" alt="Arabic RTL home" />
+      </div>
+
+      <h2>فایل‌های مرتبط</h2>
+      <ul>
+        <li><code>frontend/features/home/domain/home-experience.ts</code></li>
+        <li><code>frontend/features/home/application/resolve-home-experience.ts</code></li>
+        <li><code>frontend/features/home/infrastructure/home-experience-registry.ts</code></li>
+        <li><code>frontend/app/[locale]/settings/experience/page.tsx</code></li>
+        <li><code>docs/architecture/FRONTEND-I18N-RTL.md</code></li>
+      </ul>
+    </main>
+  </body>
+</html>
