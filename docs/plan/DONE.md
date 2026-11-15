@@ -257,4 +257,5 @@
 | `5ab00a7` | Gate 9.1 template-first architecture: Dreamstour as single visual source |
 | `afaec28` | Gate 9.1 template base: one app tree, locale routing, 12 home views, build green |
 | `2898d00` | Gate 9.1 template copy externalized: FA/AR translations + locale provider |
+| `1d2f139` | Gate 9.1 data binding: Tour/Hotel API, search fields (destination/rating/agency/departure) |
 | `7df2265` | Phase roadmap + status + tasks |
