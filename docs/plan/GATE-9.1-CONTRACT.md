@@ -1,0 +1,381 @@
+# Gate 9.1 — Template Integration & Lastsecond Simulation
+
+- **Status:** Planned
+- **Date:** 2026-11-15
+- **Predecessor:** Gate 9 PASSED (Core)
+- **Architecture:** [`docs/architecture/FRONTEND-ARCHITECTURE.md`](../architecture/FRONTEND-ARCHITECTURE.md)
+- **Parity map:** [`LASTSECOND-SIMULATION-MAP.md`](LASTSECOND-SIMULATION-MAP.md)
+
+---
+
+## 1. Goal
+
+Integrate the purchased Dreamstour UI into the existing Hani `frontend/`
+without copying its broken application tree, while:
+
+- retaining all 12 home experiences as user-selectable layouts;
+- delivering Lastsecond-equivalent public pages;
+- connecting pages to real Hani APIs;
+- adding missing backend fields;
+- enforcing clean architecture, FA/EN/AR, and RTL;
+- keeping the UI consistent and accessible.
+
+This gate is **not** a visual copy of 183 demo routes. It is a controlled
+product frontend built on Hani contracts.
+
+---
+
+## 2. Scope
+
+### In scope
+
+- Frontend architecture cleanup
+- Home Experience Registry + settings
+- Design system extraction
+- i18n/RTL foundation
+- Public Lastsecond simulation pages
+- OTP auth UI
+- Traveler dashboard subset
+- Agency dashboard subset
+- Checkout/MoR UI
+- SEO, accessibility, performance, tests
+- Backend contract additions required by the UI
+
+### Out of scope
+
+- Car/cruise/bus/guide/activity MVP verticals
+- Lastgram production SSO (external)
+- Real PSP/Flight-provider credentials (external)
+- Admin back-office UI
+- Native mobile apps
+
+---
+
+## 3. Phase Plan
+
+### Phase 0 — Architecture Freeze and Build Cleanup
+
+Deliverables:
+
+- One application tree; no duplicate route groups.
+- No `output: "export"` for the Hani app.
+- No `basePath=/nextjs` in production.
+- `frontend/` builds with `npm run build`.
+- `features/`, `components/ui/`, `styles/tokens.scss` skeleton.
+- Reference assets copied into `frontend/public/assets` and `frontend/styles`.
+- No imports from `reference/`.
+
+Exit criteria:
+
+- `npm run build` green.
+- `npm run lint` green.
+- No duplicate routes.
+- No demo pages in production route table.
+
+### Phase 1 — Home Experience Registry and Settings
+
+Deliverables:
+
+- `HOME_EXPERIENCE_IDS` registry with all 12 layouts.
+- `HomeExperienceRenderer` with lazy loading.
+- Shared `HomeViewModel` contract.
+- `resolveHomeExperience` precedence function.
+- `/[locale]/settings/experience` page.
+- Anonymous cookie persistence.
+- `GET/PUT /market/v1/me/preferences` backend endpoint.
+- Agency/channel default home experience field.
+- Analytics event `home_experience_view`.
+
+Exit criteria:
+
+- All 12 experiences render.
+- User can switch and persist selection.
+- Unknown ID falls back safely.
+- Only selected experience is in the initial bundle.
+- FA/EN/AR + RTL verified for each experience.
+
+### Phase 2 — Design System and UI Standard
+
+Deliverables:
+
+- Tokens: color, typography, spacing, radius, shadow, z-index, breakpoints.
+- Fonts: Vazirmatn, Noto Kufi Arabic, Inter.
+- Primitives: Button, Input, Select, DatePicker, Card, Badge, Tabs,
+  Pagination, Breadcrumb, Modal, Drawer, Toast, Skeleton, EmptyState,
+  ErrorState, DataTable.
+- Page shell and page header pattern.
+- RTL logical-property migration for shared components.
+- Storybook or component gallery.
+- Axe/visual checks.
+
+Exit criteria:
+
+- No raw color/spacing values in feature components.
+- All primitives have RTL and mobile examples.
+- Keyboard focus and axe checks pass.
+
+### Phase 3 — Lastsecond Public Simulation
+
+Deliverables:
+
+- Home (12 experiences)
+- Tours search/list/detail/compare
+- Hotels list/detail/hotel-tours
+- Flights search/detail + deep link
+- Visa list/detail/application/tracking
+- Restaurants/Attractions list/detail/reservation
+- Destinations landing
+- Blog/Travelogue/Video
+- Agencies directory/profile
+- Author profile
+- Reviews criteria and review list
+- Static: about, contact, FAQ, terms, privacy, trust
+- Global search
+- Campaigns/newsletter entry points
+
+Exit criteria:
+
+- Pages use Hani APIs only.
+- No mock data in production.
+- All public pages have metadata/hreflang/JSON-LD.
+- Lastsecond page matrix is green except explicitly external items.
+
+### Phase 4 — Auth and Dashboards
+
+Deliverables:
+
+- OTP request/verify UI
+- HttpOnly cookie session
+- Route guards
+- Traveler dashboard: orders, payments, invoices, refunds, installments,
+  reviews, wishlist, profile, notifications, settings
+- Agency dashboard: onboarding, offers/departures, bookings, settlements,
+  payouts, cancellation, reviews, settings
+- RBAC and unauthorized states
+
+Exit criteria:
+
+- OTP flow works end-to-end.
+- No token in localStorage.
+- Dashboard API calls are scoped to the authenticated user/agency.
+- Role-based route protection verified.
+
+### Phase 5 — Checkout and Hani MoR
+
+Deliverables:
+
+- Quote -> Hold -> Order
+- Payment Intent and redirect/callback
+- Installments
+- Invoice and PDF link
+- Refund/cancellation request
+- Price breakdown and taxes/fees
+- Idempotency and retry states
+- Payment failure/expiry states
+
+Exit criteria:
+
+- Test payment flow completes in sandbox.
+- Webhook/callback state is reflected in UI.
+- Invoice/refund states are consistent.
+- No client-side price calculation as source of truth.
+
+### Phase 6 — Quality and Release
+
+Deliverables:
+
+- Playwright E2E
+- axe accessibility
+- Lighthouse/bundle budget
+- Visual regression for FA/AR
+- Error boundaries and observability
+- Deployment configuration
+- Runbook
+
+Exit criteria:
+
+- `npm run build`, `npm run lint`, E2E, axe, and visual tests pass.
+- Core Web Vitals budgets met.
+- Production deployment checklist signed.
+
+---
+
+## 4. Backend Field Gap Backlog
+
+The frontend must not invent fields. The following additions are required or
+must be confirmed in OpenAPI before UI implementation.
+
+### 4.1. Home and Discovery
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `HomeFeedDto` | `hero` | localized hero media/CTA |
+| `HomeFeedDto` | `sections[]` | ordered home sections |
+| `HomeFeedDto` | `trustStats` | social proof |
+| `HomeFeedDto` | `featuredDestinations` | destination discovery |
+| `HomeFeedDto` | `editorial` | blog/travelogue/video block |
+| `HomeFeedDto` | `seo` | metadata/JSON-LD |
+| `ProductSearchItemDto` | `coverImageUrl` | card image |
+| `ProductSearchItemDto` | `destinationNames` | localized card location |
+| `ProductSearchItemDto` | `averageRating`, `reviewCount` | trust |
+| `ProductSearchItemDto` | `agencyName`, `agencySlug` | multi-agency display |
+| `ProductSearchItemDto` | `nextDepartureDate`, `availableSeats` | urgency/availability |
+| `ProductSearchItemDto` | `originalPrice`, `discountPercent` | pricing |
+| `ProductSearchItemDto` | `badges[]` | instant confirm, bestseller, etc. |
+| `ProductSearchItemDto` | `cancellationPolicySummary` | decision support |
+| `ProductSearchItemDto` | `isWishlisted` | authenticated wishlist |
+
+### 4.2. Tour Detail
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `ProductComparisonDto` | `gallery[]` | detail gallery |
+| `ProductComparisonDto` | `highlights[]` | overview |
+| `ProductComparisonDto` | `included[]`, `excluded[]` | package clarity |
+| `ProductComparisonDto` | `itineraryDays[]` | day-by-day plan |
+| `ProductComparisonDto` | `meetingPoint` | logistics |
+| `ProductComparisonDto` | `cancellationPolicy` | policy |
+| `ProductComparisonDto` | `agencyRating` | trust |
+| `ProductComparisonDto` | `reviewsSummary` | rating breakdown |
+| `ProductComparisonDto` | `availability` | departure availability |
+
+### 4.3. Hotel
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `HotelSummaryDto` | `coverImageUrl` | card image |
+| `HotelSummaryDto` | `cityName`, `countryName` | location |
+| `HotelSummaryDto` | `priceFrom`, `currency` | pricing |
+| `HotelSummaryDto` | `amenitiesPreview[]` | card amenities |
+| `HotelSummaryDto` | `offersCount` | multi-agency offers |
+| `HotelSummaryDto` | `isWishlisted` | wishlist |
+| `HotelDto` | `policies` | check-in/out, cancellation |
+| `HotelDto` | `reviewsSummary` | rating breakdown |
+| `HotelDto` | `offers[]` | agency offers |
+| `HotelDto` | `taxesAndFees` | price clarity |
+
+### 4.4. Visa
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `VisaCountryDto` | `coverImageUrl` | destination card |
+| `VisaCountryDto` | `minPrice`, `currency` | pricing |
+| `VisaCountryDto` | `processingTime` | decision support |
+| `VisaCountryDto` | `stayDays` | eligibility |
+| `VisaCountryDto` | `embassy` | logistics |
+| `VisaCountryDto` | `eligibility` | qualification |
+| `VisaTypeDto` | `requiredDocuments` | already present, confirm shape |
+| `VisaApplicationDto` | `status`, `timeline`, `trackingCode` | tracking |
+| `VisaApplicationDto` | `appointment` | appointment info |
+
+### 4.5. Flight
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `FlightOfferDto` | `airlineLogoUrl` | card branding |
+| `FlightOfferDto` | `originAirportName`, `destinationAirportName` | clarity |
+| `FlightOfferDto` | `arrivalDate` | overnight flights |
+| `FlightOfferDto` | `refundable` | fare rules |
+| `FlightOfferDto` | `seatsLeft` | urgency |
+| `FlightOfferDto` | `providerLogoUrl` | metasearch provider |
+| `FlightOfferDto` | `deepLink` | already present, confirm |
+
+### 4.6. Content and UGC
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `BlogSummaryDto` | `author`, `readingTime`, `tags` | card/detail |
+| `BlogDetailDto` | `gallery`, `related`, `comments` | detail |
+| `TravelogueSummaryDto` | `author`, `destinationNames`, `readingTime` | card |
+| `TravelogueDetailDto` | `gallery`, `comments` | detail |
+| `VideoSummaryDto` | `author`, `tags`, `thumbnail` | card |
+| `VideoDetailDto` | `related`, `comments` | detail |
+| `ReviewCriteriaSummaryDto` | `labels` | localized criteria |
+
+### 4.7. Agency and Author
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `PublicAgencyDto` | `logoUrl`, `coverUrl`, `gallery` | profile |
+| `PublicAgencyDto` | `socialLinks` | profile |
+| `PublicAgencyDto` | `responseTime` | trust |
+| `PublicAgencyDto` | `certifications` | trust |
+| `PublicAgencyDto` | `reviewSummary` | trust |
+| `AuthorDto` | `coverUrl`, `followersCount` | profile |
+| `AuthorDto` | `content[]` | authored items |
+| `AuthorProfileDto` | `seo` | author SEO |
+
+### 4.8. User, Orders, Payments
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `UserProfileDto` | `avatarUrl`, `email`, `locale`, `currency` | profile/settings |
+| `UserPreferencesDto` | `homeExperienceId`, `theme`, `reducedMotion` | settings |
+| `OrderListDto` | list endpoint and summary fields | dashboard |
+| `InvoiceListDto` | list endpoint and PDF URL | dashboard |
+| `RefundListDto` | public list endpoint | dashboard |
+| `PaymentListDto` | public list endpoint | dashboard |
+| `QuoteDto` | `priceBreakdown`, `expiresAt`, `cancellationPolicy` | checkout |
+| `OrderDto` | `paymentStatus`, `items`, `total`, `currency` | checkout |
+| `PaymentIntentDto` | `redirectUrl`, `status`, `expiresAt` | payment |
+| `InvoiceDto` | `lineItems`, `tax`, `pdfUrl` | invoice |
+| `RefundDto` | `reason`, `status`, `processedAt` | refunds |
+
+### 4.9. Agency
+
+| DTO | Missing field | Why |
+|---|---|---|
+| `AgencyDashboardDto` | `metrics`, `recentBookings`, `alerts` | dashboard |
+| `OfferDto` | `coverImageUrl`, `availability`, `status` | agency listings |
+| `SettlementDto` | `status`, `dueDate`, `amount`, `reference` | payouts |
+| `AgencyPreferencesDto` | `defaultHomeExperienceId` | channel default |
+
+**Rule:** every field above must be added to the DTO and OpenAPI in the same
+change. The frontend then regenerates types and maps to ViewModels.
+
+---
+
+## 5. Acceptance Criteria
+
+Gate 9.1 is PASSED (Core) only when:
+
+- [ ] One frontend application tree builds successfully.
+- [ ] All 12 home experiences are available in settings.
+- [ ] Home experience selection persists for anonymous and authenticated users.
+- [ ] Public pages use real Hani APIs.
+- [ ] Farsi/English/Arabic routes work.
+- [ ] RTL visual tests pass for FA and AR.
+- [ ] Public pages have canonical, hreflang, and JSON-LD.
+- [ ] OTP login works with HttpOnly cookies.
+- [ ] Traveler and agency dashboards are role-scoped.
+- [ ] Checkout sandbox flow completes.
+- [ ] Missing fields are present in DTO + OpenAPI + generated frontend types.
+- [ ] `npm run build`, `npm run lint`, E2E, axe pass.
+- [ ] No mock data in production.
+- [ ] Documentation is updated.
+
+---
+
+## 6. Key Risks
+
+| Risk | Mitigation |
+|---|---|
+| Copying the template app tree | Use design kit extraction only |
+| 12 home variants causing bundle bloat | lazy load + registry |
+| Home variant hydration mismatch | resolve on server, pass ID |
+| RTL regressions | logical properties + visual tests |
+| Field drift between frontend/backend | generated OpenAPI types |
+| Fake checkout behavior | server is price/state authority |
+| Dashboard scope explosion | MVP subset, hide unsupported pages |
+| Template legacy Bootstrap/SCSS | isolate in `styles/` and `components/ui` |
+
+---
+
+## 7. Immediate Next Actions
+
+1. Approve the architecture in
+   [`FRONTEND-ARCHITECTURE.md`](../architecture/FRONTEND-ARCHITECTURE.md).
+2. Choose the base application tree from the template.
+3. Approve the 12 Home Experience IDs and default.
+4. Approve the preference API and DTO additions.
+5. Start Phase 0: build cleanup and folder skeleton.
