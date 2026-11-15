@@ -1,42 +1,50 @@
-# Hani Frontend
+# Hani Frontend (Dreamstour Template Base)
 
-Next.js 16 / React 19 frontend for the Hani API-first marketplace.
+This app uses the purchased Dreamstour Next.js template as the single visual
+source. Hani platform code is integrated inside the template.
 
 ## Local development
 
 ```powershell
 cd frontend
 copy .env.example .env.local
-npm install
+npm ci
 npm run dev
 ```
 
-Set `API_BASE_URL` to the Hani API (default `http://localhost:5099`).
+Environment:
+
+- `API_BASE_URL` — Hani API base URL (default `http://localhost:5099`)
+- `NEXT_PUBLIC_BASE_PATH` — optional deployment base path
 
 ## Routes
 
-- `/[locale]` — home aggregation from `GET /market/v1/home`
-- `/[locale]/tours` and `/[locale]/tours/[slug]`
-- `/[locale]/hotels` and `/[locale]/hotels/[slug]`
-- `/[locale]/visa` and `/[locale]/visa/[slug]`
-- `/[locale]/blog`, `/[locale]/itineraries`, `/[locale]/videos`
-- `/[locale]/agencies` and `/[locale]/agencies/[slug]`
-- `/[locale]/u/[username]` — author aggregate profile
-- `/[locale]/restaurants`, `/[locale]/attractions`
-- `/[locale]/flights`
+Locale-prefixed:
 
-Locales: `fa`, `en`, `ar`; FA/AR render RTL.
+```text
+/fa/...
+/en/...
+/ar/...
+```
 
-## Production
+- `/` redirects to `/fa`
+- `/[locale]` — selected Home Experience
+- `/[locale]/settings/experience` — choose one of 12 Home Experiences
+- Template routes are available under the locale prefix, for example:
+  `/fa/tour/tour-grid`, `/fa/hotel/hotel-grid`, `/fa/visa/visa-grid`
+
+## Architecture
+
+- Template app: `src/app`, `src/views`, `src/components`, `src/core`,
+  `src/style`
+- Hani integration: `src/features`, `src/lib/hani`, `src/i18n`, `src/messages`
+- Home Experience registry:
+  `src/features/home-experience/infrastructure/registry.ts`
+- Locale routing: `src/i18n/routing.ts`, `src/proxy.ts`
+
+## Build
 
 ```powershell
 npm run build
 npm run start
-```
-
-The Dockerfile builds a standalone Next.js image:
-
-```powershell
-docker build -t hani-frontend .
-docker run -p 3000:3000 -e API_BASE_URL=http://hani-api:8080 hani-frontend
 ```

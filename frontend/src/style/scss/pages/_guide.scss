@@ -1,0 +1,275 @@
+@use "../utils/mixins" as *;
+@use "../utils/variables" as *;
+
+.guide-card {
+    text-align: center;
+
+    .guide-img {
+        border-radius: 8px;
+        margin-bottom: 16px;
+
+        img {
+            border-radius: 8px;
+            width: 100%;
+        }
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    .media-btns {
+        border: 1px solid $light;
+        border-radius: 10px;
+        padding: 8px;
+        background: $light-300;
+        color: $gray-900;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+            background: $primary;
+            color: $white;
+            border-color: $primary;
+        }
+    }
+}
+
+
+.guide-details-card-one {
+    padding: 24px;
+    border-radius: 10px;
+    border: 1px solid $light;
+    background: $white;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 55%;
+        background: $light-300;
+        z-index: 0;
+    }
+
+    .guide-details-card-one-inner {
+        position: relative;
+
+        .guide-details-card-one-inner-content {
+            @include respond-below(md) {
+                flex-direction: column;
+            }
+        }
+
+        .guide-img {
+            margin-right: 24px;
+            border-radius: 10px;
+
+            img {
+                border-radius: 10px;
+            }
+        }
+
+        .guide-info {
+            padding: 24px 0;
+            margin-bottom: 40px;
+
+            h2 {
+                font-size: 24px;
+                margin-bottom: 8px;
+            }
+
+            ul {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                row-gap: 16px;
+
+                li {
+                    font-size: 14px;
+                    position: relative;
+
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        top: 50%;
+                        right: -8px;
+                        transform: translateY(-50%);
+                        height: 14px;
+                        background: $gray-300;
+                    }
+                }
+            }
+        }
+    }
+    .btn {
+        width: 100%;
+        max-width: 262px;
+    }
+}
+
+.expertise-img {
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid $light;
+
+    img {
+        width: 100%;
+    }
+
+    .expertise-img-content {
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        padding: 24px;
+        background: $white;
+        padding: 8px 15px;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: $font-weight-medium;
+    }
+}
+
+.wizard-container {
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 24px;
+        font-weight: $font-weight-bold;
+    }
+
+    .steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+
+        .step {
+            flex: 1;
+            padding: 10px;
+            color: $gray-600;
+            cursor: pointer;
+            position: relative;
+
+            // &::before {
+            //     content: "";
+            //     position: absolute;
+            //     height: 1px;
+            //     width: 100%;
+            //     max-width: 100px;
+            //     background: $gray-100;
+            //     top: 50%;
+            //     right: -40px;
+            //     transform: translateY(-50%);
+            // }
+
+            &:nth-child(2) {
+                text-align: center;
+                // &::before {
+                //     content: "";
+                //     position: absolute;
+                //     height: 1px;
+                //     width: 100%;
+                //     max-width: 100px;
+                //     background: $gray-100;
+                //     top: 50%;
+                //     right: -100px;
+                //     transform: translateY(-50%);
+                // }
+            }
+
+            &:last-child {
+                text-align: end;
+
+                &::before {
+                    content: none;
+                }
+            }
+
+            span {
+                width: 24px;
+                height: 24px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                margin-right: 6px;
+                font-size: 16px;
+                font-weight: $font-weight-medium;
+                background: $light;
+                color: $white;
+            }
+
+            &.active {
+
+                span {
+                    background: $primary;
+                }
+            }
+        }
+    }
+
+    .step-content {
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+}
+
+.guide-booking-card {
+    .coupoun-list {
+        padding: 8px;
+        background-color: $success-100;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: $success;
+            left: 0;
+            top: 0;
+
+            @include respond-below(md) {
+                top: 13px;
+            }
+        }
+    }
+
+    .coupoun-code {
+        position: relative;
+
+        .form-control {
+            border-radius: 100px;
+            padding-right: 120px;
+        }
+
+        .btn {
+            position: absolute;
+            right:8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+}
+
+.upload-btn {
+    padding: 5px 12px;
+    font-size: $font-size-13;
+    font-weight: 500;
+    color: $white;
+    background-color: $primary;
+    border-radius: 54px;
+}

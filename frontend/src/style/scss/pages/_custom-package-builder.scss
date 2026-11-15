@@ -1,0 +1,138 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  custom-package-builder
+============================*/
+
+.package-builder-stepper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    right: 40px;
+    height: 3px;
+    background: variables.$border-color;
+    z-index: 1;
+  }
+
+  .step-item {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    background: transparent;
+    cursor: pointer;
+
+    .step-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: variables.$white;
+      border: 2px solid variables.$gray-400;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: variables.$font-weight-semibold;
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: variables.$gray-600;
+      transition: all 0.2s ease;
+    }
+
+    &.active .step-circle {
+      background: variables.$primary;
+      border-color: variables.$primary;
+      color: variables.$white;
+      box-shadow: 0 0 0 4px rgba(22, 93, 219, 0.15);
+    }
+
+    &.completed .step-circle {
+      background: variables.$success;
+      border-color: variables.$success;
+      color: variables.$white;
+    }
+
+    .step-title {
+      font-size: 13px;
+      font-weight: variables.$font-weight-medium;
+      display: block;
+    }
+  }
+}
+
+.builder-component-card {
+  border: 2px solid variables.$border-color;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+  background: variables.$white;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    border-color: variables.$primary;
+  }
+
+  &.selected {
+    border-color: variables.$primary;
+    background: rgba(22, 93, 219, 0.02);
+  }
+}
+
+.builder-summary-card {
+  border: 1px solid variables.$border-color;
+  border-radius: 12px;
+  background: variables.$white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.package-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dashed variables.$border-color;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.dark-mode {
+  .package-builder-stepper {
+    &::before {
+      background: variables.$darkmode-light;
+    }
+
+    .step-item .step-circle {
+      background: variables.$darkmode-white;
+      border-color: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+    }
+  }
+
+  .builder-component-card,
+  .builder-summary-card {
+    background: variables.$darkmode-white;
+    border-color: variables.$darkmode-light;
+
+    &.selected {
+      background: rgba(22, 93, 219, 0.1);
+    }
+  }
+
+  .package-item-row {
+    border-color: variables.$darkmode-light;
+  }
+}
+
+.sticky-card {
+  position: sticky;
+  top: 85px;
+}

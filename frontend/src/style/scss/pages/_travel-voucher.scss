@@ -1,0 +1,159 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  travel-voucher
+============================*/
+
+.travel-voucher-wrap {
+  background: variables.$white;
+  border-radius: 12px;
+  border: 1px solid variables.$border-color;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.voucher-header-band {
+  background: linear-gradient(135deg, variables.$primary 0%, #1a3a6b 100%);
+  color: variables.$white;
+  padding: 24px 30px;
+
+  &.voucher-band-flight {
+    background: linear-gradient(135deg, #0A67F2 0%, #003e9c 100%);
+  }
+
+  &.voucher-band-car {
+    background: linear-gradient(135deg, #10B981 0%, #047857 100%);
+  }
+}
+
+.voucher-logo-img {
+  height: 32px;
+  filter: brightness(0) invert(1);
+}
+
+.flight-path-line {
+  height: 2px;
+  width: 40px;
+  background: #cbd5e1;
+}
+
+.voucher-barcode-box {
+  background: variables.$light-200;
+  border: 1px solid variables.$border-color;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.barcode-svg {
+  max-width: 240px;
+  height: 48px;
+  width: 100%;
+}
+
+.voucher-qr-code {
+  width: 100px;
+  height: 100px;
+  border: 1px solid variables.$border-color;
+  border-radius: 8px;
+  padding: 6px;
+  background: variables.$white;
+}
+
+.voucher-perforated {
+  position: relative;
+  border-top: 2px dashed variables.$border-color;
+  margin: 20px 0;
+
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    width: 24px;
+    height: 24px;
+    background: #f8f9fa;
+    border-radius: 50%;
+  }
+
+  &::before {
+    left: -12px;
+  }
+
+  &::after {
+    right: -12px;
+  }
+}
+
+.voucher-meta-tile {
+  background: variables.$light-200;
+  border-radius: 8px;
+  padding: 14px;
+  height: 100%;
+}
+
+.voucher-nav-pills {
+  .nav-link {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: variables.$font-weight-medium;
+    border: 1px solid variables.$light; 
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    transition: all 0.6s;
+    &:hover{
+      background: variables.$light;
+    }
+    &.active {
+      background: variables.$primary;
+      color: variables.$white;
+    }
+  }
+}
+
+.dark-mode {
+  .travel-voucher-wrap {
+    background: variables.$darkmode-white;
+    border-color: variables.$darkmode-light;
+  }
+
+  .voucher-barcode-box,
+  .voucher-meta-tile {
+    background: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+  }
+
+  .voucher-perforated {
+    border-color: variables.$darkmode-light;
+
+    &::before, &::after {
+      background: variables.$darkmode-white;
+    }
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-voucher, #printable-voucher * {
+    visibility: visible;
+  }
+
+  #printable-voucher {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

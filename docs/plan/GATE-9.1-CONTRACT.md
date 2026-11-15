@@ -56,21 +56,31 @@ a controlled integration of the purchased template with Hani platform code.
 
 ## 3. Current Progress
 
-- Home Experience Registry created with all 12 variants.
-- One public home route resolves a server-side experience; variants are lazy-loaded.
+- Dreamstour template copied into `frontend` as the application base.
+- One app tree kept: `(public-pages)` + `(auth-pages)`.
+- Duplicate route trees removed: `(feature-module)`, `(auth)`, root
+  `index-10`/`index-12`.
+- Duplicate component tree `src/components/pages` removed; `src/views` is the
+  active page view tree.
+- `npm run build` green: 554 static pages, 184 routes × 3 locales.
+- All 12 Home Experiences mapped to actual template views:
+  `@/views/home-service-one/homeServiceOne` ... `@/views/home-twelve/homeTwelve`.
+- Home route `/[locale]` resolves the selected experience and lazy-loads the
+  real template view.
 - Settings page `/[locale]/settings/experience` lets the user select a variant.
-- Anonymous selection is persisted in the `hani_home_experience` cookie.
-- Locale switcher added to the header (FA/EN/AR, path and query preserved).
-- Locale-specific fonts added: Vazirmatn (FA), Noto Kufi Arabic (AR), Inter (EN).
-- `html lang` / `dir` remains server-side.
+- Anonymous selection persisted in the `hani_home_experience` cookie.
+- Language Switcher (FA/EN/AR) preserves path and query.
+- `html lang` / `dir` is server-side; `fa`/`ar` are RTL, `en` is LTR.
+- Locale fonts: Vazirmatn (FA), Noto Kufi Arabic (AR), Inter (EN).
 - Metadata alternates/hreflang added at locale layout level.
-- RTL/LTR smoke verified: `/fa` => `lang=fa dir=rtl`, `/en/tours` => `lang=en dir=ltr`, `/ar/visa` => `lang=ar dir=rtl`.
-- `npm run build` green with 41 routes.
+- `/` redirects to `/fa`.
+- Header/footer duplication on home fixed; home has one header and one footer.
+- Settings page performs a server-side Hani API health call and shows
+  connected/unavailable status.
+- RTL/LTR smoke verified for home, tour grid, visa grid, and settings.
 
-> **Migration note:** the current `HomeExperienceFrame` and custom Hani pages
-> are a temporary prototype. They are not the target UI. The target is the
-> purchased template as the application base; registry loaders will point to
-> `@/views/home-*` template views, and template pages will be patched in place.
+> **Next:** template hard-coded copy → FA/AR message catalogs; template pages
+> → Hani API adapters; missing fields → DTO/OpenAPI + template cards/forms.
 
 ## 4. Phase Plan
 

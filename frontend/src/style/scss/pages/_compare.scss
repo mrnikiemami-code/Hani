@@ -1,0 +1,220 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/* --- verdict strip ------------------------------------------------ */
+.cmp-verdict {
+    background: variables.$white;
+    border: 1px solid variables.$light;
+    border-radius: 10px;
+    padding: 18px;
+}
+
+/* --- table shell -------------------------------------------------- */
+.cmp-wrap {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cmp-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin-bottom: 0;
+
+    th,
+    td {
+        border: 0;
+        border-bottom: 1px solid variables.$light-600;
+    }
+
+    /* the shared .table rule paints thead cells grey - reset it for this table */
+    thead tr th {
+        background: variables.$white;
+        font-weight: 400;
+    }
+
+    td {
+        min-width: 236px;
+        padding: 14px 16px;
+        vertical-align: middle;
+        background: variables.$white;
+    }
+
+    /* winning cell */
+    td.is-best {
+        background: #F3FAF6;
+        box-shadow: inset 2px 0 0 variables.$success;
+    }
+}
+
+/* pinned attribute rail */
+.cmp-rail,
+.cmp-corner {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    background: variables.$white;
+    min-width: 190px;
+    width: 190px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: variables.$gray-900;
+    padding: 14px 16px;
+    vertical-align: middle;
+    box-shadow: 1px 0 0 variables.$light-600;
+}
+
+.cmp-corner {
+    z-index: 5;
+    vertical-align: bottom;
+}
+
+/* product columns */
+.cmp-col {
+    min-width: 236px;
+    width: 236px;
+    padding: 0 12px 16px;
+    vertical-align: bottom;
+    scroll-snap-align: start;
+    background: variables.$white;
+}
+
+.cmp-head {
+    position: relative;
+}
+
+.cmp-head-media {
+    position: relative;
+    margin-bottom: 12px;
+
+    img {
+        width: 100%;
+        height: 132px;
+        object-fit: cover;
+        border-radius: 8px;
+        display: block;
+    }
+}
+
+.cmp-ribbon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+/* group heading row */
+.cmp-group th {
+    background: variables.$base-light;
+    color: variables.$sub-title;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: 9px 16px;
+    position: sticky;
+    left: 0;
+    border-bottom: 1px solid variables.$light-600;
+}
+
+.cmp-best {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: #E0F0E8;
+    color: #166B45;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    vertical-align: middle;
+}
+
+/* booleans */
+.cmp-yes {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #E0F0E8;
+    color: variables.$success;
+    font-size: 16px;
+}
+
+.cmp-no {
+    display: inline-block;
+    width: 26px;
+    text-align: center;
+    color: variables.$gray-100;
+    font-size: 16px;
+}
+
+/* rating meter */
+.cmp-meter {
+    width: 56px;
+    height: 5px;
+    border-radius: 3px;
+    background: variables.$light-600;
+    overflow: hidden;
+}
+
+.cmp-meter-fill {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: variables.$warning;
+}
+
+/* add slot */
+.cmp-slot {
+    border: 2px dashed variables.$light;
+    border-radius: 10px;
+    padding: 24px 16px;
+    text-align: center;
+    height: 100%;
+    transition: .2s;
+
+    &:hover {
+        border-color: variables.$primary;
+        background: #FEF8F7;
+    }
+}
+
+@include mixins.respond-below(md) {
+    .cmp-rail,
+    .cmp-corner {
+        min-width: 138px;
+        width: 138px;
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    .cmp-col,
+    .cmp-table td {
+        min-width: 190px;
+        width: 190px;
+    }
+
+    .cmp-head-media img {
+        height: 104px;
+    }
+}
+
+/* --- dark mode ---------------------------------------------------- */
+.dark-mode {
+    .nav-pills .nav-link {
+        &.active .badge {
+            background-color: variables.$white !important;
+            color: variables.$darkmode-white !important;
+        }
+
+        &:not(.active) .badge {
+            background-color: variables.$darkmode-light !important;
+            color: variables.$darkmode-text !important;
+        }
+    }
+}
+

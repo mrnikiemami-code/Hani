@@ -1,0 +1,508 @@
+@use "../utils/variables";
+
+// PrimeReact (unstyled theme) — visuals mirror the HTML template widgets:
+// select  -> Choices.js look (vendors/_select2.scss)
+// picker  -> flatpickr popup
+// slider  -> range-slider.js bar
+// table   -> template .table + dataTables pagination
+
+// ---------------------------------------------------------------- Dropdown
+.app-select.p-dropdown {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  padding: 9px 16px;
+  background-color: variables.$white;
+  border: 1px solid variables.$border-color;
+  border-radius: 5px;
+  font-size: variables.$font-size-14;
+  color: variables.$gray-900;
+  cursor: pointer;
+
+  .p-dropdown-label {
+    flex: 1;
+    padding: 0;
+    line-height: 1.4;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    &.p-placeholder {
+      color: variables.$gray-500;
+    }
+  }
+
+  .p-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+  }
+
+  .app-select-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 4px 0;
+    border-color: variables.$gray-500 transparent transparent;
+    transition: transform 0.2s ease;
+  }
+
+  &.p-dropdown-open .app-select-arrow {
+    transform: rotate(180deg);
+  }
+}
+
+.p-dropdown-panel {
+  background-color: variables.$white;
+  border: 1px solid transparent;
+  box-shadow: variables.$box-shadow;
+  border-radius: 5px;
+  padding: 10px 0;
+  z-index: 1056;
+
+  .p-dropdown-items-wrapper {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  .p-dropdown-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .p-dropdown-item {
+    padding: 8px 20px;
+    font-size: variables.$font-size-14;
+    color: variables.$gray-900;
+    cursor: pointer;
+
+    &:hover,
+    &.p-highlight {
+      background-color: variables.$light;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- Calendar
+.app-picker.p-calendar {
+  display: block;
+  position: relative;
+  width: 100%;
+
+  .p-inputtext {
+    width: 100%;
+  }
+}
+
+.p-datepicker {
+  background-color: variables.$white;
+  border: 1px solid variables.$border-color;
+  border-radius: 5px;
+  box-shadow: variables.$box-shadow;
+  padding: 10px;
+  font-size: variables.$font-size-14;
+  color: variables.$gray-900;
+  z-index: 1056;
+
+  .p-datepicker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0 10px;
+
+    .p-datepicker-title {
+      display: flex;
+      gap: 8px;
+      font-weight: 500;
+
+      button {
+        background: transparent;
+        border: 0;
+        font-weight: 500;
+        color: inherit;
+      }
+    }
+
+    .p-datepicker-prev,
+    .p-datepicker-next {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: variables.$gray-900;
+
+      &:hover {
+        background-color: variables.$light;
+      }
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      font-weight: 500;
+      padding: 6px 0;
+      text-align: center;
+    }
+
+    td {
+      padding: 2px;
+      text-align: center;
+
+      > span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+
+        &:hover {
+          background-color: variables.$light;
+        }
+
+        &.p-highlight {
+          background-color: variables.$primary;
+          color: variables.$white;
+        }
+
+        &.p-disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+      }
+
+      &.p-datepicker-today > span {
+        border: 1px solid variables.$primary;
+      }
+
+      &.p-datepicker-other-month > span {
+        color: variables.$gray-500;
+      }
+    }
+  }
+
+  .p-timepicker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 0;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    button {
+      border: 0;
+      background: transparent;
+      color: variables.$gray-900;
+    }
+
+    span {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .p-monthpicker-month,
+  .p-yearpicker-year {
+    display: inline-flex;
+    width: 33%;
+    padding: 8px 0;
+    justify-content: center;
+    cursor: pointer;
+
+    &.p-highlight {
+      color: variables.$primary;
+      font-weight: 600;
+    }
+  }
+}
+
+// ------------------------------------------------------------------ Slider
+.app-slider.p-slider {
+  position: relative;
+  height: 4px;
+  margin: 12px 7px;
+  background-color: variables.$light;
+  border-radius: 2px;
+
+  .p-slider-range {
+    position: absolute;
+    height: 100%;
+    background-color: variables.$primary;
+    border-radius: 2px;
+  }
+
+  .p-slider-handle {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    background-color: variables.$primary;
+    border: 2px solid variables.$white;
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 0 0 1px variables.$primary;
+    outline: 0;
+  }
+
+  &.p-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+// ------------------------------------------------------------------- Table
+.p-datatable {
+  .p-datatable-wrapper {
+    overflow-x: auto;
+  }
+
+  .p-datatable-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .p-datatable-thead > tr > th {
+    background: variables.$light;
+    font-weight: 500;
+    color: variables.$gray-900;
+    border-bottom: 1px solid variables.$border-color;
+    padding: 12px 16px;
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  .p-sortable-column {
+    cursor: pointer;
+  }
+
+  .p-sortable-column-icon {
+    margin-left: 6px;
+    font-size: 11px;
+    opacity: 0.5;
+  }
+
+  .p-datatable-tbody > tr > td {
+    padding: 12px 16px;
+    border-bottom: 1px solid variables.$border-color;
+    vertical-align: middle;
+  }
+}
+
+.p-paginator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 0;
+
+  .p-dropdown {
+    display: inline-flex;
+    padding: 2px 8px;
+    border: 1px solid variables.$border-color;
+    border-radius: 5px;
+  }
+
+  .p-paginator-pages {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+
+  .p-paginator-page,
+  .p-paginator-prev,
+  .p-paginator-next {
+    min-width: 25px;
+    height: 25px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    border-radius: 50px;
+    background: variables.$light;
+    color: variables.$gray-700;
+    font-size: variables.$font-size-14;
+
+    &.p-highlight {
+      background-color: variables.$primary;
+      color: variables.$white;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+
+  .table-total {
+    margin-right: auto;
+  }
+}
+
+.app-select-column {
+  width: 3rem;
+}
+
+// --------------------------------------------------------------------- OTP
+.app-otp {
+  display: flex;
+  gap: 8px;
+
+  .p-inputtext {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border: 1px solid variables.$border-color;
+    border-radius: 5px;
+  }
+}
+
+// ------------------------------------------------------------- Dark mode
+// Same palette as the template's dark `.choices__*` / `.flatpickr-*` rules (pages/theme.scss)
+.dark-mode {
+  .app-select.p-dropdown {
+    background: #121212;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+
+    .p-dropdown-label.p-placeholder {
+      color: variables.$gray-500;
+    }
+
+    .app-select-arrow {
+      border-top-color: variables.$darkmode-text;
+    }
+  }
+
+  .p-dropdown-panel {
+    background: #121212;
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+    .p-dropdown-item {
+      color: variables.$darkmode-text;
+
+      &:hover,
+      &.p-highlight {
+        background: variables.$darkmode-light;
+      }
+    }
+  }
+
+  .p-datepicker {
+    background: #121212;
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    color: variables.$darkmode-text;
+
+    .p-datepicker-header {
+      .p-datepicker-title button {
+        color: variables.$darkmode-text;
+      }
+
+      .p-datepicker-prev,
+      .p-datepicker-next {
+        color: variables.$darkmode-text;
+
+        &:hover {
+          background: variables.$darkmode-light;
+        }
+      }
+    }
+
+    table {
+      th {
+        color: variables.$gray-500;
+      }
+
+      td > span {
+        color: variables.$darkmode-text;
+
+        &:hover {
+          background: variables.$darkmode-light;
+        }
+
+        &.p-highlight {
+          background: variables.$primary;
+          color: #fff;
+        }
+      }
+
+      td.p-datepicker-other-month > span,
+      td > span.p-disabled {
+        color: variables.$gray-500;
+      }
+    }
+
+    .p-timepicker button,
+    .p-timepicker span {
+      color: variables.$darkmode-text;
+    }
+
+    .p-monthpicker-month,
+    .p-yearpicker-year {
+      color: variables.$darkmode-text;
+    }
+  }
+
+  .app-slider.p-slider {
+    background: variables.$darkmode-light;
+
+    .p-slider-handle {
+      border-color: #121212;
+    }
+  }
+
+  .p-datatable {
+    .p-datatable-thead > tr > th {
+      background: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+      border-bottom-color: variables.$darkmode-light;
+    }
+
+    .p-datatable-tbody > tr > td {
+      background: variables.$darkmode-white;
+      color: variables.$darkmode-gray-900;
+      border-bottom-color: variables.$darkmode-light;
+    }
+  }
+
+  .p-paginator {
+    color: variables.$darkmode-text;
+
+    .p-dropdown {
+      border-color: variables.$darkmode-light;
+    }
+
+    .p-paginator-page,
+    .p-paginator-prev,
+    .p-paginator-next {
+      background: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+
+      &.p-highlight {
+        background: variables.$primary;
+        color: #fff;
+      }
+    }
+  }
+
+  .app-otp .p-inputtext {
+    background: #121212;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+  }
+}

@@ -1,0 +1,295 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  agent-payout-request
+============================*/
+
+$payout-primary: #165ddb;
+$payout-border: #E7EDF2;
+
+/* 1. Payout Overview Stats Grid */
+.payout-stats-grid {
+  .payout-stat-card {
+    border-radius: 16px;
+    border: 1px solid $payout-border;
+    background-color: variables.$white;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+
+    .card-body {
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 145px;
+    }
+
+    .payout-stat-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #64748B;
+      line-height: 1.3;
+    }
+
+    .payout-stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0F172A;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+
+    .payout-stat-subtitle {
+      font-size: 12px;
+      font-weight: 400;
+      color: #94A3B8;
+      display: block;
+      margin-top: 8px;
+    }
+
+    // Primary Balance Card (Card 1)
+    &.payout-balance-card,
+    &.payout-balance-box {
+      background: $payout-primary;
+      border: none;
+      color: variables.$white;
+
+      .payout-stat-title {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .payout-stat-value {
+        color: variables.$white;
+      }
+
+      .payout-badge-ready {
+        background-color: variables.$white;
+        color: #CF3425;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 6px;
+        display: inline-block;
+        margin-top: 8px;
+      }
+    }
+
+    // Escrow badge (Card 2)
+    .payout-badge-escrow {
+      background-color: #FEF3C7;
+      color: #D97706;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    // Icons (Cards 3 & 4)
+    .payout-stat-icon {
+      font-size: 20px;
+      line-height: 1;
+
+      &.icon-success {
+        color: #10B981;
+      }
+
+      &.icon-danger {
+        color: #EF4444;
+      }
+    }
+  }
+}
+
+// Fallback legacy selector support
+.payout-balance-box {
+  background: $payout-primary;
+  color: variables.$white;
+  border-radius: 16px;
+  border: none;
+}
+
+/* 2. Withdrawal Method Selection Options */
+.payout-method-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 2px solid $payout-border;
+  border-radius: 12px;
+  padding: 18px 16px;
+  cursor: pointer;
+  background-color: variables.$white;
+  transition: all 0.2s ease-in-out;
+
+  .form-check-input {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    inset-inline-end: 16px;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    border: 2px solid #CBD5E1;
+    background-color: variables.$white;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+
+    &:checked {
+      background-color: $payout-primary;
+      border-color: $payout-primary;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(22, 93, 219, 0.15);
+      border-color: $payout-primary;
+    }
+  }
+
+  [dir="rtl"] & {
+    .form-check-input {
+      right: auto;
+      left: 16px;
+    }
+  }
+
+  .payout-method-header,
+  .d-flex.align-items-center.gap-2.mb-2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding-inline-end: 30px;
+  }
+
+  p.fs-12,
+  .payout-method-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #64748B;
+    margin-bottom: 12px;
+    flex-grow: 1;
+  }
+
+  .badge,
+  .payout-method-badge {
+    align-self: flex-start;
+    margin-top: auto;
+    font-weight: 500;
+  }
+
+  &:hover {
+    border-color: $payout-primary;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  &.selected,
+  &:has(input[type="radio"]:checked) {
+    border-color: $payout-primary;
+    background: rgba(22, 93, 219, 0.04);
+  }
+}
+
+/* 3. Percentage Quick Chips */
+.percentage-chip {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid $payout-border;
+  background: variables.$white;
+  font-size: 13px;
+  font-weight: variables.$font-weight-medium;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover, &.active {
+    background: $payout-primary;
+    border-color: $payout-primary;
+    color: variables.$white;
+  }
+}
+
+/* 4. Fee & Calculation Box */
+.fee-calc-box {
+  background: variables.$light-200;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* 5. Dark Mode Styles */
+.dark-mode {
+  .payout-stats-grid {
+    .payout-stat-card {
+      background-color: variables.$darkmode-light;
+      border-color: variables.$darkmode-light;
+
+      .payout-stat-title {
+        color: variables.$darkmode-white;
+        opacity: 0.7;
+      }
+
+      .payout-stat-value {
+        color: variables.$white;
+      }
+
+      .payout-stat-subtitle {
+        color: variables.$darkmode-white;
+        opacity: 0.5;
+      }
+
+      .payout-badge-escrow {
+        background-color: rgba(245, 158, 11, 0.2);
+        color: #FBBF24;
+      }
+
+      &.payout-balance-card,
+      &.payout-balance-box {
+        background: $payout-primary;
+      }
+    }
+  }
+
+  .payout-method-option {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+
+    .form-check-input {
+      background-color: transparent;
+      border-color: rgba(255, 255, 255, 0.25);
+
+      &:checked {
+        background-color: $payout-primary;
+        border-color: $payout-primary;
+      }
+    }
+
+    &:hover {
+      border-color: $payout-primary;
+    }
+
+    &.selected,
+    &:has(input[type="radio"]:checked) {
+      border-color: $payout-primary;
+      background: rgba(22, 93, 219, 0.12);
+    }
+
+    p.fs-12,
+    .payout-method-desc {
+      color: variables.$darkmode-white;
+      opacity: 0.7;
+    }
+  }
+
+  .percentage-chip {
+    background: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-white;
+  }
+
+  .fee-calc-box {
+    background: variables.$darkmode-light;
+  }
+}

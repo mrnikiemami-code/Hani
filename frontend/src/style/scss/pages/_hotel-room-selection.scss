@@ -1,0 +1,27 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  hotel-room-selection
+============================*/
+
+.room-thumb {
+  height: 180px;
+  object-fit: cover;
+}
+
+/* --- dark mode ---------------------------------------------------- */
+.dark-mode {
+  .nav-pills .nav-link {
+    &.active .badge {
+      background-color: variables.$white !important;
+      color: variables.$darkmode-white !important;
+    }
+
+    &:not(.active) .badge {
+      background-color: variables.$darkmode-light !important;
+      color: variables.$darkmode-text !important;
+    }
+  }
+}
+

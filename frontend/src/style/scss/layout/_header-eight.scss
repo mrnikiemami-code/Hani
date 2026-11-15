@@ -1,0 +1,95 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  header-eight
+============================*/
+
+
+.header-eight{
+    margin-top: 16px;  
+    .header-nav {
+        background-color: rgba(variables.$white, 0.30);
+        border-color: rgba(variables.$white,0.50) !important; 
+        backdrop-filter: blur(25px);
+        border-radius: 10px;
+        border: 1px solid variables.$white !important;
+        .main-menu-wrapper{
+           padding: 0px 12px;
+           .main-nav{
+                .submenu{
+                    .menu-tab{
+                        ul{
+                            li{
+                                a{
+                                  background: #E4EBF1 !important;
+                                  &.active, &:hover{
+                                    background-color: variables.$primary !important;
+                                    color:  variables.$white !important;
+                                  }
+                                }
+                            }
+                        }
+                    }
+                    li{
+                        a{
+                            color: variables.$gray-900 !important;
+                            background-color: transparent !important;
+                            &.active, &:hover{
+                               color: variables.$primary !important; 
+                            }
+                            &.btn-dark{
+                                background-color: variables.$dark !important;
+                                border-color: variables.$dark !important;
+                                color:  variables.$white !important;
+                                &:hover{
+                                    background-color: variables.$primary !important;
+                                    border-color: variables.$primary !important;
+                                }
+                            }
+                        }
+                    }
+                }
+                > li{
+                    margin-right: 1px !important;
+                    border: none !important;
+                    &.active{
+                        a{
+                         background-color: variables.$primary;
+                         color: variables.$white;
+                       }
+                    }
+                   > a{
+                        color: variables.$white;
+                        padding: 4px 16px;
+                        border-radius: 50px;
+                        @include mixins.respond-below(xxl) {
+                            padding: 4px 10px;
+                        }
+                        @include mixins.respond-below(xl) {
+                            padding: 4px 10px;
+                        }
+                        &:hover{
+                            background-color: variables.$primary;
+                            color: variables.$white;
+                        }
+                        &::after{
+                            display: none !important;
+                        }
+                    }
+                }
+            }
+        }
+        .header-btn{
+           .theme-toggle, .wishlist-icon{
+            font-size: variables.$font-size-24;
+           } 
+        }
+    }
+    &.fixed{
+       margin-top: 0; 
+       .wishlist-icon{
+        color: variables.$gray-900 !important;
+       }
+    }
+}

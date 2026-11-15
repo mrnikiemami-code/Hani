@@ -1,0 +1,41 @@
+"use client";
+
+import Link from "next/link";
+
+const DeleteModal = ({ id = "delete_modal" }: { id?: string }) => {
+    return (
+        <>
+            {/* Delete Modal */}
+            <div className="modal fade" id={id}>
+                <div className="modal-dialog modal-dialog-centered modal-sm">
+                    <div className="modal-content">
+                        <div className="modal-body">
+                            <form >
+                                <div className="text-center">
+                                    <h5 className="mb-3">Confirm Delete</h5>
+                                    <p className="mb-3">Are you sure you want to delete this item?</p>
+                                    <div className="d-flex align-items-center justify-content-center">
+                                        <Link
+                                            href="#"
+                                            className="btn btn-light me-2"
+                                            data-bs-dismiss="modal"
+                                        >
+                                            No
+                                        </Link>
+                                        <Link href="#" data-bs-dismiss="modal" className="btn btn-primary">
+                                            Yes
+                                        </Link>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* /Delete Modal */}
+        </>
+
+    )
+}
+
+export default DeleteModal

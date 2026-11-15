@@ -1,0 +1,197 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  guide-list
+============================*/
+
+.guide-list-item {
+  border: 1px solid variables.$border-color;
+  border-radius: 12px;
+  overflow: hidden;
+  background: variables.$white;
+  margin-bottom: 24px;
+  transition: all 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.guide-list-img-wrap {
+  position: relative;
+  min-height: 220px;
+  height: 100%;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.guide-badge-verified {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(39, 174, 96, 0.9);
+  color: variables.$white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: variables.$font-weight-medium;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.guide-lang-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: variables.$light-200;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  color: variables.$gray-700;
+}
+
+.guide-specialty-pill {
+  background: rgba(22, 93, 219, 0.08);
+  color: variables.$primary;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: variables.$font-weight-medium;
+}
+
+.dark-mode {
+  .guide-list-item {
+    background: variables.$darkmode-white;
+    border-color: variables.$darkmode-light;
+  }
+
+  .guide-lang-tag {
+    background: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+  }
+
+  .guide-specialty-pill {
+    background: rgba(22, 93, 219, 0.15);
+  }
+
+  // Pagination dark mode
+  .pagination-nav {
+    .pagination {
+      .page-item {
+        .page-link {
+          background: variables.$darkmode-light;
+          color: variables.$darkmode-text;
+          border-color: transparent;
+        }
+
+        &.active,
+        &:hover:not(.disabled) {
+          .page-link {
+            background: variables.$primary;
+            color: variables.$white;
+          }
+        }
+
+        &.disabled .page-link {
+          background: variables.$darkmode-light-200;
+          color: variables.$gray-500;
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+}
+
+/*============================
+  Pagination
+============================*/
+
+.pagination-nav {
+  .pagination {
+    gap: 4px;
+    align-items: center;
+
+    .page-item {
+      // Prev / Next arrow pills
+      &:first-child,
+      &:last-child {
+        .page-link {
+          background: transparent;
+          border: 1px solid variables.$light-900;
+          color: variables.$text-color;
+          width: 36px;
+          height: 36px;
+
+          &:hover {
+            background: variables.$light;
+            border-color: variables.$light-900;
+          }
+        }
+      }
+
+      // Ellipsis item
+      &:nth-last-child(2):not(.active) {
+        .page-link {
+          background: transparent;
+          border: none;
+          color: variables.$text-color;
+          cursor: default;
+          pointer-events: none;
+
+          &:hover {
+            background: transparent;
+          }
+        }
+      }
+
+      .page-link {
+        width: 36px;
+        height: 36px;
+        border: none;
+        background: variables.$light;
+        color: variables.$text-color;
+        font-size: variables.$font-size-14;
+        font-weight: variables.$font-weight-medium;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        @include mixins.rounded(50%);
+        line-height: 1;
+        padding: 0;
+
+        &:focus {
+          box-shadow: none;
+          outline: none;
+        }
+      }
+
+      &.active .page-link {
+        background: variables.$primary;
+        color: variables.$white;
+        box-shadow: 0 4px 12px rgba(207, 52, 37, 0.35);
+        border: none;
+        font-weight: variables.$font-weight-semibold;
+      }
+
+      &:not(.disabled):not(.active):hover .page-link {
+        background: variables.$light-900;
+        color: variables.$gray-900;
+      }
+
+      &.disabled .page-link {
+        background: variables.$light;
+        color: variables.$gray-300;
+        opacity: 0.7;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  style guide
+============================*/
+.sg-section {
+    scroll-margin-top: 24px;
+}
+
+.sg-nav a {
+    display: block;
+    padding: 6px 0;
+    font-size: 14px;
+    color: variables.$text-color;
+
+    &:hover {
+        color: variables.$primary;
+    }
+}
+
+.sg-swatch {
+    height: 48px;
+    border-radius: 6px;
+}
+
+.sg-skeleton {
+    background: linear-gradient(90deg, variables.$light-600 25%, variables.$base-light 37%, variables.$light-600 63%);
+    background-size: 400% 100%;
+    animation: sg-shimmer 1.4s ease infinite;
+    border-radius: 4px;
+}
+
+@keyframes sg-shimmer {
+    0% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0 50%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sg-skeleton {
+        animation: none;
+    }
+}
+
+.sg-radius {
+    border: 1px solid variables.$light;
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+}
+
+/* --- dark mode ---------------------------------------------------- */
+.dark-mode {
+    .nav-pills .nav-link {
+        &.active .badge {
+            background-color: variables.$white !important;
+            color: variables.$darkmode-white !important;
+            border: none !important; 
+        }
+
+        &:not(.active) .badge {
+            background-color: variables.$darkmode-light !important;
+            color: variables.$darkmode-text !important;
+        }
+    }
+    .trip-summary-tile {
+        border-color: variables.$darkmode-light;
+    }
+}
+

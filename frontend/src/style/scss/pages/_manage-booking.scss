@@ -1,0 +1,36 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  manage booking
+============================*/
+.fee-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.policy-window {
+    border-left: 3px solid variables.$light;
+    padding-left: 14px;
+
+    &.is-now {
+        border-left-color: variables.$primary;
+    }
+}
+
+/* --- dark mode ---------------------------------------------------- */
+.dark-mode {
+    .nav-pills .nav-link {
+        &.active .badge {
+            background-color: variables.$white !important;
+            color: variables.$darkmode-white !important;
+        }
+
+        &:not(.active) .badge {
+            background-color: variables.$darkmode-light !important;
+            color: variables.$darkmode-text !important;
+        }
+    }
+}
+

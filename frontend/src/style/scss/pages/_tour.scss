@@ -1,0 +1,42 @@
+@use "../utils/variables";
+
+/*============================
+  42.tour
+============================*/
+
+.vertical-splits {
+  width: 1px;
+  height: 20px;
+}
+.place-item {
+  position: relative;
+  .place-content {
+    position: relative;
+  }
+  .activity-content {
+    margin-top: -80px;
+    border-radius: 10px 10px 0 0;
+    .badge-right {
+      background: variables.$white;
+      box-shadow: 0px 2px 7px 0px #00000012;
+      border: 1px solid #E4E6E8;
+      border-radius: 50px;
+      top: -15px;
+      right: 20px;
+      padding: 7px 15px;
+    }
+    .text-line {
+      text-decoration: line-through;
+    }
+  }
+  .car-avatar-image {
+    position: absolute;
+    right: 20px;
+    top: -20px;
+    z-index: 1;
+    border: 1px solid variables.$white;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+  }
+}

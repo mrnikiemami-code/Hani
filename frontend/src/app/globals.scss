@@ -1,0 +1,321 @@
+@use "../style/css/meanmenu.css";
+@use "../style/scss/utils/mixins";
+@use "../style/scss/utils/variables";
+@use "../style/scss/main.scss";
+@use "../style/scss/vendors/primereact";
+
+// ---------------------------------------------------------------------------
+// Central custom stylesheet.
+// Template styles come from style/scss (mirrors html/assets/scss); only
+// React-specific third party overrides live below.
+// ---------------------------------------------------------------------------
+
+// Third-party widgets used by the React build (lightbox, phone input, editors, pickers)
+.input-icon-end {
+  #reportrange {
+    padding-left: 30px !important;
+  }
+}
+
+.lg-outer {
+  top: 100px;
+}
+
+.sticky-component {
+  position: sticky;
+  top: 50px;
+}
+
+.colq {
+  width: 130px;
+}
+
+.detail-gal .lg-react-element {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.theiaStickySidebar {
+  position: sticky;
+  top: 0;
+}
+
+#reportrange {
+  padding-left: 27px !important;
+}
+
+.PhoneInput {
+  padding: 10px;
+  border: 1px solid #E4EBF1;
+  margin-left: 0;
+  height: 40px;
+
+  input {
+    border: 0;
+  }
+}
+
+.rsw-dd {
+  border: 0;
+}
+
+.stickysidebar {
+  position: sticky;
+  top: 0;
+}
+
+.ql-toolbar.ql-snow {
+  border-color: #e8e8e9;
+  border-radius: 5px 5px 0 0;
+}
+
+.ql-container.ql-snow {
+  border-color: #e8e8e9;
+  border-radius: 0 0 5px 5px;
+}
+
+.custom-daterangepickers {
+  display: flex;
+  position: relative;
+
+  .rs-picker-popup {
+    position: absolute;
+    left: 0;
+    top: 120px;
+  }
+
+}
+
+.rs-picker-error>.rs-picker-input-group:hover {
+  border: none !important;
+  border-color: transparent !important;
+}
+
+.form-info .daterangepicker {
+  top: 85px !important;
+  left: 260px !important;
+}
+
+.hero-sec-nine .form-info .daterangepicker {
+  top: 100px !important;
+  left: 260px !important;
+}
+
+.dark-mode .visa-timeline-card .timeline .timeline-item .timeline-content h4 {
+  color: #FAFCFF;
+}
+
+.dark-mode .visa-timeline-card .timeline-item1 .timeline-content h4 {
+  color: #FAFCFF;
+}
+
+.dark-mode .bg-info-transparent .text-dark {
+  color: #212E47 !important;
+}
+
+.dark-mode .coupoun-list .text-remove {
+  color: #111827 !important;
+}
+
+.dark-mode .table.pricing-table tr th{
+background: transparent;
+}
+
+// Swiper: the template draws its arrows with an icon font, never the bundled svg
+.swiper-button-prev .swiper-navigation-icon,
+.swiper-button-next .swiper-navigation-icon {
+  display: none;
+}
+
+// CommonDateRange: invisible PrimeReact range calendar anchored to the template's form-info row
+.form-info {
+  position: relative;
+}
+
+.form-info .date-range-hidden {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  overflow: visible;
+
+  .p-datepicker {
+    top: 85px !important;
+    left: 260px !important;
+  }
+}
+
+// Report range trigger (agent booking tables)
+.range-hidden-input {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+}
+
+// Video lightbox (GLightbox look used by the template's video buttons)
+.video-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.92);
+
+  .video-lightbox-content {
+    width: min(90vw, 960px);
+    aspect-ratio: 16 / 9;
+    background: #000;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+
+    iframe,
+    video {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+
+  .video-lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+// The template's search button is a <button> (content centered vertically); ours is a router <a>
+a.search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+// Hani home experience settings
+.experience-settings-section {
+  padding: 60px 0;
+}
+
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 18px;
+}
+
+.experience-card {
+  position: relative;
+  text-align: start;
+  background: #fff;
+  border: 1px solid #e4ebf1;
+  border-radius: 14px;
+  padding: 0;
+  overflow: hidden;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.experience-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(33, 46, 71, .10);
+}
+
+.experience-card.is-selected {
+  border-color: #CF3425;
+  box-shadow: 0 0 0 2px rgba(207, 52, 37, .12);
+}
+
+.experience-preview {
+  display: block;
+  height: 100px;
+}
+
+.experience-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px 18px;
+}
+
+.experience-card-body strong {
+  font-size: 16px;
+}
+
+.experience-card-body span {
+  color: #6b7a8f;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.experience-card-body small {
+  color: #98a6b8;
+  font-size: 11px;
+  direction: ltr;
+}
+
+.experience-card .badge {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+}
+
+
+// Hani locale/direction integration
+html[lang="fa"] body {
+  font-family: var(--font-vazirmatn), Tahoma, Arial, sans-serif;
+}
+
+html[lang="ar"] body {
+  font-family: var(--font-noto-kufi), Tahoma, Arial, sans-serif;
+}
+
+html[lang="en"] body {
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+
+.hani-locale-float {
+  position: fixed;
+  top: 12px;
+  inset-inline-end: 14px;
+  z-index: 10050;
+  background: #fff;
+  border: 1px solid #e4ebf1;
+  border-radius: 10px;
+  padding: 4px 6px;
+  box-shadow: 0 6px 18px rgba(33, 46, 71, .12);
+}
+
+.locale-switcher select {
+  border: 0;
+  background: transparent;
+  color: #212e47;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+
+// Replace the template's demo-only language dropdowns with the Hani locale switcher.
+.flag-dropdown {
+  display: none !important;
+}

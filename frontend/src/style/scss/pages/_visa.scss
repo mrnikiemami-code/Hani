@@ -1,0 +1,458 @@
+@use "../utils/mixins" as *;
+@use "../utils/variables" as *;
+
+.visa-details-card {
+    position: relative;
+    padding: 20px;
+    border-radius: 10px;
+    background: $secondary;
+
+    .title {
+        font-size: 32px;
+        font-weight: $font-weight-bold;
+        color: $white;
+        text-align: center;
+    }
+
+    p {
+        color: $white;
+    }
+}
+
+.visa-tracking-card-one {
+    text-align: center;
+    border: 1px solid $border-color;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: $box-shadow;
+    margin-bottom: 24px;
+
+    .card-title {
+        margin-bottom: 20px;
+    }
+
+    .card-content {
+        .track-input {
+            position: relative;
+            margin-bottom: 20px;
+
+            .form-control {
+                padding-right: 100px;
+                position: relative;
+            }
+
+            button {
+                position: absolute;
+                right: 7px;
+                top: 7px;
+                bottom: 7px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+}
+
+.visa-timeline-card {
+    background: $white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: $box-shadow;
+    border: 1px solid $border-color;
+    margin-bottom: 24px;
+
+    h2 {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: $gray-600;
+        margin-top: 4px;
+    }
+
+    .timeline {
+        margin-top: 28px;
+        position: relative;
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+            padding-bottom: 56px;
+
+            &:last-child {
+                padding-bottom: 0;
+            }
+
+            /* Vertical line */
+            &::before {
+                content: "";
+                position: absolute;
+                left: 18px;
+                top: 36px;
+                width: 2px;
+                height: 100%;
+                background: $gray-200;
+            }
+
+            &.completed,
+            &.active {
+                &::before {
+                    background: $success;
+                }
+
+                .timeline-date {
+                    margin-left: 12px;
+                }
+            }
+
+            &.upcoming {
+                .timeline-icon {
+                    background: $light;
+                }
+            }
+
+            .timeline-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: $success;
+                color: $white;
+                font-weight: 700;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                z-index: 1;
+            }
+
+            .timeline-content {
+                margin-left: 16px;
+                flex: 1;
+
+                h4 {
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: $gray-900;
+                }
+
+                p {
+                    font-size: 13px;
+                    color: $gray-600;
+                    margin-top: 4px;
+                    max-width: 520px;
+                }
+
+                .status {
+                    display: inline-flex;
+                    align-items: center;
+                    margin-top: 8px;
+                    font-size: 12px;
+                    color: $primary;
+
+                    &::before {
+                        content: "!";
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 14px;
+                        height: 14px;
+                        border-radius: 50%;
+                        border: 1px solid $primary;
+                        margin-right: 6px;
+                        font-size: 10px;
+                    }
+                }
+            }
+
+            .timeline-date {
+                font-size: 12px;
+                color: $gray-600;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    .timeline-item1 {
+        display: flex;
+        align-items: flex-start;
+        padding-bottom: 28px;
+
+        .timeline-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: $light;
+            color: $white;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            margin-left: 16px;
+            flex: 1;
+
+            h4 {
+                font-size: 15px;
+                font-weight: 600;
+                color: $gray-900;
+            }
+
+            p {
+                font-size: 13px;
+                color: $gray-600;
+                margin-top: 4px;
+                max-width: 520px;
+            }
+
+            .status {
+                display: inline-flex;
+                align-items: center;
+                margin-top: 8px;
+                font-size: 12px;
+                color: $primary;
+
+                &::before {
+                    content: "!";
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 14px;
+                    height: 14px;
+                    border-radius: 50%;
+                    border: 1px solid $primary;
+                    margin-right: 6px;
+                    font-size: 10px;
+                }
+            }
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: $gray-600;
+            white-space: nowrap;
+        }
+    }
+}
+
+.visa-section-header {
+    text-align: center;
+    margin-bottom: 24px;
+
+    span {
+        background: $dark;
+        padding: 6px 20px;
+        border-radius: 50px;
+        color: $white;
+        font-weight: $font-weight-medium;
+        margin-bottom: 12px;
+        display: inline-block;
+    }
+
+    h2 {
+        font-size: 44px;
+        font-weight: $font-weight-bold;
+        margin-bottom: 8px;
+    }
+}
+
+.visa-requirement-img {
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        width: 100%;
+        max-width: 285px;
+        height: calc(100% + 20px);
+        background: $primary;
+        z-index: -1;
+        border-radius: 40px;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        right: -10px;
+        width: 100%;
+        max-width: 420px;
+        height: calc(100% + 20px);
+        background: $secondary;
+        z-index: -1;
+        border-radius: 40px;
+    }
+
+    img {
+        border-radius: 10px;
+        width: 100%;
+    }
+}
+
+.section-padding {
+    padding: 60px 0;
+
+    @include respond-below(md) {
+        padding: 40px 0;
+    }
+}
+
+.general-visa-section {
+    background: $light-200;
+
+    .general-visa-card-one {
+        padding: 40px;
+        background: $white;
+        border-radius: 5px;
+        border: 1px solid $light;
+        box-shadow: $box-shadow;
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+            background: $primary;
+
+            .card-title,
+            p {
+                color: $white;
+            }
+
+            i {
+                color: $white;
+            }
+        }
+
+        .card-bg {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: $font-weight-semibold;
+            color: $gray-900;
+        }
+
+        p {
+            color: $gray-600;
+
+            i {
+                color: $primary;
+            }
+        }
+    }
+}
+
+.service-work-section {
+    background: $gray-900;
+
+    .card {
+        h2 {
+            color: $white;
+            margin-bottom: 24px;
+        }
+    }
+}
+
+.counter-section {
+    .counter-card {
+        padding: 40px;
+        background: $white;
+        border-radius: 5px;
+        border: 1px solid $light;
+        box-shadow: $box-shadow;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        margin-bottom: 8px;
+
+        .counter-bg1 {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .counter-bg2 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        .counter-content {
+            font-size: 52px;
+            font-weight: $font-weight-bold;
+            color: $gray-900;
+        }
+    }
+}
+
+.visa-faq-section {
+    .accordion-header {
+        .accordion-button:not(.collapsed), .accordion-button:not(.collapsed):after {
+            color: $primary;
+        }
+    }
+}
+
+.upcoming-content .upcoming-title {
+    background-color: $light-200;
+    border: 1px solid $light;
+}
+
+.destination-details-img {
+    border-radius: 10px;
+    img {
+        border-radius: 10px;
+        width: 100%;
+    }
+}
+/*============================
+  visa application
+============================*/
+.upload-drop {
+    border: 2px dashed $light;
+    border-radius: 8px;
+    padding: 32px 20px;
+    text-align: center;
+
+    &:hover {
+        border-color: $primary;
+    }
+}
+
+// document rows below the dropzone: stack the action buttons under the
+// file details on the smallest screens so the title no longer cramps
+.upload-drop ~ .d-flex {
+    @include respond-below(sm) {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+}
+
+/* --- dark mode ---------------------------------------------------- */
+.dark-mode {
+    .nav-pills .nav-link {
+        &.active .badge {
+            background-color: $white !important;
+            color: $darkmode-white !important;
+        }
+
+        &:not(.active) .badge {
+            background-color: $darkmode-light !important;
+            color: $darkmode-text !important;
+        }
+    }
+}
+

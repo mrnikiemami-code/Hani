@@ -1,0 +1,100 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  header-eleven
+============================*/
+
+.header-eleven{
+    background-color: variables.$white;
+    .header-logo.logo-dark{
+        display: block;
+    }
+    .logo-white.header-logo{
+        display: none;
+    }
+    .flag-dropdown {
+        @include mixins.respond-below(xl) {
+            display: none !important;
+        }
+        @include mixins.respond-below(lg) {
+            display: block !important;
+        }
+        img{
+            height: 20px;
+        }
+    }
+    .header-nav {
+        .main-menu-wrapper{
+            padding: 0;
+           .main-nav{
+            .submenu{
+                    .menu-tab{
+                        ul{
+                            li{
+                                a{
+                                  background: #E4EBF1 !important;
+                                  &.active, &:hover{
+                                    background-color: variables.$primary !important;
+                                    color:  variables.$white !important;
+                                  }
+                                }
+                            }
+                        }
+                    }
+                    li{
+                        a{
+                            color: variables.$gray-900 !important;
+                            background-color: transparent !important;
+                            &.active, &:hover{
+                                color: variables.$primary !important;
+                            }
+                            &.btn-dark{
+                                background-color: variables.$dark !important;
+                                border-color: variables.$dark !important;
+                                color:  variables.$white !important;
+                                &:hover{
+                                    background-color: variables.$primary !important;
+                                    border-color: variables.$primary !important;
+                                }
+                            }
+                        }
+                    }
+                }
+                > li{
+                    &.active{
+                        a{
+                         color: variables.$primary;
+                       }
+                    }
+                   > a{
+                        color: variables.$gray-900;
+                        &:hover{
+                            color: variables.$primary;
+                        }
+                        &::after{
+                           color: variables.$primary !important; 
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .header-btn{
+        .theme-toggle{
+            color: variables.$gray-900;
+        }
+    }
+    .flag-dropdown-desktop{
+        .dropdown-toggle{
+            &::after{
+                display: none !important;
+            }
+        }
+    }
+    .header__hamburger {
+        .sidebar-menu{
+           color: variables.$gray-900;
+        }
+    }
+}

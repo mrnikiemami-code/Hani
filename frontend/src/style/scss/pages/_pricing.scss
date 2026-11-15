@@ -1,0 +1,101 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+.table{
+    &.pricing-table{
+        thead{
+           th{
+             background: transparent;
+              max-width: 300px;
+              border: 0;
+              padding: 0;
+              &:first-child{
+                max-width: auto;
+              }
+           }
+           .recommeded-set{
+            position: absolute;
+            top: -7px;
+            transform: translateX(-50%);
+            left: 50%;
+            span{
+                background: #DD2590;
+                padding: 2px 5px;
+                border-radius: 5px 5px 0 0;
+                color: variables.$white;
+                display: block;
+                }
+            }
+        }
+        tbody{
+          tr{
+            &:nth-child(even){
+               td{
+                 background: variables.$light-200;
+               }
+            }
+            td{
+                text-align: center;
+            }
+            .pricing-check{
+                background: #F1FAF3;
+                border-radius: 50%;
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                font-size: 20px;
+                line-height: 24px;
+                padding: 2px;
+            }
+            .pricing-cross{
+                background: #FFE8E8;
+                border-radius: 50%;
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                font-size: 20px;
+                line-height: 24px;
+                padding: 2px;
+            }
+          }  
+        }
+        .pricing-plan{
+            background: variables.$white;
+            padding: 16px;
+            .pricing-head{
+                text-align: center;
+                border: 1px solid variables.$light;
+                background: variables.$light-200;
+                border-radius: 5px;
+                padding: 20px;
+                  position: relative;
+                z-index: 9;
+            }
+            .pricing-contet{
+                background: variables.$white;
+                padding: 24px;
+                border: 1px solid variables.$light;
+                border-radius: 5px;
+                margin-bottom: 20px;
+                h6{
+                    font-size: 24px;
+                    margin-bottom: 8px;
+                }
+                p{
+                    margin-bottom: 5px;
+                    white-space: normal;
+                    font-weight: 400;
+                    color: variables.$gray-600;
+                }
+                h4{
+                    font-size: 32px;
+                    font-weight: 700;
+                    span{
+                        font-size: 20px;
+                        font-weight: 400;
+                    }
+                }
+            }
+        }
+    }
+}

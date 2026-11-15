@@ -1,0 +1,163 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  Header-nine
+============================*/
+
+.main-header-nine{
+    padding: 16px;
+    .header-topbar{
+        &.topbar-nine{
+            background-color: variables.$white;
+            border-radius: 10px 10px 0 0;
+            border-color: variables.$light;
+            padding: 12px 8px 12px;
+            p{
+                i{
+                    color: variables.$gray-900;
+                }
+            }
+        }
+        .dropdown.flag-dropdown{
+            img {
+                height: 16px;
+            }
+        }
+    }
+    .header-nine{
+        background-color: variables.$white;
+        border-radius: 0 0 10px 10px;
+        @include mixins.respond-below(lg){
+            border-radius: 10px;
+        }
+        .header__hamburger{
+            .sidebar-menu{
+                color: variables.$gray-900;
+            }
+        }
+        .header-nav {
+            .main-menu-wrapper{
+            padding: 8px;
+            @include mixins.respond-below(lg){
+                padding: 8px 0;
+            }
+            .wishlist-icon{
+                font-size: variables.$font-size-24;
+            }
+            .main-nav{
+                    .submenu{
+                        .menu-tab{
+                            ul{
+                                li{
+                                    a{
+                                    background: #E4EBF1 !important;
+                                    &.active, &:hover{
+                                        background-color: variables.$primary !important;
+                                        color:  variables.$white !important;
+                                    }
+                                    }
+                                }
+                            }
+                        }
+                        li{
+                            a{
+                                color: variables.$gray-900 !important;
+                                background-color: transparent !important;
+                                &.active, &:hover{
+                                    color: variables.$primary !important;
+                                }
+                                &.btn-dark{
+                                    background-color: variables.$dark !important;
+                                    border-color: variables.$dark !important;
+                                    color:  variables.$white !important;
+                                    &:hover{
+                                        background-color: variables.$primary !important;
+                                        border-color: variables.$primary !important;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    > li{
+                        margin-right: 1px !important;
+                        border: none !important;
+                        &.active{
+                            a{
+                            background-color: variables.$primary;
+                            color: variables.$white;
+                        }
+                        }
+                    > a{
+                            color: variables.$gray-900;
+                            padding: 4px 16px;
+                            border-radius: 50px;
+                            @include mixins.respond-below(xxl) {
+                                padding: 4px 8px;
+                            }
+                            @include mixins.respond-below(xl) {
+                                padding: 4px 8px;
+                            }
+                            &:hover{
+                                background-color: variables.$primary;
+                                color: variables.$white;
+                            }
+                            &::after{
+                                display: none !important;
+                            }
+                        }
+                    }
+                }
+            }
+            .header-btn{
+            .theme-toggle, .wishlist-icon{
+                font-size: variables.$font-size-24;
+            } 
+            }
+        }
+        &.fixed{
+        margin-top: 0; 
+        .wishlist-icon{
+            color: variables.$gray-900 !important;
+        }
+        }
+    &.fixed{
+        border-radius: 0;
+    }
+    }
+    .single-demo {
+        &.active {
+            .demo-info {
+                a {
+                    color: variables.$primary !important;
+                }
+            }
+        }
+    }
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+        color: variables.$white !important;
+        background-color: variables.$primary !important;
+    }
+    .nav-pills .nav-link {
+        color: variables.$gray-900 !important;
+        background-color: variables.$light !important;
+    }
+    .megamenu-wrapper {
+        .single-demo {
+            .demo-info {
+                a {
+                    color: variables.$gray-900 !important;
+                    background-color: transparent !important
+                }
+            } 
+            &.active {
+                .demo-info {
+                    a {
+                        color: variables.$primary !important;
+                    }
+                }
+            }
+        } 
+    } 
+        
+}

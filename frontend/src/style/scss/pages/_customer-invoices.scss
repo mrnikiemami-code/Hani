@@ -1,0 +1,60 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  customer-invoices
+============================*/
+
+.invoice-stat-card {
+  border: 1px solid variables.$border-color;
+  border-radius: 8px;
+  padding: 16px;
+  background: variables.$white;
+  height: 100%;
+}
+
+.invoice-number-link {
+  font-weight: variables.$font-weight-medium;
+  color: variables.$primary;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.dark-mode {
+  .invoice-stat-card {
+    background: variables.$darkmode-white;
+    border-color: variables.$darkmode-light;
+  }
+
+  // Fix: select & input bg in dark mode
+  .form-control,
+  .form-select {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+
+    &:focus {
+      background-color: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+      border-color: variables.$primary;
+    }
+
+    option {
+      background-color: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+    }
+  }
+
+  .input-group-text {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+  }
+
+  .form-check-input {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+  }
+}

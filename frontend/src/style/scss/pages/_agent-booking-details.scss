@@ -1,0 +1,53 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  agent-booking-details
+============================*/
+
+.agent-booking-hero {
+  border-radius: 10px;
+  background: variables.$light-200;
+  border: 1px solid variables.$border-color;
+  padding: 20px;
+}
+
+.agent-status-select {
+  min-width: 160px;
+}
+
+.manifest-card {
+  border-radius: 8px;
+  border: 1px solid variables.$border-color;
+}
+
+.internal-note-box {
+  background: variables.$light-200;
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid variables.$primary;
+  margin-bottom: 12px;
+}
+
+.commission-highlight-badge {
+  background: rgba(39, 174, 96, 0.12);
+  color: variables.$success;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: variables.$font-weight-semibold;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dark-mode {
+  .agent-booking-hero,
+  .internal-note-box {
+    background: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+  }
+
+  .manifest-card {
+    border-color: variables.$darkmode-light;
+  }
+}

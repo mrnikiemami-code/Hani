@@ -1,0 +1,49 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  customer-all-bookings
+============================*/
+
+.trip-card {
+  .trip-thumb {
+    img {
+      width: 100%;
+      height: 96px;
+      object-fit: cover;
+    }
+  }
+}
+
+.trip-summary-tile {
+  border: 1px solid variables.$light;
+  border-radius: 8px;
+  padding: 16px;
+  height: 100%;
+}
+
+.trip-empty {
+  padding: 48px 24px;
+}
+
+.dark-mode {
+  .bg-warning-transparent {
+    background: #2c281e !important;
+  }
+
+  .bg-dark-transparent {
+    background: #202531 !important;
+  }
+
+  .nav-pills .nav-link {
+    &.active .badge {
+      background-color: variables.$white !important;
+      color: variables.$darkmode-white !important;
+    }
+
+    &:not(.active) .badge {
+      background-color: variables.$darkmode-light !important;
+      color: variables.$darkmode-text !important;
+    }
+  }
+}

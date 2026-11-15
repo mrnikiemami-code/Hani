@@ -265,13 +265,17 @@
 ### Gate 9.1 — Exit Checklist ⏳ IN_PROGRESS
 
 - [x] i18n/RTL foundation: locale switcher, FA/AR fonts, `html lang/dir`, hreflang metadata
-- [x] Prototype `Home Experience Registry` با ۱۲ variant
-- [x] Prototype Settings انتخاب Home Experience + Cookie (مهمان)
-- [ ] Registry mapping به Homeهای واقعی قالب (`@/views/home-*`)
+- [x] Template به‌عنوان Base وارد `frontend` شد
+- [x] یک درخت App: `(public-pages)` + `(auth-pages)`
+- [x] حذف درخت‌های تکراری Route و `components/pages`
+- [x] `npm run build` سبز: ۵۵۴ صفحه، ۳ زبان
+- [x] `Home Experience Registry` با ۱۲ variant
+- [x] Registry mapping به Homeهای واقعی قالب (`@/views/home-*`)
+- [x] Settings انتخاب Home Experience + Cookie (مهمان)
+- [x] اتصال Health Check به Hani API در Settings
 - [ ] UserPreferences API برای کاربر لاگین‌کرده
-- [ ] یک درخت App قالب و Build سبز
-- [ ] Template Design System + RTL patch (بدون Design System موازی)
-- [ ] صفحات عمومی Lastsecond با صفحات واقعی قالب
+- [ ] ترجمه متن‌های Hard-coded قالب به FA/AR
+- [ ] اتصال داده‌های واقعی Hani به صفحات قالب
 - [ ] OTP Login + HttpOnly Session
 - [ ] Traveler Dashboard حداقلی
 - [ ] Agency Dashboard حداقلی

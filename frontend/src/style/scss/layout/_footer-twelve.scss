@@ -1,0 +1,181 @@
+
+
+@use "../utils/mixins";
+@use "../utils/variables";
+
+.footer-twelve {
+    background: variables.$gray-900;
+    padding: 40px 0px 0px;  
+    position: relative;
+    overflow: hidden;
+
+    .footer-subscribe {
+        border-radius: 10px;
+        background: variables.$white;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        @include mixins.respond-below (md) {
+            flex-direction: column;
+            gap: 14px;
+            padding: 20px;
+        }
+        .subscribe {
+            @include mixins.respond-below (sm) {
+                font-size: 20px;
+            }
+        }
+        .footer-input {
+            width: 100%;
+            max-width: 420px;
+            @include mixins.respond-below (md) {
+                max-width: 100%;
+            }
+            .input-group {
+                background: variables.$light;
+            }
+            .form-control , .input-group-text {
+                background: transparent;
+            }
+        }
+    }
+    .footer-top {
+        position: relative;
+        padding: 0;
+        z-index: 1;
+        .img-1 {
+            position: absolute;
+            left: 0;
+            max-width: 385px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            @include mixins.respond-below (xxl) {
+                left: -80px;
+            }
+            @include mixins.respond-below (xxl) {
+                display: none;
+            }
+        }
+    }
+    .footer-bottom {
+        background: transparent;
+        position: relative;
+        z-index: 1;
+        .footer-bottom-content {
+            margin-top: 40px;
+            padding-top: 40px;
+            margin-bottom: 24px;
+            border-top: 1px solid variables.$white-300;
+            @include mixins.respond-below (lg) {
+                text-align: center;
+                margin-bottom: 24px;
+            }
+        }
+        .footer-content {
+            p {
+                color: variables.$white;
+            }
+        }
+        .social-icon {
+            gap: 8px;
+            @include mixins.respond-below (lg) {
+                justify-content: center !important;
+                margin-top: 10px;
+            }
+            li {
+                margin-right: 0;
+                padding-right: 0;
+                &::after {
+                    content: unset;
+                }
+                a {
+                    width: 32px;
+                    height: 32px;
+                    background: variables.$white-300;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: variables.$white;
+                    transition: all 0.7s;
+                    &:hover {
+                        background: variables.$primary;
+                    }
+                }
+            }
+        }
+        .footer-link {
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            gap: 24px;
+            @include mixins.respond-below (lg) {
+                justify-content: center;
+            }
+            @include mixins.respond-below (sm) {
+                gap: 15px;
+            }
+            .link {
+                color: variables.$white;
+                &:hover {
+                    color: variables.$primary;
+                }
+            }
+        }
+    }
+    .copy-rights {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 20px 0;
+        background: variables.$gray-900;
+        margin-top: 60px;
+        position: relative;
+        z-index: 1;
+        @include mixins.respond-below (lg) {
+            margin-top: 36px;
+        }
+        p { 
+            margin-bottom: 0;
+            a {
+                color: variables.$white;
+                font-weight: variables.$font-weight-medium;
+                transition: all 0.7s;
+                &:hover {
+                    color: variables.$primary;
+                }   
+            }
+            @include mixins.respond-below (sm) {
+                text-align: center;
+            }
+        }   
+        .copy-link {
+            transition: all 0.7s;
+            color: variables.$gray-400;
+            &:hover {
+                color: variables.$primary;
+            }
+        }
+    }
+    .globe-img {
+        position: absolute;
+        bottom: -150px;
+        left: 0;
+        right: 0;
+        margin: auto;
+        @include mixins.respond-below (md) {
+            bottom: 60px;
+        }
+    }
+    .footer-support-twelve {
+        @include mixins.respond-below (sm) {
+            justify-content: start !important;
+            width: 70%;
+            margin: auto;
+        }
+    }
+}

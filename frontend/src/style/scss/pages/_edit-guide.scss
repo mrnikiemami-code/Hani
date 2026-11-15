@@ -1,0 +1,76 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  edit-guide
+============================*/
+
+.guide-avatar-preview {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid variables.$border-color;
+}
+
+.guide-license-badge {
+  background: rgba(39, 174, 96, 0.1);
+  color: variables.$success;
+  border: 1px solid rgba(39, 174, 96, 0.2);
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: variables.$light-200;
+  border-radius: 6px;
+  font-size: 13px;
+  margin: 4px;
+}
+
+.dark-mode {
+  .guide-avatar-preview {
+    border-color: variables.$darkmode-light;
+  }
+
+  .language-level-badge {
+    background: variables.$darkmode-light;
+  }
+
+  // Fix: select & input bg in dark mode
+  .form-control,
+  .form-select {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+
+    &:focus {
+      background-color: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+      border-color: variables.$primary;
+    }
+
+    option {
+      background-color: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+    }
+  }
+
+  .input-group-text {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+  }
+
+  .form-check-input {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+  }
+}

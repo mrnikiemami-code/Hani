@@ -1,0 +1,131 @@
+@use "../utils/variables";
+@use "../utils/mixins";
+
+/*============================
+  27.header-five
+============================*/
+
+.header-twelve{
+    margin-top: 8px;
+    .logo-white {
+        display: none;
+    }
+    .logo-dark {
+        display: block !important;
+    }
+    .offcanvas-head {
+        .black-logo-responsive {
+            display: none;
+        }
+        .white-logo-responsive {
+            display: block;
+        }
+    }
+    .demo-info {
+        a {
+            background: transparent !important;
+            color: variables.$gray-900 !important;
+        }
+    }
+    &.fixed{
+        margin: 0;
+        .theme-toggle {
+            font-size: 20px;
+            color: variables.$gray-900;
+        }
+        .megamenu-wrapper {
+            .single-demo {
+                .demo-img{
+                    a {
+                        background: transparent !important;
+                        color: variables.$gray-900;
+                    }
+                }
+                .demo-info {
+                    a {
+                        background: transparent !important;
+                        color: variables.$gray-900 !important;
+                    }
+                }
+                &.active {
+                    a {
+                        color: variables.$primary !important;
+                    }
+                }
+            }
+        }
+    }
+    .header__hamburger {
+        .sidebar-menu {
+            color: variables.$gray-900;
+        }
+    }
+    .header-nav{
+        background: variables.$white;
+        border-radius: 10px;
+        .main-menu-wrapper{
+            padding:0px 8px;
+            @include mixins.respond-below(lg) {
+                padding: 12px !important;
+            }
+            .main-nav{
+                > li{
+                   > a{
+                        color: variables.$gray-900;
+                        &:hover {
+                            i {
+                                color: variables.$white;
+                            }
+                        }
+                        i{
+                            color: variables.$gray-500;
+                        }
+                    }
+                    &.active {
+                        a {
+                            i {
+                                color: variables.$white;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .header-btn{
+        .fav-dropdown,.cart-dropdown {
+            .wishlist-icon {
+                color: variables.$gray-900;
+                font-size: 16px;
+                display: flex;
+            }
+        }
+        .theme-toggle {
+            font-size: 16px !important;
+            color: variables.$gray-900;
+        }
+    }
+    .theme-toggle.activate {
+        display: flex;
+    }
+    .main-menu-wrapper .main-nav li.has-submenu.megamenu:hover > .submenu  {
+        transform: translateY(-2px);
+    }
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+        color: variables.$white !important;
+        background-color: variables.$primary !important;
+    }
+    .nav-pills .nav-link {
+        color: variables.$gray-900 !important;
+        background-color: variables.$light !important;
+    }
+}
+
+.purchase-btn {
+    transition: all 0.6s;
+    &:hover {
+        background: variables.$primary !important;
+        color: variables.$white !important;
+        border: 1px solid variables.$primary !important;
+    }
+}

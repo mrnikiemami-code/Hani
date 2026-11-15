@@ -1,0 +1,98 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  edit-activity
+============================*/
+
+.edit-activity-gallery-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .gallery-thumb-item {
+    position: relative;
+    width: 100px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid variables.$border-color;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .delete-thumb-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(235, 87, 87, 0.9);
+      color: variables.$white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      border: none;
+      cursor: pointer;
+    }
+  }
+}
+
+.timeslot-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: variables.$light-200;
+  border: 1px solid variables.$border-color;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  margin: 4px;
+}
+
+.dark-mode {
+  .gallery-thumb-item {
+    border-color: variables.$darkmode-light;
+  }
+
+  .timeslot-chip {
+    background: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+  }
+
+  // Fix: select & input bg in dark mode
+  .form-control,
+  .form-select {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+
+    &:focus {
+      background-color: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+      border-color: variables.$primary;
+    }
+
+    option {
+      background-color: variables.$darkmode-light;
+      color: variables.$darkmode-text;
+    }
+  }
+
+  .input-group-text {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+    color: variables.$darkmode-text;
+  }
+
+  .form-check-input {
+    background-color: variables.$darkmode-light;
+    border-color: variables.$darkmode-light;
+  }
+}

@@ -1,0 +1,43 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+.trip-hero {
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+
+    img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+}
+
+.trip-hero-overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 20px;
+    background: linear-gradient(360deg, rgba(0, 0, 0, .72) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.checklist-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+/* --- dark mode ---------------------------------------------------- */
+.dark-mode {
+    .nav-pills .nav-link {
+        &.active .badge {
+            background-color: variables.$white !important;
+            color: variables.$darkmode-white !important;
+        }
+
+        &:not(.active) .badge {
+            background-color: variables.$darkmode-light !important;
+            color: variables.$darkmode-text !important;
+        }
+    }
+}
+

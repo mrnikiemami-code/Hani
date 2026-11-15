@@ -1,0 +1,117 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  visa-booking-confirmation
+============================*/
+
+.visa-confirmation-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid variables.$border-color;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.visa-status-banner {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.02) 100%);
+  border-bottom: 1px solid rgba(39, 174, 96, 0.2);
+  padding: 24px;
+}
+
+.visa-ref-badge {
+  font-family: inherit;
+  font-size: 15px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: variables.$white;
+  border: 1px dashed variables.$primary;
+  color: variables.$primary;
+  font-weight: variables.$font-weight-medium;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.embassy-timeline {
+  position: relative;
+  padding-left: 28px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: variables.$border-color;
+  }
+
+  .timeline-step {
+    position: relative;
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-marker {
+      position: absolute;
+      left: -28px;
+      top: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: variables.$white;
+      border: 3px solid variables.$gray-400;
+
+      &.active {
+        border-color: variables.$primary;
+        background: variables.$primary;
+      }
+
+      &.completed {
+        border-color: variables.$success;
+        background: variables.$success;
+      }
+    }
+  }
+}
+
+.visa-doc-item {
+  padding: 12px 16px;
+  border: 1px solid variables.$border-color;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: variables.$light-200;
+  }
+}
+
+.dark-mode {
+  .visa-confirmation-card {
+    border-color: variables.$darkmode-light;
+    background: variables.$darkmode-white;
+  }
+
+  .visa-status-banner {
+    background: rgba(39, 174, 96, 0.08);
+    border-color: rgba(39, 174, 96, 0.15);
+  }
+
+  .visa-ref-badge {
+    background: variables.$darkmode-white;
+  }
+
+  .visa-doc-item {
+    border-color: variables.$darkmode-light;
+
+    &:hover {
+      background: variables.$darkmode-light;
+    }
+  }
+}

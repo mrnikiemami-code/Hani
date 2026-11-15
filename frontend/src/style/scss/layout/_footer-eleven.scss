@@ -1,0 +1,130 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+footer{
+    &.footer-eleven{
+        .footer-top{
+            padding-bottom: 142px;
+            position: relative;
+            overflow: hidden;
+            @include mixins.respond-below(xl){
+               padding-bottom: 100px
+            }
+            @include mixins.respond-below(lg){
+               padding-bottom: 40px
+            }
+            .footer-title-text{
+                position: absolute;
+                bottom: -17%;
+                left: 0;
+                font-size: 14.8vw;
+                line-height: 88px;
+                color: variables.$white; 
+                font-weight: variables.$font-weight-bold;  
+                line-height: normal; 
+                opacity: 0.08; 
+                  @include mixins.respond-below(xl){
+                    bottom: -14%;
+                  } 
+                  @include mixins.respond-below(lg){
+                    display: none;
+                  }         
+            }
+            .footer-subscribe{
+                background-color: rgba(227, 240, 255, 0.2);
+                padding: 24px;
+                border-radius: 10px;
+                margin-bottom: 60px;
+                backdrop-filter: blur(6px);
+                border: 1px solid rgba(227, 240, 255, 0.2);
+                @include mixins.respond-below(md){
+                    padding: 20px;
+                }
+                h2{
+                    font-size: variables.$font-size-28;
+                }
+            }
+            .customer-info{
+                margin-bottom: 24px;
+                display: flex;
+                align-items: center;
+                .customer-info-icon{
+                    span{
+                        width: 44px;
+                        height: 44px;
+                        border-radius: 50px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: variables.$primary;
+                        font-size: 24px;
+                        font-weight: 700;
+                        color: variables.$white;
+                    }
+                }
+                .customer-info-content{
+                    margin-left: 8px;
+                    span{
+                        color: variables.$light;
+                        font-size: 14px;
+                    }
+                    .customer-info-text{
+                        color: variables.$white;
+                        font-size: 16px;
+                        font-weight: 500;
+                        display: block;
+                    }
+                }
+            }
+        }
+        .social-icon{
+            li{
+                a{
+                    color: variables.$white;
+                    background-color: variables.$gray-800 !important;
+                    &:hover{
+                        color: variables.$white;
+                        background-color: variables.$primary !important;
+                    }
+                }
+            }
+        }
+        .footer-widget{
+            .home-eleven-title{
+                color: variables.$white;
+                padding-bottom: 4px;
+                position: relative;
+                margin-bottom: 15px;
+                    &::after{
+                        position: absolute;
+                        content: '';
+                        width: 38px;
+                        height: 2px;
+                        background-color: variables.$primary;
+                        left: 0;
+                        bottom: 0;
+                        border-radius: 30px;
+                    }
+                }
+                .footer-menu{
+                    li{
+                        margin-bottom: 12px !important;
+                        a{
+                        color: variables.$white !important;
+                        &:hover{
+                            color: variables.$primary !important;
+                        }
+                        }
+                    }
+                }
+        } 
+        .footer-bottom{
+            a{
+              color: variables.$gray-400;
+                &:hover{
+                    color: variables.$primary;
+                }
+            }
+        } 
+    }
+}

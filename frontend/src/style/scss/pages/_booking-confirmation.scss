@@ -1,0 +1,315 @@
+@use "../utils/img-base" as img;
+@use "../utils/mixins";
+@use "../utils/variables";
+
+/*============================
+  47.booking-confirmation
+============================*/
+
+.booking-confirmation {
+  box-shadow: none;
+  .status {
+    &::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      background-color: variables.$white;
+      border-radius: 50%;
+      margin-right: 8px;
+      margin-left: 2px;
+    }
+  }
+  .booking-hotels {
+    img{
+      @include mixins.respond-below(md){
+        margin-bottom: 8px;
+      }
+      @include mixins.respond-below(lg){
+        margin-bottom: 10px;
+      }
+    }
+    .booking-details {
+      .booking-items {
+        p {
+          margin-bottom: 0;
+          @include mixins.respond-below(md){
+            margin-bottom: 8px;
+          }
+          @include mixins.respond-below(lg){
+            margin-bottom: 8px;
+          }
+        }
+      }
+    }
+    
+  }
+  .service-info {
+    span {
+      color: variables.$gray-600;
+      font-weight: 400;
+    }
+  }
+}
+
+// Seat Selected
+.tag-btn {
+    padding: 3px 6px;
+	background: variables.$light;
+	border-radius: 8px;
+	font-size: 12px;
+	font-weight: variables.$font-weight-medium;
+	color: variables.$info;
+	border: none;
+	width: 32px;
+	height: 22px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	&.active {
+		background: variables.$info;
+		color: variables.$white !important;
+	}
+}
+.seat-content {
+	padding: 20px;
+	background: variables.$light-200 ;
+	border: 1px solid variables.$border-color;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 16px;
+	border-radius: 10px;
+  .seat-selected-count {
+    background: variables.$darkmode-dark;
+    padding: 6px 12px;
+    color: variables.$gray-900;
+    border-radius: 100px;
+  }
+}
+.seat-selected {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin: 24px 0px;
+  @include mixins.respond-below (md) {
+        gap: 18px;
+    }
+  .seat-count {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: variables.$gray-900;
+    .seat {
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+      border-width: 3px !important;
+      font-size: 16px;
+      font-weight: variables.$font-weight-medium;
+      @include mixins.respond-below (sm) {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+  
+}
+.seat-booking {
+  background: variables.$light-200 ;
+	border: 1px solid variables.$light;
+  padding: 40px;
+  border-radius: 10px;
+  @include mixins.respond-below (md) {
+    padding: 20px;
+  }
+  @include mixins.respond-below (sm) {
+    padding: 12px;
+  }
+  .end-item {
+
+  }
+  .driver-seat {
+      width: 100px;
+      height: 100px;
+      background: variables.$gray-900 ;
+      border: 3px solid variables.$gray-900;
+      color: variables.$white;
+      font-size: 16px;
+      font-weight: variables.$font-weight-medium;
+      position: relative;
+      flex-direction: column-reverse;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 4px;
+      border-radius:12px;
+      transition: 0.5s;
+      @include mixins.respond-below (xl) {
+        width: 80px;
+        height: 80px;
+      }
+      @include mixins.respond-below (sm) {
+        width: 60px;
+        height: 60px;
+        font-size: 14px;
+        border-radius: 5px !important;
+      }
+      &::after {
+        content: "";
+        background: url(#{img.$img-base}assets/img/icons/seat-icon.svg);
+        background-size: 100% 100%;
+        width: 23px;
+        height: 30px;
+        @include mixins.respond-below (md) {
+            width: 16px;
+        }
+      }
+  }
+  .exit-btn {
+    border-radius: 10px;
+  }
+  .seat-layout {
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+  }
+  .seat-row {
+      display:grid;
+      grid-template-columns:repeat(5,100px);
+      justify-content: space-between;
+      align-items:center;
+      gap:20px;
+      @include mixins.respond-below (xl) {
+        grid-template-columns:repeat(5,80px);
+      }
+      @include mixins.respond-below (md) {
+          grid-template-columns: repeat(5, 70px);
+      }
+      @include mixins.respond-below (sm) {
+          grid-template-columns: repeat(5, 28px);
+      }
+  }
+  .aisle {
+    font-size: 16px;
+    font-weight: variables.$font-weight-semibold;
+    color: variables.$gray-600;
+    text-align: center;
+    @include mixins.respond-below (sm) {
+      font-size: 9px;
+    }
+  }
+  .seat {
+    width: 100px;
+    height: 100px;
+    border: 3px solid variables.$light;
+    font-size: 16px;
+    font-weight: variables.$font-weight-medium;
+    color: variables.$gray-900;
+    position: relative;
+    flex-direction: column-reverse;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 4px;
+    border-radius:12px;
+    transition: 0.5s;
+    @include mixins.respond-below (xl) {
+      width: 80px;
+      height: 80px;
+    }
+    @include mixins.respond-below (md) {
+      width: 72px;
+      height: 72px;
+    }
+    @include mixins.respond-below (sm) {
+        border-radius: 5px !important;
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+    &::after {
+      content: "";
+      background: url(#{img.$img-base}assets/img/icons/seat-icon.svg);
+      background-size: 100% 100%;
+      width: 23px;
+      height: 30px;
+      filter: invert(1);
+      @include mixins.respond-below (md) {
+        width: 16px !important;
+      }
+      @include mixins.respond-below (sm) {
+        display: none !important;
+      }
+    }
+    &.available {
+        background: variables.$white ;
+    }
+    &.booked {
+        background: variables.$light ;
+	      border: 3px solid variables.$light;
+        color: variables.$gray-300;
+        &::after {
+        content: "";
+          background: url(#{img.$img-base}assets/img/icons/seat-icon-1.svg);
+          background-size: 100% 100%;
+          width: 23px;
+          height: 30px;
+        }
+    }
+    &.selected {
+        border: 3px solid variables.$primary;
+        background: variables.$primary;
+        color: variables.$white;
+        &::after {
+          content: "";
+          filter: unset;
+          @include mixins.respond-below (md) {
+            width: 16px;
+        }
+        }
+    }
+    &.selected-light {
+      background: variables.$primary-100;
+      color: variables.$primary;
+      &::after {
+        content: "";
+        background: url(#{img.$img-base}assets/img/icons/seat-icon-2.svg);
+        background-size: 100% 100%;
+        width: 23px;
+        height: 30px;
+      }
+    }
+    &.female {
+      border:3px solid variables.$pink;
+    }
+  }
+}
+
+
+
+
+// recent-tabs
+.recent-tabs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+	background: variables.$light-100;
+	border: 1px solid variables.$border-color;
+	border-radius: 60px;
+  padding: 10px 16px;
+  width: fit-content;
+  margin: 0px auto 40px;
+  .nav-link {
+    padding: 10px 16px;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: variables.$font-weight-medium;
+    color: variables.$gray-900;
+    &.active {
+      background: variables.$primary;
+      color: variables.$white;
+    }
+  }
+}

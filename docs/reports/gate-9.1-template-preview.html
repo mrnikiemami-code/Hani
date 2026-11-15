@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gate 9.1 — Template-First Preview</title>
+    <style>
+      :root { --bg:#f6f8fa; --surface:#fff; --text:#17202a; --muted:#5c6b7a; --line:#e3e8ee; --brand:#cf3425; }
+      * { box-sizing: border-box; }
+      body { margin:0; background:var(--bg); color:var(--text); font-family:Tahoma,Arial,sans-serif; line-height:1.8; }
+      main { width:min(1280px, calc(100% - 32px)); margin:32px auto 64px; }
+      h1 { margin:0 0 8px; font-size:30px; }
+      h2 { margin:34px 0 12px; font-size:20px; }
+      p { color:var(--muted); margin:0 0 16px; }
+      .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:18px; }
+      .card { background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+      .card header { padding:14px 16px; border-bottom:1px solid var(--line); }
+      .card header strong { display:block; }
+      .card header span { color:var(--muted); font-size:13px; }
+      .card img { display:block; width:100%; height:520px; object-fit:cover; object-position:top; }
+      .note { background:#fff8e6; border:1px solid #f1d48a; border-radius:12px; padding:14px 16px; margin:18px 0; }
+      .ok { background:#e7f4f0; border:1px solid #b7e0d5; border-radius:12px; padding:14px 16px; margin:18px 0; }
+      ul { margin:8px 0 0; padding-inline-start:22px; }
+      li { margin:4px 0; }
+      code { direction:ltr; unicode-bidi:embed; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Gate 9.1 — نتیجه فاز اول</h1>
+      <p>
+        این بار صفحه‌ها از <strong>خود قالب Dreamstour</strong> رندر می‌شوند، نه از
+        HomeExperienceFrame سفارشی.
+      </p>
+
+      <div class="ok">
+        <strong>وضعیت فاز اول:</strong>
+        <ul>
+          <li>قالب Dreamstour وارد <code>frontend</code> شد.</li>
+          <li>فقط یک درخت App نگه داشته شد: <code>(public-pages)</code> + <code>(auth-pages)</code>.</li>
+          <li>درخت‌های <code>(feature-module)</code>، <code>(auth)</code> و <code>index-10/12</code> تکراری حذف شدند.</li>
+          <li>Build سبز شد: ۵۵۴ صفحه استاتیک، ۳ زبان.</li>
+          <li>۱۲ Home Experience به ۱۲ View واقعی قالب وصل شدند.</li>
+          <li>Language Switcher واقعی + <code>lang</code> / <code>dir</code> + فونت FA/AR/EN.</li>
+          <li>Header و Footer صفحه اصلی بدون تکرار رندر می‌شوند.</li>
+          <li>Settings به Hani API وصل است و وضعیت اتصال را نشان می‌دهد.</li>
+          <li>مسیر <code>/</code> به <code>/fa</code> هدایت می‌شود.</li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>نکته:</strong>
+        متن‌های داخل Viewهای قالب هنوز انگلیسی هستند. زیرساخت locale/RTL آماده است،
+        اما تبدیل متن‌های Hard-coded قالب به پیام‌های FA/AR مرحله بعدی است.
+        اتصال داده‌های واقعی Hani هم مرحله بعدی است.
+      </div>
+
+      <h2>Home — فارسی / RTL</h2>
+      <div class="card">
+        <header><strong>قالب واقعی Dreamstour</strong><span>lang=fa — dir=rtl</span></header>
+        <img src="gate-9.1-template-home-fa.png" alt="Template home Persian RTL" />
+      </div>
+
+      <h2>Home — English / LTR</h2>
+      <div class="card">
+        <header><strong>Template home</strong><span>lang=en — dir=ltr</span></header>
+        <img src="gate-9.1-template-home-en.png" alt="Template home English LTR" />
+      </div>
+
+      <h2>Home — العربية / RTL</h2>
+      <div class="card">
+        <header><strong>الصفحة الرئيسية</strong><span>lang=ar — dir=rtl</span></header>
+        <img src="gate-9.1-template-home-ar.png" alt="Template home Arabic RTL" />
+      </div>
+
+      <h2>Settings — انتخاب Home Experience</h2>
+      <div class="card">
+        <header><strong>انتخاب از ۱۲ Home</strong><span>قالب اصلی + تنظیمات Hani</span></header>
+        <img src="gate-9.1-template-settings-fa.png" alt="Home experience settings on template" />
+      </div>
+
+      <h2>Tour Grid — فارسی</h2>
+      <div class="card">
+        <header><strong>صفحه تورهای قالب</strong><span>lang=fa — dir=rtl</span></header>
+        <img src="gate-9.1-template-tour-grid-fa.png" alt="Template tour grid Persian" />
+      </div>
+
+      <h2>Tour Grid — English</h2>
+      <div class="card">
+        <header><strong>Template tour grid</strong><span>lang=en — dir=ltr</span></header>
+        <img src="gate-9.1-template-tour-grid-en.png" alt="Template tour grid English" />
+      </div>
+
+      <h2>Visa Grid — العربية</h2>
+      <div class="card">
+        <header><strong>صفحة التأشيرات</strong><span>lang=ar — dir=rtl</span></header>
+        <img src="gate-9.1-template-visa-grid-ar.png" alt="Template visa grid Arabic" />
+      </div>
+
+      <h2>فایل‌های کلیدی</h2>
+      <ul>
+        <li><code>frontend/src/app/[locale]/layout.tsx</code></li>
+        <li><code>frontend/src/app/[locale]/(public-pages)/page.tsx</code></li>
+        <li><code>frontend/src/features/home-experience/infrastructure/registry.ts</code></li>
+        <li><code>frontend/src/i18n/routing.ts</code></li>
+        <li><code>frontend/src/proxy.ts</code></li>
+        <li><code>frontend/src/layout/publicLayout.tsx</code></li>
+      </ul>
+    </main>
+  </body>
+</html>
