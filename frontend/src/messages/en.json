@@ -91,7 +91,20 @@
     "scopeDescription": "Search domestic and foreign tours with prices, availability, and full details.",
     "exploreDomesticTours": "Explore all domestic tours",
     "exploreForeignTours": "Explore all foreign tours",
-    "toursFound": "{count, plural, one {# tour found} other {# tours found}}"
+    "toursFound": "{count, plural, one {# tour found} other {# tours found}}",
+    "displayPreferences": "Display preferences",
+    "preferredLocale": "Preferred language",
+    "preferredCurrency": "Display currency",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "Match system",
+    "reducedMotion": "Reduce motion",
+    "savePreferences": "Save preferences",
+    "preferencesSaved": "Preferences saved.",
+    "preferencesInvalid": "Preferences are invalid.",
+    "signedInPreferences": "Preferences are saved to your account.",
+    "anonymousPreferences": "Sign in to keep preferences across devices."
   },
   "meta": {
     "title": "Hani — Smart travel",

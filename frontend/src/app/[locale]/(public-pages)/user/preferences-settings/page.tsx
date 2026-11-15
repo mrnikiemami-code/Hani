@@ -1,8 +1,10 @@
-import { getPageMetadata } from "@/config/metadata";
-import PreferencesSettingsClient from "./preferencesSettingsClient";
+import { redirect } from "next/navigation";
 
-export const generateMetadata = () => getPageMetadata("Preferences Settings");
-
-export default function PreferencesSettingsPage() {
-  return <PreferencesSettingsClient />;
+export default async function PreferencesSettingsPage({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}/settings/experience`);
 }

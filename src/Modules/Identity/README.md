@@ -128,3 +128,17 @@ Client → X-Api-Key + X-Api-Secret
 - Review criteria aggregate: `GET /market/v1/reviews/criteria`.
 - Multipart media upload: `POST /market/v1/media/upload` with local storage
   abstraction (`IFileStorage`) and moderation registration.
+
+## Gate 9.1 — User preferences
+
+- `GET /market/v1/me/preferences` returns the authenticated user layout,
+  locale, currency, theme, and reduced-motion preference.
+- `PUT /market/v1/me/preferences` replaces them; unknown layout/locale values
+  fall back to server defaults and currency/theme are normalized.
+- Persistence: `identity.user_preferences` (one row per user), migration
+  `AddUserPreferences`.
+- Home experience ids are validated against `HomeExperienceCatalog`, the
+  server-side mirror of the frontend registry.
+- Anonymous users keep display preferences in the signed
+  `hani_display_preferences` cookie and the home layout in
+  `hani_home_experience`; authenticated users take precedence.

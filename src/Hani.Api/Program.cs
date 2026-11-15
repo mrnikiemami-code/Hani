@@ -60,6 +60,7 @@ using Hani.Modules.Identity.Application.Commands.CreateAgency;
 using Hani.Modules.Identity.Application.Commands.CreateApiClient;
 using Hani.Modules.Identity.Application.Commands.Engagement;
 using Hani.Modules.Identity.Application.Commands.Gamification;
+using Hani.Modules.Identity.Application.Commands.Preferences;
 using Hani.Modules.Identity.Application.Queries.GetAgencyById;
 using Hani.Modules.Identity.Infrastructure;
 using Hani.Modules.Identity.Infrastructure.Persistence;
@@ -272,6 +273,8 @@ builder.Services.AddScoped<IValidator<UpdateProfileCommand>, UpdateProfileComman
 builder.Services.AddScoped<IValidator<ChangeUsernameCommand>, ChangeUsernameCommandValidator>();
 builder.Services.AddScoped<IValidator<GetMeQuery>, GetMeQueryValidator>();
 builder.Services.AddScoped<IValidator<GetAuthorQuery>, GetAuthorQueryValidator>();
+builder.Services.AddScoped<IValidator<GetUserPreferencesQuery>, GetUserPreferencesQueryValidator>();
+builder.Services.AddScoped<IValidator<UpdateUserPreferencesCommand>, UpdateUserPreferencesCommandValidator>();
 builder.Services.AddScoped<IValidator<CreateAgencyOnboardingCommand>, CreateAgencyOnboardingCommandValidator>();
 builder.Services.AddScoped<IValidator<GetMyAgencyQuery>, GetMyAgencyQueryValidator>();
 builder.Services.AddScoped<IValidator<GetPublicAgencyQuery>, GetPublicAgencyQueryValidator>();

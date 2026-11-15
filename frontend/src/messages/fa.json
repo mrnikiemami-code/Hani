@@ -91,7 +91,20 @@
     "scopeDescription": "جستجوی تورهای داخلی و خارجی با قیمت، ظرفیت و جزئیات کامل.",
     "exploreDomesticTours": "مشاهده همه تورهای داخلی",
     "exploreForeignTours": "مشاهده همه تورهای خارجی",
-    "toursFound": "{count, plural, one {# تور یافت شد} other {# تور یافت شد}}"
+    "toursFound": "{count, plural, one {# تور یافت شد} other {# تور یافت شد}}",
+    "displayPreferences": "تنظیمات نمایش",
+    "preferredLocale": "زبان ترجیحی",
+    "preferredCurrency": "ارز نمایش",
+    "theme": "پوسته",
+    "themeLight": "روشن",
+    "themeDark": "تیره",
+    "themeSystem": "هماهنگ با سیستم",
+    "reducedMotion": "کاهش انیمیشن",
+    "savePreferences": "ذخیره تنظیمات",
+    "preferencesSaved": "تنظیمات ذخیره شد.",
+    "preferencesInvalid": "تنظیمات معتبر نیست.",
+    "signedInPreferences": "تنظیمات برای حساب شما ذخیره می‌شود.",
+    "anonymousPreferences": "برای ماندگاری روی همه دستگاه‌ها وارد شوید."
   },
   "meta": {
     "title": "هانی — سفر هوشمند",

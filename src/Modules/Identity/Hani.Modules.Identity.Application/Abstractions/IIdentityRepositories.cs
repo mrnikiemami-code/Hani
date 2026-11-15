@@ -138,6 +138,22 @@ public interface IUserRepository
 }
 
 /// <summary>
+/// Persistence abstraction for authenticated user preferences.
+/// </summary>
+public interface IUserPreferencesRepository
+{
+    /// <summary>
+    /// Returns preferences for one user, or <c>null</c>.
+    /// </summary>
+    Task<UserPreferences?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Inserts or updates the preference row and saves changes.
+    /// </summary>
+    Task SaveAsync(UserPreferences preferences, CancellationToken cancellationToken);
+}
+
+/// <summary>
 /// Generates numeric OTP codes.
 /// </summary>
 public interface IOtpCodeGenerator

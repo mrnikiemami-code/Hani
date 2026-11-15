@@ -727,6 +727,46 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.ToTable("users", "identity");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Users.UserPreferences", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("Currency")
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency");
+
+                    b.Property<string>("HomeExperienceId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("home_experience_id");
+
+                    b.Property<string>("Locale")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("locale");
+
+                    b.Property<bool>("ReducedMotion")
+                        .HasColumnType("boolean")
+                        .HasColumnName("reduced_motion");
+
+                    b.Property<string>("Theme")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("theme");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("user_preferences", "identity");
+                });
+
             modelBuilder.Entity("Hani.Modules.Identity.Domain.Agencies.Agency", b =>
                 {
                     b.OwnsMany("Hani.Modules.Identity.Domain.Agencies.AgencyDocument", "Documents", b1 =>

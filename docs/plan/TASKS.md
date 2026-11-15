@@ -182,3 +182,15 @@
 | G91-SCOPE-04 | تب scope در لیست تور + شمارش واقعی | ✅ | G91-SCOPE-02 | template tabs + build |
 | G91-SCOPE-05 | جستجوی کامل/فیلتر listing به query string | ⏳ Next | G91-SCOPE-04 | pagination + filter sync |
 | G91-SCOPE-06 | seed/تمیزکاری داده demo | ⏳ Next | ops | domestic/foreign demo data |
+
+## Phase 6.3 — Gate 9.1 C3 Preferences (2026-11-16)
+
+> Baseline: `GAP-09` (Identity) + `GAP-10` (Profile).
+
+| ID | کار | وضعیت | وابستگی | DoD |
+|---|---|---|---|---|
+| G91-PREF-01 | `UserPreferences` + migration + repository | ✅ | TC-086 | migration + tests |
+| G91-PREF-02 | `GET/PUT /market/v1/me/preferences` | ✅ | G91-PREF-01 | auth + OpenAPI + fallback |
+| G91-PREF-03 | Settings page + display preferences | ✅ | G91-PREF-02 | FA/AR RTL + EN LTR |
+| G91-PREF-04 | user → cookie → default precedence | ✅ | G91-PREF-03 | home + settings |
+| G91-PREF-05 | Apply theme/reducedMotion on `<html>` | ⏳ Next | G91-PREF-03 | no-flash server attrs |

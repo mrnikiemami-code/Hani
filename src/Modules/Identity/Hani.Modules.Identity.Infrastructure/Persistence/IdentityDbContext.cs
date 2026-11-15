@@ -20,6 +20,8 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
 
     public DbSet<User> Users => Set<User>();
 
+    public DbSet<UserPreferences> UserPreferences => Set<UserPreferences>();
+
     public DbSet<Review> Reviews => Set<Review>();
 
     public DbSet<OwnershipClaim> Claims => Set<OwnershipClaim>();

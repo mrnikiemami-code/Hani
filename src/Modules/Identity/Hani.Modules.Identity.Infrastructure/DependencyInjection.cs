@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IAgencyRepository, AgencyRepository>();
         services.AddScoped<IApiClientRepository, ApiClientRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserPreferencesRepository, UserPreferencesRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IClaimRepository, ClaimRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();

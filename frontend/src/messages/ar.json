@@ -91,7 +91,20 @@
     "scopeDescription": "ابحث عن الجولات المحلية والخارجية مع الأسعار والتوافر والتفاصيل الكاملة.",
     "exploreDomesticTours": "عرض جميع الجولات المحلية",
     "exploreForeignTours": "عرض جميع الجولات الخارجية",
-    "toursFound": "{count, plural, one {تم العثور على جولة واحدة} other {تم العثور على # جولات}}"
+    "toursFound": "{count, plural, one {تم العثور على جولة واحدة} other {تم العثور على # جولات}}",
+    "displayPreferences": "إعدادات العرض",
+    "preferredLocale": "اللغة المفضلة",
+    "preferredCurrency": "عملة العرض",
+    "theme": "المظهر",
+    "themeLight": "فاتح",
+    "themeDark": "داكن",
+    "themeSystem": "مطابق للنظام",
+    "reducedMotion": "تقليل الحركة",
+    "savePreferences": "حفظ الإعدادات",
+    "preferencesSaved": "تم حفظ الإعدادات.",
+    "preferencesInvalid": "الإعدادات غير صالحة.",
+    "signedInPreferences": "يتم حفظ الإعدادات في حسابك.",
+    "anonymousPreferences": "سجّل الدخول للاحتفاظ بالإعدادات على جميع الأجهزة."
   },
   "meta": {
     "title": "هاني — سفر ذكي",

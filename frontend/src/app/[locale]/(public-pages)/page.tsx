@@ -6,6 +6,7 @@ import {
 } from "@/features/home-experience/application/resolve-home-experience";
 import { getHomeFeed } from "@/features/home-experience/infrastructure/home-api";
 import { HomeExperienceRenderer } from "@/features/home-experience/ui/HomeExperienceRenderer";
+import { getMyPreferences } from "@/features/preferences/infrastructure/preferences-api";
 
 export default async function HomePage({
   params,
@@ -20,7 +21,9 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   const cookieStore = await cookies();
+  const stored = await getMyPreferences();
   const experience = resolveHomeExperience({
+    userPreference: stored?.homeExperienceId,
     cookie: cookieStore.get(HOME_EXPERIENCE_COOKIE)?.value
   });
   const homeFeed = await getHomeFeed(locale, tourScope);

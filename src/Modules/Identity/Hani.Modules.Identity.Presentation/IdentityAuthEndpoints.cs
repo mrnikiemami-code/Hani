@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Identity.Application.Commands.Auth;
+using Hani.Modules.Identity.Application.Commands.Preferences;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -61,6 +62,18 @@ public static class IdentityAuthEndpoints
             .RequireAuthorization("User")
             .Produces<UserDto>()
             .ProducesProblem(StatusCodes.Status409Conflict);
+
+        app.MapGet("/market/v1/me/preferences", GetPreferencesAsync)
+            .WithName("Marketplace.GetMyPreferences")
+            .RequireAuthorization("User")
+            .Produces<UserPreferencesDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        app.MapPut("/market/v1/me/preferences", UpdatePreferencesAsync)
+            .WithName("Marketplace.UpdateMyPreferences")
+            .RequireAuthorization("User")
+            .Produces<UserPreferencesDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
 
         app.MapGet("/market/v1/authors/{username}", GetAuthorAsync)
             .WithName("Marketplace.GetAuthor")
@@ -228,6 +241,52 @@ public static class IdentityAuthEndpoints
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
+    /// <summary>
+    /// Returns the authenticated user's stored preferences or safe defaults.
+    /// </summary>
+    private static async Task<IResult> GetPreferencesAsync(
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return context.ToProblem(
+                Error.Unauthorized("HANI-IDENTITY-1202", "Authenticated user is required."));
+        }
+
+        var result = await sender.Send(new GetUserPreferencesQuery(userId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Replaces the authenticated user's preferences and returns the normalized row.
+    /// </summary>
+    private static async Task<IResult> UpdatePreferencesAsync(
+        UpdateUserPreferencesRequest request,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return context.ToProblem(
+                Error.Unauthorized("HANI-IDENTITY-1202", "Authenticated user is required."));
+        }
+
+        var result = await sender.Send(
+            new UpdateUserPreferencesCommand(
+                userId,
+                request.HomeExperienceId,
+                request.Locale,
+                request.Currency,
+                request.Theme,
+                request.ReducedMotion),
+            cancellationToken);
+
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
     private static bool TryGetUserId(HttpContext context, out Guid userId)
     {
         var value = context.User.FindFirst("user_id")?.Value
@@ -275,3 +334,13 @@ public sealed record UpdateProfileRequest(
 /// HTTP request to change the public username.
 /// </summary>
 public sealed record ChangeUsernameRequest(string Username);
+
+/// <summary>
+/// HTTP request to replace authenticated user preferences.
+/// </summary>
+public sealed record UpdateUserPreferencesRequest(
+    string? HomeExperienceId,
+    string? Locale,
+    string? Currency,
+    string? Theme,
+    bool ReducedMotion = false);

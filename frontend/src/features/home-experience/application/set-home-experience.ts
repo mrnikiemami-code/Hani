@@ -5,6 +5,11 @@ import { redirect } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { isHomeExperienceId } from "../domain/home-experience";
 import { HOME_EXPERIENCE_COOKIE } from "./resolve-home-experience";
+import { readDisplayPreferences } from "@/features/preferences/application/display-preferences";
+import {
+  getMyPreferences,
+  updateMyPreferences
+} from "@/features/preferences/infrastructure/preferences-api";
 
 export async function setHomeExperience(formData: FormData): Promise<void> {
   const requestedLocale = String(formData.get("locale") ?? routing.defaultLocale);
@@ -23,6 +28,17 @@ export async function setHomeExperience(formData: FormData): Promise<void> {
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 365
+  });
+
+  const stored = await getMyPreferences();
+  const display = stored ?? (await readDisplayPreferences(locale));
+
+  await updateMyPreferences({
+    homeExperienceId: experienceId,
+    locale: display.locale,
+    currency: display.currency,
+    theme: display.theme,
+    reducedMotion: display.reducedMotion
   });
 
   redirect(`/${locale}`);

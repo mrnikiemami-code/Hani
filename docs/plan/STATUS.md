@@ -495,9 +495,18 @@
 - [x] `verify.ps1` سبز (151 unit + 34 architecture + 6 integration).
 - [x] Build فرانت سبز؛ FA/AR RTL و EN LTR بررسی شد.
 
+## Gate 9.1 — C3 Preferences (2026-11-16)
+
+- [x] `UserPreferences` (home/locale/currency/theme/reducedMotion) + migration `AddUserPreferences`.
+- [x] `GET/PUT /market/v1/me/preferences` با `RequireAuthorization("User")`.
+- [x] اعتبارسنجی `HomeExperienceId` با `HomeExperienceCatalog` و fallback امن.
+- [x] precedence: user → cookie → default در صفحه خانه و تنظیمات.
+- [x] صفحه `/{locale}/settings/experience` با گرید ۱۲ تجربه + فرم نمایش.
+- [x] `/user/preferences-settings` به مسیر canonical تنظیمات redirect می‌شود.
+- [x] تست‌های `UserPreferencesTests` (defaults/normalize/fallback) و تست API دستی.
+
 ### شکاف‌های باز (صادقانه)
 
-- [ ] C3 preferences و ذخیره Home Experience احرازه‌شده.
 - [ ] C4 داشبورد مسافر، C5 داشبورد آژانس، C6 checkout/MoR.
 - [ ] C7 Playwright/axe/Lighthouse و ویرایش نهایی ترجمه.
 - [ ] جستجوی همه‌جانبه/فیلترهای صفحه تور هنوز به query string کامل متصل نیست.
