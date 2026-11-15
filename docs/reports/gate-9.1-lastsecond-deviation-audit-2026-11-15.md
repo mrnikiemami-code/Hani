@@ -254,3 +254,21 @@ Acceptance:
 - **Clean architecture risk:** dead duplicate component/redux trees.
 - **Next phase:** C1 route parity and deduplication, then C2 data completion, then auth/dashboards/checkout.
 - **Translation:** usable, editorial pass later; not blocking.
+
+
+---
+
+## 9. C1 Closure Update (2026-11-15)
+
+Route parity and deduplication are closed:
+
+- canonical routes added for tours/hotels/visa/flights/blog;
+- missing Lastsecond pages added:
+  restaurants, attractions, itineraries, videos, agencies, author, badges,
+  blind-tour, safarsaz, advertisement, agency request;
+- old grid routes redirect to canonical routes;
+- dead duplicate trees removed:
+  `core/common`, `core/redux`, `components/auth`, `app/Providers`,
+  `app/global.scss`.
+
+Remaining differences are data binding and visual consistency, not route shape.
