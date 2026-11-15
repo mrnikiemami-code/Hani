@@ -81,3 +81,18 @@
   original template component.
 - Read and follow `docs/architecture/FRONTEND-DESIGN-CONSISTENCY.md` before
   changing frontend cards, forms, tables, or home sections.
+
+
+## 7. Lastsecond parity+ (mandatory)
+
+- Benchmark `https://lastsecond.ir/` for each page before implementation.
+- Match the user task and information architecture, not just the route name.
+- The template is the visual source; Lastsecond is the UX/IA benchmark.
+- If a template section does not serve the Lastsecond task, recompose it using
+  template components instead of keeping it blindly.
+- Hani must be equal or better than Lastsecond in clarity, speed, mobile use,
+  RTL/LTR, accessibility, SEO, and data freshness.
+- Example: home foreign/domestic tour tabs must be a server-driven `scope`
+  filter, not two duplicated pages.
+- Read `docs/architecture/LASTSECOND-PARITY-PLUS.md` before changing home,
+  search, listing, or detail pages.
