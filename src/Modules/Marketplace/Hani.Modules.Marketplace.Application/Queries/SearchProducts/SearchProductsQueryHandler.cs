@@ -362,11 +362,25 @@ internal sealed class SearchProductsQueryHandler(
         IReadOnlyDictionary<string, string> values,
         string locale,
         string defaultLanguage)
-        => values.TryGetValue(locale, out var value)
+    {
+        var preferred = values.TryGetValue(locale, out var value)
             ? value
             : values.TryGetValue(defaultLanguage, out var fallback)
                 ? fallback
                 : values.Values.FirstOrDefault() ?? string.Empty;
+
+        if (!IsCorrupted(preferred))
+        {
+            return preferred;
+        }
+
+        return values.Values.FirstOrDefault(candidate => !IsCorrupted(candidate)) ?? preferred;
+    }
+
+    private static bool IsCorrupted(string value)
+        => value.Contains('\uFFFD') ||
+           value.Contains("???", StringComparison.Ordinal) ||
+           value.Count(character => character == '?') >= 3;
 
     private sealed record SearchCandidate(
         ProductSearchItemDto Dto,
