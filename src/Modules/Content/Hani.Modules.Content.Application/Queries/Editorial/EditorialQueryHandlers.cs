@@ -428,23 +428,47 @@ internal static class ContentMapping
         IEnumerable<BlogPostTranslation> translations,
         string locale,
         ILanguageCatalog languages)
-        => translations.FirstOrDefault(item => item.Locale == locale)
+    {
+        var preferred = translations.FirstOrDefault(item => item.Locale == locale)
             ?? translations.FirstOrDefault(item => item.Locale == languages.DefaultLanguage)
             ?? translations.FirstOrDefault();
+
+        return preferred is not null && !IsCorrupted(preferred.Title)
+            ? preferred
+            : translations.FirstOrDefault(item => !IsCorrupted(item.Title)) ?? preferred;
+    }
 
     public static TravelogueTranslation? Resolve(
         IEnumerable<TravelogueTranslation> translations,
         string locale,
         ILanguageCatalog languages)
-        => translations.FirstOrDefault(item => item.Locale == locale)
+    {
+        var preferred = translations.FirstOrDefault(item => item.Locale == locale)
             ?? translations.FirstOrDefault(item => item.Locale == languages.DefaultLanguage)
             ?? translations.FirstOrDefault();
+
+        return preferred is not null && !IsCorrupted(preferred.Title)
+            ? preferred
+            : translations.FirstOrDefault(item => !IsCorrupted(item.Title)) ?? preferred;
+    }
 
     public static VideoTranslation? Resolve(
         IEnumerable<VideoTranslation> translations,
         string locale,
         ILanguageCatalog languages)
-        => translations.FirstOrDefault(item => item.Locale == locale)
+    {
+        var preferred = translations.FirstOrDefault(item => item.Locale == locale)
             ?? translations.FirstOrDefault(item => item.Locale == languages.DefaultLanguage)
             ?? translations.FirstOrDefault();
+
+        return preferred is not null && !IsCorrupted(preferred.Title)
+            ? preferred
+            : translations.FirstOrDefault(item => !IsCorrupted(item.Title)) ?? preferred;
+    }
+
+    private static bool IsCorrupted(string? value)
+        => !string.IsNullOrWhiteSpace(value) &&
+           (value.Contains('\uFFFD') ||
+            value.Contains("???", StringComparison.Ordinal) ||
+            value.Count(character => character == '?') >= 3);
 }

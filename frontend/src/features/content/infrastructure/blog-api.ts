@@ -1,5 +1,5 @@
 import { apiGet } from "@/lib/hani/api";
-import type { BlogDetailItem, BlogPagedResult } from "../domain/blog";
+import type { BlogDetailItem, BlogPagedResult, BlogSummaryItem } from "../domain/blog";
 
 export async function getBlogPosts(
   locale: string,
@@ -27,5 +27,21 @@ export async function getBlogPost(
 ): Promise<BlogDetailItem | null> {
   return apiGet<BlogDetailItem>(
     `/market/v1/content/blog/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`
+  );
+}
+
+export async function getRelatedBlogPosts(
+  locale: string,
+  slug: string,
+  limit = 3
+): Promise<BlogSummaryItem[]> {
+  const query = new URLSearchParams({
+    locale,
+    limit: String(limit)
+  });
+  return (
+    (await apiGet<BlogSummaryItem[]>(
+      `/market/v1/content/blog/${encodeURIComponent(slug)}/related?${query.toString()}`
+    )) ?? []
   );
 }
