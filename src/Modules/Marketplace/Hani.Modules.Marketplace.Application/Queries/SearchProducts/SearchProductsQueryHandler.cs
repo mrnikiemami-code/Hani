@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Hani.BuildingBlocks.Application;
 using Hani.Contracts.Catalog;
+using Hani.Contracts.Identity;
 using Hani.Contracts.Supply;
 
 namespace Hani.Modules.Marketplace.Application.Queries.SearchProducts;
@@ -9,6 +10,8 @@ internal sealed class SearchProductsQueryHandler(
     ICatalogReadService catalog,
     IOfferReadService offers,
     ILanguageCatalog languages,
+    IReviewSummaryReadService reviews,
+    IAgencyReadService agencies,
     ICacheService cache)
     : IQueryHandler<SearchProductsQuery, PagedResult<ProductSearchItemDto>>
 {
@@ -53,6 +56,29 @@ internal sealed class SearchProductsQueryHandler(
             products.Select(product => product.Id).ToArray(),
             cancellationToken);
 
+        var productIds = products.Select(product => product.Id).ToArray();
+        var destinationIds = products
+            .SelectMany(product => product.DestinationIds)
+            .Distinct()
+            .ToArray();
+        var destinationLookup = destinationIds.Length == 0
+            ? new Dictionary<Guid, CatalogDestinationSnapshot>()
+            : (await catalog.GetDestinationsAsync(destinationIds, cancellationToken))
+                .ToDictionary(destination => destination.Id);
+        var reviewLookup = productIds.Length == 0
+            ? new Dictionary<Guid, ReviewSummary>()
+            : (await reviews.GetSummariesAsync("Tour", productIds, cancellationToken))
+                .ToDictionary(item => item.Key, item => item.Value);
+        var agencyIds = offersByProduct.Values
+            .SelectMany(group => group)
+            .Select(offer => offer.AgencyId)
+            .Distinct()
+            .ToArray();
+        var agencyNames = agencyIds.Length == 0
+            ? new Dictionary<Guid, string>()
+            : (await agencies.GetNamesAsync(agencyIds, cancellationToken))
+                .ToDictionary(item => item.Key, item => item.Value);
+
         foreach (var product in products)
         {
             var productOffers = offersByProduct.TryGetValue(product.Id, out var loadedOffers)
@@ -78,6 +104,25 @@ internal sealed class SearchProductsQueryHandler(
             }
 
             var primary = minPrices[0];
+            var destinationNames = product.DestinationIds
+                .Select(id => destinationLookup.TryGetValue(id, out var destination)
+                    ? Resolve(destination.Names, locale, languages.DefaultLanguage)
+                    : null)
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Cast<string>()
+                .ToArray();
+            var firstOffer = filteredOffers[0];
+            var agencyName = agencyNames.TryGetValue(firstOffer.AgencyId, out var resolvedAgency)
+                ? resolvedAgency
+                : null;
+            var reviewSummary = reviewLookup.TryGetValue(product.Id, out var summary)
+                ? summary
+                : null;
+            var nextDeparture = filteredOffers
+                .SelectMany(offer => offer.Departures)
+                .OrderBy(departure => departure.StartDate)
+                .Select(departure => (DateOnly?)departure.StartDate)
+                .FirstOrDefault();
 
             items.Add(new SearchCandidate(
                 new ProductSearchItemDto(
@@ -103,7 +148,12 @@ internal sealed class SearchProductsQueryHandler(
                         .ToArray(),
                     filteredOffers.Any(offer => offer.InstallmentTerms is { IsEnabled: true }),
                     product.Category,
-                    product.TravelType),
+                    product.TravelType,
+                    destinationNames,
+                    reviewSummary?.AverageRating,
+                    reviewSummary?.ReviewCount ?? 0,
+                    agencyName,
+                    nextDeparture),
                 product.UpdatedAt));
         }
 

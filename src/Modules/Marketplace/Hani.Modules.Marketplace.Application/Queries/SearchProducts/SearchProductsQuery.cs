@@ -68,4 +68,9 @@ public sealed record ProductSearchItemDto(
     IReadOnlyList<string> BookingModes,
     bool InstallmentAvailable,
     string Category,
-    string TravelType);
+    string TravelType,
+    IReadOnlyList<string>? DestinationNames = null,
+    decimal? AverageRating = null,
+    int ReviewCount = 0,
+    string? AgencyName = null,
+    DateOnly? NextDepartureDate = null);

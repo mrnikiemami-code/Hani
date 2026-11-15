@@ -29,7 +29,7 @@ public sealed class SearchProductsHandlerTests
             Offer(productId, 50_000_000m, 55_000_000m)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery("en", Page: 1, PageSize: 20),
@@ -87,7 +87,7 @@ public sealed class SearchProductsHandlerTests
                 [])
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery("en", Page: 1, PageSize: 20),
@@ -124,7 +124,7 @@ public sealed class SearchProductsHandlerTests
             ];
         }
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery("fa", Page: 2, PageSize: 2),
@@ -178,7 +178,7 @@ public sealed class SearchProductsHandlerTests
                 10)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery(
@@ -233,7 +233,7 @@ public sealed class SearchProductsHandlerTests
                 2)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery(
@@ -295,7 +295,7 @@ public sealed class SearchProductsHandlerTests
                 "ReservationRequest")
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
 
         var all = await handler.Handle(
             new SearchProductsQuery("fa"),
@@ -354,7 +354,7 @@ public sealed class SearchProductsHandlerTests
                 10)
         ];
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery("fa", InstallmentOnly: true),
@@ -402,7 +402,7 @@ public sealed class SearchProductsHandlerTests
             ];
         }
 
-        var handler = new SearchProductsQueryHandler(catalog, offers, new FakeLanguageCatalog(), new FakeCacheService());
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
 
         var result = await handler.Handle(
             new SearchProductsQuery(
@@ -434,11 +434,7 @@ public sealed class SearchProductsHandlerTests
             DateTimeOffset.UtcNow));
         offers.OffersByProduct[productId] = [Offer(productId, 10m, 9m)];
 
-        var handler = new SearchProductsQueryHandler(
-            catalog,
-            offers,
-            new FakeLanguageCatalog(),
-            cache);
+        var handler = CreateHandler(catalog, offers, cache);
 
         var first = await handler.Handle(
             new SearchProductsQuery("en", Page: 1, PageSize: 20),
@@ -453,6 +449,18 @@ public sealed class SearchProductsHandlerTests
         offers.SingleProductCalls.ShouldBe(0);
         second.Value.ShouldBeSameAs(first.Value);
     }
+
+    private static SearchProductsQueryHandler CreateHandler(
+        FakeCatalogReadService catalog,
+        FakeOfferReadService offers,
+        Hani.BuildingBlocks.Application.ICacheService cache)
+        => new(
+            catalog,
+            offers,
+            new FakeLanguageCatalog(),
+            new FakeReviewSummaryReadService(),
+            new FakeAgencyReadService(),
+            cache);
 
     private static OfferSnapshot OfferWithDetails(
         Guid productId,

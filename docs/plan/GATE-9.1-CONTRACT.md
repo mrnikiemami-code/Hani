@@ -80,10 +80,13 @@ a controlled integration of the purchased template with Hani platform code.
 - Legacy template copy externalized into `template.fa.json` / `template.ar.json`
   and applied by `TemplateTranslationProvider` in FA/AR.
 - Hani-owned UI uses `next-intl` message catalogs directly.
-- RTL/LTR smoke verified for home, tour grid, visa grid, and settings.
+- RTL/LTR smoke verified for home, tour grid, hotel grid, visa grid, and settings.
+- Tour Grid and Hotel Grid are bound to real Hani APIs.
+- Search DTO adds destination names, average rating, review count, agency
+  name, and next departure date.
 
-> **Next:** template pages → Hani API adapters; missing fields →
-> DTO/OpenAPI + template cards/forms; editorial review of generated FA/AR copy.
+> **Next:** Visa/Home/Content API binding; remaining template pages → Hani
+> API adapters; editorial review of generated FA/AR copy.
 
 ## 4. Phase Plan
 

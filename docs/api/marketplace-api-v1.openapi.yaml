@@ -1422,6 +1422,13 @@ components:
         vehicleType: { type: string }
         localVehicleType: { type: string }
         accommodationType: { type: string }
+        destinationNames:
+          type: [array, 'null']
+          items: { type: string }
+        averageRating: { type: [number, 'null'] }
+        reviewCount: { type: integer }
+        agencyName: { type: [string, 'null'] }
+        nextDepartureDate: { type: [string, 'null'], format: date }
 
     CurrencyPrice:
       type: object

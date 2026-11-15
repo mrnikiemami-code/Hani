@@ -5,13 +5,19 @@
 $ErrorActionPreference = "Stop"
 $suffix = Get-Date -Format "HHmmss"
 
+function ConvertTo-JsonBody {
+    param($Body)
+    $json = $Body | ConvertTo-Json -Depth 10 -Compress
+    return [System.Text.Encoding]::UTF8.GetBytes($json)
+}
+
 function PostJson {
     param($Url, $Body, $Headers = @{})
 
     Invoke-RestMethod -Method Post `
         -Uri $Url `
-        -ContentType "application/json" `
-        -Body ($Body | ConvertTo-Json -Depth 10) `
+        -ContentType "application/json; charset=utf-8" `
+        -Body ([byte[]](ConvertTo-JsonBody $Body)) `
         -Headers $Headers
 }
 
@@ -68,27 +74,27 @@ $headers = @{
 Write-Host "== 5. Supplier upsert offer =="
 $offer = Invoke-RestMethod -Method Put `
     -Uri "$BaseUrl/supplier/v1/offers/ext-istanbul-$suffix" `
-    -ContentType "application/json" `
+    -ContentType "application/json; charset=utf-8" `
     -Headers $headers `
-    -Body (@{
+    -Body ([byte[]](ConvertTo-JsonBody @{
         tourProductId = $productId
         title = "Demo Istanbul Offer"
         basePrice = 45000000
         currency = "IRR"
-    } | ConvertTo-Json)
+    }))
 Write-Host "OfferId: $($offer.offerId) / Created: $($offer.created)"
 
 Write-Host "== 5b. Idempotent upsert =="
 $offerAgain = Invoke-RestMethod -Method Put `
     -Uri "$BaseUrl/supplier/v1/offers/ext-istanbul-$suffix" `
-    -ContentType "application/json" `
+    -ContentType "application/json; charset=utf-8" `
     -Headers $headers `
-    -Body (@{
+    -Body ([byte[]](ConvertTo-JsonBody @{
         tourProductId = $productId
         title = "Demo Istanbul Offer"
         basePrice = 45000000
         currency = "IRR"
-    } | ConvertTo-Json)
+    }))
 Write-Host "SameOffer: $($offerAgain.offerId -eq $offer.offerId) / Created: $($offerAgain.created)"
 
 Write-Host "== 6. Create departure =="
@@ -106,9 +112,9 @@ Write-Host "DepartureId: $departureId"
 Write-Host "== 7. Update availability =="
 Invoke-RestMethod -Method Patch `
     -Uri "$BaseUrl/supplier/v1/departures/$departureId/availability" `
-    -ContentType "application/json" `
+    -ContentType "application/json; charset=utf-8" `
     -Headers $headers `
-    -Body (@{ seatsLeft = 2; version = 1 } | ConvertTo-Json) | Out-Null
+    -Body ([byte[]](ConvertTo-JsonBody @{ seatsLeft = 2; version = 1 })) | Out-Null
 Write-Host "Availability updated"
 
 Write-Host "== 8. Read departures =="

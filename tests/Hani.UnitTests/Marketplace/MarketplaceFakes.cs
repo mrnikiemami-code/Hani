@@ -230,3 +230,17 @@ internal sealed class FakeAgencyReadService : IAgencyReadService
         CancellationToken cancellationToken)
         => Task.FromResult<AgencyDomainSnapshot?>(null);
 }
+
+
+internal sealed class FakeReviewSummaryReadService : IReviewSummaryReadService
+{
+    public Dictionary<Guid, ReviewSummary> Summaries { get; } = [];
+
+    public Task<IReadOnlyDictionary<Guid, ReviewSummary>> GetSummariesAsync(
+        string targetType,
+        IReadOnlyCollection<Guid> targetIds,
+        CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyDictionary<Guid, ReviewSummary>>(
+            targetIds.Where(Summaries.ContainsKey)
+                .ToDictionary(id => id, id => Summaries[id]));
+}

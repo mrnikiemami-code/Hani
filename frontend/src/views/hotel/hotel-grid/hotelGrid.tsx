@@ -6,10 +6,23 @@ import ImageWithBasePath from '../../../components/image-with-base-path';
 import { all_routes } from '../../../routes/all_routes';
 import SearchOption from '../searchOption';
 import AppSwiper from '../../../components/app-swiper'
+import type { HotelSearchItem } from "@/features/hotels/domain/hotel-search";
+import { useTranslations } from "next-intl";
 import HotelFilter from '../hotelFilter';
 
-const HotelGrid = () => {
+const HotelGrid = ({
+    hotels = [],
+    totalCount,
+    page,
+    locale,
+}: {
+    hotels?: HotelSearchItem[];
+    totalCount?: number;
+    page?: number;
+    locale?: string;
+}) => {
     const routes = all_routes
+    const t = useTranslations("common");
 
     //Breadcrumb Data
     const breadcrumbs = [
@@ -111,453 +124,81 @@ const HotelGrid = () => {
                                 </div>
                             </div>
                             <div className="row justify-content-center">
+                                {hotels.map((hotel, index) => {
+                                    const detailHref = `${routes.hotelDetails}?slug=${encodeURIComponent(hotel.slug)}`;
 
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item common-grid-slider mb-4 flex-fill">
-                                        <div className="place-img">
-                                            
-                                                <AppSwiper preset="img-slider">
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-01.jpg" className="img-fluid" alt="img" />
+                                    return (
+                                        <div className="col-xl-4 col-md-6 d-flex" key={hotel.hotelId}>
+                                            <div className="place-item common-grid-slider mb-4 flex-fill">
+                                                <div className="place-img">
+                                                    <AppSwiper preset="img-slider">
+                                                        {[1, 2, 3].map((offset) => (
+                                                            <div className="slide-images" key={offset}>
+                                                                <Link href={detailHref}>
+                                                                    <ImageWithBasePath
+                                                                        src={`assets/img/hotels/hotel-0${((index + offset) % 6) + 1}.jpg`}
+                                                                        className="img-fluid"
+                                                                        alt={hotel.name}
+                                                                    />
+                                                                </Link>
+                                                            </div>
+                                                        ))}
+                                                    </AppSwiper>
+                                                    <div className="fav-item" onClick={() => handleItemClick(index)}>
+                                                        <span className="badge bg-info d-inline-flex align-items-center">
+                                                            <i className="isax isax-ranking me-1" />
+                                                            {hotel.stars} {t("star")}
+                                                        </span>
+                                                        <Link
+                                                            href="#"
+                                                            className={`fav-icon ${selectedItems[index] ? "selected" : ""}`}
+                                                        >
+                                                            <i className="isax isax-heart5" />
                                                         </Link>
                                                     </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-02.jpg" className="img-fluid" alt="img" />
+                                                </div>
+                                                <div className="place-content">
+                                                    <div className="d-flex align-items-center mb-1">
+                                                        <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">
+                                                            {hotel.averageRating?.toFixed(1) ?? "-"}
+                                                        </span>
+                                                        <p className="fs-14">
+                                                            ({t("reviewsCount", { count: hotel.reviewCount })})
+                                                        </p>
+                                                    </div>
+                                                    <h5 className="mb-1 text-truncate">
+                                                        <Link href={detailHref}>{hotel.name}</Link>
+                                                    </h5>
+                                                    <p className="d-flex align-items-center mb-2">
+                                                        <i className="isax isax-location5 me-2" />
+                                                        {hotel.address ?? hotel.destinationId}
+                                                    </p>
+                                                    <div className="border-top pt-2 mb-2">
+                                                        <h6 className="d-flex align-items-center">
+                                                            {t("amenitiesCount", { count: hotel.amenityCount })}
+                                                            {hotel.rankInCity ? ` | ${t("rankLabel")} ${hotel.rankInCity}` : ""}
+                                                        </h6>
+                                                    </div>
+                                                    <div className="d-flex align-items-center justify-content-between border-top pt-3">
+                                                        <h5 className="text-primary text-nowrap me-2">
+                                                            {hotel.recommendationPercent ?? 0}%
+                                                            <span className="fs-14 fw-normal text-default"> {t("recommend")}</span>
+                                                        </h5>
+                                                        <Link href={detailHref} className="btn btn-sm btn-outline-primary">
+                                                            {t("view")}
                                                         </Link>
                                                     </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-03.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                </AppSwiper>
-                                            <div className="fav-item" key={1} onClick={() => handleItemClick(1)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[1] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">5.0</span>
-                                                <p className="fs-14">(400 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>Hotel Miravent Barcelona</Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>Ciutat Vella, Barcelona</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$500 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-08.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14">Beth Will</p>
-                                                </Link>
-                                            </div>
-                                        </div>
+                                    );
+                                })}
+                                {hotels.length === 0 && (
+                                    <div className="col-12">
+                                        <p className="text-center text-gray-6">No hotels found.</p>
                                     </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item mb-4 flex-fill">
-                                        <div className="place-img">
-                                            <Link href={routes.hotelDetails}>
-                                                <ImageWithBasePath src="assets/img/hotels/hotel-05.jpg" className="img-fluid" alt="img" />
-                                            </Link>
-                                            <div className="fav-item" key={2} onClick={() => handleItemClick(2)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[2] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">4.7</span>
-                                                <p className="fs-14">(360 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>The Luxe Haven</Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>Oxford Street, London</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$600 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-09.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14">Andrews</p>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item mb-4 flex-fill">
-                                        <div className="place-img">
-                                            <Link href={routes.hotelDetails}>
-                                                <ImageWithBasePath src="assets/img/hotels/hotel-06.jpg" className="img-fluid" alt="img" />
-                                            </Link>
-                                            <div className="fav-item" key={3} onClick={() => handleItemClick(3)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[3] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">4.5</span>
-                                                <p className="fs-14">(500 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>The Urban Retreat</Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>Princes Street, Edinburgh</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$500 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-10.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14">Robert</p>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item mb-4 flex-fill">
-                                        <div className="place-img">
-                                            <Link href={routes.hotelDetails}>
-                                                <ImageWithBasePath src="assets/img/hotels/hotel-07.jpg" className="img-fluid" alt="img" />
-                                            </Link>
-                                            <div className="fav-item" key={4} onClick={() => handleItemClick(4)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[4] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">4.9</span>
-                                                <p className="fs-14">(450 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>The Grand Horizon</Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>Deansgate, Manchester</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$400 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-11.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14">Kenneth Pal</p>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item common-grid-slider mb-4 flex-fill">
-                                        <div className="place-img">
-                                            
-                                                <AppSwiper preset="img-slider">
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-08.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-02.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-03.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                </AppSwiper>
-                                            <div className="fav-item" key={5} onClick={() => handleItemClick(5)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[5] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">4.3</span>
-                                                <p className="fs-14">(380 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>Hotel Evergreen </Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>King’s Road, Chelsea</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$550 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-12.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14">Timothy</p>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item mb-4 flex-fill">
-                                        <div className="place-img">
-                                            <Link href={routes.hotelDetails}>
-                                                <ImageWithBasePath src="assets/img/hotels/hotel-09.jpg" className="img-fluid" alt="img" />
-                                            </Link>
-                                            <div className="fav-item" key={6} onClick={() => handleItemClick(6)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[6] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">4.1</span>
-                                                <p className="fs-14">(270 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>Stardust Hotel</Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>Bold Street, Liverpool</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$450 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-14.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14">Mark Arrin</p>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item common-grid-slider mb-4 flex-fill">
-                                        <div className="place-img">
-                                            
-                                                <AppSwiper preset="img-slider">
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-10.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-04.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-06.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                </AppSwiper>
-                                            <div className="fav-item" key={7} onClick={() => handleItemClick(7)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[7] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">4.6</span>
-                                                <p className="fs-14">(650 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>Hotel Serene Valley</Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>Broad Street, Bristol</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$350 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-15.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14">Brent Hole</p>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item common-grid-slider mb-4 flex-fill">
-                                        <div className="place-img">
-                                            
-                                                <AppSwiper preset="img-slider">
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-11.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-05.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-03.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                </AppSwiper>
-                                            <div className="fav-item" key={8} onClick={() => handleItemClick(8)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[8] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">4.2</span>
-                                                <p className="fs-14">(550 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>Hotel Skyline Vista</Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>Chapel Street, Salford</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$700 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-16.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14 text-truncate">John James</p>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
-                                {/* Hotel Grid */}
-                                <div className="col-xl-4 col-md-6 d-flex">
-                                    <div className="place-item common-grid-slider mb-4 flex-fill">
-                                        <div className="place-img">
-                                            
-                                                <AppSwiper preset="img-slider">
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-12.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-08.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="slide-images">
-                                                        <Link href={routes.hotelDetails}>
-                                                            <ImageWithBasePath src="assets/img/hotels/hotel-10.jpg" className="img-fluid" alt="img" />
-                                                        </Link>
-                                                    </div>
-                                                </AppSwiper>
-                                            <div className="fav-item" key={9} onClick={() => handleItemClick(9)}>
-                                                <span className="badge bg-info d-inline-flex align-items-center"><i className="isax isax-ranking me-1"></i>Trending</span>
-                                                <Link href={routes.compare} className="fav-icon compare-icon" aria-label="Add to compare" title="Add to compare">
-                                                    <i className="isax isax-arrange-square"></i>
-                                                </Link>
-                                                <Link href="#" className={`fav-icon ${selectedItems[9] ? 'selected' : ''}`}>
-                                                    <i className="isax isax-heart5"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="place-content">
-                                            <div className="d-flex align-items-center mb-1">
-                                                <span className="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium me-2">4.8</span>
-                                                <p className="fs-14">(700 Reviews)</p>
-                                            </div>
-                                            <h5 className="mb-1 text-truncate"><Link href={routes.hotelDetails}>Hotel Aurora Bliss</Link></h5>
-                                            <p className="d-flex align-items-center mb-2"><i className="isax isax-location5 me-2"></i>Castle Street, Cambridge</p>
-                                            <div className="border-top pt-2 mb-2">
-                                                <h6 className="d-flex align-items-center">Facillities :<i className="isax isax-home-wifi ms-2 me-2 text-primary"></i><i className="isax isax-scissor me-2 text-primary"></i><i className="isax isax-profile-2user me-2 text-primary"></i><i className="isax isax-wind-2 me-2 text-primary"></i><Link href="#" className="fs-14 fw-normal text-default d-inline-block">+2</Link></h6>
-                                            </div>
-                                            <div className="d-flex align-items-center justify-content-between border-top pt-3">
-                                                <h5 className="text-primary text-nowrap me-2">$650 <span className="fs-14 fw-normal text-default">/ Night</span></h5>
-                                                <Link href="#" className="d-flex align-items-center overflow-hidden">
-                                                    <span className="avatar avatar-md flex-shrink-0 me-2">
-                                                        <ImageWithBasePath src="assets/img/users/user-01.jpg" className="rounded-circle" alt="img" />
-                                                    </span>
-                                                    <p className="fs-14">Ronald</p>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* /Hotel Grid */}
-
+                                )}
                             </div>
-
                             {/* Pagination */}
                             <nav className="pagination-nav">
                                 <ul className="pagination justify-content-center">
