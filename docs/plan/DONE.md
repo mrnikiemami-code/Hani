@@ -263,4 +263,5 @@
 | `589ae13` | Gate 9.1 Home BFF and Blog Grid API binding |
 | `54d8072` | Gate 9.1 Canonical Lastsecond routes + duplicate component tree removal |
 | `c717ef2` | Gate 9.1 Lastsecond pages: restaurants, attractions, content, agencies, author, badges |
+| `eee027e` | Gate 9.1 Blog detail API + content fallback for corrupted translations |
 | `7df2265` | Phase roadmap + status + tasks |
