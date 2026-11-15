@@ -60,3 +60,6 @@ desktop.ini
 .scratch/
 *.log
 logs/
+
+# ===== Purchased/reference assets (not source of truth) =====
+reference/
