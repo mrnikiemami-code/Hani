@@ -1,7 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { TourSearchItem } from "@/features/tours/domain/tour-search";
+import type {
+  TourScopeValue,
+  TourSearchItem
+} from "@/features/tours/domain/tour-search";
 
 const TourGridView = dynamic(() => import("@/views/tour/tour-grid/tourGrid"), {
   ssr: false
@@ -11,12 +14,14 @@ export default function TourGridClient({
   tours,
   totalCount,
   page,
-  locale
+  locale,
+  scope
 }: {
   tours: TourSearchItem[];
   totalCount: number;
   page: number;
   locale: string;
+  scope?: TourScopeValue;
 }) {
   return (
     <TourGridView
@@ -24,6 +29,7 @@ export default function TourGridClient({
       totalCount={totalCount}
       page={page}
       locale={locale}
+      scope={scope}
     />
   );
 }

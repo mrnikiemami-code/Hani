@@ -1,3 +1,5 @@
+export type TourScopeValue = "Domestic" | "Foreign";
+
 export type TourSearchItem = {
   productId: string;
   slug: string;
@@ -12,6 +14,7 @@ export type TourSearchItem = {
   reviewCount: number;
   agencyName: string | null;
   nextDepartureDate: string | null;
+  scope?: TourScopeValue | null;
 };
 
 export type PagedResult<T> = {

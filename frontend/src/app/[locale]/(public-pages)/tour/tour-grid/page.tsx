@@ -1,30 +1,42 @@
-import { getPageMetadata } from "@/config/metadata";
-import { setRequestLocale } from "next-intl/server";
-import { searchTours } from "@/features/tours/infrastructure/tours-api";
-import TourGridClient from "./tourGridClient";
+import { buildTourGridMetadata, TourGridPage } from "./TourGridPage";
+import type { TourScopeValue } from "@/features/tours/domain/tour-search";
 
-export const generateMetadata = () => getPageMetadata("Tour Grid");
+function resolveScope(value: string | undefined): TourScopeValue | undefined {
+  return value === "domestic"
+    ? "Domestic"
+    : value === "foreign"
+      ? "Foreign"
+      : undefined;
+}
 
-export default async function TourGridPage({
+export async function generateMetadata({
   params,
   searchParams
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ scope?: string }>;
 }) {
   const { locale } = await params;
   const query = await searchParams;
-  setRequestLocale(locale);
+  return buildTourGridMetadata(locale, resolveScope(query.scope));
+}
 
+export default async function Page({
+  params,
+  searchParams
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string; scope?: string }>;
+}) {
+  const { locale } = await params;
+  const query = await searchParams;
   const page = Math.max(1, Number(query.page ?? "1"));
-  const result = await searchTours(locale, page, 9);
 
   return (
-    <TourGridClient
-      tours={result.items}
-      totalCount={result.totalCount}
-      page={result.page}
+    <TourGridPage
       locale={locale}
+      page={page}
+      scope={resolveScope(query.scope)}
     />
   );
 }

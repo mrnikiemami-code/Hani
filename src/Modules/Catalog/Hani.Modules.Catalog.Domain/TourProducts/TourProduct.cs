@@ -28,7 +28,8 @@ public sealed class TourProduct : AggregateRoot<Guid>
         TourVehicleType localVehicleType,
         TourAccommodationType accommodationType,
         TourCategory category,
-        TravelType travelType) : base(id)
+        TravelType travelType,
+        TourScope scope) : base(id)
     {
         Slug = slug;
         DurationDays = durationDays;
@@ -40,6 +41,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
         AccommodationType = accommodationType;
         Category = category;
         TravelType = travelType;
+        Scope = scope;
         Status = TourProductStatus.Draft;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = CreatedAt;
@@ -77,6 +79,11 @@ public sealed class TourProduct : AggregateRoot<Guid>
     public TravelType TravelType { get; private set; }
 
     /// <summary>
+    /// Domestic or foreign tour scope.
+    /// </summary>
+    public TourScope Scope { get; private set; }
+
+    /// <summary>
     /// Local transport type.
     /// </summary>
     public TourVehicleType LocalVehicleType { get; private set; }
@@ -112,7 +119,8 @@ public sealed class TourProduct : AggregateRoot<Guid>
         TourVehicleType localVehicleType = TourVehicleType.None,
         TourAccommodationType accommodationType = TourAccommodationType.Hotel,
         TourCategory category = TourCategory.Normal,
-        TravelType travelType = TravelType.Other)
+        TravelType travelType = TravelType.Other,
+        TourScope scope = TourScope.Foreign)
     {
         if (string.IsNullOrWhiteSpace(slug))
         {
@@ -137,7 +145,8 @@ public sealed class TourProduct : AggregateRoot<Guid>
             localVehicleType,
             accommodationType,
             category,
-            travelType);
+            travelType,
+            scope);
 
         product.AddDomainEvent(new TourProductCreatedDomainEvent(ids.NewId(), product.Id));
 

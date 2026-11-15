@@ -169,3 +169,16 @@
 | G81-13 | Frontend | ⏳ External | G81-06 | Next.js app |
 | G81-14 | Real flight provider | ⏳ External | TC-092 | credentials/contract |
 | G81-15 | Lastgram SSO/Competition | ⏳ External | TC-103 | external ecosystem |
+
+## Phase 6.2 — Gate 9.1 Tour Scope (2026-11-15)
+
+> Baseline: `GAP-04` (Faceted Search) + `GAP-28` (SEO).
+
+| ID | کار | وضعیت | وابستگی | DoD |
+|---|---|---|---|---|
+| G91-SCOPE-01 | `TourScope` + migration + EF index | ✅ | TC-018 | migration + build |
+| G91-SCOPE-02 | `scope` در search/home + read model filter | ✅ | G91-SCOPE-01 | API + OpenAPI + tests |
+| G91-SCOPE-03 | تب خانه + لندینگ SEO داخلی/خارجی | ✅ | G91-SCOPE-02 | FA/AR RTL + EN LTR |
+| G91-SCOPE-04 | تب scope در لیست تور + شمارش واقعی | ✅ | G91-SCOPE-02 | template tabs + build |
+| G91-SCOPE-05 | جستجوی کامل/فیلتر listing به query string | ⏳ Next | G91-SCOPE-04 | pagination + filter sync |
+| G91-SCOPE-06 | seed/تمیزکاری داده demo | ⏳ Next | ops | domestic/foreign demo data |

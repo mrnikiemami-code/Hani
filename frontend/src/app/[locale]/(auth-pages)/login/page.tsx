@@ -1,8 +1,12 @@
-import { getPageMetadata } from "@/config/metadata";
-import LoginClient from "./loginClient";
+import { setRequestLocale } from "next-intl/server";
+import { OtpLoginForm } from "@/features/auth/ui/OtpLoginForm";
 
-export const generateMetadata = () => getPageMetadata("Login");
-
-export default function LoginPage() {
-  return <LoginClient />;
+export default async function LoginPage({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  return <OtpLoginForm locale={locale} />;
 }

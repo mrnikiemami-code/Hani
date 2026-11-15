@@ -16,6 +16,7 @@ public sealed record SearchProductsQuery(
     string? TourType = null,
     string? Category = null,
     string? TravelType = null,
+    string? Scope = null,
     string? Difficulty = null,
     string? VehicleType = null,
     string? AccommodationType = null,
@@ -73,4 +74,5 @@ public sealed record ProductSearchItemDto(
     decimal? AverageRating = null,
     int ReviewCount = 0,
     string? AgencyName = null,
-    DateOnly? NextDepartureDate = null);
+    DateOnly? NextDepartureDate = null,
+    string Scope = "Foreign");

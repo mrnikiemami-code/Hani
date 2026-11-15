@@ -44,7 +44,8 @@ internal sealed class CreateTourProductCommandHandler(
             content?.LocalVehicleType ?? TourVehicleType.None,
             content?.AccommodationType ?? TourAccommodationType.Hotel,
             request.Category,
-            request.TravelType);
+            request.TravelType,
+            request.Scope);
 
         foreach (var translation in request.Translations)
         {

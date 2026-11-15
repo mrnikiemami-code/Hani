@@ -6,7 +6,11 @@ import ImageWithBasePath from '../../../components/image-with-base-path';
 import Link from "next/link";
 import { all_routes } from '../../../routes/all_routes';
 import AppSwiper from '../../../components/app-swiper'
-import type { TourSearchItem } from "@/features/tours/domain/tour-search";
+import type {
+    TourScopeValue,
+    TourSearchItem,
+} from "@/features/tours/domain/tour-search";
+import { Link as LocaleLink } from "@/i18n/navigation";
 import { formatMoney } from "@/lib/hani/money";
 import { useTranslations } from "next-intl";
 import TourSearch from '../tourSearch';
@@ -16,11 +20,13 @@ const TourGrid = ({
     totalCount,
     page,
     locale,
+    scope,
 }: {
     tours?: TourSearchItem[];
     totalCount?: number;
     page?: number;
     locale?: string;
+    scope?: TourScopeValue;
 }) => {
 
     const routes = all_routes;
@@ -66,6 +72,35 @@ const TourGrid = ({
                 {/* Page Wrapper */}
                 <div className="content">
                     <div className="container">
+                        <ul className="nav mb-4">
+                            <li>
+                                <LocaleLink
+                                    href="/tours"
+                                    className={`nav-link ${scope ? "" : "active"}`}
+                                    aria-current={scope ? undefined : "page"}
+                                >
+                                    {t("scopeAll")}
+                                </LocaleLink>
+                            </li>
+                            <li>
+                                <LocaleLink
+                                    href="/tours/domestic"
+                                    className={`nav-link ${scope === "Domestic" ? "active" : ""}`}
+                                    aria-current={scope === "Domestic" ? "page" : undefined}
+                                >
+                                    {t("scopeDomestic")}
+                                </LocaleLink>
+                            </li>
+                            <li>
+                                <LocaleLink
+                                    href="/tours/foreign"
+                                    className={`nav-link ${scope === "Foreign" ? "active" : ""}`}
+                                    aria-current={scope === "Foreign" ? "page" : undefined}
+                                >
+                                    {t("scopeForeign")}
+                                </LocaleLink>
+                            </li>
+                        </ul>
                         {/* Tour Search */}
                         <TourSearch/>
                         {/* /Tour Search */}
@@ -188,7 +223,9 @@ const TourGrid = ({
                             {/* /Sidebar */}
                             <div className="col-xl-9 col-lg-8 theiaStickySidebar">
                                 <div className="d-flex align-items-center justify-content-between flex-wrap">
-                                    <h6 className="mb-3">1920 Tours Found on Your Search</h6>
+                                    <h6 className="mb-3">
+                                        {t("toursFound", { count: totalCount ?? tours.length })}
+                                    </h6>
                                     <div className="d-flex align-items-center flex-wrap">
                                         <div className="list-item d-flex align-items-center mb-3">
                                             <Link href={routes.tourGrid} className="list-icon active me-2">
@@ -422,7 +459,7 @@ const TourGrid = ({
                                     })}
                                     {tours.length === 0 && (
                                         <div className="col-12">
-                                            <p className="text-center text-gray-6">No tours found.</p>
+                                            <p className="text-center text-gray-6">{t("noResults")}</p>
                                         </div>
                                     )}
                                 </div>

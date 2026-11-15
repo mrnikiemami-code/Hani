@@ -55,4 +55,5 @@ public sealed record TourProductDto(
     DateTimeOffset CreatedAt,
     IReadOnlyList<TourProductTranslationDto> Translations,
     IReadOnlyList<Guid> DestinationIds,
-    IReadOnlyList<TourItineraryDayDto> ItineraryDays);
+    IReadOnlyList<TourItineraryDayDto> ItineraryDays,
+    string Scope = "Foreign");

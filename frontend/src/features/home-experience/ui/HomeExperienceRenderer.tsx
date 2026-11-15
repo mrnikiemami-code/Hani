@@ -13,9 +13,14 @@ import { HaniLatestContent } from "./HaniLatestContent";
 type Props = {
   definition: HomeExperienceDefinition;
   homeFeed: HomeFeed | null;
+  tourScope?: "Domestic" | "Foreign";
 };
 
-export function HomeExperienceRenderer({ definition, homeFeed }: Props) {
+export function HomeExperienceRenderer({
+  definition,
+  homeFeed,
+  tourScope
+}: Props) {
   const Experience = dynamic(HOME_EXPERIENCE_LOADERS[definition.id], {
     ssr: false,
     loading: () => (
@@ -32,12 +37,12 @@ export function HomeExperienceRenderer({ definition, homeFeed }: Props) {
       <Header />
       {definition.id !== "all-services-classic" && (
         <>
-          <HaniTrendingTours />
+          <HaniTrendingTours scope={tourScope} />
           <HaniRecommendedVisas />
           <HaniLatestContent />
         </>
       )}
-      <Experience />
+      <Experience tourScope={tourScope} />
     </HomeFeedProvider>
   );
 }

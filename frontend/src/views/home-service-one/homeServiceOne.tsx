@@ -68,7 +68,11 @@ type BookingState = {
     infants: number;
   };
 };
-const HomeServiceOne = () => {
+const HomeServiceOne = ({
+  tourScope,
+}: {
+  tourScope?: "Domestic" | "Foreign";
+}) => {
   const [showModal, setShowModal] = useState(false);
   const videoUrl = "https://youtu.be/NSAOrGb9orM";
   const handleOpenModal = () => setShowModal(true);
@@ -2965,7 +2969,7 @@ const guidePassenger =
           </div>
       </section>
       {/* /Hero Section */}
-      <HaniTrendingTours />
+      <HaniTrendingTours scope={tourScope} />
       <ExperienceSection />
       <HaniRecommendedVisas />
       <DeliverySection />

@@ -151,12 +151,13 @@ public static class LastsecondParityEndpoints
 
     private static async Task<IResult> GetHomeAsync(
         string? locale,
+        string? scope,
         HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
         var tours = await sender.Send(
-            new SearchProductsQuery(locale, Sort: "newest", Page: 1, PageSize: 8),
+            new SearchProductsQuery(locale, Scope: scope, Sort: "newest", Page: 1, PageSize: 8),
             cancellationToken);
         var visas = await sender.Send(new ListVisaCountriesQuery(locale), cancellationToken);
         var travelogues = await sender.Send(

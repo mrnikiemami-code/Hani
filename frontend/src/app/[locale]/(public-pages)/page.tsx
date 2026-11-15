@@ -8,18 +8,28 @@ import { getHomeFeed } from "@/features/home-experience/infrastructure/home-api"
 import { HomeExperienceRenderer } from "@/features/home-experience/ui/HomeExperienceRenderer";
 
 export default async function HomePage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ scope?: string }>;
 }) {
   const { locale } = await params;
+  const { scope } = await searchParams;
+  const tourScope = scope === "domestic" ? "Domestic" : scope === "foreign" ? "Foreign" : undefined;
   setRequestLocale(locale);
 
   const cookieStore = await cookies();
   const experience = resolveHomeExperience({
     cookie: cookieStore.get(HOME_EXPERIENCE_COOKIE)?.value
   });
-  const homeFeed = await getHomeFeed(locale);
+  const homeFeed = await getHomeFeed(locale, tourScope);
 
-  return <HomeExperienceRenderer definition={experience} homeFeed={homeFeed} />;
+  return (
+    <HomeExperienceRenderer
+      definition={experience}
+      homeFeed={homeFeed}
+      tourScope={tourScope}
+    />
+  );
 }

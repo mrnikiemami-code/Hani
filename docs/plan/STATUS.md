@@ -476,3 +476,33 @@
 | `026724a` | Identity core: OTP, JWT, profiles |
 | `fc26e43` | Trust, agency, reviews, claims, media (Gate 3) |
 | `f91e461` | Booking modes, reservation/lead, installments, offline payment (Gate 4) |
+
+---
+
+## Gate 9.1 — Domestic/Foreign tour scope (2026-11-15)
+
+### تحویل‌شده در این برش
+
+- [x] `TourScope` در دامنه + `tour_scope` در persistence + migration `AddTourScope`.
+- [x] فیلتر scope در `CatalogProductFilter` و `SearchProductsQuery`.
+- [x] `GET /market/v1/search?scope=Domestic|Foreign`.
+- [x] `GET /market/v1/home?scope=Domestic|Foreign` (همان BFF، بدون صفحه تکراری).
+- [x] تب‌های خانه با `?scope=domestic|foreign` و لندینگ‌های SEO:
+  `/{locale}/tours/domestic` و `/{locale}/tours/foreign`.
+- [x] تب‌های لیست تور با کامپوننت‌های `nav`/`nav-link` قالب؛ بدون کارت/دکمه جدید.
+- [x] شمارش واقعی نتایج در لیست تور + رفع کلیدهای `???` در `fa.json`/`ar.json`.
+- [x] تست واحد `Search_Should_Filter_By_Tour_Scope`.
+- [x] `verify.ps1` سبز (151 unit + 34 architecture + 6 integration).
+- [x] Build فرانت سبز؛ FA/AR RTL و EN LTR بررسی شد.
+
+### شکاف‌های باز (صادقانه)
+
+- [ ] C3 preferences و ذخیره Home Experience احرازه‌شده.
+- [ ] C4 داشبورد مسافر، C5 داشبورد آژانس، C6 checkout/MoR.
+- [ ] C7 Playwright/axe/Lighthouse و ویرایش نهایی ترجمه.
+- [ ] جستجوی همه‌جانبه/فیلترهای صفحه تور هنوز به query string کامل متصل نیست.
+- [ ] تصاویر `coverImageUrl` تور/ویزا و author/reading time محتوا.
+- [ ] پاک‌سازی داده demo محلی و seed بلاگ خراب.
+- [ ] E-07 provider پرواز، A-15 Lastgram، SMS/Email واقعی، storage تولیدی، PSP، CDN/DNS/TLS.
+
+> این برش Gate 9.1 را کامل نمی‌کند؛ فقط شکاف scope داخلی/خارجی را به‌صورت server-driven می‌بندد.

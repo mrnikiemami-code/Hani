@@ -730,7 +730,8 @@ public static class CatalogEndpoints
                                 .ToArray()))
                         .ToArray()),
             request.Category,
-            request.TravelType);
+            request.TravelType,
+            request.Scope);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -842,7 +843,8 @@ public sealed record CreateTourProductRequest(
     IReadOnlyList<Guid> DestinationIds,
     TourProductContentRequest? Content = null,
     TourCategory Category = TourCategory.Normal,
-    TravelType TravelType = TravelType.Other);
+    TravelType TravelType = TravelType.Other,
+    TourScope Scope = TourScope.Foreign);
 
 /// <summary>
 /// HTTP request for a hotel translation.

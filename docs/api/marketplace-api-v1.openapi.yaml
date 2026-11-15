@@ -36,6 +36,7 @@ paths:
         - { name: tourType, in: query, schema: { type: [string, 'null'] } }
         - { name: category, in: query, schema: { type: [string, 'null'], enum: [Normal, Installment, Luxury, null] } }
         - { name: travelType, in: query, schema: { type: [string, 'null'], enum: [Other, Air, Bus, Rail, null] } }
+        - { name: scope, in: query, schema: { type: [string, 'null'], enum: [Domestic, Foreign, null] } }
         - { name: difficulty, in: query, schema: { type: [string, 'null'] } }
         - { name: vehicleType, in: query, schema: { type: [string, 'null'] } }
         - { name: accommodationType, in: query, schema: { type: [string, 'null'] } }
@@ -470,6 +471,7 @@ paths:
       summary: Home page BFF with featured tours, visas, itineraries, blog, and campaigns
       parameters:
         - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: scope, in: query, schema: { type: [string, 'null'], enum: [Domestic, Foreign, null] } }
       responses:
         '200':
           description: Aggregated home feed
@@ -1417,6 +1419,7 @@ components:
         installmentAvailable: { type: boolean }
         category: { type: string, enum: [Normal, Installment, Luxury] }
         travelType: { type: string, enum: [Other, Air, Bus, Rail] }
+        scope: { type: string, enum: [Domestic, Foreign] }
         originDestinationId: { type: [string, 'null'], format: uuid }
         difficulty: { type: string }
         vehicleType: { type: string }
@@ -2549,6 +2552,7 @@ components:
         vehicleType: { type: string, enum: [None, Bus, VipBus, Minibus, Van, Train, Plane, Car, Other] }
         localVehicleType: { type: string, enum: [None, Bus, VipBus, Minibus, Van, Train, Plane, Car, Other] }
         accommodationType: { type: string, enum: [Hotel, Camp, GuestHouse, EcoLodge, Apartment, Other] }
+        scope: { type: string, enum: [Domestic, Foreign] }
         createdAt: { type: string, format: date-time }
         translations:
           type: array

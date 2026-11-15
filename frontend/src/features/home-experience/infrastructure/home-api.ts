@@ -1,9 +1,17 @@
 import { apiGet } from "@/lib/hani/api";
 import type { HomeFeed } from "../domain/home-feed";
 
-export async function getHomeFeed(locale: string): Promise<HomeFeed | null> {
+export async function getHomeFeed(
+  locale: string,
+  scope?: "Domestic" | "Foreign"
+): Promise<HomeFeed | null> {
+  const query = new URLSearchParams({ locale });
+  if (scope) {
+    query.set("scope", scope);
+  }
+
   const feed = await apiGet<HomeFeed>(
-    `/market/v1/home?locale=${encodeURIComponent(locale)}`
+    `/market/v1/home?${query.toString()}`
   );
 
   if (!feed) {

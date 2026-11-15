@@ -20,3 +20,12 @@ public enum TravelType
     Bus = 2,
     Rail = 3
 }
+
+/// <summary>
+/// Domestic or foreign tour scope used by home and search tabs.
+/// </summary>
+public enum TourScope
+{
+    Foreign = 0,
+    Domestic = 1
+}

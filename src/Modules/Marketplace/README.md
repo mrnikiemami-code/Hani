@@ -22,7 +22,7 @@ Marketplace.Application
 
 | متد | مسیر | توضیح |
 |---|---|---|
-| GET | `/market/v1/search?locale=fa&destinationSlug=&page=1&pageSize=20` | جستجوی faceted + حداقل قیمت هر ارز + تعداد Offer |
+| GET | `/market/v1/search?locale=fa&destinationSlug=&scope=Domestic&page=1&pageSize=20` | جستجوی faceted + حداقل قیمت هر ارز + تعداد Offer + فیلتر داخلی/خارجی |
 | GET | `/market/v1/products/{id}/compare?locale=fa` | مقایسه Offerهای تاییدشده یک محصول + هتل/پرواز/مالیات |
 | GET | `/market/v1/products/{id}/seo?locale=fa` | Canonical + hreflang + JSON-LD محصول |
 | GET | `/market/v1/destinations/{slug}/landing?locale=fa` | Landing metadata مقصد + تعداد تور |
@@ -57,7 +57,7 @@ Marketplace.Application
 - گزینه‌های اقامت، پرواز و قوانین VAT/Duty هر Offer در پاسخ compare برگردانده می‌شوند.
 - `bookingMode` و `collectionMode` هر Offer در compare و `bookingModes` هر نتیجه جستجو برگردانده می‌شود تا UI بین رزرو مستقیم و `ReservationRequest` تفکیک کند.
 - عنوان/خلاصه/توضیح بر اساس locale با fallback به زبان پیش‌فرض `Localization:DefaultCulture`.
-- فیلترهای جستجو: مقصد/مبدا، تاریخ، مدت، نوع تور، دسته (`category`)، نوع سفر (`travelType`)، سختی، وسیله، اقامت، قیمت/ارز، ستاره هتل، MealPlan، ایرلاین، آژانس، مسافر، نام هتل، نوع اتاق، کابین، کلیدواژه (`q`)، `onlineOnly` و `installmentOnly`.
+- فیلترهای جستجو: مقصد/مبدا، تاریخ، مدت، نوع تور، دسته (`category`)، نوع سفر (`travelType`)، دامنه (`scope`: `Domestic`/`Foreign`)، سختی، وسیله، اقامت، قیمت/ارز، ستاره هتل، MealPlan، ایرلاین، آژانس، مسافر، نام هتل، نوع اتاق، کابین، کلیدواژه (`q`)، `onlineOnly` و `installmentOnly`.
 - Sortهای پشتیبانی‌شده: `price_asc`, `price_desc`, `duration_asc`, `duration_desc`, `newest`, `title`.
 - SEO: canonical و hreflang از `Seo:PublicBaseUrl` ساخته می‌شوند؛ JSON-LD با `System.Text.Json` سریالایز می‌شود.
 - Sitemap فقط محصولات منتشرشده و destination landingهای مرتبط را شامل می‌شود؛ query filterها در robots محدود شده‌اند.
@@ -84,4 +84,6 @@ Marketplace.Application
 
 - `GET /market/v1/home` aggregates featured tours, visas, travelogues, blog,
   and campaigns.
+- `GET /market/v1/home?scope=Domestic|Foreign` applies the same server-side
+  tour scope filter used by search, so home tabs never filter client-side.
 - Public agency directory/profile BFF adds approved tour counts.

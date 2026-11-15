@@ -1,8 +1,10 @@
 import type { ComponentType } from "react";
 import type { HomeExperienceId } from "../domain/home-experience";
 
+export type HomeExperienceScope = "Domestic" | "Foreign";
+
 export type HomeExperienceModule = {
-  default: ComponentType;
+  default: ComponentType<{ tourScope?: HomeExperienceScope }>;
 };
 
 export const HOME_EXPERIENCE_LOADERS: Record<HomeExperienceId, () => Promise<HomeExperienceModule>> = {

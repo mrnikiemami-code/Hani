@@ -404,6 +404,14 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("origin_destination_id");
 
+                    b.Property<string>("Scope")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasDefaultValue("Foreign")
+                        .HasColumnName("tour_scope");
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(120)
@@ -446,6 +454,9 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("Status", "OriginDestinationId")
                         .HasDatabaseName("ix_tour_products_status_origin");
+
+                    b.HasIndex("Status", "Scope")
+                        .HasDatabaseName("ix_tour_products_status_scope");
 
                     b.HasIndex("Status", "UpdatedAt")
                         .HasDatabaseName("ix_tour_products_status_updated");

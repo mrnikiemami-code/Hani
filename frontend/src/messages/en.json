@@ -82,7 +82,16 @@
     "advertisement": "Advertisement",
     "advertisementDescription": "Contact Hani for advertising and partnership opportunities.",
     "contactUs": "Contact us",
-    "relatedPosts": "Related posts"
+    "relatedPosts": "Related posts",
+    "scopeAll": "All tours",
+    "scopeDomestic": "Domestic tours",
+    "scopeForeign": "Foreign tours",
+    "domesticTours": "Domestic tours",
+    "foreignTours": "Foreign tours",
+    "scopeDescription": "Search domestic and foreign tours with prices, availability, and full details.",
+    "exploreDomesticTours": "Explore all domestic tours",
+    "exploreForeignTours": "Explore all foreign tours",
+    "toursFound": "{count, plural, one {# tour found} other {# tours found}}"
   },
   "meta": {
     "title": "Hani — Smart travel",
@@ -140,5 +149,19 @@
       "label": "Visa",
       "description": "Countries, requirements, and visa applications."
     }
+  },
+  "auth": {
+    "title": "Sign in with OTP",
+    "subtitle": "Enter your mobile number",
+    "mobile": "Mobile number",
+    "sendCode": "Send code",
+    "code": "Verification code",
+    "verify": "Verify and sign in",
+    "changeMobile": "Change mobile",
+    "devCode": "Test code",
+    "sending": "Sending...",
+    "verifying": "Verifying...",
+    "invalid": "The code or mobile number is invalid.",
+    "backHome": "Back to home"
   }
 }

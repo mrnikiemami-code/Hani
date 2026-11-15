@@ -95,3 +95,12 @@
 - Hotel search supports `rating`, `reviews`, `newest`, `alphabetical`, and
   `rank`; `RankInCity` is populated for list results.
 - Visa types expose `RelatedArticleSlugs` for guide links.
+
+## Gate 9.1 ? Tour scope
+
+- `TourProduct.Scope` is a persisted `TourScope` (`Foreign` by default,
+  `Domestic` for domestic tours) and is exposed by product details and search.
+- `CatalogProductFilter.Scope` filters the published product read model.
+- The database column is `catalog.tour_products.tour_scope` with a `Foreign`
+  default so pre-existing products remain discoverable on the foreign tab.
+- Migration: `AddTourScope` (index `(status, tour_scope)`).

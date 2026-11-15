@@ -1,10 +1,15 @@
 import { apiGet } from "@/lib/hani/api";
-import type { PagedResult, TourSearchItem } from "../domain/tour-search";
+import type {
+  PagedResult,
+  TourScopeValue,
+  TourSearchItem
+} from "../domain/tour-search";
 
 export async function searchTours(
   locale: string,
   page = 1,
-  pageSize = 9
+  pageSize = 9,
+  scope?: TourScopeValue
 ): Promise<PagedResult<TourSearchItem>> {
   const query = new URLSearchParams({
     locale,
@@ -12,6 +17,10 @@ export async function searchTours(
     pageSize: String(pageSize),
     sort: "newest"
   });
+
+  if (scope) {
+    query.set("scope", scope);
+  }
 
   const result = await apiGet<PagedResult<TourSearchItem>>(
     `/market/v1/search?${query.toString()}`

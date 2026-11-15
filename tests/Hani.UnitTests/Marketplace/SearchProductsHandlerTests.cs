@@ -43,6 +43,48 @@ public sealed class SearchProductsHandlerTests
     }
 
     [Fact]
+    public async Task Search_Should_Filter_By_Tour_Scope()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+        var domesticId = Guid.CreateVersion7();
+        var foreignId = Guid.CreateVersion7();
+
+        catalog.Products.Add(new CatalogProductSummary(
+            domesticId,
+            "kish",
+            4,
+            "coastal",
+            new Dictionary<string, string> { ["en"] = "Kish Island" },
+            [],
+            DateTimeOffset.UtcNow,
+            Scope: "Domestic"));
+        catalog.Products.Add(new CatalogProductSummary(
+            foreignId,
+            "istanbul",
+            4,
+            "city-break",
+            new Dictionary<string, string> { ["en"] = "Istanbul" },
+            [],
+            DateTimeOffset.UtcNow,
+            Scope: "Foreign"));
+
+        offers.OffersByProduct[domesticId] = [Offer(domesticId, 10m, 9m)];
+        offers.OffersByProduct[foreignId] = [Offer(foreignId, 20m, 19m)];
+
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
+
+        var result = await handler.Handle(
+            new SearchProductsQuery("en", Scope: "Domestic", Page: 1, PageSize: 20),
+            CancellationToken.None);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.TotalCount.ShouldBe(1);
+        result.Value.Items.Single().ProductId.ShouldBe(domesticId);
+        result.Value.Items.Single().Scope.ShouldBe("Domestic");
+    }
+
+    [Fact]
     public async Task Search_Should_Group_Min_Price_By_Currency()
     {
         var catalog = new FakeCatalogReadService();

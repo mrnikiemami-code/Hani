@@ -1,0 +1,44 @@
+{
+  "fa": {
+    "title": "ورود با کد یکبار مصرف",
+    "subtitle": "شماره موبایل خود را وارد کنید",
+    "mobile": "شماره موبایل",
+    "sendCode": "ارسال کد",
+    "code": "کد تأیید",
+    "verify": "تأیید و ورود",
+    "changeMobile": "تغییر شماره",
+    "devCode": "کد تست",
+    "sending": "در حال ارسال...",
+    "verifying": "در حال بررسی...",
+    "invalid": "کد یا شماره معتبر نیست.",
+    "backHome": "بازگشت به خانه"
+  },
+  "en": {
+    "title": "Sign in with OTP",
+    "subtitle": "Enter your mobile number",
+    "mobile": "Mobile number",
+    "sendCode": "Send code",
+    "code": "Verification code",
+    "verify": "Verify and sign in",
+    "changeMobile": "Change mobile",
+    "devCode": "Test code",
+    "sending": "Sending...",
+    "verifying": "Verifying...",
+    "invalid": "The code or mobile number is invalid.",
+    "backHome": "Back to home"
+  },
+  "ar": {
+    "title": "تسجيل الدخول برمز التحقق",
+    "subtitle": "أدخل رقم هاتفك المحمول",
+    "mobile": "رقم الهاتف",
+    "sendCode": "إرسال الرمز",
+    "code": "رمز التحقق",
+    "verify": "تحقق ودخول",
+    "changeMobile": "تغيير الرقم",
+    "devCode": "رمز الاختبار",
+    "sending": "جارٍ الإرسال...",
+    "verifying": "جارٍ التحقق...",
+    "invalid": "الرمز أو الرقم غير صالح.",
+    "backHome": "العودة للرئيسية"
+  }
+}

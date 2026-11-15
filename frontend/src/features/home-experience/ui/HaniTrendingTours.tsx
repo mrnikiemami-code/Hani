@@ -6,11 +6,23 @@ import { Link } from "@/i18n/navigation";
 import { formatMoney } from "@/lib/hani/money";
 import { useHomeFeed } from "./HomeFeedProvider";
 
-export function HaniTrendingTours() {
+export function HaniTrendingTours({
+  scope
+}: {
+  scope?: "Domestic" | "Foreign";
+}) {
   const feed = useHomeFeed();
   const t = useTranslations("common");
   const locale = useLocale();
+  const activeScope =
+    scope === "Domestic" ? "domestic" : scope === "Foreign" ? "foreign" : null;
   const tours = feed?.tours.items.slice(0, 4) ?? [];
+  const allToursHref =
+    activeScope === "domestic"
+      ? "/tours/domestic"
+      : activeScope === "foreign"
+        ? "/tours/foreign"
+        : "/tours";
 
   if (tours.length === 0) {
     return null;
@@ -19,11 +31,42 @@ export function HaniTrendingTours() {
   return (
     <section className="section recommended-sec">
       <div className="container">
-        <div className="section-header-eight wow fadeInUp">
-          <h2>
-            {t("trendingTours")}{" "}
-            <ImageWithBasePath src="./assets/img/bg/heading-bg-03.png" alt="" />
-          </h2>
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+          <div className="section-header-eight mb-0 wow fadeInUp">
+            <h2>
+              {t("trendingTours")}{" "}
+              <ImageWithBasePath src="./assets/img/bg/heading-bg-03.png" alt="" />
+            </h2>
+          </div>
+          <ul className="nav">
+            <li>
+              <Link
+                href="/"
+                className={`nav-link ${activeScope ? "" : "active"}`}
+                aria-current={activeScope ? undefined : "page"}
+              >
+                {t("scopeAll")}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/?scope=domestic"
+                className={`nav-link ${activeScope === "domestic" ? "active" : ""}`}
+                aria-current={activeScope === "domestic" ? "page" : undefined}
+              >
+                {t("scopeDomestic")}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/?scope=foreign"
+                className={`nav-link ${activeScope === "foreign" ? "active" : ""}`}
+                aria-current={activeScope === "foreign" ? "page" : undefined}
+              >
+                {t("scopeForeign")}
+              </Link>
+            </li>
+          </ul>
         </div>
         <div className="row row-gap-4">
           {tours.map((tour, index) => (
@@ -73,6 +116,11 @@ export function HaniTrendingTours() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="text-center mt-4">
+          <Link href={allToursHref} className="btn btn-primary">
+            {t("viewAll")}
+          </Link>
         </div>
       </div>
     </section>

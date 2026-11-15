@@ -46,7 +46,8 @@ internal sealed class SearchProductsQueryHandler(
                 request.AccommodationType,
                 request.Q,
                 request.Category,
-                request.TravelType),
+                request.TravelType,
+                request.Scope),
             0,
             int.MaxValue,
             cancellationToken);
@@ -153,7 +154,8 @@ internal sealed class SearchProductsQueryHandler(
                     reviewSummary?.AverageRating,
                     reviewSummary?.ReviewCount ?? 0,
                     agencyName,
-                    nextDeparture),
+                    nextDeparture,
+                    product.Scope),
                 product.UpdatedAt));
         }
 

@@ -23,6 +23,12 @@ internal sealed class TourProductConfiguration : IEntityTypeConfiguration<TourPr
         builder.Property(product => product.AccommodationType).HasColumnName("accommodation_type").HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(product => product.Category).HasColumnName("category").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(product => product.TravelType).HasColumnName("travel_type").HasConversion<string>().HasMaxLength(32).IsRequired();
+        builder.Property(product => product.Scope)
+            .HasColumnName("tour_scope")
+            .HasConversion<string>()
+            .HasMaxLength(16)
+            .HasDefaultValue(TourScope.Foreign)
+            .IsRequired();
         builder.Property(product => product.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(product => product.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(product => product.UpdatedAt).HasColumnName("updated_at").IsRequired();
@@ -39,6 +45,9 @@ internal sealed class TourProductConfiguration : IEntityTypeConfiguration<TourPr
 
         builder.HasIndex(product => new { product.Status, product.OriginDestinationId })
             .HasDatabaseName("ix_tour_products_status_origin");
+
+        builder.HasIndex(product => new { product.Status, product.Scope })
+            .HasDatabaseName("ix_tour_products_status_scope");
 
         builder.OwnsMany(product => product.Translations, translations =>
         {

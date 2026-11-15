@@ -93,7 +93,8 @@ internal sealed class CatalogReadService(
                 .ToDictionary(
                     translation => translation.Locale,
                     translation => translation.SeoDescription!,
-                    StringComparer.OrdinalIgnoreCase));
+                    StringComparer.OrdinalIgnoreCase),
+            product.Scope.ToString());
     }
 
     public async Task<IReadOnlyList<CatalogDestinationSnapshot>> GetDestinationsAsync(
@@ -402,6 +403,12 @@ internal sealed class CatalogReadService(
             query = query.Where(product => product.TravelType == travelType);
         }
 
+        if (!string.IsNullOrWhiteSpace(filter.Scope) &&
+            Enum.TryParse<TourScope>(filter.Scope, ignoreCase: true, out var scope))
+        {
+            query = query.Where(product => product.Scope == scope);
+        }
+
         if (!string.IsNullOrWhiteSpace(filter.Difficulty))
         {
             if (!Enum.TryParse<TourDifficulty>(filter.Difficulty, ignoreCase: true, out var difficulty))
@@ -484,7 +491,8 @@ internal sealed class CatalogReadService(
             product.LocalVehicleType.ToString(),
             product.AccommodationType.ToString(),
             product.Category.ToString(),
-            product.TravelType.ToString());
+            product.TravelType.ToString(),
+            product.Scope.ToString());
 
     private static CatalogDestinationSnapshot MapDestination(Destination destination)
         => new(

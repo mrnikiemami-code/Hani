@@ -40,6 +40,12 @@ internal sealed class FakeCatalogReadService : ICatalogReadService
             query = query.Where(product => product.TourType == filter.TourType);
         }
 
+        if (!string.IsNullOrWhiteSpace(filter.Scope))
+        {
+            query = query.Where(product =>
+                string.Equals(product.Scope, filter.Scope, StringComparison.OrdinalIgnoreCase));
+        }
+
         if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
         {
             var term = filter.SearchTerm;
