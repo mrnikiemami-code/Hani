@@ -10,10 +10,15 @@ import type { TableData } from '../../../core/data/interface';
 import Table from "../../../components/data-table/index";
 import { AgentDashboardData } from '../../../core/data/mock/agentDashboardData';
 import AgentDhashboardModal from './agentDhashboardModal';
+import { useLocale, useTranslations } from "next-intl";
+import { formatMoney } from "@/lib/hani/money";
+import type { AgencyDashboard } from "@/features/dashboard/infrastructure/dashboard-api";
 
-const AgentDashboard = () => {
+const AgentDashboard = ({ dashboard }: { dashboard?: AgencyDashboard | null }) => {
 
   const routes = all_routes;
+  const locale = useLocale();
+  const t = useTranslations("common");
   //Breadcrumb Data
   const breadcrumbs = [
     {
@@ -263,11 +268,11 @@ const AgentDashboard = () => {
                       <span className="avatar avatar rounded-circle bg-success mb-2">
                         <i className="isax isax-calendar-15 fs-24" />
                       </span>
-                      <p className="mb-1">Total Bookings</p>
-                      <h5 className="mb-2">456</h5>
+                      <p className="mb-1">{t("totalBookings")}</p>
+                      <h5 className="mb-2">{dashboard?.orderCount ?? 0}</h5>
                       <p className="d-flex align-items-center justify-content-center fs-14">
-                        <i className="isax isax-arrow-up-15 me-1 text-success" />
-                        20% From Last Month{" "}
+                        <i className="isax isax-clock5 me-1 text-warning" />
+                        {dashboard?.pendingCount ?? 0} {t("pendingBookings")}
                       </p>
                     </div>
                   </div>
@@ -278,13 +283,13 @@ const AgentDashboard = () => {
                       <span className="avatar avatar rounded-circle bg-orange mb-2">
                         <i className="isax isax-money-time5 fs-24" />
                       </span>
-                      <p className="mb-1">Total Listings</p>
-                      <h5 className="mb-2">23</h5>
+                      <p className="mb-1">{t("paidBookings")}</p>
+                      <h5 className="mb-2">{dashboard?.paidCount ?? 0}</h5>
                       <Link
                         href={routes.agentListing}
                         className="fs-14 link-primary text-decoration-underline"
                       >
-                        View All
+                        {t("viewAll")}
                       </Link>
                     </div>
                   </div>
@@ -295,11 +300,13 @@ const AgentDashboard = () => {
                       <span className="avatar avatar rounded-circle bg-info mb-2">
                         <i className="isax isax-money-send5 fs-24" />
                       </span>
-                      <p className="mb-1">Total Earnings</p>
-                      <h5 className="mb-2">$5,6560</h5>
+                      <p className="mb-1">{t("totalEarnings")}</p>
+                      <h5 className="mb-2">
+                        {formatMoney(dashboard?.grossPaid, dashboard?.currency, locale)}
+                      </h5>
                       <p className="d-flex align-items-center justify-content-center fs-14">
-                        <i className="isax isax-arrow-down5 me-1 text-danger" />
-                        15% From Last Month{" "}
+                        <i className="isax isax-close-circle5 me-1 text-danger" />
+                        {dashboard?.cancelledCount ?? 0} {t("cancelledBookings")}
                       </p>
                     </div>
                   </div>
@@ -310,13 +317,15 @@ const AgentDashboard = () => {
                       <span className="avatar avatar rounded-circle bg-indigo mb-2">
                         <i className="isax isax-magic-star5 fs-24" />
                       </span>
-                      <p className="mb-1">Total Reviews</p>
-                      <h5 className="mb-2">62</h5>
+                      <p className="mb-1">{t("agencyStatus")}</p>
+                      <h5 className="mb-2">
+                        {dashboard?.agencyId ? dashboard.agencyName : t("pending")}
+                      </h5>
                       <Link
                         href={routes.agentReview}
                         className="fs-14 link-primary text-decoration-underline"
                       >
-                        View All
+                        {t("viewAll")}
                       </Link>
                     </div>
                   </div>

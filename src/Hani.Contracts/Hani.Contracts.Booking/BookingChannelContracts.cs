@@ -33,6 +33,11 @@ public sealed record TravelerBookingDashboardSummary(
     decimal GrossPaid,
     string? Currency);
 
+/// <summary>Paged traveler order history.</summary>
+public sealed record TravelerOrderPage(
+    IReadOnlyList<ChannelOrderSummary> Items,
+    int TotalCount);
+
 /// <summary>Admin booking dashboard summary.</summary>
 public sealed record AdminBookingDashboardSummary(
     int OrderCount,
@@ -64,6 +69,24 @@ public interface IChannelOrderReadService
     /// <summary>Returns traveler booking dashboard totals by contact email.</summary>
     Task<TravelerBookingDashboardSummary> GetTravelerDashboardAsync(
         string contactEmail,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns traveler dashboard totals for any matching contact email or phone.
+    /// </summary>
+    Task<TravelerBookingDashboardSummary> GetTravelerDashboardByContactAsync(
+        string? contactEmail,
+        string? contactPhone,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns a paged traveler order history for any matching contact email or phone.
+    /// </summary>
+    Task<TravelerOrderPage> ListTravelerOrdersAsync(
+        string? contactEmail,
+        string? contactPhone,
+        int skip,
+        int take,
         CancellationToken cancellationToken);
 
     /// <summary>Returns admin booking dashboard totals.</summary>

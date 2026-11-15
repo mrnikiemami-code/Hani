@@ -6,10 +6,15 @@ import Sidebar from '../../../components/common-sidebar/sidebar';
 import Link from "next/link";
 import ImageWithBasePath from '../../../components/image-with-base-path';
 import ReactApexChart from "react-apexcharts";
+import { useLocale, useTranslations } from "next-intl";
+import { formatMoney } from "@/lib/hani/money";
+import type { TravelerDashboard } from "@/features/dashboard/infrastructure/dashboard-api";
 
-const Dashboard = () => {
+const Dashboard = ({ dashboard }: { dashboard?: TravelerDashboard | null }) => {
 
     const routes = all_routes
+    const locale = useLocale();
+    const t = useTranslations("common");
 
     //Breadcrumb Data
     const breadcrumbs = [
@@ -204,8 +209,8 @@ const Dashboard = () => {
                                                     <i className="isax isax-calendar-15 fs-36" />
                                                 </span>
                                                 <div>
-                                                    <h3>80</h3>
-                                                    <p>Total Bookings</p>
+                                                    <h3>{dashboard?.summary.orderCount ?? 0}</h3>
+                                                    <p>{t("totalBookings")}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -219,8 +224,14 @@ const Dashboard = () => {
                                                     <i className="isax isax-money-send5 fs-36" />
                                                 </span>
                                                 <div>
-                                                    <h3>$5.3K</h3>
-                                                    <p>Total Transactions</p>
+                                                    <h3>
+                                                        {formatMoney(
+                                                            dashboard?.summary.grossPaid,
+                                                            dashboard?.summary.currency,
+                                                            locale
+                                                        )}
+                                                    </h3>
+                                                    <p>{t("totalTransactions")}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -234,8 +245,16 @@ const Dashboard = () => {
                                                     <i className="isax isax-money-tick5 fs-36" />
                                                 </span>
                                                 <div>
-                                                    <h3>$5965</h3>
-                                                    <p>Average Value</p>
+                                                    <h3>
+                                                        {formatMoney(
+                                                            dashboard && dashboard.summary.orderCount > 0
+                                                                ? dashboard.summary.grossPaid / dashboard.summary.orderCount
+                                                                : 0,
+                                                            dashboard?.summary.currency,
+                                                            locale
+                                                        )}
+                                                    </h3>
+                                                    <p>{t("averageValue")}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -247,7 +266,7 @@ const Dashboard = () => {
                                     <div className="card shadow-none flex-fill">
                                         <div className="card-body">
                                             <div className="d-flex justify-content-between align-items-center mb-4">
-                                                <h6>Recent Bookings</h6>
+                                                <h6>{t("recentBookings")}</h6>
                                                 <div className="dropdown ">
                                                     <Link
                                                         href="#"
@@ -288,52 +307,43 @@ const Dashboard = () => {
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <div className="card shadow-none mb-2">
-                                                <div className="card-body">
-                                                    <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                        <Link
-                                                            href={routes.hotelDetails}
-                                                            className="avatar avatar-xl flex-shrink-0 me-2"
-                                                        >
-                                                            <ImageWithBasePath
-                                                                src="assets/img/hotels/hotel-15.jpg"
-                                                                className="img-fluid rounded-circle"
-                                                                alt="Img"
-                                                            />
-                                                        </Link>
-                                                        <div className="flex-fill">
-                                                            <span className="badge badge-soft-info badge-xs rounded-pill mb-1">
-                                                                <i className="isax isax-buildings me-1" />
-                                                                Hotel
-                                                            </span>
-                                                            <div className="d-flex justify-content-between align-items-center mb-1">
-                                                                <h6 className="fs-16 text-truncate">
-                                                                    <Link href={routes.hotelDetails}>
-                                                                        Hayat Residency{" "}
-                                                                        <span className="text-gray-5 fw-normal fs-14">
-                                                                            ( Queen Room )
-                                                                        </span>
-                                                                    </Link>
-                                                                </h6>
-                                                                <span className="badge badge-purple badge-sm  rounded-pill">
-                                                                    <i className="ti ti-point-filled me-1" />
-                                                                    Upcoming
+                                            {dashboard?.recentOrders?.length ? (
+                                                dashboard.recentOrders.map((order) => (
+                                                    <div className="card shadow-none mb-2" key={order.orderId}>
+                                                        <div className="card-body">
+                                                            <div className="d-flex align-items-center flex-wrap row-gap-2">
+                                                                <span className="avatar avatar-xl flex-shrink-0 me-2 bg-light d-inline-flex align-items-center justify-content-center">
+                                                                    <i className="isax isax-receipt-item5 fs-24" />
                                                                 </span>
-                                                            </div>
-                                                            <div className="d-flex align-items-center flex-wrap">
-                                                                <p className="fs-14 d-flex align-items-center border-end pe-2 me-2 mb-0">
-                                                                    <i className="isax isax-calendar-25 me-2" />
-                                                                    Date : 25 May 2025
-                                                                </p>
-                                                                <p className="fs-14 d-flex align-items-center">
-                                                                    <i className="isax isax-timer5 me-2" />
-                                                                    Time : 09:30 AM
-                                                                </p>
+                                                                <div className="flex-fill">
+                                                                    <span className="badge badge-soft-info badge-xs rounded-pill mb-1">
+                                                                        {order.status}
+                                                                    </span>
+                                                                    <div className="d-flex justify-content-between align-items-center mb-1">
+                                                                        <h6 className="fs-16 text-truncate">
+                                                                            {order.orderNumber}
+                                                                        </h6>
+                                                                        <span className="badge badge-info badge-sm rounded-pill">
+                                                                            {order.paymentStatus}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className="d-flex align-items-center flex-wrap">
+                                                                        <p className="fs-14 d-flex align-items-center border-end pe-2 me-2 mb-0">
+                                                                            <i className="isax isax-calendar-25 me-2" />
+                                                                            {new Date(order.createdAt).toLocaleDateString(locale)}
+                                                                        </p>
+                                                                        <p className="fs-14 d-flex align-items-center">
+                                                                            {formatMoney(order.total, order.currency, locale)}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                ))
+                                            ) : (
+                                                <p className="text-gray-5">{t("noBookings")}</p>
+                                            )}
                                             <div className="card shadow-none mb-2">
                                                 <div className="card-body">
                                                     <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -609,7 +619,7 @@ const Dashboard = () => {
                                     <div className="card shadow-none flex-fill">
                                         <div className="card-body pb-0">
                                             <div className="d-flex justify-content-between align-items-center mb-4">
-                                                <h6>Recent Bookings</h6>
+                                                <h6>{t("recentBookings")}</h6>
                                                 <div className="dropdown ">
                                                     <Link
                                                         href="#"
@@ -652,9 +662,15 @@ const Dashboard = () => {
                                             </div>
                                             <div className="row">
                                                 <div className="mb-2">
-                                                    <p className="mb-0">Spending For Bookings</p>
+                                                    <p className="mb-0">{t("spendingForBookings")}</p>
                                                     <div className="d-flex align-items-center">
-                                                        <h3 className="me-2">$20,659</h3>
+                                                        <h3 className="me-2">
+                                                            {formatMoney(
+                                                                dashboard?.summary.grossPaid,
+                                                                dashboard?.summary.currency,
+                                                                locale
+                                                            )}
+                                                        </h3>
                                                         <p className="fs-14">
                                                             <span className="badge badge-soft-success badge-md border border-success rounded-pill me-2">
                                                                 <i className="isax isax-arrow-up-3 " />

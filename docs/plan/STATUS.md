@@ -505,13 +505,34 @@
 - [x] `/user/preferences-settings` به مسیر canonical تنظیمات redirect می‌شود.
 - [x] تست‌های `UserPreferencesTests` (defaults/normalize/fallback) و تست API دستی.
 
+## Gate 9.1 — C4/C5 Dashboard Core (2026-11-16)
+
+- [x] `GET /market/v1/me/dashboard` با summary واقعی + ۵ رزرو آخر.
+- [x] `GET /market/v1/me/orders?page&pageSize` با paging.
+- [x] تطبیق رزرو با email یا موبایل کاربر احرازه‌شده.
+- [x] کارت‌های داشبورد مسافر با داده واقعی (تعداد/مبلغ/میانگین/آخرین رزروها).
+- [x] `GET /market/v1/me/agency/dashboard` برای مالک آژانس.
+- [x] کارت‌های داشبورد آژانس با داده واقعی + empty state برای آژانس ناقص.
+- [x] redirect به login برای داشبورد بدون نشست.
+
+## Gate 9.1 — C6 Checkout Core (2026-11-16)
+
+- [x] `/{locale}/checkout/[productId]` با قیمت/سانس/اتاق از compare API.
+- [x] server action: quote → hold → order → payment intent با Idempotency-Key.
+- [x] `/{locale}/checkout/confirmation` با orderId یا intent و وضعیت پرداخت.
+- [x] `Payments:ReturnUrlBase` توسعه به confirmation محلی.
+- [x] مسیر پرداخت mock تا صدور order و intent؛ تکمیل نهایی به PSP واقعی وابسته است.
+- [x] FA/AR RTL و EN LTR در فرم و صفحه تأیید.
+
 ### شکاف‌های باز (صادقانه)
 
-- [ ] C4 داشبورد مسافر، C5 داشبورد آژانس، C6 checkout/MoR.
+- [ ] C4 کامل: فاکتور/پرداخت/بازپرداخت/wishlist/نظرات/profile list endpoints.
+- [ ] C5 کامل: listings/bookings/payouts و حذف بخش‌های mock باقی‌مانده داشبورد.
+- [ ] C6 تکمیل پرداخت واقعی/PSP و webhook production.
 - [ ] C7 Playwright/axe/Lighthouse و ویرایش نهایی ترجمه.
 - [ ] جستجوی همه‌جانبه/فیلترهای صفحه تور هنوز به query string کامل متصل نیست.
 - [ ] تصاویر `coverImageUrl` تور/ویزا و author/reading time محتوا.
 - [ ] پاک‌سازی داده demo محلی و seed بلاگ خراب.
 - [ ] E-07 provider پرواز، A-15 Lastgram، SMS/Email واقعی، storage تولیدی، PSP، CDN/DNS/TLS.
 
-> این برش Gate 9.1 را کامل نمی‌کند؛ فقط شکاف scope داخلی/خارجی را به‌صورت server-driven می‌بندد.
+> این سند Gate 9.1 را کامل اعلام نمی‌کند؛ scope، preferences، dashboard core و checkout core بسته شده‌اند، اما C4/C5 کامل، C6 PSP واقعی و C7 کیفیت باز هستند.

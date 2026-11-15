@@ -1,9 +1,7 @@
 namespace Hani.Modules.Identity.Application.Commands.Preferences;
 
 /// <summary>
-/// Server-owned list of home experiences. It mirrors the frontend registry so
-/// an authenticated preference can never point at a layout the server does not
-/// know about.
+/// Server-owned home experience registry mirroring the frontend ids.
 /// </summary>
 public static class HomeExperienceCatalog
 {

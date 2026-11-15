@@ -194,3 +194,28 @@
 | G91-PREF-03 | Settings page + display preferences | ✅ | G91-PREF-02 | FA/AR RTL + EN LTR |
 | G91-PREF-04 | user → cookie → default precedence | ✅ | G91-PREF-03 | home + settings |
 | G91-PREF-05 | Apply theme/reducedMotion on `<html>` | ⏳ Next | G91-PREF-03 | no-flash server attrs |
+
+## Phase 6.4 — Gate 9.1 C4/C5 Dashboard Core (2026-11-16)
+
+> Baseline: `GAP-09` (Identity) + `GAP-05` (Orders) + `GAP-26` (Agency Dashboard).
+
+| ID | کار | وضعیت | وابستگی | DoD |
+|---|---|---|---|---|
+| G91-DASH-01 | `/market/v1/me/dashboard` + `/me/orders` | ✅ | GAP-05 | summary + paging |
+| G91-DASH-02 | Traveler dashboard real cards/orders | ✅ | G91-DASH-01 | FA/AR RTL + EN LTR |
+| G91-DASH-03 | `/market/v1/me/agency/dashboard` | ✅ | GAP-26 | owner-only totals |
+| G91-DASH-04 | Agency dashboard real cards | ✅ | G91-DASH-03 | empty state |
+| G91-DASH-05 | Invoices/payments/refunds/wishlist lists | ⏳ Next | G91-DASH-01 | authenticated endpoints |
+| G91-DASH-06 | Remove remaining mock dashboard sections | ⏳ Next | G91-DASH-04 | no mock data |
+
+## Phase 6.5 — Gate 9.1 C6 Checkout Core (2026-11-16)
+
+> Baseline: `GAP-05` (Booking) + `GAP-06` (Payment) + `GAP-07` (MoR).
+
+| ID | کار | وضعیت | وابستگی | DoD |
+|---|---|---|---|---|
+| G91-CHK-01 | Checkout page + compare data | ✅ | G91-DASH-01 | price/availability from API |
+| G91-CHK-02 | quote → hold → order → intent | ✅ | GAP-05/06 | Idempotency-Key |
+| G91-CHK-03 | Confirmation page + local return URL | ✅ | G91-CHK-02 | order/payment state |
+| G91-CHK-04 | Real PSP/webhook completion | ⏳ External | G91-CHK-02 | credentials/sandbox |
+| G91-CHK-05 | Invoice/refund UI | ⏳ Next | G91-DASH-05 | traveler-visible |

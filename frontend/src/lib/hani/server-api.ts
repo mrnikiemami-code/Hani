@@ -25,9 +25,10 @@ async function authHeaders(): Promise<HeadersInit> {
 }
 
 async function request<T>(
-  method: "GET" | "PUT",
+  method: "GET" | "PUT" | "POST",
   path: string,
-  body?: unknown
+  body?: unknown,
+  extraHeaders?: HeadersInit
 ): Promise<SessionApiResult<T>> {
   try {
     const response = await fetch(`${apiBase}${path}`, {
@@ -35,7 +36,8 @@ async function request<T>(
       cache: "no-store",
       headers: {
         ...(await authHeaders()),
-        ...(body === undefined ? {} : { "Content-Type": "application/json" })
+        ...(body === undefined ? {} : { "Content-Type": "application/json" }),
+        ...extraHeaders
       },
       body: body === undefined ? undefined : JSON.stringify(body)
     });
@@ -56,4 +58,12 @@ export function sessionGet<T>(path: string): Promise<SessionApiResult<T>> {
 
 export function sessionPut<T>(path: string, body: unknown): Promise<SessionApiResult<T>> {
   return request<T>("PUT", path, body);
+}
+
+export function sessionPost<T>(
+  path: string,
+  body: unknown,
+  headers?: HeadersInit
+): Promise<SessionApiResult<T>> {
+  return request<T>("POST", path, body, headers);
 }

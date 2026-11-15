@@ -9,9 +9,7 @@ namespace Hani.Modules.Identity.Application.Commands.Preferences;
 public sealed record GetUserPreferencesQuery(Guid UserId) : IQuery<UserPreferencesDto>;
 
 /// <summary>
-/// Command that replaces the authenticated user's preferences. Invalid layout,
-/// locale, currency, or theme values are stored as <c>null</c> so the next read
-/// falls back to a safe server default.
+/// Replaces authenticated user preferences with normalized values.
 /// </summary>
 public sealed record UpdateUserPreferencesCommand(
     Guid UserId,

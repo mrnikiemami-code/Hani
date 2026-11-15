@@ -68,6 +68,9 @@ Departure (Supply)
 | POST | `/market/v1/orders` | عمومی + Idempotency-Key |
 | GET | `/market/v1/orders/{id}` | عمومی |
 | GET | `/market/v1/orders/{id}/contract` | عمومی |
+| GET | `/market/v1/me/dashboard` | User (traveler summary + recent orders) |
+| GET | `/market/v1/me/orders` | User (traveler order history) |
+| GET | `/market/v1/me/agency/dashboard` | User (agency owner totals) |
 | POST | `/market/v1/reservation-requests` | عمومی |
 | GET | `/market/v1/reservation-requests/{id}` | عمومی |
 | POST | `/market/v1/reservation-requests/{id}/accept` | عمومی |

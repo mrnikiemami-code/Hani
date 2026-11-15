@@ -268,3 +268,5 @@
 | `7df2265` | Phase roadmap + status + tasks |
 | `2fc16c3` | Gate 9.1 domestic/foreign tour scope: `TourScope`, `AddTourScope`, search/home scope, SEO routes, template tabs, unit test |
 | `pending` | Gate 9.1 C3 preferences: `UserPreferences`, `AddUserPreferences`, `/me/preferences`, settings page, cookie fallback, tests |
+| `pending` | Gate 9.1 C4/C5 dashboard core: `/me/dashboard`, `/me/orders`, `/me/agency/dashboard`, real traveler/agency cards |
+| `pending` | Gate 9.1 C6 checkout core: `/checkout/[productId]`, quote→hold→order→intent, local confirmation |
