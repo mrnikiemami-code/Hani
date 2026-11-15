@@ -16,7 +16,17 @@ if (!fs.existsSync(imgBaseFile) || fs.readFileSync(imgBaseFile, "utf8") !== imgB
 }
 
 const nextConfig: NextConfig = {
-  basePath
+  basePath,
+  async redirects() {
+    return [
+      { source: "/:locale(fa|en|ar)/tour/tour-grid", destination: "/:locale/tours", permanent: false },
+      { source: "/:locale(fa|en|ar)/hotel/hotel-grid", destination: "/:locale/hotels", permanent: false },
+      { source: "/:locale(fa|en|ar)/visa/visa-grid", destination: "/:locale/visa", permanent: false },
+      { source: "/:locale(fa|en|ar)/flight/flight-grid", destination: "/:locale/flights", permanent: false },
+      { source: "/:locale(fa|en|ar)/blog/blog-grid", destination: "/:locale/blog", permanent: false },
+      { source: "/:locale(fa|en|ar)/pages/about-us", destination: "/:locale/pages/aboutus", permanent: false }
+    ];
+  }
 };
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");

@@ -23,7 +23,7 @@ export const all_routes = {
 
     //Flight
     addFlight: "/flight/add-flight",
-    flightGrid: "/flight/flight-grid",
+    flightGrid: "/flights",
     flightList: "/flight/flight-list",
     flightDetails: "/flight/flight-details",
     flightBooking: "/flight/flight-booking",
@@ -33,7 +33,7 @@ export const all_routes = {
 
     //Hotel
     addHotel: "/hotel/add-hotel",
-    hotelGrid: "/hotel/hotel-grid",
+    hotelGrid: "/hotels",
     hotelList: "/hotel/hotel-list",
     hotelMap: "/hotel/hotel-map",
     hotelDetails: "/hotel/hotel-details",
@@ -62,7 +62,7 @@ export const all_routes = {
     //tour
     addTour: "/tour/add-tour",
     editTour: "/tour/edit-tour",
-    tourGrid: "/tour/tour-grid",
+    tourGrid: "/tours",
     tourList: "/tour/tour-list",
     tourMap: "/tour/tour-map",
     tourBooking: "/tour/tour-booking",
@@ -70,7 +70,8 @@ export const all_routes = {
     tourDetails: "/tour/tour-details",
     customPackageBuilder: "/tour/custom-package-builder",
 
-    //bus    busList: "/bus/bus-list",
+    //bus
+    busList: "/bus/bus-list",
     busLeftSidebar: "/bus/bus-left-sidebar",
     busRightSidebar: "/bus/bus-right-sidebar",
     busDetails: "/bus/bus-details",
@@ -92,7 +93,7 @@ export const all_routes = {
 
     //Visa
     visaList: "/visa/visa-list",
-    visaGrid: "/visa/visa-grid",
+    visaGrid: "/visa",
     visaDetails: "/visa/visa-details",
     visaBookingConfirmation: "/visa/visa-booking-confirmation",
     addVisa: "/visa/add-visa",
@@ -200,10 +201,10 @@ export const all_routes = {
     termsConditions: "/pages/terms-conditions",
     contactUs: "/pages/contact-us",
     blogList: "/blog/blog-list",
-    blogGrid: "/blog/blog-grid",
+    blogGrid: "/blog",
     blogDetails: "/blog/blog-details",
     destination: "/pages/destination",
-    about_us: "/pages/about-us",
+    about_us: "/pages/aboutus",
     teams: "/pages/team",
     invoices: "/pages/invoices",
     Gallery: "/pages/gallery",
@@ -219,7 +220,8 @@ export const all_routes = {
     homeOneRtl: "/pages/rtl",
     comingSoon: "/coming-soon",
     compare: "/pages/compare",
-    styleGuide: "/pages/style-guide",
+    styleGuide: "/pages/style-guide",
+
 
 
 };

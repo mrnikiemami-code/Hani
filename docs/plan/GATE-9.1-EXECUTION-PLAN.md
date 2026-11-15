@@ -336,7 +336,19 @@ Every change includes:
 
 ---
 
-## 4. Sprint Order
+## 4. Priority Correction ? Route Parity First
+
+The Lastsecond deviation audit found a P0 gap:
+
+- canonical URLs are not Lastsecond-shaped;
+- several Lastsecond pages are missing;
+- dead duplicate component trees remain.
+
+Therefore, **Phase C1 (Route Parity & Deduplication)** runs before the
+remaining data binding. See
+[`../reports/gate-9.1-lastsecond-deviation-audit-2026-11-15.md`](../reports/gate-9.1-lastsecond-deviation-audit-2026-11-15.md).
+
+## 5. Sprint Order
 
 ### Sprint D1 — Data Foundation
 
