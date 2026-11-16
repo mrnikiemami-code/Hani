@@ -278,4 +278,4 @@
 | `9c9429a` | Home parity Phase 3: origin cities, travelogue/blog split, visa cover/processing, destination translation loading |
 | `5e05cb6` | Home parity Phase 4: SEO metadata/JSON-LD/sitemap, a11y landmarks/tabs/labels, Lighthouse home 100/100/100 |
 | `061c64b` | Home parity Phase 4 closure: listing a11y template debt to Lighthouse 100, FA/EN/AR verification, regression tests, screenshots |
-| `pending` | Calendar architecture slice 1: Jalali UI, Gregorian contract, shared pickers, server guards, AGENTS rule |
+| `c232d80` | Calendar architecture slice 1: Jalali UI, Gregorian contract, shared pickers, server guards, AGENTS rule |
