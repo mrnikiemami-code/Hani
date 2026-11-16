@@ -281,3 +281,4 @@
 | `c232d80` | Calendar architecture slice 1: Jalali UI, Gregorian contract, shared pickers, server guards, AGENTS rule |
 | `bceddc5` | Calendar phase 2: global MediatR GregorianDateBehavior, CI date-architecture gate, platform-wide display/picker migration |
 | `55f1fd5` | Calendar UX closure: empty date inputs, centered Jalali modal, searchable/scrollable home dropdowns |
+| `fea4cf6` | Calendar/dropdown QA: repaired FA/AR message strings and kept dropdown menus inside the viewport |
