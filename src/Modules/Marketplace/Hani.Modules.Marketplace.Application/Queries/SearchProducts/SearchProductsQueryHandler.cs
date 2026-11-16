@@ -155,7 +155,8 @@ internal sealed class SearchProductsQueryHandler(
                     reviewSummary?.ReviewCount ?? 0,
                     agencyName,
                     nextDeparture,
-                    product.Scope),
+                    product.Scope,
+                    product.CoverImageUrl),
                 product.UpdatedAt));
         }
 

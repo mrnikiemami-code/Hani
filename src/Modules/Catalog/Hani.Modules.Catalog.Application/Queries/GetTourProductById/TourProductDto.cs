@@ -56,4 +56,5 @@ public sealed record TourProductDto(
     IReadOnlyList<TourProductTranslationDto> Translations,
     IReadOnlyList<Guid> DestinationIds,
     IReadOnlyList<TourItineraryDayDto> ItineraryDays,
-    string Scope = "Foreign");
+    string Scope = "Foreign",
+    string? CoverImageUrl = null);

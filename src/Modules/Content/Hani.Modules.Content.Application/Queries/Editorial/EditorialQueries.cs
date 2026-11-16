@@ -65,7 +65,9 @@ public sealed record BlogSummaryDto(
     string? CoverUrl,
     DateTimeOffset? PublishedAt,
     int ViewCount,
-    int LikeCount);
+    int LikeCount,
+    Guid AuthorUserId = default,
+    int ReadingTimeMinutes = 0);
 
 /// <summary>Blog detail read model.</summary>
 public sealed record BlogDetailDto(
@@ -94,7 +96,9 @@ public sealed record TravelogueSummaryDto(
     string? SeriesName,
     DateTimeOffset? PublishedAt,
     int ViewCount,
-    int LikeCount);
+    int LikeCount,
+    Guid AuthorUserId = default,
+    int ReadingTimeMinutes = 0);
 
 /// <summary>Travelogue detail read model.</summary>
 public sealed record TravelogueDetailDto(

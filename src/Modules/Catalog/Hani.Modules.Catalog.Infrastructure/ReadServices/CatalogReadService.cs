@@ -94,7 +94,8 @@ internal sealed class CatalogReadService(
                     translation => translation.Locale,
                     translation => translation.SeoDescription!,
                     StringComparer.OrdinalIgnoreCase),
-            product.Scope.ToString());
+            product.Scope.ToString(),
+            product.CoverImageUrl);
     }
 
     public async Task<IReadOnlyList<CatalogDestinationSnapshot>> GetDestinationsAsync(
@@ -492,7 +493,8 @@ internal sealed class CatalogReadService(
             product.AccommodationType.ToString(),
             product.Category.ToString(),
             product.TravelType.ToString(),
-            product.Scope.ToString());
+            product.Scope.ToString(),
+            product.CoverImageUrl);
 
     private static CatalogDestinationSnapshot MapDestination(Destination destination)
         => new(

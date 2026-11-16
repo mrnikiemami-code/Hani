@@ -23,6 +23,9 @@ internal sealed class TourProductConfiguration : IEntityTypeConfiguration<TourPr
         builder.Property(product => product.AccommodationType).HasColumnName("accommodation_type").HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(product => product.Category).HasColumnName("category").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(product => product.TravelType).HasColumnName("travel_type").HasConversion<string>().HasMaxLength(32).IsRequired();
+        builder.Property(product => product.CoverImageUrl)
+            .HasColumnName("cover_image_url")
+            .HasMaxLength(500);
         builder.Property(product => product.Scope)
             .HasColumnName("tour_scope")
             .HasConversion<string>()

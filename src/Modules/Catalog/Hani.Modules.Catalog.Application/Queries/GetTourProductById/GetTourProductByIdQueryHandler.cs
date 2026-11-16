@@ -66,7 +66,8 @@ internal sealed class GetTourProductByIdQueryHandler(ITourProductRepository tour
                             translation.Accommodation))
                         .ToArray()))
                 .ToArray(),
-            product.Scope.ToString());
+            product.Scope.ToString(),
+            product.CoverImageUrl);
 
         return Result<TourProductDto>.Success(dto);
     }

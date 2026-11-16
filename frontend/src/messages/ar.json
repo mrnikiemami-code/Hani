@@ -117,7 +117,8 @@
     "agencyNotReady": "ملف الوكالة الخاص بك غير مكتمل بعد.",
     "cancelledBookings": "حجوزات ملغاة",
     "agencyStatus": "حالة الوكالة",
-    "pending": "معلقة"
+    "pending": "معلقة",
+    "minRead": "????? {count} ?????"
   },
   "meta": {
     "title": "هاني — سفر ذكي",

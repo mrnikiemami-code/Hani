@@ -15,6 +15,7 @@ export type TourSearchItem = {
   agencyName: string | null;
   nextDepartureDate: string | null;
   scope?: TourScopeValue | null;
+  coverImageUrl?: string | null;
 };
 
 export type PagedResult<T> = {

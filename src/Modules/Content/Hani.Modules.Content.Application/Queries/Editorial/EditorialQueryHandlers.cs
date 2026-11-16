@@ -54,7 +54,9 @@ internal sealed class SearchBlogQueryHandler(
             post.CoverUrl,
             post.PublishedAt,
             post.ViewCount,
-            post.LikeCount);
+            post.LikeCount,
+            post.AuthorUserId,
+            ContentMapping.ReadingTimeMinutes(translation?.Body));
     }
 }
 
@@ -171,7 +173,9 @@ internal sealed class SearchTraveloguesQueryHandler(
                         item.SeriesName,
                         item.PublishedAt,
                         item.ViewCount,
-                        item.LikeCount);
+                        item.LikeCount,
+                        item.AuthorUserId,
+                        ContentMapping.ReadingTimeMinutes(translation?.Body));
                 }).ToArray(),
                 page,
                 pageSize,
@@ -424,6 +428,11 @@ internal sealed class GetTrendingContentQueryHandler(
 
 internal static class ContentMapping
 {
+    public static int ReadingTimeMinutes(string? body)
+        => string.IsNullOrWhiteSpace(body)
+            ? 0
+            : Math.Max(1, (int)Math.Ceiling(body.Length / 1000m));
+
     public static BlogPostTranslation? Resolve(
         IEnumerable<BlogPostTranslation> translations,
         string locale,

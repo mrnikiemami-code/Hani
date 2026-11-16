@@ -75,7 +75,10 @@ export function HaniTrendingTours({
                 <div className="recommended-img">
                   <Link href={`/tour/tour-details?slug=${encodeURIComponent(tour.slug)}`}>
                     <ImageWithBasePath
-                      src={`assets/img/destination/destination-${54 + index}.jpg`}
+                      src={
+                        tour.coverImageUrl ??
+                        `assets/img/destination/destination-${54 + index}.jpg`
+                      }
                       className="img-fluid"
                       alt={tour.title}
                     />

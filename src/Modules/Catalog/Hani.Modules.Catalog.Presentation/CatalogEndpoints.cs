@@ -731,7 +731,8 @@ public static class CatalogEndpoints
                         .ToArray()),
             request.Category,
             request.TravelType,
-            request.Scope);
+            request.Scope,
+            request.CoverImageUrl);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -844,7 +845,8 @@ public sealed record CreateTourProductRequest(
     TourProductContentRequest? Content = null,
     TourCategory Category = TourCategory.Normal,
     TravelType TravelType = TravelType.Other,
-    TourScope Scope = TourScope.Foreign);
+    TourScope Scope = TourScope.Foreign,
+    string? CoverImageUrl = null);
 
 /// <summary>
 /// HTTP request for a hotel translation.

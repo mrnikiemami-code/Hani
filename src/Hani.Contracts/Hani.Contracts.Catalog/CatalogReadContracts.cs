@@ -35,7 +35,8 @@ public sealed record CatalogProductSummary(
     string AccommodationType = "",
     string Category = "Normal",
     string TravelType = "Other",
-    string Scope = "Foreign");
+    string Scope = "Foreign",
+    string? CoverImageUrl = null);
 
 /// <summary>
 /// Published product details with localized marketing content.
@@ -58,7 +59,8 @@ public sealed record CatalogProductDetails(
     string TravelType = "Other",
     IReadOnlyDictionary<string, string>? SeoTitles = null,
     IReadOnlyDictionary<string, string>? SeoDescriptions = null,
-    string Scope = "Foreign");
+    string Scope = "Foreign",
+    string? CoverImageUrl = null);
 
 /// <summary>
 /// Destination projection used by SEO breadcrumbs and landing pages.

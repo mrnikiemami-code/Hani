@@ -117,7 +117,8 @@
     "agencyNotReady": "پرونده آژانس شما هنوز تکمیل نشده است.",
     "cancelledBookings": "رزرو لغوشده",
     "agencyStatus": "وضعیت آژانس",
-    "pending": "در انتظار"
+    "pending": "در انتظار",
+    "minRead": "{count} ????? ??????"
   },
   "meta": {
     "title": "هانی — سفر هوشمند",

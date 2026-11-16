@@ -16,7 +16,8 @@ export function HaniLatestContent() {
       excerpt: item.excerpt,
       cover: item.coverUrl,
       href: `/blog/blog-details?slug=${encodeURIComponent(item.slug)}`,
-      date: item.publishedAt
+      date: item.publishedAt,
+      readingTimeMinutes: item.readingTimeMinutes
     })),
     ...(feed?.travelogues.items ?? []).map((item) => ({
       id: item.travelogueId,
@@ -24,7 +25,8 @@ export function HaniLatestContent() {
       excerpt: item.seriesName ?? "",
       cover: item.coverUrl,
       href: `/blog/blog-details?slug=${encodeURIComponent(item.slug)}`,
-      date: item.publishedAt
+      date: item.publishedAt,
+      readingTimeMinutes: item.readingTimeMinutes
     }))
   ].slice(0, 3);
 
@@ -64,7 +66,9 @@ export function HaniLatestContent() {
                           : ""}
                       </span>
                       <span className="badge badge-light text-dark rounded-pill p-2">
-                        {t("blog")}
+                        {item.readingTimeMinutes
+                          ? t("minRead", { count: item.readingTimeMinutes })
+                          : t("blog")}
                       </span>
                     </div>
                   </div>

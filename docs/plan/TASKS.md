@@ -219,3 +219,15 @@
 | G91-CHK-03 | Confirmation page + local return URL | ✅ | G91-CHK-02 | order/payment state |
 | G91-CHK-04 | Real PSP/webhook completion | ⏳ External | G91-CHK-02 | credentials/sandbox |
 | G91-CHK-05 | Invoice/refund UI | ⏳ Next | G91-DASH-05 | traveler-visible |
+
+## Phase 6.6 ? Gate 9.1 Data Completeness (2026-11-16)
+
+> Baseline: `GAP-04` (Search) + `GAP-28` (SEO).
+
+| ID | ??? | ????? | ??????? | DoD |
+|---|---|---|---|---|
+| G91-DATA-01 | Tour `CoverImageUrl` + migration | ? | G91-SCOPE-01 | API + card fallback |
+| G91-DATA-02 | Blog/Travelogue author/reading time | ? | GAP-12 | summary + home card |
+| G91-DATA-03 | Visa cover image | ? Next | GAP-15 | migration + card |
+| G91-DATA-04 | Full tour filter query-string sync | ? Next | G91-SCOPE-04 | pagination + filters |
+| G91-QA-03 | Template-wide axe/Lighthouse pass | ? Next | G91-QA-01 | ARIA/labels/contrast |

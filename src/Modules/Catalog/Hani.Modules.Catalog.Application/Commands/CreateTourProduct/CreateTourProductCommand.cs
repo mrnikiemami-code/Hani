@@ -62,4 +62,5 @@ public sealed record CreateTourProductCommand(
     TourProductContentInput? Content = null,
     TourCategory Category = TourCategory.Normal,
     TravelType TravelType = TravelType.Other,
-    TourScope Scope = TourScope.Foreign) : ICommand<Guid>;
+    TourScope Scope = TourScope.Foreign,
+    string? CoverImageUrl = null) : ICommand<Guid>;

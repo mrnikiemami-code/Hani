@@ -117,7 +117,8 @@
     "agencyNotReady": "Your agency profile is not complete yet.",
     "cancelledBookings": "cancelled bookings",
     "agencyStatus": "Agency status",
-    "pending": "Pending"
+    "pending": "Pending",
+    "minRead": "{count} min read"
   },
   "meta": {
     "title": "Hani — Smart travel",

@@ -75,4 +75,5 @@ public sealed record ProductSearchItemDto(
     int ReviewCount = 0,
     string? AgencyName = null,
     DateOnly? NextDepartureDate = null,
-    string Scope = "Foreign");
+    string Scope = "Foreign",
+    string? CoverImageUrl = null);

@@ -104,3 +104,6 @@
 - The database column is `catalog.tour_products.tour_scope` with a `Foreign`
   default so pre-existing products remain discoverable on the foreign tab.
 - Migration: `AddTourScope` (index `(status, tour_scope)`).
+- `TourProduct.CoverImageUrl` is a canonical card image (`cover_image_url`,
+  max 500) exposed by product details and search; migration
+  `AddTourCoverImage`.

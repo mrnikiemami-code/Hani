@@ -366,7 +366,9 @@ const TourGrid = ({
                                 </div>
                                 <div className="row justify-content-center">
                                     {tours.map((tour, index) => {
-                                        const image = `assets/img/tours/tours-0${(index % 3) + 7}.jpg`;
+                                        const image =
+                                            tour.coverImageUrl ??
+                                            `assets/img/tours/tours-0${(index % 3) + 7}.jpg`;
                                         const destination = tour.destinationNames?.[0] ?? tour.tourType;
                                         const departure = tour.nextDepartureDate
                                             ? new Intl.DateTimeFormat(locale ?? "fa").format(

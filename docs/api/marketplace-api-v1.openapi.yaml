@@ -1686,6 +1686,7 @@ components:
         category: { type: string, enum: [Normal, Installment, Luxury] }
         travelType: { type: string, enum: [Other, Air, Bus, Rail] }
         scope: { type: string, enum: [Domestic, Foreign] }
+        coverImageUrl: { type: [string, 'null'], maxLength: 500 }
         originDestinationId: { type: [string, 'null'], format: uuid }
         difficulty: { type: string }
         vehicleType: { type: string }
@@ -2819,6 +2820,7 @@ components:
         localVehicleType: { type: string, enum: [None, Bus, VipBus, Minibus, Van, Train, Plane, Car, Other] }
         accommodationType: { type: string, enum: [Hotel, Camp, GuestHouse, EcoLodge, Apartment, Other] }
         scope: { type: string, enum: [Domestic, Foreign] }
+        coverImageUrl: { type: [string, 'null'], maxLength: 500 }
         createdAt: { type: string, format: date-time }
         translations:
           type: array

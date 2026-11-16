@@ -29,7 +29,8 @@ public sealed class TourProduct : AggregateRoot<Guid>
         TourAccommodationType accommodationType,
         TourCategory category,
         TravelType travelType,
-        TourScope scope) : base(id)
+        TourScope scope,
+        string? coverImageUrl) : base(id)
     {
         Slug = slug;
         DurationDays = durationDays;
@@ -42,6 +43,7 @@ public sealed class TourProduct : AggregateRoot<Guid>
         Category = category;
         TravelType = travelType;
         Scope = scope;
+        CoverImageUrl = coverImageUrl;
         Status = TourProductStatus.Draft;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = CreatedAt;
@@ -84,6 +86,11 @@ public sealed class TourProduct : AggregateRoot<Guid>
     public TourScope Scope { get; private set; }
 
     /// <summary>
+    /// Canonical card cover image URL.
+    /// </summary>
+    public string? CoverImageUrl { get; private set; }
+
+    /// <summary>
     /// Local transport type.
     /// </summary>
     public TourVehicleType LocalVehicleType { get; private set; }
@@ -120,7 +127,8 @@ public sealed class TourProduct : AggregateRoot<Guid>
         TourAccommodationType accommodationType = TourAccommodationType.Hotel,
         TourCategory category = TourCategory.Normal,
         TravelType travelType = TravelType.Other,
-        TourScope scope = TourScope.Foreign)
+        TourScope scope = TourScope.Foreign,
+        string? coverImageUrl = null)
     {
         if (string.IsNullOrWhiteSpace(slug))
         {
@@ -146,7 +154,8 @@ public sealed class TourProduct : AggregateRoot<Guid>
             accommodationType,
             category,
             travelType,
-            scope);
+            scope,
+            coverImageUrl);
 
         product.AddDomainEvent(new TourProductCreatedDomainEvent(ids.NewId(), product.Id));
 

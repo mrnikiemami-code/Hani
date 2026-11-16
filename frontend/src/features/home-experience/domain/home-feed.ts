@@ -11,6 +11,8 @@ export type HomeBlogItem = {
   publishedAt: string | null;
   viewCount: number;
   likeCount: number;
+  authorUserId?: string;
+  readingTimeMinutes?: number;
 };
 
 export type HomeTravelogueItem = {
@@ -22,6 +24,8 @@ export type HomeTravelogueItem = {
   publishedAt: string | null;
   viewCount: number;
   likeCount: number;
+  authorUserId?: string;
+  readingTimeMinutes?: number;
 };
 
 export type HomeCampaignItem = {

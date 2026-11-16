@@ -45,7 +45,8 @@ internal sealed class CreateTourProductCommandHandler(
             content?.AccommodationType ?? TourAccommodationType.Hotel,
             request.Category,
             request.TravelType,
-            request.Scope);
+            request.Scope,
+            request.CoverImageUrl);
 
         foreach (var translation in request.Translations)
         {
