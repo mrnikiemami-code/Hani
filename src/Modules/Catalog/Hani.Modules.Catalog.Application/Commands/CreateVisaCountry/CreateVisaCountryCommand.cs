@@ -10,7 +10,8 @@ public sealed record CreateVisaCountryCommand(
     string Slug,
     string CountryCode,
     IReadOnlyList<VisaCountryTranslationInput> Translations,
-    IReadOnlyList<VisaTypeInput> Types) : ICommand<Guid>;
+    IReadOnlyList<VisaTypeInput> Types,
+    string? CoverImageUrl = null) : ICommand<Guid>;
 
 /// <summary>
 /// Visa country read model.
@@ -21,7 +22,8 @@ public sealed record VisaCountryDto(
     string CountryCode,
     string Name,
     string? Description,
-    IReadOnlyList<VisaTypeDto> Types);
+    IReadOnlyList<VisaTypeDto> Types,
+    string? CoverImageUrl = null);
 
 /// <summary>
 /// Visa type read model.

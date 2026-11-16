@@ -23,6 +23,12 @@ internal sealed class ListVisaCountriesQueryHandler(
                 var cheapest = country.Types
                     .OrderBy(type => type.PriceAdult)
                     .FirstOrDefault();
+                var processingMin = country.Types.Count == 0
+                    ? (int?)null
+                    : country.Types.Min(type => type.ProcessingDaysMin);
+                var processingMax = country.Types.Count == 0
+                    ? (int?)null
+                    : country.Types.Max(type => type.ProcessingDaysMax);
 
                 return new VisaCountrySummaryDto(
                     country.Id,
@@ -31,7 +37,10 @@ internal sealed class ListVisaCountriesQueryHandler(
                     ResolveName(country, locale, languages),
                     country.Types.Count,
                     cheapest?.Currency,
-                    cheapest?.PriceAdult);
+                    cheapest?.PriceAdult,
+                    processingMin,
+                    processingMax,
+                    country.CoverImageUrl);
             }).ToArray());
     }
 
@@ -90,6 +99,7 @@ internal sealed class GetVisaCountryQueryHandler(
                 type.Steps.OrderBy(step => step.Sequence).Select(step => step.Description).ToArray(),
                 type.Faqs.Select(faq => new VisaFaqDto(faq.Question, faq.Answer)).ToArray(),
                 type.RelatedArticleSlugs.ToArray()))
-                .ToArray()));
+                .ToArray(),
+            country.CoverImageUrl));
     }
 }

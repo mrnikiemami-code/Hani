@@ -40,6 +40,7 @@ export type HomeCampaignItem = {
 
 export type HomeOriginCity = {
   name: string;
+  slug: string;
   tourCount: number;
 };
 

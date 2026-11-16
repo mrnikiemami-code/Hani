@@ -15,6 +15,7 @@ import FooterSection from "./footerSection";
 import { HaniTrendingTours } from "@/features/home-experience/ui/HaniTrendingTours";
 import { HaniHomeTourSearch } from "@/features/home-experience/ui/HaniHomeTourSearch";
 import { HaniScopeTourSection } from "@/features/home-experience/ui/HaniScopeTourSection";
+import { HaniOriginCities } from "@/features/home-experience/ui/HaniOriginCities";
 import { HaniRecommendedVisas } from "@/features/home-experience/ui/HaniRecommendedVisas";
 import { HaniLatestContent } from "@/features/home-experience/ui/HaniLatestContent";
 import BookingDropdown from "../../components/booking-dropdown/bookingDropdown";
@@ -2852,13 +2853,15 @@ const guidePassenger =
       <HaniTrendingTours scope={tourScope} />
       <HaniScopeTourSection scope="Domestic" titleKey="latestDomestic" />
       <HaniScopeTourSection scope="Foreign" titleKey="latestForeign" />
+      <HaniOriginCities />
       <ExperienceSection />
       <HaniRecommendedVisas />
       <DeliverySection />
       <GuideSection />
       <TestimonialSection />
       <ChooseSection />
-      <HaniLatestContent />
+      <HaniLatestContent variant="travelogues" />
+      <HaniLatestContent variant="blog" />
       <FooterSection />
 
 

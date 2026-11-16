@@ -13,6 +13,9 @@ internal sealed class VisaCountryConfiguration : IEntityTypeConfiguration<VisaCo
         builder.Property(country => country.Id).HasColumnName("id");
         builder.Property(country => country.Slug).HasColumnName("slug").HasMaxLength(120).IsRequired();
         builder.Property(country => country.CountryCode).HasColumnName("country_code").HasMaxLength(3).IsRequired();
+        builder.Property(country => country.CoverImageUrl)
+            .HasColumnName("cover_image_url")
+            .HasMaxLength(500);
         builder.Property(country => country.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.HasIndex(country => country.Slug).IsUnique().HasDatabaseName("ux_visa_countries_slug");
 

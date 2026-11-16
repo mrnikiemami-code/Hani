@@ -120,7 +120,12 @@
     "pending": "معلقة",
     "minRead": "????? {count} ?????",
     "latestDomestic": "أحدث الجولات المحلية",
-    "latestForeign": "أحدث الجولات الخارجية"
+    "latestForeign": "أحدث الجولات الخارجية",
+    "processingTime": "مدة المعالجة: {min}–{max} يوم",
+    "latestTravelogues": "أحدث السفرات",
+    "toursByOrigin": "جولات من مدن المغادرة",
+    "toursFrom": "جولات من {city}",
+    "toursCount": "{count} جولات"
   },
   "meta": {
     "title": "هاني — سفر ذكي",

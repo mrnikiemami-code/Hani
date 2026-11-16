@@ -245,9 +245,19 @@ public static class LastsecondParityEndpoints
 
         var originCities = originTours.IsSuccess
             ? originTours.Value!.Items
-                .Where(item => !string.IsNullOrWhiteSpace(item.OriginDestinationName))
-                .GroupBy(item => item.OriginDestinationName!, StringComparer.OrdinalIgnoreCase)
-                .Select(group => new OriginCityDto(group.Key, group.Count()))
+                .Where(item =>
+                    !string.IsNullOrWhiteSpace(item.OriginDestinationName) &&
+                    !string.IsNullOrWhiteSpace(item.OriginDestinationSlug))
+                .GroupBy(
+                    item => new
+                    {
+                        Name = item.OriginDestinationName!,
+                        Slug = item.OriginDestinationSlug!
+                    })
+                .Select(group => new OriginCityDto(
+                    group.Key.Name,
+                    group.Key.Slug,
+                    group.Count()))
                 .OrderByDescending(item => item.TourCount)
                 .ThenBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
                 .Take(6)
@@ -332,7 +342,7 @@ public sealed record HomeFeedDto(
 /// <summary>
 /// Homepage origin-city card with the number of matching tours.
 /// </summary>
-public sealed record OriginCityDto(string Name, int TourCount);
+public sealed record OriginCityDto(string Name, string Slug, int TourCount);
 
 /// <summary>
 /// Server-driven search options for the homepage search form.

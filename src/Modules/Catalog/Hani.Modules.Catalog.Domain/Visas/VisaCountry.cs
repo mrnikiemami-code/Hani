@@ -14,10 +14,11 @@ public sealed class VisaCountry : AggregateRoot<Guid>
     {
     }
 
-    private VisaCountry(Guid id, string slug, string countryCode) : base(id)
+    private VisaCountry(Guid id, string slug, string countryCode, string? coverImageUrl) : base(id)
     {
         Slug = slug;
         CountryCode = countryCode;
+        CoverImageUrl = coverImageUrl;
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
@@ -30,6 +31,11 @@ public sealed class VisaCountry : AggregateRoot<Guid>
     /// ISO country code.
     /// </summary>
     public string CountryCode { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Canonical visa card cover image URL.
+    /// </summary>
+    public string? CoverImageUrl { get; private set; }
 
     /// <summary>
     /// Creation time.
@@ -49,7 +55,11 @@ public sealed class VisaCountry : AggregateRoot<Guid>
     /// <summary>
     /// Creates a visa country.
     /// </summary>
-    public static VisaCountry Create(IIdGenerator ids, string slug, string countryCode)
+    public static VisaCountry Create(
+        IIdGenerator ids,
+        string slug,
+        string countryCode,
+        string? coverImageUrl = null)
     {
         if (string.IsNullOrWhiteSpace(slug) || string.IsNullOrWhiteSpace(countryCode))
         {
@@ -59,7 +69,8 @@ public sealed class VisaCountry : AggregateRoot<Guid>
         return new VisaCountry(
             ids.NewId(),
             slug.Trim().ToLowerInvariant(),
-            countryCode.Trim().ToUpperInvariant());
+            countryCode.Trim().ToUpperInvariant(),
+            coverImageUrl);
     }
 
     /// <summary>

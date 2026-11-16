@@ -569,3 +569,4 @@
 - Next implementation must be template-first and include canonical/hreflang/JSON-LD/a11y.
 - Phase 1 home contracts: `featuredTours`, `latestDomesticTours`, `latestForeignTours`, `originCities`, `/market/v1/search/options`, `OriginDestinationName` ? done.
 - Home parity Phase 2: Tour default hero; domestic/foreign scope; conditional fields; server-driven options; latest domestic/foreign sections; localized date labels ? done.
+- Home parity Phase 3: origin-city section + filter, travelogue/blog split, visa cover/processing, destination translation include fix ? done.

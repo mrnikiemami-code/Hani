@@ -24,14 +24,16 @@ export async function buildTourGridMetadata(
 export async function TourGridPage({
   locale,
   page,
-  scope
+  scope,
+  originSlug
 }: {
   locale: string;
   page: number;
   scope?: TourScopeValue;
+  originSlug?: string;
 }) {
   setRequestLocale(locale);
-  const result = await searchTours(locale, page, 9, scope);
+  const result = await searchTours(locale, page, 9, scope, originSlug);
 
   return (
     <TourGridClient

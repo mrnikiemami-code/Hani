@@ -116,10 +116,13 @@ internal sealed class SearchProductsQueryHandler(
                 .Where(name => !string.IsNullOrWhiteSpace(name))
                 .Cast<string>()
                 .ToArray();
-            var originDestinationName = product.OriginDestinationId is { } originId &&
-                destinationLookup.TryGetValue(originId, out var originDestination)
-                    ? Resolve(originDestination.Names, locale, languages.DefaultLanguage)
+            var originDestination = product.OriginDestinationId is { } originId &&
+                destinationLookup.TryGetValue(originId, out var origin)
+                    ? origin
                     : null;
+            var originDestinationName = originDestination is null
+                ? null
+                : Resolve(originDestination.Names, locale, languages.DefaultLanguage);
             var firstOffer = filteredOffers[0];
             var agencyName = agencyNames.TryGetValue(firstOffer.AgencyId, out var resolvedAgency)
                 ? resolvedAgency
@@ -165,7 +168,8 @@ internal sealed class SearchProductsQueryHandler(
                     nextDeparture,
                     product.Scope,
                     product.CoverImageUrl,
-                    originDestinationName),
+                    originDestinationName,
+                    originDestination?.Slug),
                 product.UpdatedAt));
         }
 

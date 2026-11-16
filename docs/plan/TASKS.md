@@ -251,3 +251,12 @@
 | H91-HERO-04 | Search options fetch | ? | `/api/home/search-options` |
 | H91-HERO-05 | Localized date labels | ? | FA/AR/EN |
 | H91-HOME-05 | Latest domestic/foreign sections | ? | home feed scope lists |
+
+## Phase 6.9 ? Home Parity+ Phase 3 (2026-11-16)
+
+| ID | ??? | ????? | DoD |
+|---|---|---|---|
+| H91-HOME-06 | Origin cities section | ? | name/slug/count + link filter |
+| H91-HOME-07 | Travelogue/blog split | ? | separate sections |
+| H91-HOME-08 | Visa cover/processing | ? | migration + DTO + card |
+| H91-HOME-09 | Destination translation loading | ? | explicit Include |

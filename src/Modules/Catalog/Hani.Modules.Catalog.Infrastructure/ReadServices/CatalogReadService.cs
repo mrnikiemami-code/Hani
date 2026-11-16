@@ -109,6 +109,7 @@ internal sealed class CatalogReadService(
 
         var destinations = await dbContext.Destinations
             .AsNoTracking()
+            .Include(destination => destination.Translations)
             .Where(destination => ids.Contains(destination.Id))
             .ToArrayAsync(cancellationToken);
 
@@ -127,6 +128,7 @@ internal sealed class CatalogReadService(
         var normalized = slug.Trim();
         var destination = await dbContext.Destinations
             .AsNoTracking()
+            .Include(item => item.Translations)
             .FirstOrDefaultAsync(item => item.Slug == normalized, cancellationToken);
 
         return destination is null ? null : MapDestination(destination);

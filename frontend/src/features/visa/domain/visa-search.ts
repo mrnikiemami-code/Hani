@@ -6,4 +6,7 @@ export type VisaSearchItem = {
   typeCount: number;
   minimumPriceCurrency: string | null;
   minimumPrice: number | null;
+  processingDaysMin?: number | null;
+  processingDaysMax?: number | null;
+  coverImageUrl?: string | null;
 };

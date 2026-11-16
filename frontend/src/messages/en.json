@@ -120,7 +120,12 @@
     "pending": "Pending",
     "minRead": "{count} min read",
     "latestDomestic": "Latest domestic tours",
-    "latestForeign": "Latest foreign tours"
+    "latestForeign": "Latest foreign tours",
+    "processingTime": "Processing: {min}–{max} days",
+    "latestTravelogues": "Latest travelogues",
+    "toursByOrigin": "Tours by origin city",
+    "toursFrom": "Tours from {city}",
+    "toursCount": "{count} tours"
   },
   "meta": {
     "title": "Hani — Smart travel",

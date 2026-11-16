@@ -5,12 +5,15 @@ import ImageWithBasePath from "@/components/image-with-base-path";
 import { Link } from "@/i18n/navigation";
 import { useHomeFeed } from "./HomeFeedProvider";
 
-export function HaniLatestContent() {
+export function HaniLatestContent({
+  variant = "mixed"
+}: {
+  variant?: "mixed" | "travelogues" | "blog";
+}) {
   const feed = useHomeFeed();
   const t = useTranslations("common");
   const locale = useLocale();
-  const items = [
-    ...(feed?.blog.items ?? []).map((item) => ({
+  const blogItems = (feed?.blog.items ?? []).map((item) => ({
       id: item.postId,
       title: item.title,
       excerpt: item.excerpt,
@@ -18,8 +21,8 @@ export function HaniLatestContent() {
       href: `/blog/blog-details?slug=${encodeURIComponent(item.slug)}`,
       date: item.publishedAt,
       readingTimeMinutes: item.readingTimeMinutes
-    })),
-    ...(feed?.travelogues.items ?? []).map((item) => ({
+    }));
+  const travelogueItems = (feed?.travelogues.items ?? []).map((item) => ({
       id: item.travelogueId,
       title: item.title,
       excerpt: item.seriesName ?? "",
@@ -27,8 +30,14 @@ export function HaniLatestContent() {
       href: `/blog/blog-details?slug=${encodeURIComponent(item.slug)}`,
       date: item.publishedAt,
       readingTimeMinutes: item.readingTimeMinutes
-    }))
-  ].slice(0, 3);
+    }));
+  const items = (
+    variant === "blog"
+      ? blogItems
+      : variant === "travelogues"
+        ? travelogueItems
+        : [...blogItems, ...travelogueItems]
+  ).slice(0, 3);
 
   if (items.length === 0) {
     return null;
@@ -38,7 +47,11 @@ export function HaniLatestContent() {
     <section className="section article-section">
       <div className="container">
         <div className="section-header-eight wow fadeInUp">
-          <h2>{t("latestArticles")}</h2>
+          <h2>
+            {variant === "travelogues"
+              ? t("latestTravelogues")
+              : t("latestArticles")}
+          </h2>
         </div>
         <div className="row row-gap-4 justify-content-center wow fadeInUp">
           {items.map((item, index) => (

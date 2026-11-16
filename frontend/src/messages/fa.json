@@ -120,7 +120,12 @@
     "pending": "در انتظار",
     "minRead": "{count} ????? ??????",
     "latestDomestic": "جدیدترین تورهای داخلی",
-    "latestForeign": "جدیدترین تورهای خارجی"
+    "latestForeign": "جدیدترین تورهای خارجی",
+    "processingTime": "زمان اخذ ویزا: {min} تا {max} روز",
+    "latestTravelogues": "جدیدترین سفرنامه‌ها",
+    "toursByOrigin": "تور از مبدا شهرهای پرطرفدار",
+    "toursFrom": "تور از {city}",
+    "toursCount": "{count} تور"
   },
   "meta": {
     "title": "هانی — سفر هوشمند",

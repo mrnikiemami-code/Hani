@@ -19,6 +19,11 @@ export async function GET(request: NextRequest) {
     query.set("scope", scope);
   }
 
+  const originSlug = params.get("originSlug");
+  if (originSlug) {
+    query.set("originSlug", originSlug);
+  }
+
   try {
     const response = await fetch(`${apiBase}/market/v1/search?${query}`, {
       cache: "no-store",

@@ -77,4 +77,5 @@ public sealed record ProductSearchItemDto(
     DateOnly? NextDepartureDate = null,
     string Scope = "Foreign",
     string? CoverImageUrl = null,
-    string? OriginDestinationName = null);
+    string? OriginDestinationName = null,
+    string? OriginDestinationSlug = null);

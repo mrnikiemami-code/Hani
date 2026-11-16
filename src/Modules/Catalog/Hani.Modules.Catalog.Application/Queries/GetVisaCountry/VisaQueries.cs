@@ -24,4 +24,7 @@ public sealed record VisaCountrySummaryDto(
     string Name,
     int TypeCount,
     string? MinimumPriceCurrency,
-    decimal? MinimumPrice);
+    decimal? MinimumPrice,
+    int? ProcessingDaysMin = null,
+    int? ProcessingDaysMax = null,
+    string? CoverImageUrl = null);

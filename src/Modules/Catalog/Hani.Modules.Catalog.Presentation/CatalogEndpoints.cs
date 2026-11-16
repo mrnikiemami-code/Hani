@@ -446,7 +446,8 @@ public static class CatalogEndpoints
                             .Select(faq => new VisaFaqInput(faq.Question, faq.Answer))
                             .ToArray(),
                         type.RelatedArticleSlugs))
-                    .ToArray()),
+                    .ToArray(),
+                request.CoverImageUrl),
             cancellationToken);
 
         return result.IsSuccess
@@ -1011,7 +1012,8 @@ public sealed record CreateVisaCountryRequest(
     string Slug,
     string CountryCode,
     IReadOnlyList<VisaCountryTranslationRequest> Translations,
-    IReadOnlyList<VisaTypeRequest> Types);
+    IReadOnlyList<VisaTypeRequest> Types,
+    string? CoverImageUrl = null);
 
 /// <summary>
 /// HTTP query for restaurant or attraction search.

@@ -16,7 +16,7 @@ internal sealed class CreateVisaCountryCommandHandler(
     {
         try
         {
-            var country = VisaCountry.Create(ids, request.Slug, request.CountryCode);
+            var country = VisaCountry.Create(ids, request.Slug, request.CountryCode, request.CoverImageUrl);
 
             foreach (var translation in request.Translations)
             {

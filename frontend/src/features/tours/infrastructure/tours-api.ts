@@ -9,7 +9,8 @@ export async function searchTours(
   locale: string,
   page = 1,
   pageSize = 9,
-  scope?: TourScopeValue
+  scope?: TourScopeValue,
+  originSlug?: string
 ): Promise<PagedResult<TourSearchItem>> {
   const query = new URLSearchParams({
     locale,
@@ -20,6 +21,10 @@ export async function searchTours(
 
   if (scope) {
     query.set("scope", scope);
+  }
+
+  if (originSlug) {
+    query.set("originSlug", originSlug);
   }
 
   const result = await apiGet<PagedResult<TourSearchItem>>(

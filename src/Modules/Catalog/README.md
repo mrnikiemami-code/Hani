@@ -107,3 +107,5 @@
 - `TourProduct.CoverImageUrl` is a canonical card image (`cover_image_url`,
   max 500) exposed by product details and search; migration
   `AddTourCoverImage`.
+- `VisaCountry.CoverImageUrl` is exposed by visa summaries; processing-day
+  min/max are derived from visa types. Migration `AddVisaCoverImage`.

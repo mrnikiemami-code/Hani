@@ -29,7 +29,7 @@ export default async function Page({
   searchParams
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string; scope?: string }>;
+  searchParams: Promise<{ page?: string; scope?: string; origin?: string }>;
 }) {
   const { locale } = await params;
   const query = await searchParams;
@@ -40,6 +40,7 @@ export default async function Page({
       locale={locale}
       page={page}
       scope={resolveScope(query.scope)}
+      originSlug={query.origin}
     />
   );
 }

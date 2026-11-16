@@ -29,7 +29,10 @@ export function HaniRecommendedVisas() {
                 <div className="recommended-img">
                   <Link href={`/visa/visa-details?slug=${encodeURIComponent(visa.slug)}`}>
                     <ImageWithBasePath
-                      src={`assets/img/visa/visa-0${(index % 6) + 1}.jpg`}
+                      src={
+                        visa.coverImageUrl ??
+                        `assets/img/visa/visa-0${(index % 6) + 1}.jpg`
+                      }
                       className="img-fluid"
                       alt={visa.name}
                     />
@@ -53,6 +56,12 @@ export function HaniRecommendedVisas() {
                   </div>
                   <span>
                     {visa.typeCount} {t("visa")}
+                    {visa.processingDaysMin != null && visa.processingDaysMax != null
+                      ? ` | ${t("processingTime", {
+                          min: visa.processingDaysMin,
+                          max: visa.processingDaysMax
+                        })}`
+                      : ""}
                   </span>
                 </div>
               </div>
