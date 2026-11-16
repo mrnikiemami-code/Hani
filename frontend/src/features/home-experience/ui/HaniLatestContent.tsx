@@ -61,7 +61,7 @@ export function HaniLatestContent({
                   <Link href={item.href} tabIndex={0}>
                     <ImageWithBasePath
                       src={item.cover ?? `assets/img/tours/tour-thumb-0${6 + index}.jpg`}
-                      className="img-fluid"
+                      loading="lazy" className="img-fluid"
                       alt={item.title}
                     />
                   </Link>

@@ -276,3 +276,4 @@
 | `5493b6b` | Home parity Phase 1: home BFF sections, search options, origin-name resolution |
 | `c498298` | Home parity Phase 2: Tour hero default, domestic/foreign fields, server options, localized dates, latest scope sections |
 | `9c9429a` | Home parity Phase 3: origin cities, travelogue/blog split, visa cover/processing, destination translation loading |
+| `pending` | Home parity Phase 4: SEO metadata/JSON-LD/sitemap, a11y landmarks/tabs/labels, Lighthouse home 100/100/100 |

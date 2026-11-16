@@ -21,7 +21,9 @@
     "latestItineraries": "جدیدترین سفرنامه‌ها",
     "latestBlog": "مجله گردشگری",
     "visas": "ویزای پرطرفدار",
-    "campaigns": "کمپین‌ها"
+    "campaigns": "کمپین‌ها",
+    "heroTitle": "تور و سفر",
+    "playVideo": "پخش ویدیو"
   },
   "common": {
     "search": "جستجو",
@@ -125,7 +127,17 @@
     "latestTravelogues": "جدیدترین سفرنامه‌ها",
     "toursByOrigin": "تور از مبدا شهرهای پرطرفدار",
     "toursFrom": "تور از {city}",
-    "toursCount": "{count} تور"
+    "toursCount": "{count} تور",
+    "skipToContent": "رفتن به محتوای اصلی",
+    "toggleDarkMode": "فعال‌سازی حالت تیره",
+    "toggleLightMode": "فعال‌سازی حالت روشن",
+    "backToTop": "بازگشت به بالا",
+    "gridView": "نمایش شبکه‌ای",
+    "listView": "نمایش لیستی",
+    "mapView": "نمایش روی نقشه",
+    "addToWishlist": "افزودن به علاقه‌مندی‌ها",
+    "priceRange": "محدوده قیمت",
+    "expandMenu": "باز کردن منو"
   },
   "meta": {
     "title": "هانی — سفر هوشمند",

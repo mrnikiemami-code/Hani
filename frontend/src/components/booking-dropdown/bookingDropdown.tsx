@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 
 type Location = {
   value: string;
@@ -17,6 +17,7 @@ export default function BookingDropdown({ label, defaultValue, defaultSubValue, 
   const [value, setValue] = useState(defaultValue);
   const [subValue, setSubValue] = useState(defaultSubValue);
   const [query, setQuery] = useState("");
+  const inputId = useId();
 
   const visibleLocations = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -32,9 +33,18 @@ export default function BookingDropdown({ label, defaultValue, defaultSubValue, 
 
   return (
     <div className="booking-dropdown">
-      <label className="form-label fs-14 text-default mb-1">{label}</label>
+      <label className="form-label fs-14 text-default mb-1" htmlFor={inputId}>
+        {label}
+      </label>
 
-      <input type="text" className="form-control value-input" value={value} readOnly />
+      <input
+        id={inputId}
+        type="text"
+        className="form-control value-input"
+        value={value}
+        readOnly
+        aria-label={label}
+      />
       <p className="fs-12 mb-0">{subValue || defaultSubValue}</p>
 
       <div className="dropdown-menu dropdown-md p-0" onClick={(e) => e.stopPropagation()}>
@@ -44,6 +54,7 @@ export default function BookingDropdown({ label, defaultValue, defaultSubValue, 
               type="text"
               className="form-control"
               placeholder="Search Location"
+              aria-label={`${label} search`}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />

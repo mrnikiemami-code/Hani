@@ -260,3 +260,15 @@
 | H91-HOME-07 | Travelogue/blog split | ? | separate sections |
 | H91-HOME-08 | Visa cover/processing | ? | migration + DTO + card |
 | H91-HOME-09 | Destination translation loading | ? | explicit Include |
+
+## Phase 6.10 ? Home Parity+ Phase 4 (2026-11-16)
+
+| ID | ??? | ????? | DoD |
+|---|---|---|---|
+| H91-SEO-01 | Canonical/hreflang/OG/Twitter | ? | home + tours |
+| H91-SEO-02 | JSON-LD | ? | Organization/WebSite/SearchAction/ItemList/BreadcrumbList |
+| H91-SEO-03 | Sitemap/robots | ? | all locales + scope |
+| H91-A11Y-01 | Topical H1 + main landmark + skip link | ? | home |
+| H91-A11Y-02 | Keyboard tabs + labels + slider labels | ? | home/hero/tours |
+| H91-QA-04 | Lighthouse home | ? | 100/100/100 |
+| H91-QA-05 | Listing accessibility debt | ? Next | template filter/sidebar 84 |

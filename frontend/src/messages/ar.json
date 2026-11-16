@@ -21,7 +21,9 @@
     "latestItineraries": "أحدث يوميات السفر",
     "latestBlog": "مجلة السفر",
     "visas": "تأشيرات شائعة",
-    "campaigns": "الحملات"
+    "campaigns": "الحملات",
+    "heroTitle": "الجولات والسفر",
+    "playVideo": "تشغيل الفيديو"
   },
   "common": {
     "search": "بحث",
@@ -125,7 +127,17 @@
     "latestTravelogues": "أحدث السفرات",
     "toursByOrigin": "جولات من مدن المغادرة",
     "toursFrom": "جولات من {city}",
-    "toursCount": "{count} جولات"
+    "toursCount": "{count} جولات",
+    "skipToContent": "انتقل إلى المحتوى الرئيسي",
+    "toggleDarkMode": "تفعيل الوضع الداكن",
+    "toggleLightMode": "تفعيل الوضع الفاتح",
+    "backToTop": "العودة إلى الأعلى",
+    "gridView": "عرض شبكي",
+    "listView": "عرض قائمة",
+    "mapView": "عرض على الخريطة",
+    "addToWishlist": "إضافة إلى المفضلة",
+    "priceRange": "نطاق السعر",
+    "expandMenu": "توسيع القائمة"
   },
   "meta": {
     "title": "هاني — سفر ذكي",

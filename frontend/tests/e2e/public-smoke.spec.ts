@@ -27,6 +27,17 @@ test.describe("public smoke", () => {
     expect(marker).toBe("kept");
   });
 
+  test("home hero scope tabs support keyboard arrows", async ({ page }) => {
+    await page.goto("/fa");
+    const foreign = page.locator("#tour-scope-foreign");
+    const domestic = page.locator("#tour-scope-domestic");
+    await foreign.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(domestic).toHaveAttribute("aria-selected", "true");
+    await expect(domestic).toBeFocused();
+    await expect(page).toHaveURL(/\/fa$/);
+  });
+
   test("tour scope tabs stay on one route and update only the query", async ({ page }) => {
     await page.goto("/fa/tours?scope=domestic");
     await page.evaluate(() => {

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import VideoModal from "../../components/video-modal/videoModal";
 import Link from "next/link";
 import { DatePicker, TimePicker } from '../../components/common-date-picker/appDatePicker'
@@ -76,6 +77,7 @@ const HomeServiceOne = ({
 }: {
   tourScope?: "Domestic" | "Foreign";
 }) => {
+  const t = useTranslations("home");
   const [showModal, setShowModal] = useState(false);
   const videoUrl = "https://youtu.be/NSAOrGb9orM";
   const handleOpenModal = () => setShowModal(true);
@@ -227,7 +229,7 @@ const guidePassenger =
       {/* Hero Section */}
       <section className="hero-sec-eight">
         <div className="container">
-          <h1 className="animate-text">Adventure</h1>
+          <h1 className="animate-text">{t("heroTitle")}</h1>
           <div
             className="animate-button"
           >
@@ -236,6 +238,7 @@ const guidePassenger =
               href="#"
               className="button-circle"
               data-fancybox=""
+              aria-label={t("playVideo")}
               onClick={handleOpenModal}
             >
               <i className="isax isax-play" />

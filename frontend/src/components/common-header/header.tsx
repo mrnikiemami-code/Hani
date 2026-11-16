@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import ImageWithBasePath from "../image-with-base-path";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setDataTheme } from "../../redux/slices/themeSettingSlice";
@@ -13,6 +14,7 @@ import { useScrollLock } from '../../hooks/useScrollLock'
 import ChangePasswordModal from "../modals/changePassword";
 
 const Header = () => {
+  const t = useTranslations("common");
   const [scrolled, setScrolled] = useState(false);
   const [isResponsive, setIsResponsive] = useState(false);
   const [isOffcanva, setIsOffcanva] = useState(false);
@@ -2180,6 +2182,7 @@ const Header = () => {
           href="#"
           id="dark-mode-toggle"
           className={`theme-toggle ${dataTheme === "light" && "activate"}`}
+          aria-label={t("toggleDarkMode")}
           onClick={() => handleDataThemeChange("dark-mode")}
         >
           <i className="isax isax-moon" />
@@ -2188,6 +2191,7 @@ const Header = () => {
           href="#"
           id="light-mode-toggle"
           className={`theme-toggle ${dataTheme === "dark-mode" && "activate"}`}
+          aria-label={t("toggleLightMode")}
           onClick={() => handleDataThemeChange("light")}
         >
           <i className="isax isax-sun-1" />
@@ -2735,6 +2739,7 @@ const Header = () => {
                                     className={`mean-expand ${isDropdownOpen ? "mean-clicked" : ""
                                       }`}
                                     href="#"
+                                    aria-label={t("expandMenu")}
                                     style={{ fontSize: "18px" }}
                                     onClick={openSubMenu}
                                   >
@@ -2922,7 +2927,7 @@ const Header = () => {
                                           </div>
                                         </li>
                                       </ul>
-                                      <Link className="mean-expand" href="#"><i className="ti ti-plus"></i></Link>
+                                      <Link className="mean-expand" href="#" aria-label={t("expandMenu")}><i className="ti ti-plus"></i></Link>
                                     </li>
                                   ) : (
                                     <li
@@ -3002,6 +3007,7 @@ const Header = () => {
                                                 <Link
                                                   className="mean-expand"
                                                   href="#"
+                                                  aria-label={t("expandMenu")}
                                                   style={{ fontSize: "18px" }}
                                                 >
                                                   <i className="ti ti-plus"></i>
@@ -3026,6 +3032,7 @@ const Header = () => {
                                           : ""
                                           }`}
                                         href="#"
+                                        aria-label={t("expandMenu")}
                                         style={{ fontSize: "18px" }}
                                         onClick={() => toggleSubMenu(i)}
                                       >

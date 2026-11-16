@@ -1,8 +1,10 @@
 "use client";
 import  { useState, useEffect } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const BackToTop = () => {
+  const t = useTranslations("common");
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -35,6 +37,7 @@ const BackToTop = () => {
           scrolled ? "show" : ""
         }`}
         href="#"
+        aria-label={t("backToTop")}
         onClick={scrollToTop}
       >
         <i className="fa-solid fa-arrow-up" />

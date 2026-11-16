@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import BookingDropdown from "@/components/booking-dropdown/bookingDropdown";
@@ -28,6 +28,8 @@ export function HaniHomeTourSearch() {
   const locale = useLocale();
   const [scope, setScope] = useState<Scope>("foreign");
   const [options, setOptions] = useState<SearchOptions>(emptyOptions);
+  const foreignTab = useRef<HTMLAnchorElement>(null);
+  const domesticTab = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -65,14 +67,33 @@ export function HaniHomeTourSearch() {
     setScope(next);
   };
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+      return;
+    }
+
+    event.preventDefault();
+    const next: Scope = scope === "foreign" ? "domestic" : "foreign";
+    setScope(next);
+    (next === "foreign" ? foreignTab : domesticTab).current?.focus();
+  };
+
   return (
     <div>
-      <ul className="nav mb-3" role="tablist" aria-label={t("scopeLabel")}>
+      <ul
+        className="nav mb-3"
+        role="tablist"
+        aria-label={t("scopeLabel")}
+        onKeyDown={handleKeyDown}
+      >
         <li role="presentation">
           <a
+            ref={foreignTab}
             href="#"
+            id="tour-scope-foreign"
             role="tab"
             aria-selected={scope === "foreign"}
+            aria-controls="tour-scope-panel-foreign"
             tabIndex={scope === "foreign" ? 0 : -1}
             className={`nav-link ${scope === "foreign" ? "active" : ""}`}
             onClick={(event) => handleTab(event, "foreign")}
@@ -82,9 +103,12 @@ export function HaniHomeTourSearch() {
         </li>
         <li role="presentation">
           <a
+            ref={domesticTab}
             href="#"
+            id="tour-scope-domestic"
             role="tab"
             aria-selected={scope === "domestic"}
+            aria-controls="tour-scope-panel-domestic"
             tabIndex={scope === "domestic" ? 0 : -1}
             className={`nav-link ${scope === "domestic" ? "active" : ""}`}
             onClick={(event) => handleTab(event, "domestic")}
@@ -95,7 +119,12 @@ export function HaniHomeTourSearch() {
       </ul>
 
       {scope === "foreign" ? (
-        <form onSubmit={(event) => event.preventDefault()}>
+        <form
+          id="tour-scope-panel-foreign"
+          role="tabpanel"
+          aria-labelledby="tour-scope-foreign"
+          onSubmit={(event) => event.preventDefault()}
+        >
           <div className="d-lg-flex">
             <div className="d-flex form-info flex-wrap">
               <div className="form-item min-w-0">
@@ -150,7 +179,12 @@ export function HaniHomeTourSearch() {
           </div>
         </form>
       ) : (
-        <form onSubmit={(event) => event.preventDefault()}>
+        <form
+          id="tour-scope-panel-domestic"
+          role="tabpanel"
+          aria-labelledby="tour-scope-domestic"
+          onSubmit={(event) => event.preventDefault()}
+        >
           <div className="d-lg-flex">
             <div className="d-flex form-info flex-wrap">
               <div className="form-item min-w-0">
@@ -162,10 +196,11 @@ export function HaniHomeTourSearch() {
                 />
               </div>
               <div className="form-item min-w-0">
-                <label className="form-label fs-14 text-default mb-1">
+                <label className="form-label fs-14 text-default mb-1" htmlFor="tour-departure">
                   {t("departure")}
                 </label>
                 <DatePicker
+                  id="tour-departure"
                   className="form-control datetimepicker"
                   placeholder={t("departure")}
                   disablePast

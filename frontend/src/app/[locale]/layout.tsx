@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -44,6 +44,12 @@ const notoKufi = Noto_Kufi_Arabic({
   display: "swap"
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#ff725e"
+};
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -55,17 +61,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
-  const languages = Object.fromEntries(
-    routing.locales.map((item) => [item, `/${item}`])
-  );
 
   return {
     title: t("title"),
-    description: t("description"),
-    alternates: {
-      canonical: `/${locale}`,
-      languages
-    }
+    description: t("description")
   };
 }
 
@@ -84,6 +83,7 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const messages = await getMessages();
+  const common = await getTranslations({ locale, namespace: "common" });
   const templateDictionary =
     locale === "fa"
       ? (templateFa as Record<string, string>)
@@ -100,12 +100,15 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <body className={`${inter.variable} ${vazirmatn.variable} ${notoKufi.variable}`}>
+        <a href="#main-content" className="visually-hidden-focusable">
+          {common("skipToContent")}
+        </a>
         <StoreProvider>
           <ThemeSync />
           <RouteLoader />
           <NextIntlClientProvider messages={messages}>
             <TemplateTranslationProvider dictionary={templateDictionary}>
-              {children}
+              <main id="main-content">{children}</main>
             </TemplateTranslationProvider>
           </NextIntlClientProvider>
         </StoreProvider>

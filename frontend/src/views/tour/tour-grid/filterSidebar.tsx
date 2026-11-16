@@ -2,9 +2,10 @@
 import Slider from '../../../components/app-slider/appSlider'
 import  { useState } from 'react'
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const FliterSidebar = () => {
-
+    const t = useTranslations("common");
 
 
     const [disabled, _setDisabled] = useState(false);
@@ -129,7 +130,14 @@ const FliterSidebar = () => {
                                 >
                                     <div className="accordion-body">
                                         <div className="filter-range">
-                                            <Slider range min={0} max={1000} defaultValue={[200, 800]} disabled={disabled} />
+                                            <Slider
+                                                range
+                                                min={0}
+                                                max={1000}
+                                                defaultValue={[200, 800]}
+                                                disabled={disabled}
+                                                ariaLabel={t("priceRange")}
+                                            />
                                         </div>
                                         <div className="filter-range-amount">
 

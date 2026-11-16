@@ -1,6 +1,6 @@
 # Gate 9.1 — Lastsecond Homepage Parity+ Implementation Plan
 
-- Status: In Progress ? Phase 1, Phase 2, Phase 3 complete
+- Status: In Progress ? Phase 1?4 complete (home); listing a11y debt remains
 - Date: 2026-11-16
 - Benchmark report: [`../reports/lastsecond-homepage-benchmark-2026-11-16.md`](../reports/lastsecond-homepage-benchmark-2026-11-16.md)
 - Visual source: purchased Dreamstour template only

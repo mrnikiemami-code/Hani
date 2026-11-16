@@ -570,3 +570,4 @@
 - Phase 1 home contracts: `featuredTours`, `latestDomesticTours`, `latestForeignTours`, `originCities`, `/market/v1/search/options`, `OriginDestinationName` ? done.
 - Home parity Phase 2: Tour default hero; domestic/foreign scope; conditional fields; server-driven options; latest domestic/foreign sections; localized date labels ? done.
 - Home parity Phase 3: origin-city section + filter, travelogue/blog split, visa cover/processing, destination translation include fix ? done.
+- Home parity Phase 4: canonical/hreflang, OG/Twitter, JSON-LD, sitemap/robots, topical H1, main landmark, skip link, keyboard tabs, labels; home Lighthouse 100/100/100 ? done. Listing a11y remains 84 due template filter/sidebar debt.

@@ -21,7 +21,9 @@
     "latestItineraries": "Latest itineraries",
     "latestBlog": "Travel magazine",
     "visas": "Popular visas",
-    "campaigns": "Campaigns"
+    "campaigns": "Campaigns",
+    "heroTitle": "Tours and travel",
+    "playVideo": "Play video"
   },
   "common": {
     "search": "Search",
@@ -125,7 +127,17 @@
     "latestTravelogues": "Latest travelogues",
     "toursByOrigin": "Tours by origin city",
     "toursFrom": "Tours from {city}",
-    "toursCount": "{count} tours"
+    "toursCount": "{count} tours",
+    "skipToContent": "Skip to main content",
+    "toggleDarkMode": "Enable dark mode",
+    "toggleLightMode": "Enable light mode",
+    "backToTop": "Back to top",
+    "gridView": "Grid view",
+    "listView": "List view",
+    "mapView": "Map view",
+    "addToWishlist": "Add to wishlist",
+    "priceRange": "Price range",
+    "expandMenu": "Expand menu"
   },
   "meta": {
     "title": "Hani — Smart travel",

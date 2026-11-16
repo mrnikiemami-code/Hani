@@ -44,7 +44,10 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ title, breadcrumbs, backgroundC
                                         aria-current={breadcrumb.active ? 'page' : undefined}
                                     >
                                         {breadcrumb.link ? (
-                                            <Link href={all_routes.allService1}>
+                                            <Link
+                                                href={breadcrumb.link ?? all_routes.allService1}
+                                                aria-label={breadcrumb.label}
+                                            >
                                                 {
                                                     breadCrumbPages ? (<i className="isax isax-grid-55"></i>) : (<i className={`isax isax-home5${breadcrumb.showLabel ? ' me-1' : ''}`}></i>)
                                                 }

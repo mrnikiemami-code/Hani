@@ -33,7 +33,7 @@ export function HaniRecommendedVisas() {
                         visa.coverImageUrl ??
                         `assets/img/visa/visa-0${(index % 6) + 1}.jpg`
                       }
-                      className="img-fluid"
+                      loading="lazy" className="img-fluid"
                       alt={visa.name}
                     />
                   </Link>

@@ -256,13 +256,25 @@ const TourGrid = ({
                                     </h6>
                                     <div className="d-flex align-items-center flex-wrap">
                                         <div className="list-item d-flex align-items-center mb-3">
-                                            <Link href={routes.tourGrid} className="list-icon active me-2">
+                                            <Link
+                                                href={routes.tourGrid}
+                                                className="list-icon active me-2"
+                                                aria-label={t("gridView")}
+                                            >
                                                 <i className="isax isax-grid-1" />
                                             </Link>
-                                            <Link href={routes.tourList} className="list-icon me-2">
+                                            <Link
+                                                href={routes.tourList}
+                                                className="list-icon me-2"
+                                                aria-label={t("listView")}
+                                            >
                                                 <i className="isax isax-firstline" />
                                             </Link>
-                                            <Link href={routes.tourMap} className="list-icon me-2">
+                                            <Link
+                                                href={routes.tourMap}
+                                                className="list-icon me-2"
+                                                aria-label={t("mapView")}
+                                            >
                                                 <i className="isax isax-map-1" />
                                             </Link>
                                         </div>
@@ -419,6 +431,7 @@ const TourGrid = ({
                                                             <Link
                                                                 href="#"
                                                                 className={`fav-icon ${selectedItems[index] ? "selected" : ""}`}
+                                                                aria-label={t("addToWishlist")}
                                                             >
                                                                 <i className="isax isax-heart5" />
                                                             </Link>

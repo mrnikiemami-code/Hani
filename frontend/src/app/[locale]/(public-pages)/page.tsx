@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import { absoluteUrl } from "@/lib/hani/site";
 import {
   HOME_EXPERIENCE_COOKIE,
   resolveHomeExperience
@@ -7,6 +10,42 @@ import {
 import { getHomeFeed } from "@/features/home-experience/infrastructure/home-api";
 import { HomeExperienceRenderer } from "@/features/home-experience/ui/HomeExperienceRenderer";
 import { getMyPreferences } from "@/features/preferences/infrastructure/preferences-api";
+import { HomeStructuredData } from "@/features/home-experience/ui/HomeStructuredData";
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const languages = Object.fromEntries(
+    routing.locales.map((item) => [item, absoluteUrl(`/${item}`)])
+  );
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: {
+      canonical: absoluteUrl(`/${locale}`),
+      languages
+    },
+    openGraph: {
+      type: "website",
+      siteName: "Hani",
+      title: t("title"),
+      description: t("description"),
+      url: absoluteUrl(`/${locale}`),
+      images: [absoluteUrl("/assets/img/bg/adventure-bg.png")]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+      images: [absoluteUrl("/assets/img/bg/adventure-bg.png")]
+    }
+  };
+}
 
 export default async function HomePage({
   params,
@@ -29,10 +68,13 @@ export default async function HomePage({
   const homeFeed = await getHomeFeed(locale, tourScope);
 
   return (
-    <HomeExperienceRenderer
-      definition={experience}
-      homeFeed={homeFeed}
-      tourScope={tourScope}
-    />
+    <>
+      <HomeStructuredData locale={locale} feed={homeFeed} />
+      <HomeExperienceRenderer
+        definition={experience}
+        homeFeed={homeFeed}
+        tourScope={tourScope}
+      />
+    </>
   );
 }

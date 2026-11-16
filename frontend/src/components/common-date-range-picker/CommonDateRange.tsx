@@ -37,13 +37,25 @@ const CommonDateRange = ({ onApply, fromLabel, toLabel }: CommonDateRangeProps) 
     <>
       <div className="form-item" onClick={() => setOpen(true)}>
         <label className="form-label fs-14 text-default mb-1">{fromLabel}</label>
-        <input type="text" className="form-control check-in" value={format(startDate, "dd-MM-yyyy")} readOnly />
+        <input
+          type="text"
+          className="form-control check-in"
+          value={format(startDate, "dd-MM-yyyy")}
+          readOnly
+          aria-label={fromLabel}
+        />
         <p className="fs-12 mb-0">{format(startDate, "EEEE", { locale: dateLocale })}</p>
       </div>
 
       <div className="form-item" onClick={() => setOpen(true)}>
         <label className="form-label fs-14 text-default mb-1">{toLabel}</label>
-        <input type="text" className="form-control check-out" value={format(endDate, "dd-MM-yyyy")} readOnly />
+        <input
+          type="text"
+          className="form-control check-out"
+          value={format(endDate, "dd-MM-yyyy")}
+          readOnly
+          aria-label={toLabel}
+        />
         <p className="fs-12 mb-0">{format(endDate, "EEEE", { locale: dateLocale })}</p>
       </div>
 

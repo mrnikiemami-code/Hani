@@ -11,6 +11,7 @@ interface Image {
   width?: number;
   id?:string;
   style?: CSSProperties;
+  loading?: "lazy" | "eager";
 }
 
 const ImageWithBasePath = (props: Image) => {
@@ -25,6 +26,8 @@ const ImageWithBasePath = (props: Image) => {
       width={props.width}
       id={props.id}
       style={props.style}
+      loading={props.loading}
+      decoding="async"
     />
   );
 };
