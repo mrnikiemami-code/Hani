@@ -392,10 +392,7 @@ const TourGrid = ({
                                         </Link>
                                     </div>
                                 </div>
-                                <div
-                                    className={`row justify-content-center${isLoading ? " opacity-50" : ""}`}
-                                    aria-busy={isLoading}
-                                >
+                                <div className="row justify-content-center" aria-busy={isLoading}>
                                     {tours.map((tour, index) => {
                                         const image =
                                             tour.coverImageUrl ??
