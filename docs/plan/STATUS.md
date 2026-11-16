@@ -575,3 +575,4 @@
 - Calendar phase 2 implemented: global MediatR DateOnly guard, locale-aware picker facade, public display migration, CI date-architecture gate, AGENTS rules.
 - Calendar modal + no-default dates: home date inputs start empty, centered Jalali modal, searchable/scrollable home dropdowns; Playwright 16 passed.
 - Calendar/dropdown QA fix: repaired corrupted FA/AR message strings, date modal text verified, dropdown flips upward and stays inside viewport.
+- Date/dropdown QA follow-up: modal title deduplicated; dropdown always opens below and scrolls with the page.

@@ -35,10 +35,8 @@ export default function BookingDropdown({
   const [subValue, setSubValue] = useState(defaultSubValue);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
-  const [dropUp, setDropUp] = useState(false);
   const [limit, setLimit] = useState(pageSize);
   const rootRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
   const menuId = useId();
 
@@ -78,12 +76,6 @@ export default function BookingDropdown({
   }, [open]);
 
   const openMenu = () => {
-    const rect = inputRef.current?.getBoundingClientRect();
-    if (rect) {
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-      setDropUp(spaceBelow < 320 && spaceAbove > spaceBelow);
-    }
     setOpen(true);
   };
 
@@ -120,7 +112,6 @@ export default function BookingDropdown({
       </label>
 
       <input
-        ref={inputRef}
         id={inputId}
         type="text"
         className="form-control value-input"
@@ -143,9 +134,7 @@ export default function BookingDropdown({
 
       <div
         id={menuId}
-        className={`dropdown-menu dropdown-md p-0 ${open ? "show" : ""} ${
-          dropUp ? "drop-up" : ""
-        }`}
+        className={`dropdown-menu dropdown-md p-0 ${open ? "show" : ""}`}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="input-search p-3 border-bottom">

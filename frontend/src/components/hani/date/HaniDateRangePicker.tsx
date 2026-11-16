@@ -264,12 +264,7 @@ export function HaniDateRangePicker({
               <div className="hani-date-modal__card hani-date-modal__card--range">
                 <div className="hani-date-modal__header">
                   <div>
-                    <span className="hani-date-modal__eyebrow">
-                      {t("selectDate")}
-                    </span>
-                    <strong>
-                      {fromLabel} {toLabel ? `— ${toLabel}` : ""}
-                    </strong>
+                    <strong>{t("selectDate")}</strong>
                   </div>
                   <button
                     type="button"

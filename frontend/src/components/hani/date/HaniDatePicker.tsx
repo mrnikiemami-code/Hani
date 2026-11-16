@@ -151,10 +151,7 @@ export function HaniDatePicker({
               <div className="hani-date-modal__card">
                 <div className="hani-date-modal__header">
                   <div>
-                    <span className="hani-date-modal__eyebrow">
-                      {t("selectDate")}
-                    </span>
-                    <strong>{placeholder ?? t("selectDate")}</strong>
+                    <strong>{t("selectDate")}</strong>
                   </div>
                   <button
                     type="button"

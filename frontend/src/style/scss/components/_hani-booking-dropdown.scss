@@ -15,11 +15,6 @@
     z-index: 1050;
 }
 
-.booking-dropdown .dropdown-menu.drop-up {
-    top: auto;
-    bottom: calc(100% + 6px);
-}
-
 .booking-dropdown .dropdown-menu ul {
     max-height: 280px;
     overflow-y: auto;
