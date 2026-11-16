@@ -21,12 +21,16 @@ const TourGrid = ({
     page,
     locale,
     scope,
+    isLoading,
+    onScopeSelect,
 }: {
     tours?: TourSearchItem[];
     totalCount?: number;
     page?: number;
     locale?: string;
     scope?: TourScopeValue;
+    isLoading?: boolean;
+    onScopeSelect?: (scope?: TourScopeValue) => void;
 }) => {
 
     const routes = all_routes;
@@ -80,6 +84,12 @@ const TourGrid = ({
                                     scroll={false}
                                     className={`nav-link ${scope ? "" : "active"}`}
                                     aria-current={scope ? undefined : "page"}
+                                    onClick={(event) => {
+                                        if (onScopeSelect) {
+                                            event.preventDefault();
+                                            onScopeSelect(undefined);
+                                        }
+                                    }}
                                 >
                                     {t("scopeAll")}
                                 </LocaleLink>
@@ -91,6 +101,12 @@ const TourGrid = ({
                                     scroll={false}
                                     className={`nav-link ${scope === "Domestic" ? "active" : ""}`}
                                     aria-current={scope === "Domestic" ? "page" : undefined}
+                                    onClick={(event) => {
+                                        if (onScopeSelect) {
+                                            event.preventDefault();
+                                            onScopeSelect("Domestic");
+                                        }
+                                    }}
                                 >
                                     {t("scopeDomestic")}
                                 </LocaleLink>
@@ -102,6 +118,12 @@ const TourGrid = ({
                                     scroll={false}
                                     className={`nav-link ${scope === "Foreign" ? "active" : ""}`}
                                     aria-current={scope === "Foreign" ? "page" : undefined}
+                                    onClick={(event) => {
+                                        if (onScopeSelect) {
+                                            event.preventDefault();
+                                            onScopeSelect("Foreign");
+                                        }
+                                    }}
                                 >
                                     {t("scopeForeign")}
                                 </LocaleLink>
@@ -370,7 +392,10 @@ const TourGrid = ({
                                         </Link>
                                     </div>
                                 </div>
-                                <div className="row justify-content-center">
+                                <div
+                                    className={`row justify-content-center${isLoading ? " opacity-50" : ""}`}
+                                    aria-busy={isLoading}
+                                >
                                     {tours.map((tour, index) => {
                                         const image =
                                             tour.coverImageUrl ??

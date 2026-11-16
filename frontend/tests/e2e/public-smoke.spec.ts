@@ -9,6 +9,19 @@ test.describe("public smoke", () => {
     await expect(trending.getByText("تورهای داخلی", { exact: true })).toBeVisible();
   });
 
+  test("tour scope tabs switch in place without a document reload", async ({ page }) => {
+    await page.goto("/fa/tours/domestic");
+    await page.evaluate(() => {
+      (window as unknown as { __haniMarker?: string }).__haniMarker = "kept";
+    });
+    await page.getByRole("link", { name: "تورهای خارجی" }).click();
+    await expect(page).toHaveURL(/\/fa\/tours\/foreign/);
+    const marker = await page.evaluate(
+      () => (window as unknown as { __haniMarker?: string }).__haniMarker
+    );
+    expect(marker).toBe("kept");
+  });
+
   test("tours landing renders and keeps LTR in English", async ({ page }) => {
     await page.goto("/en/tours/domestic");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
