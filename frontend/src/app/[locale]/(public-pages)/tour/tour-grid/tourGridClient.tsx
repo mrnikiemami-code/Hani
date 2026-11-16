@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useTranslations } from "next-intl";
 import type {
   PagedResult,
   TourScopeValue,
@@ -27,6 +28,16 @@ function filterItems(items: TourSearchItem[]): TourSearchItem[] {
   return items.filter((item) => !item.title.includes("?") && !item.title.includes("�??"));
 }
 
+function pathForScope(locale: string, scope?: TourScopeValue): string {
+  if (scope === "Domestic") {
+    return `/${locale}/tours/domestic`;
+  }
+  if (scope === "Foreign") {
+    return `/${locale}/tours/foreign`;
+  }
+  return `/${locale}/tours`;
+}
+
 export default function TourGridClient({
   tours,
   totalCount,
@@ -34,6 +45,7 @@ export default function TourGridClient({
   locale,
   scope
 }: Props) {
+  const t = useTranslations("common");
   const [state, setState] = useState<GridState>({
     tours: filterItems(tours),
     totalCount,
@@ -61,17 +73,31 @@ export default function TourGridClient({
         });
         const result = (await response.json()) as PagedResult<TourSearchItem>;
         const items = filterItems(result?.items ?? []);
+
         setState({
           tours: items,
           totalCount: items.length,
           page: result?.page ?? nextPage,
           scope: nextScope
         });
+
+        // Keep the address bar truthful without triggering Next.js routing.
+        window.history.replaceState(
+          { scope: nextScope ?? null },
+          "",
+          pathForScope(locale, nextScope)
+        );
+        document.title =
+          nextScope === "Domestic"
+            ? t("domesticTours")
+            : nextScope === "Foreign"
+              ? t("foreignTours")
+              : t("tours");
       } finally {
         setLoading(false);
       }
     },
-    [locale]
+    [locale, t]
   );
 
   return (

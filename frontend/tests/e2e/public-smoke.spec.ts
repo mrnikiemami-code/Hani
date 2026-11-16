@@ -9,7 +9,7 @@ test.describe("public smoke", () => {
     await expect(trending.getByText("تورهای داخلی", { exact: true })).toBeVisible();
   });
 
-  test("tour scope tabs switch in place without changing the URL", async ({ page }) => {
+  test("tour scope tabs update the URL without a document reload", async ({ page }) => {
     await page.goto("/fa/tours/domestic");
     await page.evaluate(() => {
       (window as unknown as { __haniMarker?: string }).__haniMarker = "kept";
@@ -18,7 +18,7 @@ test.describe("public smoke", () => {
     const foreign = page.getByRole("link", { name: "تورهای خارجی" }).first();
     await foreign.click();
     await expect(foreign).toHaveClass(/active/);
-    await expect(page).toHaveURL(/\/fa\/tours\/domestic$/);
+    await expect(page).toHaveURL(/\/fa\/tours\/foreign$/);
 
     const marker = await page.evaluate(
       () => (window as unknown as { __haniMarker?: string }).__haniMarker
