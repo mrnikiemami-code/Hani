@@ -552,3 +552,16 @@
 - [ ] E-07 provider پرواز، A-15 Lastgram، SMS/Email واقعی، storage تولیدی، PSP، CDN/DNS/TLS.
 
 > این سند Gate 9.1 را کامل اعلام نمی‌کند؛ scope، preferences، C4/C5 داده‌محور، checkout core و mock payment بسته شده‌اند، اما PSP واقعی، axe/Lighthouse و بدهی a11y قالب باز هستند.
+
+---
+
+## Gate 9.1 — Lastsecond Homepage Benchmark (2026-11-16)
+
+- Report: [`../reports/lastsecond-homepage-benchmark-2026-11-16.md`](../reports/lastsecond-homepage-benchmark-2026-11-16.md)
+- Home tabs are local UI state: no URL/head change, one filter-options XHR.
+- Foreign form: origin, destination, departure/return, duration, hotel.
+- Domestic form: city/type + departure only.
+- Search targets: foreign `/tours?hotel&list`; domestic `/tours/تور-ایرانگردی?list`.
+- Lighthouse home: SEO 100, Accessibility 83, Best Practices 83.
+- Key gaps to beat: brand-only H1, no JSON-LD, no `og:image`, non-semantic tabs, zoom lock, image dimensions/lazy/srcset, no `main` landmark.
+- Next implementation must be template-first and include canonical/hreflang/JSON-LD/a11y.
