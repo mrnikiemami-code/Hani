@@ -76,6 +76,8 @@ const TourGrid = ({
                             <li>
                                 <LocaleLink
                                     href="/tours"
+                                    prefetch
+                                    scroll={false}
                                     className={`nav-link ${scope ? "" : "active"}`}
                                     aria-current={scope ? undefined : "page"}
                                 >
@@ -85,6 +87,8 @@ const TourGrid = ({
                             <li>
                                 <LocaleLink
                                     href="/tours/domestic"
+                                    prefetch
+                                    scroll={false}
                                     className={`nav-link ${scope === "Domestic" ? "active" : ""}`}
                                     aria-current={scope === "Domestic" ? "page" : undefined}
                                 >
@@ -94,6 +98,8 @@ const TourGrid = ({
                             <li>
                                 <LocaleLink
                                     href="/tours/foreign"
+                                    prefetch
+                                    scroll={false}
                                     className={`nav-link ${scope === "Foreign" ? "active" : ""}`}
                                     aria-current={scope === "Foreign" ? "page" : undefined}
                                 >

@@ -1,14 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import type {
   TourScopeValue,
   TourSearchItem
 } from "@/features/tours/domain/tour-search";
-
-const TourGridView = dynamic(() => import("@/views/tour/tour-grid/tourGrid"), {
-  ssr: false
-});
+import TourGridView from "@/views/tour/tour-grid/tourGrid";
 
 export default function TourGridClient({
   tours,
