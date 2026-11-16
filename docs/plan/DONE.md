@@ -274,4 +274,4 @@
 | `d1a5db3` | Gate 9.1 final data closure: inbox messages, real agency dashboard, mock payment completion, Playwright smoke |
 | `1223a46` | Gate 9.1 data completeness: tour cover image, content author/reading time |
 | `5493b6b` | Home parity Phase 1: home BFF sections, search options, origin-name resolution |
-| `pending` | Home parity Phase 2: Tour hero default, domestic/foreign fields, server options, localized dates, latest scope sections |
+| `c498298` | Home parity Phase 2: Tour hero default, domestic/foreign fields, server options, localized dates, latest scope sections |
