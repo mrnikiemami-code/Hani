@@ -1,0 +1,99 @@
+@use "../utils/variables";
+
+/* Hani calendar boundary: one visual skin for the locale-aware picker. */
+.hani-date-picker {
+    width: 100%;
+}
+
+.hani-date-picker .rmdp-container {
+    width: 100%;
+}
+
+.hani-date-picker input {
+    width: 100%;
+}
+
+.rmdp-container.hani-date-range-picker {
+    display: flex !important;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.hani-date-range-picker > div:first-child {
+    display: flex;
+    align-items: flex-start;
+    min-width: 0;
+    width: 100%;
+}
+
+.hani-date-range-picker > div:first-child > .form-item {
+    flex: 1;
+    min-width: 0;
+}
+
+.hani-datepicker-calendar.rmdp-wrapper {
+    border: 1px solid variables.$border-color;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(32, 44, 75, 0.14);
+    font-family: inherit;
+    padding: 4px;
+}
+
+.hani-datepicker-calendar .rmdp-header-values,
+.hani-datepicker-calendar .rmdp-month-name {
+    color: variables.$gray-900;
+    font-weight: 600;
+}
+
+.hani-datepicker-calendar .rmdp-week-day {
+    color: variables.$gray-600;
+    font-weight: 500;
+}
+
+.hani-datepicker-calendar .rmdp-day span {
+    border-radius: 50%;
+}
+
+.hani-datepicker-calendar .rmdp-day.rmdp-today span {
+    background-color: transparent;
+    border: 1px solid variables.$primary;
+    color: variables.$primary;
+}
+
+.hani-datepicker-calendar .rmdp-day.rmdp-selected span,
+.hani-datepicker-calendar .rmdp-range {
+    background-color: variables.$primary !important;
+    color: variables.$white !important;
+}
+
+.hani-datepicker-calendar .rmdp-range-hover {
+    background-color: rgba(207, 52, 37, 0.18);
+    color: variables.$gray-900;
+}
+
+.hani-datepicker-calendar .rmdp-arrow {
+    border-color: variables.$primary;
+}
+
+.hani-datepicker-calendar .rmdp-arrow-container:hover {
+    background-color: variables.$primary;
+}
+
+.hani-datepicker-calendar .rmdp-arrow-container:hover .rmdp-arrow {
+    border-color: variables.$white;
+}
+
+.hani-datepicker-calendar .rmdp-day:not(.rmdp-disabled, .rmdp-day-hidden) span:hover {
+    background-color: rgba(207, 52, 37, 0.12);
+    color: variables.$gray-900;
+}
+
+@media (max-width: 575.98px) {
+    .rmdp-container.hani-date-range-picker {
+        display: block !important;
+    }
+
+    .hani-date-range-picker > div:first-child {
+        display: block;
+    }
+}

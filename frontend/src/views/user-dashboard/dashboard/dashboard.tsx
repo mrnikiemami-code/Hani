@@ -9,6 +9,7 @@ import ReactApexChart from "react-apexcharts";
 import { useLocale, useTranslations } from "next-intl";
 import { formatMoney } from "@/lib/hani/money";
 import type { TravelerDashboard } from "@/features/dashboard/infrastructure/dashboard-api";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 
 const Dashboard = ({ dashboard }: { dashboard?: TravelerDashboard | null }) => {
 
@@ -330,7 +331,7 @@ const Dashboard = ({ dashboard }: { dashboard?: TravelerDashboard | null }) => {
                                                                     <div className="d-flex align-items-center flex-wrap">
                                                                         <p className="fs-14 d-flex align-items-center border-end pe-2 me-2 mb-0">
                                                                             <i className="isax isax-calendar-25 me-2" />
-                                                                            {new Date(order.createdAt).toLocaleDateString(locale)}
+                                                                            {formatIsoInstant(order.createdAt, locale, { dateStyle: "medium" })}
                                                                         </p>
                                                                         <p className="fs-14 d-flex align-items-center">
                                                                             {formatMoney(order.total, order.currency, locale)}

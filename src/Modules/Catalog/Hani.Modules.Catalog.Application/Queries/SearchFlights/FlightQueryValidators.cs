@@ -1,4 +1,5 @@
 using FluentValidation;
+using Hani.BuildingBlocks.Application;
 
 namespace Hani.Modules.Catalog.Application.Queries.SearchFlights;
 
@@ -27,6 +28,9 @@ public sealed class SearchFlightsQueryValidator : AbstractValidator<SearchFlight
             .GreaterThanOrEqualTo(query => query.MinPrice)
             .When(query => query.MaxPrice is not null && query.MinPrice is not null)
             .WithErrorCode("HANI-CATALOG-1934");
+        RuleFor(query => query.DepartureDate)
+            .Must(GregorianDateGuards.IsAccepted)
+            .WithErrorCode("HANI-CATALOG-1935");
     }
 }
 

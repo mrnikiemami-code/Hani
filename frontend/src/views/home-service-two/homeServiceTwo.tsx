@@ -16,6 +16,7 @@ import ServiceTwoFooter from "./serviceTwoFooter";
 import BookingDropdown from "../../components/booking-dropdown/bookingDropdown";
 import { parseTime } from '../../utils/dateFormat'
 import BannerCounter from "../../components/banner-counter/counter";
+import type { IsoDate } from "@/lib/hani/calendar";
 type Mode = "flight" | "hotel" | "cruise" | "tour" | "bus" | "activity" | "visa" | "guide";
 
 type BookingState = {
@@ -194,13 +195,13 @@ const HomeServiceTwo = () => {
     appliedData.guide.infants;
   const totalGuidePassengers = guidePassenger === 0 ? 4 : guidePassenger;
   const [_dates, setDates] = useState<{
-    start: Date | null;
-    end: Date | null;
+    start: IsoDate | null;
+    end: IsoDate | null;
   }>({
     start: null,
     end: null,
   });
-  const handleApply = (start: Date, end: Date) => {
+  const handleApply = (start: IsoDate, end: IsoDate) => {
     setDates({ start, end });
     console.log("Selected:", start, end);
   };

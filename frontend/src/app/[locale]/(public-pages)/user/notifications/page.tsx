@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getMyMessages } from "@/features/dashboard/infrastructure/notifications-api";
 import { markMessageReadAction } from "@/features/dashboard/application/mark-message-read";
 import { FinancePageShell } from "@/features/dashboard/ui/FinancePageShell";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +49,7 @@ export default async function NotificationsPage({
                         </span>
                       </td>
                       <td className="fs-14 text-gray-6">
-                        {new Date(message.createdAt).toLocaleDateString(locale)}
+                        {formatIsoInstant(message.createdAt, locale, { dateStyle: "medium" })}
                       </td>
                       <td className="text-end">
                         <form action={markMessageReadAction}>

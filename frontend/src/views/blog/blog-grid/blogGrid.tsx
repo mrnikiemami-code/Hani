@@ -6,6 +6,7 @@ import ImageWithBasePath from '../../../components/image-with-base-path';
 import { all_routes } from '../../../routes/all_routes';
 import type { BlogSummaryItem } from "@/features/content/domain/blog";
 import { useLocale, useTranslations } from "next-intl";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 
 const BlogGrid = ({
     posts = [],
@@ -73,9 +74,11 @@ const BlogGrid = ({
                                                 <p className="text-white mb-2">
                                                     <i className="isax isax-calendar-2 me-2" />
                                                     {post.publishedAt
-                                                        ? new Intl.DateTimeFormat(locale ?? currentLocale, {
-                                                              dateStyle: "medium"
-                                                          }).format(new Date(post.publishedAt))
+                                                        ? formatIsoInstant(
+                                                              post.publishedAt,
+                                                              locale ?? currentLocale,
+                                                              { dateStyle: "medium" }
+                                                          )
                                                         : ""}
                                                 </p>
                                             </div>

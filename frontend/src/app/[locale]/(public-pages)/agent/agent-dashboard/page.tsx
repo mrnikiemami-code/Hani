@@ -7,6 +7,7 @@ import {
   getMyAgencyPayouts
 } from "@/features/dashboard/infrastructure/agency-api";
 import { AgentPageShell } from "@/features/dashboard/ui/AgentPageShell";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -106,7 +107,7 @@ export default async function AgentDashboardPage({
                         </span>
                       </td>
                       <td className="fs-14 text-gray-6">
-                        {new Date(order.createdAt).toLocaleDateString(locale)}
+                        {formatIsoInstant(order.createdAt, locale, { dateStyle: "medium" })}
                       </td>
                     </tr>
                   ))}

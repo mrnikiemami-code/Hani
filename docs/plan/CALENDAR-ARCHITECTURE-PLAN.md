@@ -373,3 +373,34 @@ fallback does not leak into pages.
    display column.
 
 No runtime code has been changed by this plan.
+
+
+## 12. Implementation status (2026-11-16)
+
+### Done in this slice
+
+- Added `IsoDate`/`IsoInstant` types and Gregorian validation.
+- Added locale calendar resolver and display formatters.
+- Added `HaniDatePicker` and `HaniDateRangePicker`; fa renders Jalali,
+  en/ar render Gregorian.
+- Migrated the home hero date controls and the shared `CommonDateRange`.
+- Replaced the template `DatePicker` internals with the locale-aware facade;
+  legacy `Date` call sites keep working without page-level calendar logic.
+- Migrated dashboard range box to the shared range primitive.
+- Migrated public display sites off raw `toLocaleDateString`/`Intl` usage.
+- Added Gregorian range guards to marketplace and flight search validators.
+- Added `AGENTS.md` mandatory date architecture rules.
+- Added Playwright coverage for Jalali display, Gregorian canonical values,
+  EN Gregorian behavior, API rejection of `1405-08-25`, and mobile overflow.
+- Added OpenAPI Gregorian examples and descriptions.
+
+### Remaining migration
+
+- Convert the remaining template `DatePicker` call sites from `Date` props to
+  `IsoDate` props; the current facade is a compatibility layer, not the final
+  shape.
+- Apply the shared guards to every remaining date command (booking, reviews,
+  payments, settlement, identity, reports).
+- Add localized server-side formatting for emails/PDFs/exports.
+- Add a lint/CI guard that rejects imports of PrimeReact `Calendar` in feature
+  pages and raw date formatting in UI code.

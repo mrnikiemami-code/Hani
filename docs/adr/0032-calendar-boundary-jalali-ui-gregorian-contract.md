@@ -1,6 +1,6 @@
 # ADR-0032: Calendar Boundary — Jalali UI, Gregorian Contract
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-11-16
 - Gate: 9.1 (cross-cutting)
 - Related: [ADR-0010](0010-i18n-and-seo.md), [ADR-0018](0018-config-driven-localization.md)

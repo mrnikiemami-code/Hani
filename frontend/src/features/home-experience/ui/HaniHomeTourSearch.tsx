@@ -4,8 +4,9 @@ import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import BookingDropdown from "@/components/booking-dropdown/bookingDropdown";
-import CommonDateRange from "@/components/common-date-range-picker/CommonDateRange";
-import { DatePicker } from "@/components/common-date-picker/appDatePicker";
+import { HaniDateRangePicker } from "@/components/hani/date/HaniDateRangePicker";
+import { HaniDatePicker } from "@/components/hani/date/HaniDatePicker";
+import { addIsoDays, todayIsoDate } from "@/lib/hani/calendar";
 
 type Scope = "foreign" | "domestic";
 
@@ -30,6 +31,7 @@ export function HaniHomeTourSearch() {
   const [options, setOptions] = useState<SearchOptions>(emptyOptions);
   const foreignTab = useRef<HTMLAnchorElement>(null);
   const domesticTab = useRef<HTMLAnchorElement>(null);
+  const today = todayIsoDate();
 
   useEffect(() => {
     let active = true;
@@ -143,9 +145,10 @@ export function HaniHomeTourSearch() {
                   locations={locationOptions(options.destinations)}
                 />
               </div>
-              <CommonDateRange
+              <HaniDateRangePicker
                 fromLabel={t("departure")}
                 toLabel={t("return")}
+                defaultValue={{ start: today, end: addIsoDays(today, 1) }}
               />
               <div className="form-item min-w-0">
                 <BookingDropdown
@@ -199,12 +202,12 @@ export function HaniHomeTourSearch() {
                 <label className="form-label fs-14 text-default mb-1" htmlFor="tour-departure">
                   {t("departure")}
                 </label>
-                <DatePicker
+                <HaniDatePicker
                   id="tour-departure"
                   className="form-control datetimepicker"
                   placeholder={t("departure")}
+                  defaultValue={today}
                   disablePast
-                  format="DD-MM-YYYY"
                   ariaLabel={t("departure")}
                 />
               </div>

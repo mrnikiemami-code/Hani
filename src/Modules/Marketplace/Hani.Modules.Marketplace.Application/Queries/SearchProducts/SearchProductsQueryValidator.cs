@@ -75,5 +75,17 @@ public sealed class SearchProductsQueryValidator : AbstractValidator<SearchProdu
             .GreaterThanOrEqualTo(0)
             .When(query => query.Infants is not null)
             .WithErrorCode("HANI-MARKET-1012");
+
+        RuleFor(query => query.StartDate)
+            .Must(GregorianDateGuards.IsAccepted)
+            .WithErrorCode("HANI-MARKET-1013");
+
+        RuleFor(query => query.EndDate)
+            .Must(GregorianDateGuards.IsAccepted)
+            .WithErrorCode("HANI-MARKET-1014");
+
+        RuleFor(query => query)
+            .Must(query => GregorianDateGuards.IsOrdered(query.StartDate, query.EndDate))
+            .WithErrorCode("HANI-MARKET-1015");
     }
 }

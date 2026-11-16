@@ -12,6 +12,7 @@ import type {
 } from "@/features/tours/domain/tour-search";
 import { Link as LocaleLink } from "@/i18n/navigation";
 import { formatMoney } from "@/lib/hani/money";
+import { formatIsoDate } from "@/lib/hani/calendar";
 import { useTranslations } from "next-intl";
 import TourSearch from '../tourSearch';
 
@@ -411,8 +412,10 @@ const TourGrid = ({
                                             `assets/img/tours/tours-0${(index % 3) + 7}.jpg`;
                                         const destination = tour.destinationNames?.[0] ?? tour.tourType;
                                         const departure = tour.nextDepartureDate
-                                            ? new Intl.DateTimeFormat(locale ?? "fa").format(
-                                                  new Date(tour.nextDepartureDate)
+                                            ? formatIsoDate(
+                                                  tour.nextDepartureDate,
+                                                  locale ?? "fa",
+                                                  "medium"
                                               )
                                             : null;
 

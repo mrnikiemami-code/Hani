@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 import ImageWithBasePath from "@/components/image-with-base-path";
 import { Link } from "@/i18n/navigation";
 import {
@@ -54,9 +55,9 @@ export async function ContentList({
                         <span className="text-white fs-16">
                           <i className="isax isax-calendar" />
                           {item.publishedAt
-                            ? new Intl.DateTimeFormat(locale, {
+                            ? formatIsoInstant(item.publishedAt, locale, {
                                 dateStyle: "medium"
-                              }).format(new Date(item.publishedAt))
+                              })
                             : ""}
                         </span>
                         <span className="badge badge-light text-dark rounded-pill p-2">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { formatMoney } from "@/lib/hani/money";
+import { formatIsoDate } from "@/lib/hani/calendar";
 import { submitCheckout } from "@/features/checkout/application/submit-checkout";
 import { getCheckoutProduct } from "@/features/checkout/infrastructure/checkout-api";
 
@@ -80,7 +81,8 @@ export default async function CheckoutPage({
                         <select className="form-select" id="departure" name="departureId" defaultValue={departure.id}>
                           {offer.departures.map((item) => (
                             <option key={item.id} value={item.id}>
-                              {item.startDate} — {item.endDate}
+                              {formatIsoDate(item.startDate, locale)} —{" "}
+                              {formatIsoDate(item.endDate, locale)}
                             </option>
                           ))}
                         </select>

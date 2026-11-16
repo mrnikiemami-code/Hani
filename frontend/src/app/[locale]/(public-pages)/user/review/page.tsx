@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getMyReviews } from "@/features/dashboard/infrastructure/reviews-api";
 import { FinancePageShell } from "@/features/dashboard/ui/FinancePageShell";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +53,7 @@ export default async function ReviewPage({
                         </span>
                       </td>
                       <td className="fs-14 text-gray-6">
-                        {new Date(review.publishedAt ?? review.createdAt).toLocaleDateString(locale)}
+                        {formatIsoInstant(review.publishedAt ?? review.createdAt, locale, { dateStyle: "medium" })}
                       </td>
                     </tr>
                   ))}

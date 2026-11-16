@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 import ImageWithBasePath from "@/components/image-with-base-path";
 import { Link } from "@/i18n/navigation";
 import { useHomeFeed } from "./HomeFeedProvider";
@@ -73,9 +74,9 @@ export function HaniLatestContent({
                       <span className="text-white fs-16">
                         <i className="isax isax-calendar" />
                         {item.date
-                          ? new Intl.DateTimeFormat(locale, {
+                          ? formatIsoInstant(item.date, locale, {
                               dateStyle: "medium"
-                            }).format(new Date(item.date))
+                            })
                           : ""}
                       </span>
                       <span className="badge badge-light text-dark rounded-pill p-2">

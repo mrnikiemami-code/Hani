@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { formatMoney } from "@/lib/hani/money";
 import { getMyAgencyPayouts } from "@/features/dashboard/infrastructure/agency-api";
 import { AgentPageShell } from "@/features/dashboard/ui/AgentPageShell";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +54,7 @@ export default async function AgentPaymentHistoryPage({
                         </span>
                       </td>
                       <td className="fs-14 text-gray-6">
-                        {new Date(payout.createdAt).toLocaleDateString(locale)}
+                        {formatIsoInstant(payout.createdAt, locale, { dateStyle: "medium" })}
                       </td>
                     </tr>
                   ))}

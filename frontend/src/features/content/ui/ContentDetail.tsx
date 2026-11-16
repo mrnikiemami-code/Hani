@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 import ImageWithBasePath from "@/components/image-with-base-path";
 import { getTravelogue, getVideo } from "../infrastructure/content-api";
 
@@ -40,9 +41,9 @@ export async function ContentDetail({
             <h1 className="mb-3">{item.title}</h1>
             <p className="text-gray-6 mb-4">
               {item.publishedAt
-                ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(
-                    new Date(item.publishedAt)
-                  )
+                ? formatIsoInstant(item.publishedAt, locale, {
+                    dateStyle: "medium"
+                  })
                 : ""}
             </p>
             {isVideo && videoUrl ? (

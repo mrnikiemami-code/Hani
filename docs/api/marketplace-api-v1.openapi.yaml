@@ -29,8 +29,16 @@ paths:
           schema: { type: string }
         - { name: destinationSlug, in: query, schema: { type: [string, 'null'] } }
         - { name: originSlug, in: query, schema: { type: [string, 'null'] } }
-        - { name: startDate, in: query, schema: { type: [string, 'null'], format: date } }
-        - { name: endDate, in: query, schema: { type: [string, 'null'], format: date } }
+        - name: startDate
+          in: query
+          description: Gregorian ISO date (YYYY-MM-DD). Jalali dates are UI-only and must not be sent to the API.
+          example: '2026-11-16'
+          schema: { type: [string, 'null'], format: date }
+        - name: endDate
+          in: query
+          description: Gregorian ISO date (YYYY-MM-DD). Jalali dates are UI-only and must not be sent to the API.
+          example: '2026-11-20'
+          schema: { type: [string, 'null'], format: date }
         - { name: minDuration, in: query, schema: { type: [integer, 'null'], minimum: 0 } }
         - { name: maxDuration, in: query, schema: { type: [integer, 'null'], minimum: 0 } }
         - { name: tourType, in: query, schema: { type: [string, 'null'] } }
@@ -1520,7 +1528,11 @@ paths:
       parameters:
         - { name: origin, in: query, schema: { type: [string, 'null'], minLength: 3, maxLength: 3 } }
         - { name: destination, in: query, schema: { type: [string, 'null'], minLength: 3, maxLength: 3 } }
-        - { name: departureDate, in: query, schema: { type: [string, 'null'], format: date } }
+        - name: departureDate
+          in: query
+          description: Gregorian ISO date (YYYY-MM-DD). Jalali dates are UI-only and must not be sent to the API.
+          example: '2026-11-16'
+          schema: { type: [string, 'null'], format: date }
         - { name: cabin, in: query, schema: { type: [string, 'null'] } }
         - { name: airline, in: query, schema: { type: [string, 'null'] } }
         - { name: maxStops, in: query, schema: { type: [integer, 'null'], minimum: 0, maximum: 5 } }

@@ -6,6 +6,7 @@ import BannerCounter from '../../components/banner-counter/counter';
 import { all_routes } from '../../routes/all_routes';
 import BookingDropdown from '../../components/booking-dropdown/bookingDropdown';
 import CommonDateRange from '../../components/common-date-range-picker/CommonDateRange';
+import type { IsoDate } from "@/lib/hani/calendar";
 type Mode = "hotel";
 type BookingState = {
   hotel: {
@@ -56,14 +57,14 @@ const SearchOption = () => {
         appliedData.hotel.infants;
         const totalHotelGuest = hotelGuests === 0 ? 4 : hotelGuests;
           const [_dates, setDates] = useState<{
-          start: Date | null;
-          end: Date | null;
+          start: IsoDate | null;
+          end: IsoDate | null;
         }>({
           start: null,
           end: null,
         });
       
-        const handleApply = (start: Date, end: Date) => {
+        const handleApply = (start: IsoDate, end: IsoDate) => {
           setDates({ start, end });
           console.log("Selected:", start, end);
         };

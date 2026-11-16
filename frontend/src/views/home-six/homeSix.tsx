@@ -9,6 +9,7 @@ import Link from "next/link";
 import ImageWithBasePath from "../../components/image-with-base-path";
 import FooterSix from "./footer";
 import { all_routes } from "../../routes/all_routes";
+import type { IsoDate } from "@/lib/hani/calendar";
 import CommonDateRange from "../../components/common-date-range-picker/CommonDateRange";
 import BookingDropdown from "../../components/booking-dropdown/bookingDropdown";
 import AppSwiper from '../../components/app-swiper'
@@ -61,13 +62,13 @@ const HomeSix = () => {
     }));
   };
   const [_dates, setDates] = useState<{
-    start: Date | null;
-    end: Date | null;
+    start: IsoDate | null;
+    end: IsoDate | null;
   }>({
     start: null,
     end: null,
   });
-  const handleApply = (start: Date, end: Date) => {
+  const handleApply = (start: IsoDate, end: IsoDate) => {
     setDates({ start, end });
     console.log("Selected:", start, end);
   };

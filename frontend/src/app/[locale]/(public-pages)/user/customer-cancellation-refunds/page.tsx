@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { formatMoney } from "@/lib/hani/money";
 import { getMyRefunds } from "@/features/dashboard/infrastructure/finance-api";
 import { FinancePageShell } from "@/features/dashboard/ui/FinancePageShell";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -52,11 +53,11 @@ export default async function CustomerCancellationRefundsPage({
                         </span>
                       </td>
                       <td className="fs-14 text-gray-6">
-                        {new Date(refund.requestedAt).toLocaleDateString(locale)}
+                        {formatIsoInstant(refund.requestedAt, locale, { dateStyle: "medium" })}
                       </td>
                       <td className="fs-14 text-gray-6">
                         {refund.processedAt
-                          ? new Date(refund.processedAt).toLocaleDateString(locale)
+                          ? formatIsoInstant(refund.processedAt, locale, { dateStyle: "medium" })
                           : "-"}
                       </td>
                     </tr>

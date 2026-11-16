@@ -137,7 +137,13 @@
     "mapView": "نمایش روی نقشه",
     "addToWishlist": "افزودن به علاقه‌مندی‌ها",
     "priceRange": "محدوده قیمت",
-    "expandMenu": "باز کردن منو"
+    "expandMenu": "باز کردن منو",
+    "today": "?????",
+    "yesterday": "?????",
+    "last7Days": "? ??? ?????",
+    "last30Days": "?? ??? ?????",
+    "thisMonth": "??? ???",
+    "lastMonth": "??? ?????"
   },
   "meta": {
     "title": "هانی — سفر هوشمند",

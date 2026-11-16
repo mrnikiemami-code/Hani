@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 import { getAgencyProfile } from "../infrastructure/agency-api";
 
 export async function AgencyProfileView({
@@ -60,9 +61,9 @@ export async function AgencyProfileView({
                 <div className="border rounded p-3">
                   <div className="text-gray-6">{t("memberSince")}</div>
                   <strong>
-                    {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(
-                      new Date(agency.memberSince)
-                    )}
+                    {formatIsoInstant(agency.memberSince, locale, {
+                      dateStyle: "medium"
+                    })}
                   </strong>
                 </div>
               </div>

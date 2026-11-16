@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 import ImageWithBasePath from "@/components/image-with-base-path";
 import { Link } from "@/i18n/navigation";
 import { getBlogPost, getRelatedBlogPosts } from "../infrastructure/blog-api";
@@ -41,9 +42,9 @@ export async function BlogDetailView({
                     <span className="text-gray-6">
                       <i className="isax isax-calendar-2 me-1" />
                       {post.publishedAt
-                        ? new Intl.DateTimeFormat(locale, {
+                        ? formatIsoInstant(post.publishedAt, locale, {
                             dateStyle: "medium"
-                          }).format(new Date(post.publishedAt))
+                          })
                         : ""}
                     </span>
                     <span className="badge badge-primary">{t("blog")}</span>

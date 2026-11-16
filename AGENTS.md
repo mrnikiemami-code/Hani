@@ -67,7 +67,30 @@
 > اگر یکی از این‌ها نباشد، تسک Done نیست — حتی اگر کد کار کند.
 
 
-## 6. Frontend design consistency (mandatory)
+## 6. Date and calendar architecture (mandatory)
+
+- Canonical contract: **Jalali UI, Gregorian storage/API**.
+- PostgreSQL, API query strings, cache keys, JSON, and URL filters use
+  Gregorian ISO only: `YYYY-MM-DD` for dates and UTC ISO for instants.
+- Persian (`fa`) users see Jalali dates and a Jalali date picker. `en` and
+  `ar` use the Gregorian calendar.
+- Never send a Jalali string or a Jalali-shaped year to an API. A value such
+  as `1405-08-25` is not a valid Hani API date.
+- All new date selection uses `HaniDatePicker` or `HaniDateRangePicker` with
+  `IsoDate` values. Do not import PrimeReact `Calendar` or a calendar library
+  in a feature/page.
+- All date display uses `formatIsoDate` / `formatIsoInstant`. Do not use raw
+  `toLocaleDateString`, page-level `Intl.DateTimeFormat`, or raw ISO dates in
+  JSX.
+- Date-only values must not be created with `new Date("YYYY-MM-DD")` or
+  `toISOString()`; that introduces timezone shifts.
+- Date picker labels, presets, leap years, and month boundaries must resolve
+  from the active locale, not from hard-coded Persian arrays.
+- Read `docs/adr/0032-calendar-boundary-jalali-ui-gregorian-contract.md` and
+  `docs/plan/CALENDAR-ARCHITECTURE-PLAN.md` before changing date UI, filters,
+  invoices, reports, or booking forms.
+
+## 7. Frontend design consistency (mandatory)
 
 - The purchased Dreamstour template is the only visual source of truth.
 - Missing fields must be placed into existing template slots (title, meta,
@@ -83,7 +106,7 @@
   changing frontend cards, forms, tables, or home sections.
 
 
-## 7. Lastsecond parity+ (mandatory)
+## 8. Lastsecond parity+ (mandatory)
 
 - Benchmark `https://lastsecond.ir/` for each page before implementation.
 - Match the user task and information architecture, not just the route name.

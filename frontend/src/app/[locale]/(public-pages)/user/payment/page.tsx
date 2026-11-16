@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { formatMoney } from "@/lib/hani/money";
 import { getMyPayments } from "@/features/dashboard/infrastructure/finance-api";
 import { FinancePageShell } from "@/features/dashboard/ui/FinancePageShell";
+import { formatIsoInstant } from "@/lib/hani/calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +54,7 @@ export default async function PaymentPage({
                         </span>
                       </td>
                       <td className="fs-14 text-gray-6">
-                        {new Date(payment.createdAt).toLocaleDateString(locale)}
+                        {formatIsoInstant(payment.createdAt, locale, { dateStyle: "medium" })}
                       </td>
                     </tr>
                   ))}

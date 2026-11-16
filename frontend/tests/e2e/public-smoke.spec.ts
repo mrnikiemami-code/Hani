@@ -124,6 +124,79 @@ test.describe("public smoke", () => {
     await expect(page.locator("main#main-content")).toHaveCount(1);
   });
 
+  test("fa date controls are Jalali while their canonical value is Gregorian", async ({
+    page
+  }) => {
+    await page.goto("/fa");
+    await page.getByRole("tab", { name: "تورهای داخلی" }).click();
+
+    const input = page.locator("#tour-departure");
+    await expect(input).toHaveValue(/^[۰-۹]{4}\/[۰-۹]{2}\/[۰-۹]{2}$/);
+    await expect(input).toHaveAttribute(
+      "data-iso-value",
+      /^\d{4}-\d{2}-\d{2}$/
+    );
+
+    await input.click();
+    const calendar = page.locator(".hani-date-picker .rmdp-wrapper");
+    await expect(calendar).toContainText("آبان");
+    await expect(calendar).toContainText("۱۴۰۵");
+
+    const initialIso = await input.getAttribute("data-iso-value");
+    const selectableDay = page
+      .locator(".hani-date-picker .rmdp-day-picker .rmdp-day:not(.rmdp-day-hidden):not(.rmdp-disabled):not(.rmdp-selected):visible")
+      .first();
+    await selectableDay.click();
+    const selectedIso = await input.getAttribute("data-iso-value");
+    expect(selectedIso).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(selectedIso).not.toBe(initialIso);
+  });
+
+  test("fa range displays Jalali while both canonical dates stay Gregorian", async ({
+    page
+  }) => {
+    await page.goto("/fa");
+    const range = page.locator(".hani-date-range-picker:visible").first();
+    const start = range.locator('input[data-iso-start]');
+    const end = range.locator('input[data-iso-end]');
+
+    await expect(start).toHaveValue(/^[۰-۹]{4}\/[۰-۹]{2}\/[۰-۹]{2}$/);
+    await expect(end).toHaveValue(/^[۰-۹]{4}\/[۰-۹]{2}\/[۰-۹]{2}$/);
+    await expect(start).toHaveAttribute("data-iso-start", /^\d{4}-\d{2}-\d{2}$/);
+    await expect(end).toHaveAttribute("data-iso-end", /^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  test("en date control stays Gregorian", async ({ page }) => {
+    await page.goto("/en");
+    await page.getByRole("tab", { name: "Domestic tours" }).click();
+
+    const input = page.locator("#tour-departure");
+    await expect(input).toHaveValue(/^\d{2}-\d{2}-\d{4}$/);
+    await expect(input).toHaveAttribute(
+      "data-iso-value",
+      /^\d{4}-\d{2}-\d{2}$/
+    );
+
+    await input.click();
+    await expect(page.locator(".hani-date-picker .rmdp-wrapper")).toContainText(
+      "November"
+    );
+  });
+
+  test("api rejects Jalali-shaped dates and accepts Gregorian dates", async ({
+    request
+  }) => {
+    const jalali = await request.get(
+      "http://localhost:5099/market/v1/search?locale=fa&startDate=1405-08-25"
+    );
+    expect(jalali.status()).toBe(400);
+
+    const gregorian = await request.get(
+      "http://localhost:5099/market/v1/search?locale=fa&startDate=2026-11-16&endDate=2026-11-20"
+    );
+    expect(gregorian.status()).toBe(200);
+  });
+
   test("home hero has no horizontal overflow on mobile", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/fa");
