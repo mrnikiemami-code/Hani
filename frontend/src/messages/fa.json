@@ -118,7 +118,9 @@
     "cancelledBookings": "رزرو لغوشده",
     "agencyStatus": "وضعیت آژانس",
     "pending": "در انتظار",
-    "minRead": "{count} ????? ??????"
+    "minRead": "{count} ????? ??????",
+    "latestDomestic": "جدیدترین تورهای داخلی",
+    "latestForeign": "جدیدترین تورهای خارجی"
   },
   "meta": {
     "title": "هانی — سفر هوشمند",
@@ -325,5 +327,21 @@
     "markRead": "??????????? ???????? ??????????",
     "noMessages": "?????? ???? ?????.",
     "inbox": "????? ?????"
+  },
+  "homeSearch": {
+    "scopeLabel": "دامنه تور",
+    "foreignTours": "تورهای خارجی",
+    "domesticTours": "تورهای داخلی",
+    "origin": "مبدا",
+    "destination": "مقصد",
+    "departure": "تاریخ رفت",
+    "return": "تاریخ برگشت",
+    "duration": "مدت اقامت",
+    "anyDuration": "هر مدت",
+    "hotel": "هتل",
+    "cityOrType": "شهر یا نوع تور",
+    "all": "همه",
+    "nights": "شب",
+    "search": "جستجو"
   }
 }

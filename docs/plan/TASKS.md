@@ -240,3 +240,14 @@
 | H91-HOME-02 | Search options endpoint | ? | server-driven origins/destinations/durations/hotels |
 | H91-HOME-03 | Tour origin name | ? | resolved in search DTO + unit test |
 | H91-HOME-04 | Frontend home contract | ? | HomeFeed types + API filters |
+
+## Phase 6.8 ? Home Parity+ Phase 2 (2026-11-16)
+
+| ID | ??? | ????? | DoD |
+|---|---|---|---|
+| H91-HERO-01 | Tour default active service | ? | hero default Tour |
+| H91-HERO-02 | Domestic/foreign scope tabs | ? | semantic tabs + no reload |
+| H91-HERO-03 | Conditional field schema | ? | foreign/domestic fields |
+| H91-HERO-04 | Search options fetch | ? | `/api/home/search-options` |
+| H91-HERO-05 | Localized date labels | ? | FA/AR/EN |
+| H91-HOME-05 | Latest domestic/foreign sections | ? | home feed scope lists |

@@ -13,6 +13,8 @@ import TestimonialSection from "./testimonialSection";
 import ChooseSection from "./chooseSection";
 import FooterSection from "./footerSection";
 import { HaniTrendingTours } from "@/features/home-experience/ui/HaniTrendingTours";
+import { HaniHomeTourSearch } from "@/features/home-experience/ui/HaniHomeTourSearch";
+import { HaniScopeTourSection } from "@/features/home-experience/ui/HaniScopeTourSection";
 import { HaniRecommendedVisas } from "@/features/home-experience/ui/HaniRecommendedVisas";
 import { HaniLatestContent } from "@/features/home-experience/ui/HaniLatestContent";
 import BookingDropdown from "../../components/booking-dropdown/bookingDropdown";
@@ -288,7 +290,7 @@ const guidePassenger =
                       <li>
                         <Link
                           href="#"
-                          className="nav-link active"
+                          className="nav-link"
                           data-bs-toggle="tab"
                           data-bs-target="#Cruise"
                         >
@@ -299,7 +301,7 @@ const guidePassenger =
                       <li>
                         <Link
                           href="#"
-                          className="nav-link"
+                          className="nav-link active"
                           data-bs-toggle="tab"
                           data-bs-target="#Tour"
                         >
@@ -1305,7 +1307,7 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade active show" id="Cruise">
+                            <div className="tab-pane fade" id="Cruise">
                               <form>
                                 <div className="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                   <div className="fw-medium fs-16 mb-2 text-white">
@@ -1510,130 +1512,8 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade" id="Tour">
-                              <form>
-                                <div className="d-flex align-items-center justify-content-between flex-wrap mb-2">
-                                  <div className="fw-medium fs-16 mb-2 text-white">
-                                    Search holiday packages &amp; trips
-                                  </div>
-                                </div>
-                                <div className="d-lg-flex">
-                                  <div className="d-flex  form-info">
-                                    <div className="form-item booking-dropdown dropdown">
-                                      <div
-                                        data-bs-toggle="dropdown"
-                                        data-bs-auto-close="outside"
-                                        aria-expanded="false"
-                                        role="menu"
-                                      >
-                                         <BookingDropdown
-                                        label="Where would like to go?"
-                                        defaultValue="New York"
-                                        defaultSubValue="USA"
-                                        locations={[
-                                          { value: "New York", subValue: "USA" },
-                                          { value: "Boston", subValue: "Spain" },
-                                          { value: "NorthernVirginia", subValue: "USA" },
-    { value: "LosAngeles", subValue: "USA" },
-    { value: "Orlando", subValue: "USA" }
-                                        ]}
-                                      />
-                                        
-                                      </div>
-                                    </div>
-                                    <CommonDateRange
-                                      onApply={handleApply}
-                                      fromLabel="Start Date"
-                                      toLabel="End Date"
-                                    />
-
-                                    <div className="form-item dropdown">
-                                      <div
-                                        data-bs-toggle="dropdown"
-                                        data-bs-auto-close="outside"
-                                        aria-expanded="false"
-                                        role="menu"
-                                      >
-                                        <label className="form-label fs-14 text-default mb-1">
-                                          Travellers
-                                        </label>
-                                        <div className="home-eight-title text-dark member-count">
-                                          {totalTourPassengers}{" "}
-                                          <span className="fw-normal fs-14">
-                                            Persons
-                                          </span>
-                                        </div>
-                                        <p className="fs-12 mb-0 adult">2 Adult</p>
-                                      </div>
-                                      <div className="dropdown-menu dropdown-menu-end dropdown-xl">
-                                        <div className="mb-3 home-eight-title text-dark">
-                                          Select Travelers
-                                        </div>
-                                        <div className="mb-3 border br-10 info-item pb-1">
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="mb-3 d-flex align-items-center justify-content-between">
-                                                <label className="form-label text-gray-9 mb-2">
-                                                  Adult
-                                                </label>
-                                                 <BannerCounter
-                                                    value={formData.tour.adults}
-                                                    setValue={(v) => updateField("tour", "adults", v)}
-                                                  />
-                                              </div>
-                                              <div className="mb-3 d-flex align-items-center justify-content-between">
-                                                <label className="form-label text-gray-9 mb-2">
-                                                  Childrens
-                                                  <span className="text-default fw-normal">
-                                                    ( 12+ Yrs )
-                                                  </span>
-                                                </label>
-                                                 <BannerCounter
-                                                    value={formData.tour.children}
-                                                    setValue={(v) => updateField("tour", "children", v)}
-                                                  />
-                                              </div>
-                                              <div className="mb-3 d-flex align-items-center justify-content-between">
-                                                <label className="form-label text-gray-9 mb-2">
-                                                  Infants
-                                                  <span className="text-default fw-normal">
-                                                    ( 12+ Yrs )
-                                                  </span>
-                                                </label>
-                                                 <BannerCounter
-                                                    value={formData.tour.infants}
-                                                    setValue={(v) => updateField("tour", "infants", v)}
-                                                  />
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className="d-flex justify-content-end">
-                                          <Link
-                                            href="#"
-                                            className="btn btn-light btn-sm me-2"
-                                          >
-                                            Cancel
-                                          </Link>
-                                          <button
-                                            type="button"
-                                            className="btn btn-primary btn-sm apply-btn"
-                                            onClick={()=>handleCounter("tour")}
-                                          >
-                                            Apply
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <Link
-                                    href={all_routes.cruiseGrid}
-                                    className="btn btn-primary search-btn rounded"
-                                  >
-                                    Search
-                                  </Link>
-                                </div>
-                              </form>
+                            <div className="tab-pane fade active show" id="Tour">
+                              <HaniHomeTourSearch />
                             </div>
                             <div className="tab-pane fade" id="Bus">
                               <form action="#">
@@ -2970,6 +2850,8 @@ const guidePassenger =
       </section>
       {/* /Hero Section */}
       <HaniTrendingTours scope={tourScope} />
+      <HaniScopeTourSection scope="Domestic" titleKey="latestDomestic" />
+      <HaniScopeTourSection scope="Foreign" titleKey="latestForeign" />
       <ExperienceSection />
       <HaniRecommendedVisas />
       <DeliverySection />

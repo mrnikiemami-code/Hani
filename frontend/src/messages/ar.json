@@ -118,7 +118,9 @@
     "cancelledBookings": "حجوزات ملغاة",
     "agencyStatus": "حالة الوكالة",
     "pending": "معلقة",
-    "minRead": "????? {count} ?????"
+    "minRead": "????? {count} ?????",
+    "latestDomestic": "أحدث الجولات المحلية",
+    "latestForeign": "أحدث الجولات الخارجية"
   },
   "meta": {
     "title": "هاني — سفر ذكي",
@@ -325,5 +327,21 @@
     "markRead": "????? ??????",
     "noMessages": "?? ???? ??????? ???.",
     "inbox": "????? ??????"
+  },
+  "homeSearch": {
+    "scopeLabel": "نطاق الجولة",
+    "foreignTours": "الجولات الخارجية",
+    "domesticTours": "الجولات المحلية",
+    "origin": "المصدر",
+    "destination": "الوجهة",
+    "departure": "تاريخ المغادرة",
+    "return": "تاريخ العودة",
+    "duration": "مدة الإقامة",
+    "anyDuration": "أي مدة",
+    "hotel": "الفندق",
+    "cityOrType": "المدينة أو نوع الجولة",
+    "all": "الكل",
+    "nights": "ليال",
+    "search": "بحث"
   }
 }

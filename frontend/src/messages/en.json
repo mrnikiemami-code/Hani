@@ -118,7 +118,9 @@
     "cancelledBookings": "cancelled bookings",
     "agencyStatus": "Agency status",
     "pending": "Pending",
-    "minRead": "{count} min read"
+    "minRead": "{count} min read",
+    "latestDomestic": "Latest domestic tours",
+    "latestForeign": "Latest foreign tours"
   },
   "meta": {
     "title": "Hani — Smart travel",
@@ -325,5 +327,21 @@
     "markRead": "Mark as read",
     "noMessages": "No notifications yet.",
     "inbox": "Inbox"
+  },
+  "homeSearch": {
+    "scopeLabel": "Tour scope",
+    "foreignTours": "Foreign tours",
+    "domesticTours": "Domestic tours",
+    "origin": "Origin",
+    "destination": "Destination",
+    "departure": "Departure",
+    "return": "Return",
+    "duration": "Duration",
+    "anyDuration": "Any duration",
+    "hotel": "Hotel",
+    "cityOrType": "City or tour type",
+    "all": "All",
+    "nights": "nights",
+    "search": "Search"
   }
 }
