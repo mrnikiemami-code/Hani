@@ -143,7 +143,15 @@
     "last7Days": "Last 7 days",
     "last30Days": "Last 30 days",
     "thisMonth": "This month",
-    "lastMonth": "Last month"
+    "lastMonth": "Last month",
+    "selectDate": "Select date",
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "roundTrip": "Round trip",
+    "departureOnly": "Departure only",
+    "returnOnly": "Return only",
+    "chooseDates": "Choose your dates"
   },
   "meta": {
     "title": "Hani — Smart travel",

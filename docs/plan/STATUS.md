@@ -573,3 +573,4 @@
 - Home parity Phase 4: canonical/hreflang, OG/Twitter, JSON-LD, sitemap/robots, topical H1, main landmark, skip link, keyboard tabs, labels, slider/dropdown/footer a11y; Lighthouse 100/100/100 for FA/EN/AR home and tour listing ? done.
 - Calendar architecture accepted and implemented in slice 1; see ADR-0032 and CALENDAR-ARCHITECTURE-PLAN.
 - Calendar phase 2 implemented: global MediatR DateOnly guard, locale-aware picker facade, public display migration, CI date-architecture gate, AGENTS rules.
+- Calendar modal + no-default dates: home date inputs start empty, centered Jalali modal, searchable/scrollable home dropdowns; Playwright 16 passed.

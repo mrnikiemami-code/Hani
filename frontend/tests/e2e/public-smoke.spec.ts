@@ -124,63 +124,75 @@ test.describe("public smoke", () => {
     await expect(page.locator("main#main-content")).toHaveCount(1);
   });
 
-  test("fa date controls are Jalali while their canonical value is Gregorian", async ({
+  test("fa date modal is Jalali and canonical values are Gregorian", async ({
     page
   }) => {
     await page.goto("/fa");
-    await page.getByRole("tab", { name: "تورهای داخلی" }).click();
+    await page.locator("#tour-scope-domestic").click();
 
     const input = page.locator("#tour-departure");
-    await expect(input).toHaveValue(/^[۰-۹]{4}\/[۰-۹]{2}\/[۰-۹]{2}$/);
-    await expect(input).toHaveAttribute(
-      "data-iso-value",
-      /^\d{4}-\d{2}-\d{2}$/
-    );
+    await expect(input).toHaveValue("");
+    await expect(input).toHaveAttribute("data-iso-value", "");
 
     await input.click();
-    const calendar = page.locator(".hani-date-picker .rmdp-wrapper");
-    await expect(calendar).toContainText("آبان");
-    await expect(calendar).toContainText("۱۴۰۵");
+    const modal = page.locator(".hani-date-modal");
+    await expect(modal).toBeVisible();
+    const box = await page.locator(".hani-date-modal__card").boundingBox();
+    expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
+    await expect(page.locator(".hani-date-modal .rmdp-day").first()).toBeVisible();
 
-    const initialIso = await input.getAttribute("data-iso-value");
-    const selectableDay = page
-      .locator(".hani-date-picker .rmdp-day-picker .rmdp-day:not(.rmdp-day-hidden):not(.rmdp-disabled):not(.rmdp-selected):visible")
-      .first();
-    await selectableDay.click();
-    const selectedIso = await input.getAttribute("data-iso-value");
-    expect(selectedIso).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(selectedIso).not.toBe(initialIso);
+    await page
+      .locator(".hani-date-modal .rmdp-day-picker .rmdp-day:not(.rmdp-day-hidden):not(.rmdp-disabled)")
+      .first()
+      .click();
+    await page.locator(".hani-date-modal__footer .btn-primary").click();
+
+    await expect(input).toHaveValue(/\//);
+    await expect(input).toHaveAttribute("data-iso-value", /^\d{4}-\d{2}-\d{2}$/);
+    await expect(modal).toHaveCount(0);
   });
 
-  test("fa range displays Jalali while both canonical dates stay Gregorian", async ({
-    page
-  }) => {
+  test("fa range modal returns two Gregorian dates", async ({ page }) => {
     await page.goto("/fa");
-    const range = page.locator(".hani-date-range-picker:visible").first();
-    const start = range.locator('input[data-iso-start]');
-    const end = range.locator('input[data-iso-end]');
+    const start = page.locator('#tour-scope-panel-foreign input[data-iso-start]');
+    const end = page.locator('#tour-scope-panel-foreign input[data-iso-end]');
 
-    await expect(start).toHaveValue(/^[۰-۹]{4}\/[۰-۹]{2}\/[۰-۹]{2}$/);
-    await expect(end).toHaveValue(/^[۰-۹]{4}\/[۰-۹]{2}\/[۰-۹]{2}$/);
+    await expect(start).toHaveValue("");
+    await expect(end).toHaveValue("");
+
+    await start.click();
+    await expect(page.locator(".hani-date-modal")).toBeVisible();
+    const days = page.locator(
+      ".hani-date-modal .rmdp-day-picker .rmdp-day:not(.rmdp-day-hidden):not(.rmdp-disabled)"
+    );
+    await days.nth(0).click();
+    await days.nth(1).click();
+    await page.locator(".hani-date-modal__footer .btn-primary").click();
+
+    await expect(start).toHaveValue(/\//);
+    await expect(end).toHaveValue(/\//);
     await expect(start).toHaveAttribute("data-iso-start", /^\d{4}-\d{2}-\d{2}$/);
     await expect(end).toHaveAttribute("data-iso-end", /^\d{4}-\d{2}-\d{2}$/);
   });
 
-  test("en date control stays Gregorian", async ({ page }) => {
+  test("en date modal stays Gregorian", async ({ page }) => {
     await page.goto("/en");
     await page.getByRole("tab", { name: "Domestic tours" }).click();
 
     const input = page.locator("#tour-departure");
-    await expect(input).toHaveValue(/^\d{2}-\d{2}-\d{4}$/);
-    await expect(input).toHaveAttribute(
-      "data-iso-value",
-      /^\d{4}-\d{2}-\d{2}$/
-    );
-
+    await expect(input).toHaveValue("");
     await input.click();
-    await expect(page.locator(".hani-date-picker .rmdp-wrapper")).toContainText(
-      "November"
-    );
+    const modal = page.locator(".hani-date-modal");
+    await expect(modal).toContainText("November");
+
+    await page
+      .locator(".hani-date-modal .rmdp-day-picker .rmdp-day:not(.rmdp-day-hidden):not(.rmdp-disabled)")
+      .first()
+      .click();
+    await page.locator(".hani-date-modal__footer .btn-primary").click();
+
+    await expect(input).toHaveValue(/^\d{2}-\d{2}-\d{4}$/);
+    await expect(input).toHaveAttribute("data-iso-value", /^\d{4}-\d{2}-\d{2}$/);
   });
 
   test("api rejects Jalali-shaped dates and accepts Gregorian dates", async ({
@@ -195,6 +207,45 @@ test.describe("public smoke", () => {
       "http://localhost:5099/market/v1/search?locale=fa&startDate=2026-11-16&endDate=2026-11-20"
     );
     expect(gregorian.status()).toBe(200);
+  });
+
+  test("home hero dropdowns open and filter by typing", async ({ page }) => {
+    await page.goto("/fa");
+    const origin = page.locator("#tour-scope-panel-foreign .booking-dropdown").first();
+    await origin.locator("input.value-input").click();
+    const menu = origin.locator(".dropdown-menu.show");
+    await expect(menu).toBeVisible();
+    expect(await menu.getByRole("option").count()).toBeGreaterThan(1);
+
+    const optionText = (await menu.getByRole("option").nth(1).innerText())
+      .split("\n")[0]
+      .trim();
+    await menu.getByRole("textbox").fill(optionText);
+    await expect(menu.getByRole("option").first()).toContainText(optionText);
+
+    const hotel = page
+      .locator("#tour-scope-panel-foreign .booking-dropdown")
+      .nth(3);
+    await hotel.locator("input.value-input").click();
+    await expect(hotel.locator(".dropdown-menu.show")).toBeVisible();
+  });
+
+  test("date modal stays inside the mobile viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/fa");
+    const start = page.locator(
+      '#tour-scope-panel-foreign input[data-iso-start]'
+    );
+    await expect(start).toHaveValue("");
+    await start.click();
+    const card = page.locator(".hani-date-modal__card");
+    await expect(card).toBeVisible();
+    const box = await card.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(390);
+    expect(box!.y).toBeGreaterThanOrEqual(0);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(844);
   });
 
   test("home hero has no horizontal overflow on mobile", async ({ page }) => {

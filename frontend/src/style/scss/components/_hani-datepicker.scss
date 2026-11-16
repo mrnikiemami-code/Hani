@@ -61,9 +61,15 @@
 }
 
 .hani-datepicker-calendar .rmdp-day.rmdp-selected span,
-.hani-datepicker-calendar .rmdp-range {
+.hani-datepicker-calendar .rmdp-range.start,
+.hani-datepicker-calendar .rmdp-range.end {
     background-color: variables.$primary !important;
     color: variables.$white !important;
+}
+
+.hani-datepicker-calendar .rmdp-range {
+    background-color: rgba(207, 52, 37, 0.12) !important;
+    color: variables.$gray-900 !important;
 }
 
 .hani-datepicker-calendar .rmdp-range-hover {
@@ -86,6 +92,172 @@
 .hani-datepicker-calendar .rmdp-day:not(.rmdp-disabled, .rmdp-day-hidden) span:hover {
     background-color: rgba(207, 52, 37, 0.12);
     color: variables.$gray-900;
+}
+
+/* Centered modal, benchmarked against the Lastsecond date interaction. */
+.hani-date-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.hani-date-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(23, 28, 38, 0.48);
+    backdrop-filter: blur(2px);
+}
+
+.hani-date-modal__card {
+    position: relative;
+    z-index: 1;
+    width: min(560px, 100%);
+    max-height: min(92vh, 900px);
+    overflow: auto;
+    border: 1px solid variables.$border-color;
+    border-radius: 16px;
+    background: variables.$white;
+    box-shadow: 0 24px 80px rgba(18, 25, 38, 0.28);
+}
+
+.hani-date-modal__card--range {
+    width: min(760px, 100%);
+}
+
+.hani-date-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid variables.$border-color;
+    background: #f9f9fa;
+    border-radius: 16px 16px 0 0;
+}
+
+.hani-date-modal__header strong {
+    display: block;
+    color: variables.$gray-900;
+    font-size: 16px;
+}
+
+.hani-date-modal__eyebrow {
+    display: block;
+    margin-bottom: 2px;
+    color: variables.$gray-600;
+    font-size: 12px;
+}
+
+.hani-date-modal__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: variables.$light;
+    color: variables.$gray-900;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.hani-date-modal__modes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 20px 0;
+}
+
+.hani-date-modal__modes .btn {
+    border: 1px solid variables.$border-color;
+    font-size: 13px;
+}
+
+.hani-date-modal__modes .btn.active {
+    border-color: variables.$primary;
+    background: variables.$primary;
+    color: variables.$white;
+}
+
+.hani-date-modal__body {
+    display: flex;
+    justify-content: center;
+    padding: 10px 16px;
+}
+
+.hani-date-modal .hani-datepicker-calendar.rmdp-wrapper {
+    width: auto;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+.hani-date-modal .hani-datepicker-calendar .rmdp-calendar {
+    padding: 6px 8px;
+}
+
+.hani-date-modal .hani-datepicker-calendar .rmdp-day,
+.hani-date-modal .hani-datepicker-calendar .rmdp-week-day {
+    width: 38px;
+    height: 38px;
+}
+
+.hani-date-modal .hani-datepicker-calendar .rmdp-day span {
+    font-size: 14px;
+}
+
+.hani-date-modal .hani-datepicker-calendar .rmdp-header {
+    padding: 10px 0;
+    font-size: 15px;
+}
+
+.hani-date-modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 14px 20px 18px;
+    border-top: 1px solid variables.$border-color;
+}
+
+.hani-date-modal__value {
+    color: variables.$gray-700;
+    font-size: 14px;
+}
+
+@media (max-width: 767.98px) {
+    .hani-date-modal {
+        padding: 10px;
+    }
+
+    .hani-date-modal__card,
+    .hani-date-modal__card--range {
+        width: 100%;
+        max-height: 94vh;
+    }
+
+    .hani-date-modal__header {
+        padding: 12px 14px;
+    }
+
+    .hani-date-modal__modes {
+        padding: 10px 14px 0;
+    }
+
+    .hani-date-modal__body {
+        padding: 6px 8px;
+    }
+
+    .hani-date-modal__footer {
+        padding: 12px 14px 14px;
+    }
 }
 
 @media (max-width: 575.98px) {

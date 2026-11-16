@@ -86,6 +86,8 @@
   `toISOString()`; that introduces timezone shifts.
 - Date picker labels, presets, leap years, and month boundaries must resolve
   from the active locale, not from hard-coded Persian arrays.
+- Search and booking date inputs must start empty. Do not silently prefill
+  today/tomorrow; the user must choose the travel dates.
 - The server has a global MediatR `GregorianDateBehavior`; do not bypass it
   with direct `DateOnly` endpoint parameters without an equivalent guard.
 - `scripts/verify.ps1` runs `frontend/scripts/check-date-architecture.mjs`;

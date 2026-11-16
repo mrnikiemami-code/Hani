@@ -383,7 +383,9 @@ No runtime code has been changed by this plan.
 - Added locale calendar resolver and display formatters.
 - Added `HaniDatePicker` and `HaniDateRangePicker`; fa renders Jalali,
   en/ar render Gregorian.
-- Migrated the home hero date controls and the shared `CommonDateRange`.
+- Migrated the home hero date controls and the shared `CommonDateRange`;
+  both start empty and require user selection.
+- Added a centered Jalali date modal, benchmarked against Lastsecond.
 - Replaced the template `DatePicker` internals with the locale-aware facade;
   legacy `Date` call sites keep working without page-level calendar logic.
 - Migrated dashboard range box to the shared range primitive.

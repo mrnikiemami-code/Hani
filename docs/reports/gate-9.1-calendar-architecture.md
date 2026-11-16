@@ -10,8 +10,8 @@ Plan: [CALENDAR-ARCHITECTURE-PLAN.md](../plan/CALENDAR-ARCHITECTURE-PLAN.md)
 
 The first calendar architecture slice is implemented.
 
-- Persian (`fa`) date pickers now render the Jalali calendar and Persian
-  digits.
+- Persian (`fa`) date pickers now render a centered Jalali modal with
+  Persian digits and no prefilled date.
 - English and Arabic pickers stay Gregorian.
 - Picker and display components exchange canonical Gregorian
   `YYYY-MM-DD` values.
@@ -44,11 +44,14 @@ Jalali conversion exists only in the UI adapter.
 
 ## Migrated surfaces
 
-- Home hero foreign range and domestic single date.
+- Home hero foreign range and domestic single date; both start empty and
+  require user selection.
 - Shared `CommonDateRange` used by template home variants.
 - Legacy `DatePicker` facade, so existing template forms get Jalali UI
   without page-level calendar code.
 - Dashboard `PredefinedDateRanges` box with calendar-aware month presets.
+- Home hero dropdowns are self-contained, searchable, and progressively
+  reveal more options on scroll.
 - Public tour cards, home content, blog/content lists and details, agency
   profile, checkout, user/agent dashboards, invoices, payments, refunds,
   notifications and reviews now use the shared formatter.
@@ -65,7 +68,7 @@ Jalali conversion exists only in the UI adapter.
 ## Verification
 
 - Frontend production build: green.
-- Playwright: 14 passed.
+- Playwright: 16 passed.
   - FA single picker is Jalali while `data-iso-value` is Gregorian.
   - FA range is Jalali while both canonical dates are Gregorian.
   - Selecting a day changes the canonical Gregorian value.
@@ -90,8 +93,8 @@ Jalali conversion exists only in the UI adapter.
 - `docs/reports/gate-9.1-home-en.png`
 - `docs/reports/gate-9.1-home-ar.png`
 - `docs/reports/gate-9.1-home-mobile-fa.png`
-- `docs/reports/gate-9.1-home-jalali-picker-fa.png`
-- `docs/reports/gate-9.1-home-jalali-picker-mobile-fa.png`
+- `docs/reports/gate-9.1-home-jalali-modal-fa.png`
+- `docs/reports/gate-9.1-home-jalali-modal-mobile-fa.png`
 
 ## Remaining
 

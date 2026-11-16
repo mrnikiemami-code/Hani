@@ -6,7 +6,6 @@ import Link from "next/link";
 import BookingDropdown from "@/components/booking-dropdown/bookingDropdown";
 import { HaniDateRangePicker } from "@/components/hani/date/HaniDateRangePicker";
 import { HaniDatePicker } from "@/components/hani/date/HaniDatePicker";
-import { addIsoDays, todayIsoDate } from "@/lib/hani/calendar";
 
 type Scope = "foreign" | "domestic";
 
@@ -31,7 +30,6 @@ export function HaniHomeTourSearch() {
   const [options, setOptions] = useState<SearchOptions>(emptyOptions);
   const foreignTab = useRef<HTMLAnchorElement>(null);
   const domesticTab = useRef<HTMLAnchorElement>(null);
-  const today = todayIsoDate();
 
   useEffect(() => {
     let active = true;
@@ -148,7 +146,6 @@ export function HaniHomeTourSearch() {
               <HaniDateRangePicker
                 fromLabel={t("departure")}
                 toLabel={t("return")}
-                defaultValue={{ start: today, end: addIsoDays(today, 1) }}
               />
               <div className="form-item min-w-0">
                 <BookingDropdown
@@ -206,7 +203,6 @@ export function HaniHomeTourSearch() {
                   id="tour-departure"
                   className="form-control datetimepicker"
                   placeholder={t("departure")}
-                  defaultValue={today}
                   disablePast
                   ariaLabel={t("departure")}
                 />
