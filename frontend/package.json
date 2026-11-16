@@ -7,7 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:date-architecture": "node scripts/check-date-architecture.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",

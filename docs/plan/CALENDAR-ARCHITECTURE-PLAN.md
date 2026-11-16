@@ -388,6 +388,8 @@ No runtime code has been changed by this plan.
   legacy `Date` call sites keep working without page-level calendar logic.
 - Migrated dashboard range box to the shared range primitive.
 - Migrated public display sites off raw `toLocaleDateString`/`Intl` usage.
+- Added a global MediatR `GregorianDateBehavior`, so every command/query with
+  `DateOnly` properties is guarded before its handler runs.
 - Added Gregorian range guards to marketplace and flight search validators.
 - Added `AGENTS.md` mandatory date architecture rules.
 - Added Playwright coverage for Jalali display, Gregorian canonical values,
@@ -402,5 +404,7 @@ No runtime code has been changed by this plan.
 - Apply the shared guards to every remaining date command (booking, reviews,
   payments, settlement, identity, reports).
 - Add localized server-side formatting for emails/PDFs/exports.
-- Add a lint/CI guard that rejects imports of PrimeReact `Calendar` in feature
-  pages and raw date formatting in UI code.
+- The lint/CI guard `frontend/scripts/check-date-architecture.mjs` now rejects
+  direct calendar imports in features and raw date formatting.
+- Remaining: endpoints that bypass MediatR with direct DateOnly parameters
+  need the same guard when they are introduced.

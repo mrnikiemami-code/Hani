@@ -56,6 +56,8 @@ Jalali conversion exists only in the UI adapter.
 ## Server guards
 
 - `Hani.BuildingBlocks.Application.GregorianDateGuards`
+- Global MediatR `GregorianDateBehavior`: every command/query with `DateOnly`
+  properties is checked before its handler runs.
 - Marketplace search: start/end year range and ordering.
 - Flight search: departure year range.
 - OpenAPI documents the dates as Gregorian and includes examples.
@@ -71,7 +73,7 @@ Jalali conversion exists only in the UI adapter.
   - Jalali-shaped API date returns `400`.
   - Valid Gregorian range returns `200`.
   - Mobile 390px has no overflow.
-- Unit tests: 165 passed (includes `GregorianDateGuardsTests`).
+- Unit tests: 168 passed (includes guards and behavior tests).
 - Architecture tests: 34 passed.
 - Integration tests: 6 passed.
 - Lighthouse: Accessibility 100, Best Practices 100, SEO 100 on:
@@ -80,6 +82,7 @@ Jalali conversion exists only in the UI adapter.
   - `/ar`
   - `/fa/tours?scope=domestic`
 - `scripts/verify.ps1`: green.
+- `npm run check:date-architecture`: green; verify now runs it as a gate.
 
 ## Screenshots
 
@@ -97,5 +100,5 @@ Jalali conversion exists only in the UI adapter.
 - Apply the shared date guards to booking, review, payment, settlement,
   identity and report commands.
 - Add localized server-side formatting for emails, PDFs and exports.
-- Add a CI guard against direct PrimeReact `Calendar` imports in feature pages
-  and raw date formatting in UI code.
+- CI guard is implemented as `frontend/scripts/check-date-architecture.mjs`
+  and runs from `scripts/verify.ps1`.

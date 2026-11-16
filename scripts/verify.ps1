@@ -66,4 +66,7 @@ dotnet format Hani.slnx --verify-no-changes --no-restore
 Write-Host "== Vulnerable packages =="
 dotnet list Hani.slnx package --vulnerable --include-transitive
 
+Write-Host "== Date architecture guard =="
+npm --prefix frontend run check:date-architecture
+
 Write-Host "All gates passed."

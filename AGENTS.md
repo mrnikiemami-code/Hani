@@ -86,6 +86,10 @@
   `toISOString()`; that introduces timezone shifts.
 - Date picker labels, presets, leap years, and month boundaries must resolve
   from the active locale, not from hard-coded Persian arrays.
+- The server has a global MediatR `GregorianDateBehavior`; do not bypass it
+  with direct `DateOnly` endpoint parameters without an equivalent guard.
+- `scripts/verify.ps1` runs `frontend/scripts/check-date-architecture.mjs`;
+  do not add a page-level calendar or raw date formatter to make a build pass.
 - Read `docs/adr/0032-calendar-boundary-jalali-ui-gregorian-contract.md` and
   `docs/plan/CALENDAR-ARCHITECTURE-PLAN.md` before changing date UI, filters,
   invoices, reports, or booking forms.

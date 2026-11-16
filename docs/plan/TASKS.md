@@ -282,8 +282,9 @@
 | H91-CAL-01 | ADR + calendar boundary | ? | ADR-0032 accepted |
 | H91-CAL-02 | Jalali/Gregorian adapter + tests | ? | shared adapter + UI/API checks |
 | H91-CAL-03 | Hani date picker primitives | ? | FA Jalali, EN/AR Gregorian, a11y |
-| H91-CAL-04 | Replace all shared pickers | ? Partial | shared pickers done; legacy Date facade remains |
+| H91-CAL-04 | Replace all shared pickers | ? | shared pickers and legacy locale-aware facade |
 | H91-CAL-05 | Migrate all date displays | ? Public | no raw formatting in migrated public pages |
-| H91-CAL-06 | Server Gregorian validation + clock | ? Search | marketplace/flights return 400 for Jalali-shaped years |
+| H91-CAL-06 | Server Gregorian validation + clock | ? | global MediatR DateOnly guard + marketplace/flight validators |
 | H91-CAL-07 | Query/API payload guarantee | ? | Playwright checks Gregorian canonical values |
+| H91-CAL-09 | Architecture guard | ? | verify fails on direct calendar/raw date UI |
 | H91-CAL-08 | FA/EN/AR + mobile visual QA | ? | screenshots + Lighthouse 100 |
