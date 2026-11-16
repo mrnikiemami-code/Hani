@@ -215,6 +215,11 @@ test.describe("public smoke", () => {
     await origin.locator("input.value-input").click();
     const menu = origin.locator(".dropdown-menu.show");
     await expect(menu).toBeVisible();
+    const menuBox = await menu.boundingBox();
+    const viewportHeight = await page.evaluate(() => window.innerHeight);
+    expect(menuBox).not.toBeNull();
+    expect(menuBox!.y).toBeGreaterThanOrEqual(0);
+    expect(menuBox!.y + menuBox!.height).toBeLessThanOrEqual(viewportHeight);
     expect(await menu.getByRole("option").count()).toBeGreaterThan(1);
 
     const optionText = (await menu.getByRole("option").nth(1).innerText())

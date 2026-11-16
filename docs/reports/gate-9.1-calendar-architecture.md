@@ -51,7 +51,8 @@ Jalali conversion exists only in the UI adapter.
   without page-level calendar code.
 - Dashboard `PredefinedDateRanges` box with calendar-aware month presets.
 - Home hero dropdowns are self-contained, searchable, and progressively
-  reveal more options on scroll.
+  reveal more options on scroll. They flip upward when there is not enough
+  space below the trigger.
 - Public tour cards, home content, blog/content lists and details, agency
   profile, checkout, user/agent dashboards, invoices, payments, refunds,
   notifications and reviews now use the shared formatter.
@@ -95,6 +96,7 @@ Jalali conversion exists only in the UI adapter.
 - `docs/reports/gate-9.1-home-mobile-fa.png`
 - `docs/reports/gate-9.1-home-jalali-modal-fa.png`
 - `docs/reports/gate-9.1-home-jalali-modal-mobile-fa.png`
+- `docs/reports/gate-9.1-home-search-dropdown-fa.png`
 
 ## Remaining
 

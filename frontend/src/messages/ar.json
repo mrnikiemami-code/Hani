@@ -120,7 +120,7 @@
     "cancelledBookings": "حجوزات ملغاة",
     "agencyStatus": "حالة الوكالة",
     "pending": "معلقة",
-    "minRead": "????? {count} ?????",
+    "minRead": "{count} دقيقة قراءة",
     "latestDomestic": "أحدث الجولات المحلية",
     "latestForeign": "أحدث الجولات الخارجية",
     "processingTime": "مدة المعالجة: {min}–{max} يوم",
@@ -138,20 +138,20 @@
     "addToWishlist": "إضافة إلى المفضلة",
     "priceRange": "نطاق السعر",
     "expandMenu": "توسيع القائمة",
-    "today": "?????",
-    "yesterday": "???",
-    "last7Days": "??? ? ????",
-    "last30Days": "??? ?? ?????",
-    "thisMonth": "??? ?????",
-    "lastMonth": "????? ??????",
-    "selectDate": "???? ???????",
-    "close": "?????",
-    "cancel": "?????",
-    "confirm": "?????",
-    "roundTrip": "???? ?????",
-    "departureOnly": "???? ???",
-    "returnOnly": "???? ???",
-    "chooseDates": "???? ????????"
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "last7Days": "آخر ٧ أيام",
+    "last30Days": "آخر ٣٠ يوماً",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي",
+    "selectDate": "اختر التاريخ",
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "roundTrip": "ذهاب وعودة",
+    "departureOnly": "ذهاب فقط",
+    "returnOnly": "عودة فقط",
+    "chooseDates": "اختر التواريخ"
   },
   "meta": {
     "title": "هاني — سفر ذكي",
@@ -251,7 +251,7 @@
     "total": "الإجمالي",
     "backToDashboard": "العودة إلى لوحة التحكم",
     "paymentPending": "الدفع بانتظار الإكمال.",
-    "payNow": "????? ??? ????? ???????"
+    "payNow": "الدفع بالبوابة التجريبية"
   },
   "finance": {
     "paymentsTitle": "سجل المدفوعات",
@@ -298,29 +298,29 @@
     "noPayouts": "لا توجد تسويات بعد.",
     "grossPaid": "الإجمالي المدفوع",
     "paid": "مدفوع",
-    "name": "??? ???????",
-    "licenseNo": "??? ???????",
-    "city": "???????",
-    "website": "??????",
-    "contactEmail": "???? ???????",
-    "contactPhone": "???? ???????",
-    "about": "????",
-    "address": "???????",
-    "province": "????????",
-    "managerName": "??????",
-    "staffCount": "??? ????????",
-    "notReady": "?? ??? ?????? ?????? ???.",
-    "onboarding": "????? ??? ???????",
-    "settingsTitle": "??????? ???????",
-    "settingsSubtitle": "??????? ?????? ???????."
+    "name": "اسم الوكالة",
+    "licenseNo": "رقم الترخيص",
+    "city": "المدينة",
+    "website": "الموقع الإلكتروني",
+    "contactEmail": "البريد الإلكتروني",
+    "contactPhone": "هاتف التواصل",
+    "about": "حول",
+    "address": "العنوان",
+    "province": "المحافظة",
+    "managerName": "المدير",
+    "staffCount": "عدد الموظفين",
+    "notReady": "لم تتم الموافقة على وكالتك بعد.",
+    "onboarding": "إكمال تسجيل الوكالة",
+    "settingsTitle": "إعدادات الوكالة",
+    "settingsSubtitle": "معلومات وكالتك المسجلة."
   },
   "wishlist": {
     "wishlistTitle": "قائمة الرغبات",
     "wishlistSubtitle": "الجولات التي حفظتها.",
     "remove": "إزالة",
     "empty": "قائمة الرغبات فارغة.",
-    "price": "?????",
-    "browseTours": "???? ???????"
+    "price": "السعر",
+    "browseTours": "تصفح الجولات"
   },
   "reviews": {
     "reviewsTitle": "مراجعاتي",
@@ -330,7 +330,7 @@
     "comment": "التعليق",
     "publishedAt": "التاريخ",
     "noReviews": "لم تكتب أي مراجعة بعد.",
-    "status": "??????"
+    "status": "الحالة"
   },
   "profile": {
     "title": "ملفي الشخصي",
@@ -349,15 +349,15 @@
     "noProfile": "الملف غير متاح."
   },
   "notifications": {
-    "title": "?????????",
-    "subtitle": "????? ????? ??????.",
-    "subject": "???????",
-    "body": "????",
-    "status": "??????",
-    "date": "???????",
-    "markRead": "????? ??????",
-    "noMessages": "?? ???? ??????? ???.",
-    "inbox": "????? ??????"
+    "title": "الإشعارات",
+    "subtitle": "رسائل صندوق الوارد.",
+    "subject": "الموضوع",
+    "body": "المحتوى",
+    "status": "الحالة",
+    "date": "التاريخ",
+    "markRead": "تحديد كمقروء",
+    "noMessages": "لا توجد إشعارات.",
+    "inbox": "صندوق الوارد"
   },
   "homeSearch": {
     "scopeLabel": "نطاق الجولة",
