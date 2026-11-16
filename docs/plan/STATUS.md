@@ -564,4 +564,6 @@
 - Search targets: foreign `/tours?hotel&list`; domestic `/tours/تور-ایرانگردی?list`.
 - Lighthouse home: SEO 100, Accessibility 83, Best Practices 83.
 - Key gaps to beat: brand-only H1, no JSON-LD, no `og:image`, non-semantic tabs, zoom lock, image dimensions/lazy/srcset, no `main` landmark.
+- Implementation plan: [`GATE-9.1-HOME-PARITY-PLAN.md`](GATE-9.1-HOME-PARITY-PLAN.md)
+- Next: Phase 1 backend contracts + Phase 2 template hero/tabs.
 - Next implementation must be template-first and include canonical/hreflang/JSON-LD/a11y.
