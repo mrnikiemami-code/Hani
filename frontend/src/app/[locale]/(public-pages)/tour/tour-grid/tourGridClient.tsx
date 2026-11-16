@@ -30,10 +30,10 @@ function filterItems(items: TourSearchItem[]): TourSearchItem[] {
 
 function pathForScope(locale: string, scope?: TourScopeValue): string {
   if (scope === "Domestic") {
-    return `/${locale}/tours/domestic`;
+    return `/${locale}/tours?scope=domestic`;
   }
   if (scope === "Foreign") {
-    return `/${locale}/tours/foreign`;
+    return `/${locale}/tours?scope=foreign`;
   }
   return `/${locale}/tours`;
 }

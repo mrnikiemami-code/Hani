@@ -96,7 +96,7 @@ const TourGrid = ({
                             </li>
                             <li>
                                 <LocaleLink
-                                    href="/tours/domestic"
+                                    href="/tours?scope=domestic"
                                     prefetch
                                     scroll={false}
                                     className={`nav-link ${scope === "Domestic" ? "active" : ""}`}
@@ -113,7 +113,7 @@ const TourGrid = ({
                             </li>
                             <li>
                                 <LocaleLink
-                                    href="/tours/foreign"
+                                    href="/tours?scope=foreign"
                                     prefetch
                                     scroll={false}
                                     className={`nav-link ${scope === "Foreign" ? "active" : ""}`}

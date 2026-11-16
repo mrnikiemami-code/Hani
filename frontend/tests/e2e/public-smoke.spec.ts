@@ -9,8 +9,8 @@ test.describe("public smoke", () => {
     await expect(trending.getByText("تورهای داخلی", { exact: true })).toBeVisible();
   });
 
-  test("tour scope tabs update the URL without a document reload", async ({ page }) => {
-    await page.goto("/fa/tours/domestic");
+  test("tour scope tabs stay on one route and update only the query", async ({ page }) => {
+    await page.goto("/fa/tours?scope=domestic");
     await page.evaluate(() => {
       (window as unknown as { __haniMarker?: string }).__haniMarker = "kept";
     });
@@ -18,7 +18,7 @@ test.describe("public smoke", () => {
     const foreign = page.getByRole("link", { name: "تورهای خارجی" }).first();
     await foreign.click();
     await expect(foreign).toHaveClass(/active/);
-    await expect(page).toHaveURL(/\/fa\/tours\/foreign$/);
+    await expect(page).toHaveURL(/\/fa\/tours\?scope=foreign$/);
 
     const marker = await page.evaluate(
       () => (window as unknown as { __haniMarker?: string }).__haniMarker
@@ -27,7 +27,7 @@ test.describe("public smoke", () => {
   });
 
   test("tours landing renders and keeps LTR in English", async ({ page }) => {
-    await page.goto("/en/tours/domestic");
+    await page.goto("/en/tours?scope=domestic");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
     await expect(page.getByRole("link", { name: "Domestic tours" }).first()).toBeVisible();
   });

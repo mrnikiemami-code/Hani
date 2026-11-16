@@ -19,9 +19,9 @@ export function HaniTrendingTours({
   const tours = feed?.tours.items.slice(0, 4) ?? [];
   const allToursHref =
     activeScope === "domestic"
-      ? "/tours/domestic"
+      ? "/tours?scope=domestic"
       : activeScope === "foreign"
-        ? "/tours/foreign"
+        ? "/tours?scope=foreign"
         : "/tours";
 
   if (tours.length === 0) {
