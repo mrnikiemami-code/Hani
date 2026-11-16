@@ -23,7 +23,7 @@ internal sealed class GetPaymentIntentQueryHandler(IPaymentIntentRepository inte
         return Result<PaymentIntentDto>.Success(Map(intent));
     }
 
-    private static PaymentIntentDto Map(PaymentIntent intent)
+    internal static PaymentIntentDto Map(PaymentIntent intent)
         => new(
             intent.Id,
             intent.OrderId,

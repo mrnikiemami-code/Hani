@@ -1,6 +1,7 @@
 using Hani.Modules.Identity.Domain.Agencies;
 using Hani.Modules.Identity.Domain.ApiClients;
 using Hani.Modules.Identity.Domain.Users;
+using Hani.Modules.Identity.Domain.Wishlists;
 
 namespace Hani.Modules.Identity.Application.Abstractions;
 
@@ -135,6 +136,26 @@ public interface IUserRepository
     /// Checks whether a username is already used.
     /// </summary>
     Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Persistence abstraction for user wishlists.
+/// </summary>
+public interface IWishlistRepository
+{
+    /// <summary>Lists saved items for one user, newest first.</summary>
+    Task<IReadOnlyList<WishlistItem>> ListByUserAsync(
+        Guid userId,
+        CancellationToken cancellationToken);
+
+    /// <summary>Returns whether a product is already saved by the user.</summary>
+    Task<bool> ExistsAsync(Guid userId, Guid productId, CancellationToken cancellationToken);
+
+    /// <summary>Adds a saved item.</summary>
+    Task AddAsync(WishlistItem item, CancellationToken cancellationToken);
+
+    /// <summary>Removes a saved item if present.</summary>
+    Task RemoveAsync(Guid userId, Guid productId, CancellationToken cancellationToken);
 }
 
 /// <summary>

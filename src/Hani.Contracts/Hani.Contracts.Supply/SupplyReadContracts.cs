@@ -113,6 +113,13 @@ public interface IOfferReadService
         CancellationToken cancellationToken);
 
     /// <summary>
+    /// Returns all offers owned by one agency, including non-approved states.
+    /// </summary>
+    Task<IReadOnlyList<OfferSnapshot>> GetOffersByAgencyAsync(
+        Guid agencyId,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Returns approved-offer counts grouped by agency id.
     /// </summary>
     Task<IReadOnlyDictionary<Guid, int>> GetApprovedOfferCountsByAgencyIdsAsync(

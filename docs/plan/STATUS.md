@@ -524,10 +524,24 @@
 - [x] مسیر پرداخت mock تا صدور order و intent؛ تکمیل نهایی به PSP واقعی وابسته است.
 - [x] FA/AR RTL و EN LTR در فرم و صفحه تأیید.
 
+## Gate 9.1 — C4/C5 Full Data (2026-11-16)
+
+- [x] `GET /market/v1/me/payments` / `invoices` / `refunds` برای کاربر احرازه‌شده.
+- [x] صفحات پرداخت، فاکتور و بازپرداخت با جدول واقعی و empty state.
+- [x] `GET /market/v1/me/reviews` + صفحه نظرات من.
+- [x] ویش‌لیست: `GET/POST/DELETE /market/v1/me/wishlist` + صفحه و حذف واقعی.
+- [x] پروفایل: خواندن/ذخیره `/market/v1/auth/me` و فرم پروفایل.
+- [x] `GET /market/v1/me/agency/listings` + صفحه لیستینگ آژانس.
+- [x] `GET /market/v1/me/agency/orders` + صفحه رزروهای آژانس.
+- [x] `GET /market/v1/me/agency/payouts` + صفحه درآمد/تسویه.
+- [x] صفحه تنظیمات آژانس از `/market/v1/agencies/me`.
+- [x] `AddWishlistItems` migration + تست‌های ویش‌لیست.
+- [x] `dotnet format`، build و ۱۵۶ unit + ۳۴ architecture سبز.
+
 ### شکاف‌های باز (صادقانه)
 
-- [ ] C4 کامل: فاکتور/پرداخت/بازپرداخت/wishlist/نظرات/profile list endpoints.
-- [ ] C5 کامل: listings/bookings/payouts و حذف بخش‌های mock باقی‌مانده داشبورد.
+- [ ] بخش‌های تزئینی mock باقی‌مانده در `agent-dashboard` (نمودارها/Recently Added/Recent Invoices) هنوز داده واقعی ندارند.
+- [ ] اعلان‌های کاربر (inbox) هنوز endpoint اختصاصی ندارد.
 - [ ] C6 تکمیل پرداخت واقعی/PSP و webhook production.
 - [ ] C7 Playwright/axe/Lighthouse و ویرایش نهایی ترجمه.
 - [ ] جستجوی همه‌جانبه/فیلترهای صفحه تور هنوز به query string کامل متصل نیست.
@@ -535,4 +549,4 @@
 - [ ] پاک‌سازی داده demo محلی و seed بلاگ خراب.
 - [ ] E-07 provider پرواز، A-15 Lastgram، SMS/Email واقعی، storage تولیدی، PSP، CDN/DNS/TLS.
 
-> این سند Gate 9.1 را کامل اعلام نمی‌کند؛ scope، preferences، dashboard core و checkout core بسته شده‌اند، اما C4/C5 کامل، C6 PSP واقعی و C7 کیفیت باز هستند.
+> این سند Gate 9.1 را کامل اعلام نمی‌کند؛ scope، preferences، C4/C5 داده‌محور و checkout core بسته شده‌اند، اما بخش‌های تزئینی داشبورد آژانس، C6 PSP واقعی و C7 کیفیت باز هستند.

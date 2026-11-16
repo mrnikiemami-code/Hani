@@ -63,6 +63,14 @@ public sealed record ReviewCriteriaSummaryDto(
     IReadOnlyDictionary<string, decimal> Averages);
 
 /// <summary>
+/// Query that returns reviews authored by the authenticated user.
+/// </summary>
+public sealed record GetMyReviewsQuery(
+    Guid UserId,
+    int Page = 1,
+    int PageSize = 20) : IQuery<PagedResult<ReviewDto>>;
+
+/// <summary>
 /// Query that counts published reviews authored by a user.
 /// </summary>
 public sealed record GetAuthorReviewCountQuery(Guid UserId) : IQuery<int>;

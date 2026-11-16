@@ -153,6 +153,37 @@ internal sealed class GetReviewsQueryHandler(
     }
 }
 
+internal sealed class GetMyReviewsQueryHandler(
+    IReviewRepository reviews,
+    IUserRepository users)
+    : IQueryHandler<GetMyReviewsQuery, PagedResult<ReviewDto>>
+{
+    public async Task<Result<PagedResult<ReviewDto>>> Handle(
+        GetMyReviewsQuery request,
+        CancellationToken cancellationToken)
+    {
+        var page = Math.Max(1, request.Page);
+        var pageSize = Math.Clamp(request.PageSize, 1, 50);
+        var items = await reviews.ListByUserAsync(
+            request.UserId,
+            (page - 1) * pageSize,
+            pageSize,
+            cancellationToken);
+        var total = await reviews.CountByUserAsync(request.UserId, cancellationToken);
+        var author = await users.GetByIdAsync(request.UserId, cancellationToken);
+        var dtos = items
+            .Select(review => EngagementMappings.ToDto(
+                review,
+                author?.Username ?? "deleted-user",
+                author?.DisplayName ?? "Deleted user",
+                author?.AvatarUrl))
+            .ToArray();
+
+        return Result<PagedResult<ReviewDto>>.Success(
+            new PagedResult<ReviewDto>(dtos, page, pageSize, total));
+    }
+}
+
 internal sealed class GetAuthorReviewCountQueryHandler(IReviewRepository reviews)
     : IQueryHandler<GetAuthorReviewCountQuery, int>
 {

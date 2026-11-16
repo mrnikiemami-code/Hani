@@ -138,6 +138,15 @@ internal sealed class FakeOfferReadService : IOfferReadService
         return Task.FromResult<IReadOnlyDictionary<Guid, IReadOnlyList<OfferSnapshot>>>(result);
     }
 
+    public Task<IReadOnlyList<OfferSnapshot>> GetOffersByAgencyAsync(
+        Guid agencyId,
+        CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyList<OfferSnapshot>>(
+            OffersByProduct.Values
+                .SelectMany(offers => offers)
+                .Where(offer => offer.AgencyId == agencyId)
+                .ToArray());
+
     public Task<IReadOnlyDictionary<Guid, int>> GetApprovedOfferCountsByAgencyIdsAsync(
         IReadOnlyCollection<Guid> agencyIds,
         CancellationToken cancellationToken)

@@ -149,6 +149,14 @@ internal sealed class ChannelOrderReadService(BookingDbContext dbContext) : ICha
         return new TravelerOrderPage(items, total);
     }
 
+    public async Task<IReadOnlyList<Guid>> ListTravelerOrderIdsAsync(
+        string? contactEmail,
+        string? contactPhone,
+        CancellationToken cancellationToken)
+        => await FilterByContact(contactEmail, contactPhone)
+            .Select(order => order.Id)
+            .ToArrayAsync(cancellationToken);
+
     public async Task<AdminBookingDashboardSummary> GetAdminDashboardAsync(
         CancellationToken cancellationToken)
     {

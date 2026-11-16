@@ -99,6 +99,22 @@ public sealed class GetAuthorReviewCountQueryValidator
 }
 
 /// <summary>
+/// Validation rules for the authenticated user's review list.
+/// </summary>
+public sealed class GetMyReviewsQueryValidator : AbstractValidator<GetMyReviewsQuery>
+{
+    /// <summary>
+    /// Creates user-id and paging rules.
+    /// </summary>
+    public GetMyReviewsQueryValidator()
+    {
+        RuleFor(query => query.UserId).NotEmpty().WithErrorCode("HANI-IDENTITY-1511");
+        RuleFor(query => query.Page).GreaterThanOrEqualTo(1).WithErrorCode("HANI-IDENTITY-1515");
+        RuleFor(query => query.PageSize).InclusiveBetween(1, 50).WithErrorCode("HANI-IDENTITY-1516");
+    }
+}
+
+/// <summary>
 /// Validation rules for pending review lists.
 /// </summary>
 public sealed class GetPendingReviewsQueryValidator : AbstractValidator<GetPendingReviewsQuery>

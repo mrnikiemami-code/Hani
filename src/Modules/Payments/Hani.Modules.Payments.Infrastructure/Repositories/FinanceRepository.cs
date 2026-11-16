@@ -26,6 +26,23 @@ internal sealed class FinanceRepository(PaymentsDbContext dbContext) : IFinanceR
             .OrderByDescending(item => item.RequestedAt)
             .ToArrayAsync(cancellationToken);
 
+    public async Task<IReadOnlyList<Refund>> ListRefundsByOrderIdsAsync(
+        IReadOnlyCollection<Guid> orderIds,
+        CancellationToken cancellationToken)
+    {
+        if (orderIds.Count == 0)
+        {
+            return [];
+        }
+
+        var ids = orderIds.Distinct().ToArray();
+        return await dbContext.Refunds
+            .AsNoTracking()
+            .Where(item => ids.Contains(item.OrderId))
+            .OrderByDescending(item => item.RequestedAt)
+            .ToArrayAsync(cancellationToken);
+    }
+
     public async Task AddInvoiceAsync(Invoice invoice, CancellationToken cancellationToken)
     {
         await dbContext.Invoices.AddAsync(invoice, cancellationToken);
@@ -34,6 +51,23 @@ internal sealed class FinanceRepository(PaymentsDbContext dbContext) : IFinanceR
 
     public Task<Invoice?> GetInvoiceAsync(Guid id, CancellationToken cancellationToken)
         => dbContext.Invoices.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+    public async Task<IReadOnlyList<Invoice>> ListInvoicesByOrderIdsAsync(
+        IReadOnlyCollection<Guid> orderIds,
+        CancellationToken cancellationToken)
+    {
+        if (orderIds.Count == 0)
+        {
+            return [];
+        }
+
+        var ids = orderIds.Distinct().ToArray();
+        return await dbContext.Invoices
+            .AsNoTracking()
+            .Where(item => ids.Contains(item.OrderId))
+            .OrderByDescending(item => item.IssuedAt)
+            .ToArrayAsync(cancellationToken);
+    }
 
     public async Task<IReadOnlyList<Invoice>> ListDueInvoicesAsync(
         DateTimeOffset dueBefore,

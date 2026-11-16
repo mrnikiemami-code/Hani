@@ -142,3 +142,9 @@ Client → X-Api-Key + X-Api-Secret
 - Anonymous users keep display preferences in the signed
   `hani_display_preferences` cookie and the home layout in
   `hani_home_experience`; authenticated users take precedence.
+- `GET /market/v1/me/reviews` lists reviews authored by the authenticated user.
+- `GET /market/v1/me/wishlist` returns saved tours enriched from Catalog and
+  Supply; `POST/DELETE /market/v1/me/wishlist/{productId}` toggles a saved tour.
+- Persistence: `identity.user_preferences`, `identity.wishlist_items`
+  (unique `(user_id, product_id)`), migrations `AddUserPreferences` and
+  `AddWishlistItems`.

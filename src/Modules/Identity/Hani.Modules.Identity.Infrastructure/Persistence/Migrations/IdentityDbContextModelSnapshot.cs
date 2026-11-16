@@ -767,6 +767,36 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.ToTable("user_preferences", "identity");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Wishlists.WishlistItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("product_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "CreatedAt")
+                        .HasDatabaseName("ix_wishlist_items_user_created");
+
+                    b.HasIndex("UserId", "ProductId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_wishlist_items_user_product");
+
+                    b.ToTable("wishlist_items", "identity");
+                });
+
             modelBuilder.Entity("Hani.Modules.Identity.Domain.Agencies.Agency", b =>
                 {
                     b.OwnsMany("Hani.Modules.Identity.Domain.Agencies.AgencyDocument", "Documents", b1 =>

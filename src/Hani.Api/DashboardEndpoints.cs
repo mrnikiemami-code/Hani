@@ -1,7 +1,11 @@
 using System.Security.Claims;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Contracts.Booking;
+using Hani.Contracts.Supply;
 using Hani.Modules.Identity.Application.Abstractions;
+using Hani.Modules.Payments.Application.Queries.TravelerFinance;
+using Hani.Modules.Settlement.Application.Payouts;
+using MediatR;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Api;
@@ -41,6 +45,39 @@ public static class DashboardEndpoints
             .WithName("Marketplace.GetMyAgencyDashboard")
             .RequireAuthorization("User")
             .Produces<AgencyDashboardDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        me.MapGet("/payments", GetMyPaymentsAsync)
+            .WithName("Marketplace.GetMyPayments")
+            .RequireAuthorization("User")
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        me.MapGet("/invoices", GetMyInvoicesAsync)
+            .WithName("Marketplace.GetMyInvoices")
+            .RequireAuthorization("User")
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        me.MapGet("/refunds", GetMyRefundsAsync)
+            .WithName("Marketplace.GetMyRefunds")
+            .RequireAuthorization("User")
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        me.MapGet("/agency/listings", GetMyAgencyListingsAsync)
+            .WithName("Marketplace.GetMyAgencyListings")
+            .RequireAuthorization("User")
+            .Produces<IReadOnlyList<OfferSnapshot>>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        me.MapGet("/agency/orders", GetMyAgencyOrdersAsync)
+            .WithName("Marketplace.GetMyAgencyOrders")
+            .RequireAuthorization("User")
+            .Produces<TravelerOrderPage>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        me.MapGet("/agency/payouts", GetMyAgencyPayoutsAsync)
+            .WithName("Marketplace.GetMyAgencyPayouts")
+            .RequireAuthorization("User")
+            .Produces<IReadOnlyList<PayoutDto>>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
         return app;
@@ -186,6 +223,178 @@ public static class DashboardEndpoints
             summary.Currency,
             recent));
     }
+
+    /// <summary>
+    /// Returns the authenticated traveler's payment intents for all owned orders.
+    /// </summary>
+    private static async Task<IResult> GetMyPaymentsAsync(
+        HttpContext context,
+        IUserRepository users,
+        IChannelOrderReadService orders,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var orderIds = await ResolveMyOrderIdsAsync(context, users, orders, cancellationToken);
+        if (orderIds is null)
+        {
+            return Unauthorized(context);
+        }
+
+        var result = await sender.Send(
+            new ListTravelerPaymentsQuery(orderIds),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns the authenticated traveler's invoices for all owned orders.
+    /// </summary>
+    private static async Task<IResult> GetMyInvoicesAsync(
+        HttpContext context,
+        IUserRepository users,
+        IChannelOrderReadService orders,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var orderIds = await ResolveMyOrderIdsAsync(context, users, orders, cancellationToken);
+        if (orderIds is null)
+        {
+            return Unauthorized(context);
+        }
+
+        var result = await sender.Send(
+            new ListTravelerInvoicesQuery(orderIds),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns the authenticated traveler's refunds for all owned orders.
+    /// </summary>
+    private static async Task<IResult> GetMyRefundsAsync(
+        HttpContext context,
+        IUserRepository users,
+        IChannelOrderReadService orders,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var orderIds = await ResolveMyOrderIdsAsync(context, users, orders, cancellationToken);
+        if (orderIds is null)
+        {
+            return Unauthorized(context);
+        }
+
+        var result = await sender.Send(
+            new ListTravelerRefundsQuery(orderIds),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns offers owned by the authenticated agency owner.
+    /// </summary>
+    private static async Task<IResult> GetMyAgencyListingsAsync(
+        HttpContext context,
+        IAgencyRepository agencies,
+        IOfferReadService offers,
+        CancellationToken cancellationToken)
+    {
+        var agency = await ResolveAgencyAsync(context, agencies, cancellationToken);
+        if (agency is null)
+        {
+            return Unauthorized(context);
+        }
+
+        return Results.Ok(await offers.GetOffersByAgencyAsync(agency.Id, cancellationToken));
+    }
+
+    /// <summary>
+    /// Returns a paged order list for the authenticated agency owner.
+    /// </summary>
+    private static async Task<IResult> GetMyAgencyOrdersAsync(
+        int? page,
+        int? pageSize,
+        HttpContext context,
+        IAgencyRepository agencies,
+        IChannelOrderReadService orders,
+        CancellationToken cancellationToken)
+    {
+        var agency = await ResolveAgencyAsync(context, agencies, cancellationToken);
+        if (agency is null)
+        {
+            return Unauthorized(context);
+        }
+
+        var currentPage = Math.Max(1, page ?? 1);
+        var size = Math.Clamp(pageSize ?? 20, 1, 50);
+        var items = await orders.ListByAgencyAsync(
+            agency.Id,
+            null,
+            null,
+            (currentPage - 1) * size,
+            size,
+            cancellationToken);
+
+        return Results.Ok(new TravelerOrderPage(items, items.Count));
+    }
+
+    /// <summary>
+    /// Returns payouts for the authenticated agency owner.
+    /// </summary>
+    private static async Task<IResult> GetMyAgencyPayoutsAsync(
+        HttpContext context,
+        IAgencyRepository agencies,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var agency = await ResolveAgencyAsync(context, agencies, cancellationToken);
+        if (agency is null)
+        {
+            return Unauthorized(context);
+        }
+
+        var result = await sender.Send(
+            new ListPayoutsQuery(agency.Id),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    private static async Task<Hani.Modules.Identity.Domain.Agencies.Agency?> ResolveAgencyAsync(
+        HttpContext context,
+        IAgencyRepository agencies,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return null;
+        }
+
+        return await agencies.GetByOwnerUserIdAsync(userId, cancellationToken);
+    }
+
+    private static async Task<IReadOnlyList<Guid>?> ResolveMyOrderIdsAsync(
+        HttpContext context,
+        IUserRepository users,
+        IChannelOrderReadService orders,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return null;
+        }
+
+        var user = await users.GetByIdAsync(userId, cancellationToken);
+        return await orders.ListTravelerOrderIdsAsync(
+            user?.Email,
+            user?.Mobile,
+            cancellationToken);
+    }
+
+    private static IResult Unauthorized(HttpContext context)
+        => context.ToProblem(
+            Hani.BuildingBlocks.Application.Error.Unauthorized(
+                "HANI-IDENTITY-1202",
+                "Authenticated user is required."));
 
     private static bool TryGetUserId(HttpContext context, out Guid userId)
     {

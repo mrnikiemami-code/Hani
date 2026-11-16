@@ -115,6 +115,13 @@ public interface IPaymentIntentRepository
         CancellationToken cancellationToken);
 
     /// <summary>
+    /// Returns all intents for a set of orders, newest first.
+    /// </summary>
+    Task<IReadOnlyList<PaymentIntent>> ListByOrderIdsAsync(
+        IReadOnlyCollection<Guid> orderIds,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Persists pending changes.
     /// </summary>
     Task SaveChangesAsync(CancellationToken cancellationToken);

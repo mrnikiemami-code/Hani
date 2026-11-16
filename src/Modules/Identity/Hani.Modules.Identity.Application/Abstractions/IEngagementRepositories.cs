@@ -71,6 +71,15 @@ public interface IReviewRepository
         CancellationToken cancellationToken);
 
     /// <summary>
+    /// Returns reviews authored by one user, newest first.
+    /// </summary>
+    Task<IReadOnlyList<Review>> ListByUserAsync(
+        Guid userId,
+        int skip,
+        int take,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Counts published reviews authored by one user.
     /// </summary>
     Task<int> CountByUserAsync(Guid userId, CancellationToken cancellationToken);

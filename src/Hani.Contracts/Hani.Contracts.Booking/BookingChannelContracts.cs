@@ -89,6 +89,14 @@ public interface IChannelOrderReadService
         int take,
         CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Returns all order ids matching a contact email or phone.
+    /// </summary>
+    Task<IReadOnlyList<Guid>> ListTravelerOrderIdsAsync(
+        string? contactEmail,
+        string? contactPhone,
+        CancellationToken cancellationToken);
+
     /// <summary>Returns admin booking dashboard totals.</summary>
     Task<AdminBookingDashboardSummary> GetAdminDashboardAsync(
         CancellationToken cancellationToken);

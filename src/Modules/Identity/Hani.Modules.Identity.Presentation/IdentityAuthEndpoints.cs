@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Identity.Application.Commands.Auth;
+using Hani.Modules.Identity.Application.Commands.Engagement;
 using Hani.Modules.Identity.Application.Commands.Preferences;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -74,6 +75,12 @@ public static class IdentityAuthEndpoints
             .RequireAuthorization("User")
             .Produces<UserPreferencesDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        app.MapGet("/market/v1/me/reviews", GetMyReviewsAsync)
+            .WithName("Marketplace.GetMyReviews")
+            .RequireAuthorization("User")
+            .Produces<PagedResult<ReviewDto>>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
 
         app.MapGet("/market/v1/authors/{username}", GetAuthorAsync)
             .WithName("Marketplace.GetAuthor")
@@ -284,6 +291,28 @@ public static class IdentityAuthEndpoints
                 request.ReducedMotion),
             cancellationToken);
 
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns reviews authored by the authenticated user.
+    /// </summary>
+    private static async Task<IResult> GetMyReviewsAsync(
+        int? page,
+        int? pageSize,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return context.ToProblem(
+                Error.Unauthorized("HANI-IDENTITY-1202", "Authenticated user is required."));
+        }
+
+        var result = await sender.Send(
+            new GetMyReviewsQuery(userId, page ?? 1, pageSize ?? 20),
+            cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 

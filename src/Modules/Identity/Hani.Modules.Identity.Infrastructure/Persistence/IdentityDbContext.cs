@@ -5,6 +5,7 @@ using Hani.Modules.Identity.Domain.Gamification;
 using Hani.Modules.Identity.Domain.Media;
 using Hani.Modules.Identity.Domain.Reviews;
 using Hani.Modules.Identity.Domain.Users;
+using Hani.Modules.Identity.Domain.Wishlists;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Identity.Infrastructure.Persistence;
@@ -21,6 +22,8 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
     public DbSet<User> Users => Set<User>();
 
     public DbSet<UserPreferences> UserPreferences => Set<UserPreferences>();
+
+    public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
 
     public DbSet<Review> Reviews => Set<Review>();
 

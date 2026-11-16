@@ -63,6 +63,10 @@ Infrastructure  → SupplyDbContext, Configurations, Repositories, Migration
 Presentation    → Minimal API endpoints
 ```
 
+## Gate 9.1 ? Agency listing read
+- `IOfferReadService.GetOffersByAgencyAsync` returns all offer states for one agency.
+- It powers the authenticated agency listings page without exposing another agency's offers.
+
 ## Persistence
 
 - Schema: `supply`

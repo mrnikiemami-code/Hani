@@ -25,7 +25,7 @@ async function authHeaders(): Promise<HeadersInit> {
 }
 
 async function request<T>(
-  method: "GET" | "PUT" | "POST",
+  method: "GET" | "PUT" | "POST" | "DELETE",
   path: string,
   body?: unknown,
   extraHeaders?: HeadersInit
@@ -66,4 +66,8 @@ export function sessionPost<T>(
   headers?: HeadersInit
 ): Promise<SessionApiResult<T>> {
   return request<T>("POST", path, body, headers);
+}
+
+export function sessionDelete<T>(path: string): Promise<SessionApiResult<T>> {
+  return request<T>("DELETE", path);
 }

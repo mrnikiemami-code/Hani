@@ -81,10 +81,20 @@ public interface IFinanceRepository
     Task<Refund?> GetRefundAsync(Guid id, CancellationToken cancellationToken);
     /// <summary>Lists refunds for an order.</summary>
     Task<IReadOnlyList<Refund>> ListRefundsAsync(Guid orderId, CancellationToken cancellationToken);
+
+    /// <summary>Lists refunds for a set of orders.</summary>
+    Task<IReadOnlyList<Refund>> ListRefundsByOrderIdsAsync(
+        IReadOnlyCollection<Guid> orderIds,
+        CancellationToken cancellationToken);
     /// <summary>Adds an invoice.</summary>
     Task AddInvoiceAsync(Invoice invoice, CancellationToken cancellationToken);
     /// <summary>Returns an invoice by id.</summary>
     Task<Invoice?> GetInvoiceAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>Lists invoices for a set of orders.</summary>
+    Task<IReadOnlyList<Invoice>> ListInvoicesByOrderIdsAsync(
+        IReadOnlyCollection<Guid> orderIds,
+        CancellationToken cancellationToken);
     /// <summary>Lists invoices whose next reminder is due.</summary>
     Task<IReadOnlyList<Invoice>> ListDueInvoicesAsync(
         DateTimeOffset dueBefore,

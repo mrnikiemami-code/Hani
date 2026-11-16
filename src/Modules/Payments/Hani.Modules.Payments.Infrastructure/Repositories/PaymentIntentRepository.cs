@@ -37,6 +37,23 @@ internal sealed class PaymentIntentRepository(PaymentsDbContext dbContext) : IPa
             .Where(intent => intent.OrderId == orderId)
             .ToArrayAsync(cancellationToken);
 
+    public async Task<IReadOnlyList<PaymentIntent>> ListByOrderIdsAsync(
+        IReadOnlyCollection<Guid> orderIds,
+        CancellationToken cancellationToken)
+    {
+        if (orderIds.Count == 0)
+        {
+            return [];
+        }
+
+        var ids = orderIds.Distinct().ToArray();
+        return await dbContext.PaymentIntents
+            .AsNoTracking()
+            .Where(intent => ids.Contains(intent.OrderId))
+            .OrderByDescending(intent => intent.CreatedAt)
+            .ToArrayAsync(cancellationToken);
+    }
+
     public Task SaveChangesAsync(CancellationToken cancellationToken)
         => dbContext.SaveChangesAsync(cancellationToken);
 }

@@ -123,6 +123,21 @@ internal sealed class ReviewRepository(IdentityDbContext dbContext) : IReviewRep
             .Take(take)
             .ToArrayAsync(cancellationToken);
 
+    public async Task<IReadOnlyList<Review>> ListByUserAsync(
+        Guid userId,
+        int skip,
+        int take,
+        CancellationToken cancellationToken)
+        => await dbContext.Reviews
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(review => review.Photos)
+            .Where(review => review.UserId == userId)
+            .OrderByDescending(review => review.CreatedAt)
+            .Skip(skip)
+            .Take(take)
+            .ToArrayAsync(cancellationToken);
+
     public Task<int> CountPendingAsync(CancellationToken cancellationToken)
         => dbContext.Reviews.CountAsync(
             review => review.Status == ReviewStatus.Pending,
