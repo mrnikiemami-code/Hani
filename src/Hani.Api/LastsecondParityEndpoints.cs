@@ -2,6 +2,7 @@ using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Contracts.Supply;
 using Hani.Modules.Catalog.Application.Queries.GetVisaCountry;
+using Hani.Modules.Catalog.Application.Queries.SearchHotels;
 using Hani.Modules.Content.Application.Queries.Editorial;
 using Hani.Modules.Content.Application.Queries.Growth;
 using Hani.Modules.Identity.Application.Commands.AgencyOnboarding;
@@ -47,6 +48,12 @@ public static class LastsecondParityEndpoints
             .AllowAnonymous()
             .WithName("Marketplace.GetHome")
             .Produces<HomeFeedDto>();
+
+        app.MapGet("/market/v1/search/options", GetSearchOptionsAsync)
+            .WithTags("Marketplace.Home")
+            .AllowAnonymous()
+            .WithName("Marketplace.GetSearchOptions")
+            .Produces<SearchOptionsDto>();
 
         return app;
     }
@@ -149,6 +156,60 @@ public static class LastsecondParityEndpoints
             reviewCount.IsSuccess ? reviewCount.Value : 0));
     }
 
+    private static async Task<IResult> GetSearchOptionsAsync(
+        string? locale,
+        string? scope,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var tours = await sender.Send(
+            new SearchProductsQuery(
+                locale,
+                Scope: scope,
+                Sort: "newest",
+                Page: 1,
+                PageSize: 50),
+            cancellationToken);
+
+        if (!tours.IsSuccess)
+        {
+            return context.ToProblem(tours.Error!);
+        }
+
+        var hotels = await sender.Send(
+            new SearchHotelsQuery(locale, Page: 1, PageSize: 50, SortBy: "rating"),
+            cancellationToken);
+
+        var origins = tours.Value!.Items
+            .Select(item => item.OriginDestinationName)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Cast<string>()
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var destinations = tours.Value.Items
+            .SelectMany(item => item.DestinationNames ?? [])
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var durations = tours.Value.Items
+            .Select(item => item.DurationDays)
+            .Distinct()
+            .OrderBy(value => value)
+            .ToArray();
+        var hotelNames = hotels.IsSuccess
+            ? hotels.Value!.Items
+                .Select(item => item.Name)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .ToArray()
+            : [];
+
+        return Results.Ok(new SearchOptionsDto(origins, destinations, durations, hotelNames));
+    }
+
     private static async Task<IResult> GetHomeAsync(
         string? locale,
         string? scope,
@@ -167,11 +228,31 @@ public static class LastsecondParityEndpoints
             new SearchBlogQuery(locale, Page: 1, PageSize: 4),
             cancellationToken);
         var campaigns = await sender.Send(new ListCampaignsQuery(1, 4), cancellationToken);
+        var domestic = await sender.Send(
+            new SearchProductsQuery(locale, Scope: "Domestic", Sort: "newest", Page: 1, PageSize: 6),
+            cancellationToken);
+        var foreign = await sender.Send(
+            new SearchProductsQuery(locale, Scope: "Foreign", Sort: "newest", Page: 1, PageSize: 6),
+            cancellationToken);
+        var originTours = await sender.Send(
+            new SearchProductsQuery(locale, Sort: "newest", Page: 1, PageSize: 50),
+            cancellationToken);
 
         if (!tours.IsSuccess)
         {
             return context.ToProblem(tours.Error!);
         }
+
+        var originCities = originTours.IsSuccess
+            ? originTours.Value!.Items
+                .Where(item => !string.IsNullOrWhiteSpace(item.OriginDestinationName))
+                .GroupBy(item => item.OriginDestinationName!, StringComparer.OrdinalIgnoreCase)
+                .Select(group => new OriginCityDto(group.Key, group.Count()))
+                .OrderByDescending(item => item.TourCount)
+                .ThenBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+                .Take(6)
+                .ToArray()
+            : [];
 
         return Results.Ok(new HomeFeedDto(
             tours.Value!,
@@ -184,7 +265,15 @@ public static class LastsecondParityEndpoints
                 : new PagedResult<BlogSummaryDto>([], 1, 4, 0),
             campaigns.IsSuccess
                 ? campaigns.Value!
-                : new PagedResult<CampaignSummaryDto>([], 1, 4, 0)));
+                : new PagedResult<CampaignSummaryDto>([], 1, 4, 0),
+            tours.Value!,
+            domestic.IsSuccess
+                ? domestic.Value!
+                : new PagedResult<ProductSearchItemDto>([], 1, 6, 0),
+            foreign.IsSuccess
+                ? foreign.Value!
+                : new PagedResult<ProductSearchItemDto>([], 1, 6, 0),
+            originCities));
     }
 }
 
@@ -234,4 +323,22 @@ public sealed record HomeFeedDto(
     IReadOnlyList<VisaCountrySummaryDto> Visas,
     PagedResult<TravelogueSummaryDto> Travelogues,
     PagedResult<BlogSummaryDto> Blog,
-    PagedResult<CampaignSummaryDto> Campaigns);
+    PagedResult<CampaignSummaryDto> Campaigns,
+    PagedResult<ProductSearchItemDto> FeaturedTours,
+    PagedResult<ProductSearchItemDto> LatestDomesticTours,
+    PagedResult<ProductSearchItemDto> LatestForeignTours,
+    IReadOnlyList<OriginCityDto> OriginCities);
+
+/// <summary>
+/// Homepage origin-city card with the number of matching tours.
+/// </summary>
+public sealed record OriginCityDto(string Name, int TourCount);
+
+/// <summary>
+/// Server-driven search options for the homepage search form.
+/// </summary>
+public sealed record SearchOptionsDto(
+    IReadOnlyList<string> Origins,
+    IReadOnlyList<string> Destinations,
+    IReadOnlyList<int> Durations,
+    IReadOnlyList<string> Hotels);

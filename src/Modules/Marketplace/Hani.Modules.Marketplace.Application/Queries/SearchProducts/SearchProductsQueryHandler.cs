@@ -60,6 +60,10 @@ internal sealed class SearchProductsQueryHandler(
         var productIds = products.Select(product => product.Id).ToArray();
         var destinationIds = products
             .SelectMany(product => product.DestinationIds)
+            .Concat(products
+                .Select(product => product.OriginDestinationId)
+                .Where(id => id is not null)
+                .Cast<Guid>())
             .Distinct()
             .ToArray();
         var destinationLookup = destinationIds.Length == 0
@@ -112,6 +116,10 @@ internal sealed class SearchProductsQueryHandler(
                 .Where(name => !string.IsNullOrWhiteSpace(name))
                 .Cast<string>()
                 .ToArray();
+            var originDestinationName = product.OriginDestinationId is { } originId &&
+                destinationLookup.TryGetValue(originId, out var originDestination)
+                    ? Resolve(originDestination.Names, locale, languages.DefaultLanguage)
+                    : null;
             var firstOffer = filteredOffers[0];
             var agencyName = agencyNames.TryGetValue(firstOffer.AgencyId, out var resolvedAgency)
                 ? resolvedAgency
@@ -156,7 +164,8 @@ internal sealed class SearchProductsQueryHandler(
                     agencyName,
                     nextDeparture,
                     product.Scope,
-                    product.CoverImageUrl),
+                    product.CoverImageUrl,
+                    originDestinationName),
                 product.UpdatedAt));
         }
 

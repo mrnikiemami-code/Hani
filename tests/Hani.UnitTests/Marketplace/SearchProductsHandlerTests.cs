@@ -84,6 +84,48 @@ public sealed class SearchProductsHandlerTests
         result.Value.Items.Single().Scope.ShouldBe("Domestic");
     }
 
+
+    [Fact]
+    public async Task Search_Should_Resolve_Origin_Destination_Name()
+    {
+        var catalog = new FakeCatalogReadService();
+        var offers = new FakeOfferReadService();
+        var productId = Guid.CreateVersion7();
+        var destinationId = Guid.CreateVersion7();
+        var originId = Guid.CreateVersion7();
+
+        catalog.Destinations.Add(new CatalogDestinationSnapshot(
+            destinationId,
+            "kish",
+            "City",
+            null,
+            new Dictionary<string, string> { ["en"] = "Kish" }));
+        catalog.Destinations.Add(new CatalogDestinationSnapshot(
+            originId,
+            "tehran",
+            "City",
+            null,
+            new Dictionary<string, string> { ["en"] = "Tehran" }));
+
+        catalog.Products.Add(new CatalogProductSummary(
+            productId,
+            "kish-tour",
+            4,
+            "coastal",
+            new Dictionary<string, string> { ["en"] = "Kish tour" },
+            [destinationId],
+            DateTimeOffset.UtcNow,
+            originId));
+        offers.OffersByProduct[productId] = [Offer(productId, 10m, 9m)];
+
+        var handler = CreateHandler(catalog, offers, new FakeCacheService());
+        var result = await handler.Handle(
+            new SearchProductsQuery("en", Page: 1, PageSize: 20),
+            CancellationToken.None);
+
+        result.Value!.Items.Single().OriginDestinationName.ShouldBe("Tehran");
+    }
+
     [Fact]
     public async Task Search_Should_Group_Min_Price_By_Currency()
     {

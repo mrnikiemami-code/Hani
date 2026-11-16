@@ -273,3 +273,4 @@
 | `b3021be` | Gate 9.1 C4/C5 complete data: traveler payments/invoices/refunds/reviews/wishlist/profile, agency listings/orders/payouts/settings |
 | `d1a5db3` | Gate 9.1 final data closure: inbox messages, real agency dashboard, mock payment completion, Playwright smoke |
 | `1223a46` | Gate 9.1 data completeness: tour cover image, content author/reading time |
+| `pending` | Home parity Phase 1: home BFF sections, search options, origin-name resolution |

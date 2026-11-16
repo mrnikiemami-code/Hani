@@ -741,6 +741,24 @@ paths:
       responses:
         '200':
           description: Aggregated home feed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HomeFeed' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /search/options:
+    get:
+      tags: [Marketplace]
+      summary: Read server-driven homepage search options
+      parameters:
+        - { name: locale, in: query, schema: { type: [string, 'null'] } }
+        - { name: scope, in: query, schema: { type: [string, 'null'], enum: [Domestic, Foreign, null] } }
+      responses:
+        '200':
+          description: Search options
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SearchOptions' }
         default: { $ref: '#/components/responses/Problem' }
 
   /trust:
@@ -2951,6 +2969,62 @@ components:
         recentOrders:
           type: array
           items: { $ref: '#/components/schemas/ChannelOrderSummary' }
+
+    OriginCity:
+      type: object
+      properties:
+        name: { type: string }
+        tourCount: { type: integer }
+
+    SearchOptions:
+      type: object
+      properties:
+        origins:
+          type: array
+          items: { type: string }
+        destinations:
+          type: array
+          items: { type: string }
+        durations:
+          type: array
+          items: { type: integer }
+        hotels:
+          type: array
+          items: { type: string }
+
+    HomeFeed:
+      type: object
+      properties:
+        tours: { $ref: '#/components/schemas/PagedProducts' }
+        featuredTours: { $ref: '#/components/schemas/PagedProducts' }
+        latestDomesticTours: { $ref: '#/components/schemas/PagedProducts' }
+        latestForeignTours: { $ref: '#/components/schemas/PagedProducts' }
+        visas:
+          type: array
+          items: { $ref: '#/components/schemas/VisaCountrySummary' }
+        travelogues:
+          type: array
+          items: { type: object }
+        blog:
+          type: array
+          items: { type: object }
+        campaigns:
+          type: array
+          items: { type: object }
+        originCities:
+          type: array
+          items: { $ref: '#/components/schemas/OriginCity' }
+
+    PagedProducts:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/ProductSearchItem' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalCount: { type: integer }
+        totalPages: { type: integer }
 
     UserPreferencesInput:
       type: object

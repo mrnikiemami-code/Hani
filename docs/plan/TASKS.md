@@ -231,3 +231,12 @@
 | G91-DATA-03 | Visa cover image | ? Next | GAP-15 | migration + card |
 | G91-DATA-04 | Full tour filter query-string sync | ? Next | G91-SCOPE-04 | pagination + filters |
 | G91-QA-03 | Template-wide axe/Lighthouse pass | ? Next | G91-QA-01 | ARIA/labels/contrast |
+
+## Phase 6.7 ? Home Parity+ Phase 1 (2026-11-16)
+
+| ID | ??? | ????? | DoD |
+|---|---|---|---|
+| H91-HOME-01 | Home BFF sections | ? | featured/domestic/foreign/originCities |
+| H91-HOME-02 | Search options endpoint | ? | server-driven origins/destinations/durations/hotels |
+| H91-HOME-03 | Tour origin name | ? | resolved in search DTO + unit test |
+| H91-HOME-04 | Frontend home contract | ? | HomeFeed types + API filters |

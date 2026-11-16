@@ -86,4 +86,8 @@ Marketplace.Application
   and campaigns.
 - `GET /market/v1/home?scope=Domestic|Foreign` applies the same server-side
   tour scope filter used by search, so home tabs never filter client-side.
+- The home feed also returns `featuredTours`, `latestDomesticTours`,
+  `latestForeignTours`, and `originCities` for the Lastsecond-parity homepage.
+- `GET /market/v1/search/options?scope=Domestic|Foreign` returns server-driven
+  origins, destinations, durations, and hotel names for the hero search form.
 - Public agency directory/profile BFF adds approved tour counts.

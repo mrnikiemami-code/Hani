@@ -38,8 +38,17 @@ export type HomeCampaignItem = {
   status: string;
 };
 
+export type HomeOriginCity = {
+  name: string;
+  tourCount: number;
+};
+
 export type HomeFeed = {
   tours: PagedResult<TourSearchItem>;
+  featuredTours: PagedResult<TourSearchItem>;
+  latestDomesticTours: PagedResult<TourSearchItem>;
+  latestForeignTours: PagedResult<TourSearchItem>;
+  originCities: HomeOriginCity[];
   visas: VisaSearchItem[];
   travelogues: PagedResult<HomeTravelogueItem>;
   blog: PagedResult<HomeBlogItem>;

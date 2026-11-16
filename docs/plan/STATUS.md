@@ -567,3 +567,4 @@
 - Implementation plan: [`GATE-9.1-HOME-PARITY-PLAN.md`](GATE-9.1-HOME-PARITY-PLAN.md)
 - Next: Phase 1 backend contracts + Phase 2 template hero/tabs.
 - Next implementation must be template-first and include canonical/hreflang/JSON-LD/a11y.
+- Phase 1 home contracts: `featuredTours`, `latestDomesticTours`, `latestForeignTours`, `originCities`, `/market/v1/search/options`, `OriginDestinationName` ? done.
