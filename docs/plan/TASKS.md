@@ -271,4 +271,6 @@
 | H91-A11Y-01 | Topical H1 + main landmark + skip link | ? | home |
 | H91-A11Y-02 | Keyboard tabs + labels + slider labels | ? | home/hero/tours |
 | H91-QA-04 | Lighthouse home | ? | 100/100/100 |
-| H91-QA-05 | Listing accessibility debt | ? Next | template filter/sidebar 84 |
+| H91-QA-05 | Listing accessibility debt | ? | template filter/sidebar 100 |
+| H91-QA-06 | FA/EN/AR Lighthouse | ? | home 100/100/100 |
+| H91-QA-07 | Sitemap/robots/metadata regression tests | ? | Playwright 10 passed |

@@ -72,7 +72,6 @@ const TourSearch = () => {
                               <div
                                 data-bs-toggle="dropdown"
                                 data-bs-auto-close="outside"
-                                role="menu"
                               >
                                 <BookingDropdown
                                   label="Where would like to go?"
@@ -97,21 +96,20 @@ const TourSearch = () => {
                               <div
                                 data-bs-toggle="dropdown"
                                 data-bs-auto-close="outside"
-                                role="menu"
                               >
                                 <label className="form-label fs-14 text-default mb-1">
                                   Travellers
                                 </label>
-                                <h5>
+                                <div className="h5 mb-0">
                                   {totalTourPassengers}{" "}
                                   <span className="fw-normal fs-14">
                                     Persons
                                   </span>
-                                </h5>
+                                </div>
                                 <p className="fs-12 mb-0">2 Adult</p>
                               </div>
                               <div className="dropdown-menu dropdown-menu-end dropdown-xl">
-                                <h5 className="mb-3">Select Travelers</h5>
+                                <div className="h5 mb-3">Select Travelers</div>
                                 <div className="mb-3 border br-10 info-item pb-1">
                                   <div className="row">
                                     <div className="col-md-12">

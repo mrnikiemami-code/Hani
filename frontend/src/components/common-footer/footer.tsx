@@ -17,7 +17,7 @@ const Footer = () => {
             <div className="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1">
               <div className="col">
                 <div className="footer-widget">
-                  <h5>Pages</h5>
+                  <h2 className="h5">Pages</h2>
                   <ul className="footer-menu">
                     <li>
                       <Link href={routes.teams}>Our Team</Link>
@@ -42,7 +42,7 @@ const Footer = () => {
               </div>
               <div className="col">
                 <div className="footer-widget">
-                  <h5>Company</h5>
+                  <h2 className="h5">Company</h2>
                   <ul className="footer-menu">
                     <li>
                       <Link href={routes.about_us}>About Us</Link>
@@ -67,7 +67,7 @@ const Footer = () => {
               </div>
               <div className="col">
                 <div className="footer-widget">
-                  <h5>Destinations</h5>
+                  <h2 className="h5">Destinations</h2>
                   <ul className="footer-menu">
                     <li>
                       <Link href="#">Hawai</Link>
@@ -92,7 +92,7 @@ const Footer = () => {
               </div>
               <div className="col">
                 <div className="footer-widget">
-                  <h5>Support</h5>
+                  <h2 className="h5">Support</h2>
                   <ul className="footer-menu">
                     <li>
                       <Link href={routes.contactUs}>Contact Us</Link>
@@ -117,7 +117,7 @@ const Footer = () => {
               </div>
               <div className="col">
                 <div className="footer-widget">
-                  <h5>Services</h5>
+                  <h2 className="h5">Services</h2>
                   <ul className="footer-menu">
                     <li>
                       <Link href={routes.hotelGrid}>Hotel</Link>
@@ -155,7 +155,7 @@ const Footer = () => {
                 </div>
                 <div className="col-lg-6 col-xl-4 col-xxl-4">
                   <div className="d-flex align-items-center justify-content-center flex-wrap">
-                    <h6 className="fs-14 fw-medium me-2 mb-2">Available on : </h6>
+                    <div className="fs-14 fw-medium me-2 mb-2">Available on :</div>
                     <Link href="#" className="d-block mb-3 me-2">
                       <ImageWithBasePath src="assets/img/icons/googleplay.svg" alt="logo" />
                     </Link>
@@ -203,7 +203,7 @@ const Footer = () => {
                     Copyright © 2026. All Rights Reserved,{" "}
                     <Link
                       href="#"
-                      className="text-primary fw-medium"
+                      className="text-dark fw-medium"
                     >
                       DreamsTour
                     </Link>
@@ -211,27 +211,27 @@ const Footer = () => {
                   <div className="d-flex align-items-center">
                     <ul className="social-icon">
                       <li>
-                        <Link href="#">
+                        <Link href="#" aria-label="Facebook">
                           <i className="fa-brands fa-facebook" />
                         </Link>
                       </li>
                       <li>
-                        <Link href="#">
+                        <Link href="#" aria-label="X">
                           <i className="fa-brands fa-x-twitter" />
                         </Link>
                       </li>
                       <li>
-                        <Link href="#">
+                        <Link href="#" aria-label="Instagram">
                           <i className="fa-brands fa-instagram" />
                         </Link>
                       </li>
                       <li>
-                        <Link href="#">
+                        <Link href="#" aria-label="LinkedIn">
                           <i className="fa-brands fa-linkedin" />
                         </Link>
                       </li>
                       <li>
-                        <Link href="#">
+                        <Link href="#" aria-label="Pinterest">
                           <i className="fa-brands fa-pinterest" />
                         </Link>
                       </li>

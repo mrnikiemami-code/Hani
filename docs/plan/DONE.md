@@ -277,3 +277,4 @@
 | `c498298` | Home parity Phase 2: Tour hero default, domestic/foreign fields, server options, localized dates, latest scope sections |
 | `9c9429a` | Home parity Phase 3: origin cities, travelogue/blog split, visa cover/processing, destination translation loading |
 | `5e05cb6` | Home parity Phase 4: SEO metadata/JSON-LD/sitemap, a11y landmarks/tabs/labels, Lighthouse home 100/100/100 |
+| `pending` | Home parity Phase 4 closure: listing a11y template debt to Lighthouse 100, FA/EN/AR verification, regression tests, screenshots |

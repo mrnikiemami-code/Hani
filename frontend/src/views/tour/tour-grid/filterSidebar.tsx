@@ -23,7 +23,7 @@ const FliterSidebar = () => {
         <div>
             <div className="card filter-sidebar mb-4 mb-lg-0">
                 <div className="card-header d-flex align-items-center justify-content-between">
-                    <h5>Filters</h5>
+                    <h3 className="h5">Filters</h3>
                     <Link href="#" className="fs-14 link-primary">
                         Reset
                     </Link>

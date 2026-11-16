@@ -62,6 +62,7 @@ const CommonDateRange = ({ onApply, fromLabel, toLabel }: CommonDateRangeProps) 
       <Calendar
         selectionMode="range"
         className="date-range-hidden"
+        ariaLabel={fromLabel ? `${fromLabel} - ${toLabel}` : "Date range"}
         visible={open}
         onVisibleChange={() => setOpen(false)}
         value={[startDate, endDate]}

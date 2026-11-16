@@ -82,7 +82,7 @@ const TourGrid = ({
                                     href="/tours"
                                     prefetch
                                     scroll={false}
-                                    className={`nav-link ${scope ? "" : "active"}`}
+                                    className={`nav-link ${scope ? "" : "active text-dark"}`}
                                     aria-current={scope ? undefined : "page"}
                                     onClick={(event) => {
                                         if (onScopeSelect) {
@@ -99,7 +99,7 @@ const TourGrid = ({
                                     href="/tours?scope=domestic"
                                     prefetch
                                     scroll={false}
-                                    className={`nav-link ${scope === "Domestic" ? "active" : ""}`}
+                                    className={`nav-link ${scope === "Domestic" ? "active text-dark" : ""}`}
                                     aria-current={scope === "Domestic" ? "page" : undefined}
                                     onClick={(event) => {
                                         if (onScopeSelect) {
@@ -116,7 +116,7 @@ const TourGrid = ({
                                     href="/tours?scope=foreign"
                                     prefetch
                                     scroll={false}
-                                    className={`nav-link ${scope === "Foreign" ? "active" : ""}`}
+                                    className={`nav-link ${scope === "Foreign" ? "active text-dark" : ""}`}
                                     aria-current={scope === "Foreign" ? "page" : undefined}
                                     onClick={(event) => {
                                         if (onScopeSelect) {
@@ -135,7 +135,7 @@ const TourGrid = ({
                         {/* Tour Types */}
                         <div className="mb-2">
                             <div className="mb-3">
-                                <h5 className="mb-2">Choose type of Tours you are interested</h5>
+                                <h3 className="h5 mb-2">Choose type of Tours you are interested</h3>
                             </div>
                             <div className="row">
                                 <div className="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
@@ -148,9 +148,9 @@ const TourGrid = ({
                                             />
                                         </Link>
                                         <div className="ms-2">
-                                            <h6 className="fs-16 fw-medium">
+                                            <div className="fs-16 fw-medium">
                                                 <Link href={routes.tourGrid}>Ecotourism</Link>
-                                            </h6>
+                                            </div>
                                             <p className="fs-14">216 Hotels</p>
                                         </div>
                                     </div>
@@ -165,9 +165,9 @@ const TourGrid = ({
                                             />
                                         </Link>
                                         <div className="ms-2">
-                                            <h6 className="fs-16 fw-medium">
+                                            <div className="fs-16 fw-medium">
                                                 <Link href={routes.tourGrid}>Adventure Tour</Link>
-                                            </h6>
+                                            </div>
                                             <p className="fs-14">569 tours</p>
                                         </div>
                                     </div>
@@ -182,9 +182,9 @@ const TourGrid = ({
                                             />
                                         </Link>
                                         <div className="ms-2">
-                                            <h6 className="fs-16 fw-medium">
+                                            <div className="fs-16 fw-medium">
                                                 <Link href={routes.tourGrid}>Group Tours</Link>
-                                            </h6>
+                                            </div>
                                             <p className="fs-14">129 tours</p>
                                         </div>
                                     </div>
@@ -199,9 +199,9 @@ const TourGrid = ({
                                             />
                                         </Link>
                                         <div className="ms-2">
-                                            <h6 className="fs-16 fw-medium">
+                                            <div className="fs-16 fw-medium">
                                                 <Link href={routes.tourGrid}>Beach Tours</Link>
-                                            </h6>
+                                            </div>
                                             <p className="fs-14">600 tours</p>
                                         </div>
                                     </div>
@@ -216,9 +216,9 @@ const TourGrid = ({
                                             />
                                         </Link>
                                         <div className="ms-2">
-                                            <h6 className="fs-16 fw-medium">
+                                            <div className="fs-16 fw-medium">
                                                 <Link href={routes.tourGrid}>Historical Tours</Link>
-                                            </h6>
+                                            </div>
                                             <p className="fs-14">200 tours</p>
                                         </div>
                                     </div>
@@ -233,9 +233,9 @@ const TourGrid = ({
                                             />
                                         </Link>
                                         <div className="ms-2">
-                                            <h6 className="fs-16 fw-medium">
+                                            <div className="fs-16 fw-medium">
                                                 <Link href={routes.tourGrid}>Summer Trip</Link>
-                                            </h6>
+                                            </div>
                                             <p className="fs-14">200 tours</p>
                                         </div>
                                     </div>
@@ -251,9 +251,9 @@ const TourGrid = ({
                             {/* /Sidebar */}
                             <div className="col-xl-9 col-lg-8 theiaStickySidebar">
                                 <div className="d-flex align-items-center justify-content-between flex-wrap">
-                                    <h6 className="mb-3">
+                                    <div className="mb-3">
                                         {t("toursFound", { count: totalCount ?? tours.length })}
-                                    </h6>
+                                    </div>
                                     <div className="d-flex align-items-center flex-wrap">
                                         <div className="list-item d-flex align-items-center mb-3">
                                             <Link
@@ -290,7 +290,7 @@ const TourGrid = ({
                                             </Link>
                                             <div className="dropdown-menu dropdown-sm">
                                                 <form action={routes.tourGrid}>
-                                                    <h6 className="fw-medium fs-16 mb-3">Sort By</h6>
+                                                    <div className="fw-medium fs-16 mb-3">Sort By</div>
                                                     <div className="form-check d-flex align-items-center ps-0 mb-2">
                                                         <input
                                                             className="form-check-input ms-0 mt-0"
@@ -459,22 +459,22 @@ const TourGrid = ({
                                                                 <p className="fs-14">({t("reviewsCount", { count: tour.reviewCount })})</p>
                                                             </div>
                                                         </div>
-                                                        <h5 className="mb-1 text-truncate">
+                                                        <h3 className="h5 mb-1 text-truncate">
                                                             <Link href={`${routes.tourDetails}?slug=${encodeURIComponent(tour.slug)}`}>
                                                                 {tour.title}
                                                             </Link>
-                                                        </h5>
+                                                        </h3>
                                                         <p className="d-flex align-items-center mb-3">
                                                             <i className="isax isax-location5 me-2" />
                                                             {destination}
                                                         </p>
                                                         <div className="mb-3">
-                                                            <h6 className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
+                                                            <div className="d-flex align-items-center text-gray-6 fs-14 fw-normal">
                                                                 Starts From{" "}
                                                                 <span className="ms-1 fs-18 fw-semibold text-primary">
                                                                     {formatMoney(tour.minPrice, tour.currency, locale ?? "fa")}
                                                                 </span>
-                                                            </h6>
+                                                            </div>
                                                         </div>
                                                         <div className="d-flex align-items-center justify-content-between border-top pt-3">
                                                             <div className="d-flex flex-wrap align-items-center me-2">

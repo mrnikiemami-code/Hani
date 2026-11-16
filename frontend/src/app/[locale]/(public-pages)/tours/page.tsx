@@ -33,7 +33,9 @@ export default async function Page({
 }) {
   const { locale } = await params;
   const query = await searchParams;
-  const page = Math.max(1, Number(query.page ?? "1"));
+  const requestedPage = Number(query.page ?? "1");
+  const page =
+    Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
 
   return (
     <TourGridPage

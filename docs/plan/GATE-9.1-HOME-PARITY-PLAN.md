@@ -1,6 +1,6 @@
 # Gate 9.1 — Lastsecond Homepage Parity+ Implementation Plan
 
-- Status: In Progress ? Phase 1?4 complete (home); listing a11y debt remains
+- Status: Complete — Phase 1–4, home and listing Lighthouse 100
 - Date: 2026-11-16
 - Benchmark report: [`../reports/lastsecond-homepage-benchmark-2026-11-16.md`](../reports/lastsecond-homepage-benchmark-2026-11-16.md)
 - Visual source: purchased Dreamstour template only
@@ -279,13 +279,17 @@ Mandatory widths: 360, 390, 768, 1024.
 6. travelogues/blog split
 7. trust/guide sections
 
-### Phase 4 — SEO and accessibility
+### Phase 4 ? SEO and accessibility ? complete
 
-1. metadata/canonical/hreflang
-2. JSON-LD
-3. OG/Twitter
-4. labels/landmarks/keyboard
-5. image dimensions/lazy/srcset
+1. metadata/canonical/hreflang ? done
+2. JSON-LD (Organization/WebSite/SearchAction/ItemList/BreadcrumbList) ? done
+3. OG/Twitter ? done
+4. labels/landmarks/keyboard/skip-link ? done
+5. sitemap/robots ? done
+6. home Lighthouse: SEO 100 / Accessibility 100 / Best Practices 100
+7. listing Lighthouse: SEO 100 / Best Practices 100 / Accessibility 100
+8. FA/EN/AR home: SEO 100 / Accessibility 100 / Best Practices 100
+9. Playwright regression: metadata, JSON-LD, sitemap/robots, invalid query fallback
 
 ### Phase 5 — Quality gate
 
@@ -293,7 +297,7 @@ Mandatory widths: 360, 390, 768, 1024.
 - frontend build
 - Playwright: FA/EN/AR, tab behavior, no reload, mobile viewport
 - axe: no serious/critical
-- Lighthouse: SEO ≥ 95, Accessibility ≥ 95, Best Practices ≥ 95
+- Lighthouse: SEO 100, Accessibility 100, Best Practices 100 (FA/EN/AR, home + listing)
 - screenshots for FA/AR RTL + EN LTR + mobile
 
 ## 9. Acceptance criteria
