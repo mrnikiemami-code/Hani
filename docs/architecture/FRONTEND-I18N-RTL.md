@@ -180,13 +180,28 @@ new Intl.NumberFormat(locale, {
 
 Never format money with string concatenation.
 
-### Dates
+### Dates and calendar boundary
+
+Canonical rule: **Jalali UI, Gregorian contract**.
+
+- API, URL query, cache, and PostgreSQL use Gregorian ISO only.
+- Date-only values are `YYYY-MM-DD` with no timezone.
+- Instants are UTC ISO with `Z`.
+- `fa` displays and selects Jalali; `en`/`ar` display Gregorian.
+- All pickers go through Hani date primitives; feature pages must not import
+  PrimeReact `Calendar` directly.
+- All display goes through the shared date formatter; raw
+  `toLocaleDateString`, raw ISO in JSX, and page-level calendar branches are
+  prohibited.
+
+See [ADR-0032](../adr/0032-calendar-boundary-jalali-ui-gregorian-contract.md)
+and [CALENDAR-ARCHITECTURE-PLAN](../plan/CALENDAR-ARCHITECTURE-PLAN.md).
 
 ```ts
 new Intl.DateTimeFormat(locale, options).format(date)
 ```
 
-Persian calendar:
+Persian calendar display:
 
 ```ts
 new Intl.DateTimeFormat("fa-IR-u-ca-persian", options)

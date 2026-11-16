@@ -274,3 +274,16 @@
 | H91-QA-05 | Listing accessibility debt | ? | template filter/sidebar 100 |
 | H91-QA-06 | FA/EN/AR Lighthouse | ? | home 100/100/100 |
 | H91-QA-07 | Sitemap/robots/metadata regression tests | ? | Playwright 10 passed |
+
+## Phase 6.11 ? Calendar architecture (planned, 2026-11-16)
+
+| ID | ??? | ????? | DoD |
+|---|---|---|---|
+| H91-CAL-01 | ADR + calendar boundary | ? Proposed | ADR-0032 accepted after review |
+| H91-CAL-02 | Jalali/Gregorian adapter + tests | ? Planned | round-trip + leap/boundary fixtures |
+| H91-CAL-03 | Hani date picker primitives | ? Planned | FA Jalali, EN/AR Gregorian, a11y |
+| H91-CAL-04 | Replace all shared pickers | ? Planned | no direct PrimeReact Calendar in pages |
+| H91-CAL-05 | Migrate all date displays | ? Planned | no raw toLocaleDateString / ISO JSX |
+| H91-CAL-06 | Server Gregorian validation + clock | ? Planned | Jalali-shaped years return 400 |
+| H91-CAL-07 | Query/API payload guarantee | ? Planned | Playwright intercepts Gregorian payload |
+| H91-CAL-08 | FA/EN/AR + mobile visual QA | ? Planned | screenshots + Lighthouse 100 |

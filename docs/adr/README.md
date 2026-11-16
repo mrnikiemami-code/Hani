@@ -29,6 +29,11 @@
 | [0025](0025-booking-modes-requests-leads-installments-offline.md) | BookingMode/ReservationRequest، Lead/RFQ، اقساط و پرداخت آفلاین | Accepted |
 | [0026](0026-collection-mode-v2-seller-and-invoice.md) | CollectionMode v2 + SellerOfRecord/InvoiceIssuer | Accepted |
 | [0027](0027-flight-metasearch-redirect.md) | Flight Metasearch/Redirect | Accepted |
+| [0028](0028-query-side-search-read-model.md) | Query-side search read model with batched hydration and cache | Accepted |
+| [0029](0029-keep-modular-monolith-through-gate8.md) | Keep the modular monolith through Gate 8 | Accepted |
+| [0030](0030-frontend-architecture.md) | Frontend architecture — template-first UI with Hani platform layer | Accepted |
+| [0031](0031-tour-scope.md) | Server-driven Domestic/Foreign tour scope | Accepted |
+| [0032](0032-calendar-boundary-jalali-ui-gregorian-contract.md) | Calendar boundary — Jalali UI, Gregorian contract | Proposed |
 
 ## قالب ADR جدید
 

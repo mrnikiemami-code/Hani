@@ -571,3 +571,4 @@
 - Home parity Phase 2: Tour default hero; domestic/foreign scope; conditional fields; server-driven options; latest domestic/foreign sections; localized date labels ? done.
 - Home parity Phase 3: origin-city section + filter, travelogue/blog split, visa cover/processing, destination translation include fix ? done.
 - Home parity Phase 4: canonical/hreflang, OG/Twitter, JSON-LD, sitemap/robots, topical H1, main landmark, skip link, keyboard tabs, labels, slider/dropdown/footer a11y; Lighthouse 100/100/100 for FA/EN/AR home and tour listing ? done.
+- Calendar architecture proposed: Jalali-only FA UI and pickers, Gregorian-only API/DB contract; see ADR-0032 and CALENDAR-ARCHITECTURE-PLAN. No runtime code changed yet.
