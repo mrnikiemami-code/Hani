@@ -4,6 +4,7 @@ import {
   getOrder,
   getPaymentIntent
 } from "@/features/checkout/infrastructure/checkout-api";
+import { payWithMockGateway } from "@/features/checkout/application/complete-mock-payment";
 
 export const dynamic = "force-dynamic";
 
@@ -57,7 +58,18 @@ export default async function CheckoutConfirmationPage({
                         <strong>{formatMoney(order.total, order.currency, locale)}</strong>
                       </div>
                       {order.paymentStatus !== "Paid" && (
-                        <p className="alert alert-warning mt-3 mb-0">{t("paymentPending")}</p>
+                        <>
+                          <p className="alert alert-warning mt-3 mb-3">{t("paymentPending")}</p>
+                          {intent && intent.status !== "Succeeded" && (
+                            <form action={payWithMockGateway} className="mb-3">
+                              <input type="hidden" name="locale" value={locale} />
+                              <input type="hidden" name="paymentIntentId" value={intent.paymentIntentId} />
+                              <button className="btn btn-primary" type="submit">
+                                {t("payNow")}
+                              </button>
+                            </form>
+                          )}
+                        </>
                       )}
                       <a className="btn btn-primary mt-3" href={`/${locale}/user/dashboard`}>
                         {t("backToDashboard")}

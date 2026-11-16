@@ -503,6 +503,32 @@ paths:
                   totalPages: { type: integer }
         default: { $ref: '#/components/responses/Problem' }
 
+  /me/messages:
+    get:
+      tags: [Dashboard]
+      summary: List authenticated user's inbox messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200':
+          description: Paged inbox messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/InboxMessage' }
+                  page: { type: integer }
+                  pageSize: { type: integer }
+                  totalCount: { type: integer }
+                  totalPages: { type: integer }
+        default: { $ref: '#/components/responses/Problem' }
+
   /me/wishlist:
     get:
       tags: [Dashboard]
@@ -3076,6 +3102,15 @@ components:
         processedAt: { type: [string, 'null'], format: date-time }
         providerRef: { type: [string, 'null'] }
         failureReason: { type: [string, 'null'] }
+
+    InboxMessage:
+      type: object
+      properties:
+        messageId: { type: string, format: uuid }
+        subject: { type: string }
+        body: { type: string }
+        status: { type: string }
+        createdAt: { type: string, format: date-time }
 
     WishlistProduct:
       type: object

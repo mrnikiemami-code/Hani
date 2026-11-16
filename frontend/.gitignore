@@ -7,3 +7,5 @@ coverage
 .env.local
 .env.*.local
 *.log
+test-results/
+playwright-report/

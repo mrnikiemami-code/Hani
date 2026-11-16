@@ -216,7 +216,8 @@
     "paymentStatus": "Payment status",
     "total": "Total",
     "backToDashboard": "Back to dashboard",
-    "paymentPending": "Payment is waiting to be completed."
+    "paymentPending": "Payment is waiting to be completed.",
+    "payNow": "Pay with mock gateway"
   },
   "finance": {
     "paymentsTitle": "Payment history",
@@ -312,5 +313,16 @@
     "save": "Save profile",
     "saved": "Profile saved.",
     "noProfile": "Profile is unavailable."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Messages in your inbox.",
+    "subject": "Subject",
+    "body": "Body",
+    "status": "Status",
+    "date": "Date",
+    "markRead": "Mark as read",
+    "noMessages": "No notifications yet.",
+    "inbox": "Inbox"
   }
 }

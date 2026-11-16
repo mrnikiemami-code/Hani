@@ -6,6 +6,16 @@ info:
 servers:
   - url: https://api.hani.ir/internal/v1
 paths:
+  /payments/mock/complete/{paymentIntentId}:
+    post:
+      tags: [Payments]
+      summary: Development-only mock payment completion
+      parameters:
+        - { name: paymentIntentId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Payment webhook processed }
+        '404': { description: Not available outside Development }
+        default: { description: Problem }
   /payments/refunds:
     post:
       tags: [Payments]

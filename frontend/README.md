@@ -60,3 +60,14 @@ Locale-prefixed:
 npm run build
 npm run start
 ```
+
+## E2E smoke
+
+```powershell
+npm run test:e2e
+```
+
+Playwright uses the locally installed Chrome (`channel: "chrome"`) and expects
+the frontend on `http://localhost:3000` plus the Hani API on
+`http://localhost:5099` (Development). Set `PLAYWRIGHT_BASE_URL` to override the
+frontend URL.

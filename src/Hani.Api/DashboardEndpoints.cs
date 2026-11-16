@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Contracts.Booking;
 using Hani.Contracts.Supply;
+using Hani.Modules.Content.Application.Queries.Dashboard;
 using Hani.Modules.Identity.Application.Abstractions;
 using Hani.Modules.Payments.Application.Queries.TravelerFinance;
 using Hani.Modules.Settlement.Application.Payouts;
@@ -45,6 +46,16 @@ public static class DashboardEndpoints
             .WithName("Marketplace.GetMyAgencyDashboard")
             .RequireAuthorization("User")
             .Produces<AgencyDashboardDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        me.MapGet("/messages", GetMyMessagesAsync)
+            .WithName("Marketplace.GetMyMessages")
+            .RequireAuthorization("User")
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        me.MapPost("/messages/{messageId:guid}/read", MarkMyMessageReadAsync)
+            .WithName("Marketplace.MarkMyMessageRead")
+            .RequireAuthorization("User")
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
         me.MapGet("/payments", GetMyPaymentsAsync)
@@ -222,6 +233,47 @@ public static class DashboardEndpoints
             summary.GrossPaid,
             summary.Currency,
             recent));
+    }
+
+    /// <summary>
+    /// Returns dashboard inbox messages for the authenticated user.
+    /// </summary>
+    private static async Task<IResult> GetMyMessagesAsync(
+        int? page,
+        int? pageSize,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return Unauthorized(context);
+        }
+
+        var result = await sender.Send(
+            new ListUserMessagesQuery(userId, page ?? 1, pageSize ?? 20),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Marks one dashboard inbox message as read.
+    /// </summary>
+    private static async Task<IResult> MarkMyMessageReadAsync(
+        Guid messageId,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out _))
+        {
+            return Unauthorized(context);
+        }
+
+        var result = await sender.Send(
+            new MarkUserMessageReadCommand(messageId),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     /// <summary>

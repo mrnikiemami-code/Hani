@@ -1,5 +1,5 @@
 import { apiGet } from "@/lib/hani/api";
-import { sessionGet } from "@/lib/hani/server-api";
+import { sessionGet, sessionPost } from "@/lib/hani/server-api";
 import type {
   CheckoutOrder,
   CheckoutProduct
@@ -28,6 +28,14 @@ export async function getPaymentIntent(
     `/market/v1/payments/intents/${encodeURIComponent(paymentIntentId)}`
   );
   return result.status === 200 ? result.data : null;
+}
+
+export async function completeMockPayment(paymentIntentId: string): Promise<boolean> {
+  const result = await sessionPost(
+    `/internal/v1/payments/mock/complete/${encodeURIComponent(paymentIntentId)}`,
+    {}
+  );
+  return result.status === 200;
 }
 
 export async function getOrder(orderId: string): Promise<CheckoutOrder | null> {

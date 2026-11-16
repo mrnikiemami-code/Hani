@@ -1,4 +1,10 @@
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
+using Hani.BuildingBlocks.Domain;
+using Hani.Modules.Payments.Application;
 using Hani.Modules.Payments.Application.Commands.CreatePaymentIntent;
 using Hani.Modules.Payments.Application.Commands.Finance;
 using Hani.Modules.Payments.Application.Commands.HandlePaymentWebhook;
@@ -10,6 +16,8 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Modules.Payments.Presentation;
@@ -76,6 +84,10 @@ public static class PaymentEndpoints
         internalApi.MapGet("/orders/{orderId:guid}/refunds", ListRefundsAsync)
             .WithName("Internal.ListOrderRefunds")
             .Produces<IReadOnlyList<RefundDto>>();
+        internalApi.MapPost("/mock/complete/{paymentIntentId:guid}", CompleteMockPaymentAsync)
+            .WithName("Internal.CompleteMockPayment")
+            .Produces<PaymentWebhookResultDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
         internalApi.MapPost("/chargebacks", OpenChargebackAsync)
             .WithName("Internal.OpenChargeback")
             .Produces<ChargebackDto>();
@@ -227,6 +239,46 @@ public static class PaymentEndpoints
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new ListRefundsQuery(orderId), cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Development-only helper that completes a mock payment by signing the
+    /// same webhook payload the provider would send.
+    /// </summary>
+    private static async Task<IResult> CompleteMockPaymentAsync(
+        Guid paymentIntentId,
+        HttpContext context,
+        ISender sender,
+        IHostEnvironment environment,
+        IOptions<PaymentOptions> options,
+        IIdGenerator ids,
+        CancellationToken cancellationToken)
+    {
+        if (!environment.IsDevelopment())
+        {
+            return context.ToProblem(
+                Error.NotFound("HANI-PAYMENT-4201", "Mock payment completion is development-only."));
+        }
+
+        var timestamp = DateTimeOffset.UtcNow.ToString("O");
+        var payload = JsonSerializer.Serialize(new
+        {
+            eventId = $"mock_{paymentIntentId:N}_{ids.NewId():N}",
+            paymentIntentId,
+            providerRef = $"mock_{paymentIntentId:N}",
+            type = "payment.succeeded",
+            occurredAt = DateTimeOffset.UtcNow
+        });
+        using var hmac = new HMACSHA256(
+            Encoding.UTF8.GetBytes(options.Value.WebhookSecret));
+        var signature = Convert.ToHexString(
+            hmac.ComputeHash(Encoding.UTF8.GetBytes($"{timestamp}.{payload}")))
+            .ToLowerInvariant();
+
+        var result = await sender.Send(
+            new HandlePaymentWebhookCommand("Mock", payload, signature, timestamp),
+            cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 

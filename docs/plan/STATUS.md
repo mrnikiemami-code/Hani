@@ -540,13 +540,15 @@
 
 ### شکاف‌های باز (صادقانه)
 
-- [ ] بخش‌های تزئینی mock باقی‌مانده در `agent-dashboard` (نمودارها/Recently Added/Recent Invoices) هنوز داده واقعی ندارند.
-- [ ] اعلان‌های کاربر (inbox) هنوز endpoint اختصاصی ندارد.
-- [ ] C6 تکمیل پرداخت واقعی/PSP و webhook production.
-- [ ] C7 Playwright/axe/Lighthouse و ویرایش نهایی ترجمه.
+- [x] داشبورد آژانس بازنویسی شد؛ نمودارها/Recently Added/Recent Invoices mock حذف و با رزرو/لیستینگ/تسویه واقعی جایگزین شدند.
+- [x] `GET /market/v1/me/messages` و `POST /me/messages/{id}/read` + صفحه اعلان‌ها.
+- [x] C6 پرداخت mock توسعه: `POST /internal/v1/payments/mock/complete/{intentId}` + دکمه پرداخت آزمایشی؛ Order به Paid می‌رسد.
+- [x] Playwright smoke (FA RTL / EN LTR) اضافه و PASS شد.
+- [ ] C6 PSP واقعی و webhook production.
+- [ ] C7 axe/Lighthouse و ویرایش نهایی ترجمه؛ ممیزی اولیه، بدهی a11y قالب را نشان داد.
 - [ ] جستجوی همه‌جانبه/فیلترهای صفحه تور هنوز به query string کامل متصل نیست.
 - [ ] تصاویر `coverImageUrl` تور/ویزا و author/reading time محتوا.
 - [ ] پاک‌سازی داده demo محلی و seed بلاگ خراب.
 - [ ] E-07 provider پرواز، A-15 Lastgram، SMS/Email واقعی، storage تولیدی، PSP، CDN/DNS/TLS.
 
-> این سند Gate 9.1 را کامل اعلام نمی‌کند؛ scope، preferences، C4/C5 داده‌محور و checkout core بسته شده‌اند، اما بخش‌های تزئینی داشبورد آژانس، C6 PSP واقعی و C7 کیفیت باز هستند.
+> این سند Gate 9.1 را کامل اعلام نمی‌کند؛ scope، preferences، C4/C5 داده‌محور، checkout core و mock payment بسته شده‌اند، اما PSP واقعی، axe/Lighthouse و بدهی a11y قالب باز هستند.
