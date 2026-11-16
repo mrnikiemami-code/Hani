@@ -280,4 +280,4 @@
 | `061c64b` | Home parity Phase 4 closure: listing a11y template debt to Lighthouse 100, FA/EN/AR verification, regression tests, screenshots |
 | `c232d80` | Calendar architecture slice 1: Jalali UI, Gregorian contract, shared pickers, server guards, AGENTS rule |
 | `bceddc5` | Calendar phase 2: global MediatR GregorianDateBehavior, CI date-architecture gate, platform-wide display/picker migration |
-| `pending` | Calendar UX closure: empty date inputs, centered Jalali modal, searchable/scrollable home dropdowns |
+| `55f1fd5` | Calendar UX closure: empty date inputs, centered Jalali modal, searchable/scrollable home dropdowns |
