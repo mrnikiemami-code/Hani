@@ -271,4 +271,4 @@
 | `792aad2` | Gate 9.1 C4/C5 dashboard core: `/me/dashboard`, `/me/orders`, `/me/agency/dashboard`, real traveler/agency cards |
 | `792aad2` | Gate 9.1 C6 checkout core: `/checkout/[productId]`, quote→hold→order→intent, local confirmation |
 | `b3021be` | Gate 9.1 C4/C5 complete data: traveler payments/invoices/refunds/reviews/wishlist/profile, agency listings/orders/payouts/settings |
-| `pending` | Gate 9.1 final data closure: inbox messages, real agency dashboard, mock payment completion, Playwright smoke |
+| `d1a5db3` | Gate 9.1 final data closure: inbox messages, real agency dashboard, mock payment completion, Playwright smoke |
