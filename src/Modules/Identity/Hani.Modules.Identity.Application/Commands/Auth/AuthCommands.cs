@@ -5,7 +5,9 @@ namespace Hani.Modules.Identity.Application.Commands.Auth;
 /// <summary>
 /// Command that requests a login OTP for a mobile number.
 /// </summary>
-public sealed record RequestOtpCommand(string Mobile) : ICommand<RequestOtpResult>;
+public sealed record RequestOtpCommand(
+    string Mobile,
+    string? IpAddress = null) : ICommand<RequestOtpResult>;
 
 /// <summary>
 /// Result of an OTP request.

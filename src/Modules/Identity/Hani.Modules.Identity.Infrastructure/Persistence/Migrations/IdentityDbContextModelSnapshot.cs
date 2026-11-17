@@ -641,6 +641,27 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.ToTable("reviews", "identity");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Security.SecuritySettings", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("key");
+
+                    b.Property<string>("SettingsJson")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("settings_json");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("security_settings", "identity");
+                });
+
             modelBuilder.Entity("Hani.Modules.Identity.Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")

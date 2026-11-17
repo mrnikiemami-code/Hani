@@ -301,3 +301,4 @@
 | `c617368` | Media admin table: filters, pagination, create/edit routes |
 | `af11753` | Media table layout: no nested scroll, responsive columns, always-visible pagination |
 | `1b1fbf4` | Content UX + message system: Jalali schedule, RTL editor, translated labels, filters/pagination, save fix, toast/modal |
+| `pending` | OTP security phases 1-2: memory state provider, 120s timer/cooldown, IP/mobile changes, admin security settings |

@@ -29,10 +29,16 @@ export type AuthResult = {
   user: AuthUser;
 };
 
-export async function requestOtp(mobile: string): Promise<OtpRequestResult> {
+export async function requestOtp(
+  mobile: string,
+  ipAddress?: string
+): Promise<OtpRequestResult> {
   const response = await fetch(`${apiBase}/market/v1/auth/otp/request`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(ipAddress ? { "X-Forwarded-For": ipAddress } : {})
+    },
     body: JSON.stringify({ mobile })
   });
 

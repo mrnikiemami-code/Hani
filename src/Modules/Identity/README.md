@@ -148,3 +148,14 @@ Client → X-Api-Key + X-Api-Secret
 - Persistence: `identity.user_preferences`, `identity.wishlist_items`
   (unique `(user_id, product_id)`), migrations `AddUserPreferences` and
   `AddWishlistItems`.
+
+## OTP Security
+
+- Policy endpoint: `GET/PUT /internal/v1/security/otp`
+- Manual unlock: `POST /internal/v1/security/otp/unlock`
+- Policy persistence: `identity.security_settings` (`otp` JSON row)
+- Runtime rate-limit state: `IOtpSecurityState` with the default
+  `InMemoryOtpSecurityState`; replace the DI registration with a Redis-backed
+  implementation for multi-instance deployments.
+- Defaults: 120s code lifetime/cooldown, 3 distinct mobiles per IP window,
+  configurable IP block, hourly mobile cap, and configurable failed attempts.

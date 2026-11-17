@@ -87,6 +87,17 @@ export async function AdminPageShell({
                       </Link>
                     </li>
                     <li>
+                      <Link
+                        href="/admin/security"
+                        className={`d-flex align-items-center ${
+                          active === t("navSecurity") ? "active" : ""
+                        }`}
+                      >
+                        <i className="isax isax-shield-tick me-2" />
+                        {t("navSecurity")}
+                      </Link>
+                    </li>
+                    <li>
                       <Link href="/" className="d-flex align-items-center">
                         <i className="isax isax-arrow-left-2 me-2" />
                         {t("backToSite")}

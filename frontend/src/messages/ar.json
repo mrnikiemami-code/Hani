@@ -222,7 +222,10 @@
     "sending": "جارٍ الإرسال...",
     "verifying": "جارٍ التحقق...",
     "invalid": "الرمز أو الرقم غير صالح.",
-    "backHome": "العودة للرئيسية"
+    "backHome": "العودة للرئيسية",
+    "resend": "إعادة إرسال الرمز",
+    "resendIn": "إعادة الإرسال متاحة بعد {time}",
+    "codeValidFor": "الرمز صالح لمدة {time}"
   },
   "checkout": {
     "title": "إكمال الحجز",
@@ -420,7 +423,8 @@
     "navHomepage": "الصفحة الرئيسية",
     "backToSite": "العودة إلى الموقع",
     "navMedia": "مكتبة الوسائط",
-    "navContent": "إدارة المحتوى"
+    "navContent": "إدارة المحتوى",
+    "navSecurity": "أمان الدخول"
   },
   "adminMedia": {
     "title": "مكتبة الوسائط",
@@ -566,5 +570,41 @@
     "cancel": "إلغاء",
     "confirm": "تأكيد",
     "autoClose": "يُغلق بعد {seconds} ثانية"
+  },
+  "adminSecurity": {
+    "title": "أمان تسجيل الدخول وOTP",
+    "subtitle": "إدارة مدة صلاحية الرمز وفاصل إعادة الإرسال وحدود الهاتف وIP.",
+    "navSecurity": "أمان الدخول",
+    "accessTitle": "يلزم حساب مدير",
+    "accessHint": "سجّل الدخول بحساب مدير لتغيير إعدادات الأمان.",
+    "save": "حفظ الإعدادات",
+    "saving": "جارٍ الحفظ",
+    "saved": "تم حفظ إعدادات الأمان.",
+    "error": "تعذر حفظ الإعدادات.",
+    "storageHint": "تُخزَّن حدود المعدل في الذاكرة افتراضيًا. لعدة نسخ من API، استبدل الواجهة نفسها بتطبيق Redis.",
+    "lifetimeSeconds": "مدة صلاحية الرمز (ثانية)",
+    "lifetimeSecondsHint": "تنتهي صلاحية الرمز بعد هذه المدة.",
+    "resendCooldownSeconds": "فاصل إعادة الإرسال (ثانية)",
+    "resendCooldownSecondsHint": "لا يُصدر رمز جديد لنفس الهاتف خلال هذه المدة.",
+    "maxRequestsPerHour": "الحد الأقصى للطلبات في الساعة",
+    "maxRequestsPerHourHint": "سقف طلبات الرمز لكل هاتف.",
+    "maxVerifyAttempts": "الحد الأقصى للمحاولات الخاطئة",
+    "maxVerifyAttemptsHint": "يُقفل الرمز الحالي بعد هذا العدد.",
+    "mobileChangeWindowSeconds": "نافذة تغيير الهاتف (ثانية)",
+    "mobileChangeWindowSecondsHint": "نافذةعدّ الهواتف المختلفة حسب IP.",
+    "maxMobileChangesPerIp": "الحد الأقصى لتغيير الهاتف لكل IP",
+    "maxMobileChangesPerIpHint": "يُحظر IP مؤقتًا بعد هذا العدد.",
+    "ipBlockSeconds": "مدة حظر IP (ثانية)",
+    "ipBlockSecondsHint": "المدة التي لا يمكن فيها لـ IP محظور طلب رمز.",
+    "maxIpRequestsPerWindow": "الحد الأقصى لطلبات IP في النافذة",
+    "maxIpRequestsPerWindowHint": "سقف إجمالي طلبات IP واحد.",
+    "ipRequestWindowSeconds": "نافذة طلبات IP (ثانية)",
+    "ipRequestWindowSecondsHint": "النافذة المستخدمة لعدّ طلبات IP.",
+    "unlockTitle": "إلغاء الحظر يدويًا",
+    "unlockHint": "إذا تم حظر هاتف أو IP، أدخل أحدهما وأزل القيد.",
+    "unlockMobile": "الهاتف (اختياري)",
+    "unlockIp": "عنوان IP (اختياري)",
+    "unlock": "إلغاء الحظر",
+    "unlocked": "تم مسح القيد بنجاح."
   }
 }

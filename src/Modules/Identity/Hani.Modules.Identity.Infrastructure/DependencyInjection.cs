@@ -1,5 +1,6 @@
 using Hani.Contracts.Identity;
 using Hani.Modules.Identity.Application.Abstractions;
+using Hani.Modules.Identity.Application.Security;
 using Hani.Modules.Identity.Infrastructure.Integrations;
 using Hani.Modules.Identity.Infrastructure.ReadServices;
 using Hani.Modules.Identity.Infrastructure.Repositories;
@@ -30,6 +31,10 @@ public static class DependencyInjection
         services.AddSingleton<ISecretHasher, SecretHasher>();
         services.AddSingleton<IOtpCodeGenerator, NumericOtpCodeGenerator>();
         services.AddSingleton<IOtpCodeHasher, HmacOtpCodeHasher>();
+        services.AddScoped<IOtpSecuritySettingsService, OtpSecuritySettingsService>();
+        // Replace this registration with a Redis-backed IOtpSecurityState when
+        // the deployment needs shared rate-limit state across API instances.
+        services.AddSingleton<IOtpSecurityState, InMemoryOtpSecurityState>();
         services.AddSingleton<IOtpSender, LogOtpSender>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
         services.AddSingleton<IChannelTokenService, ChannelTokenService>();

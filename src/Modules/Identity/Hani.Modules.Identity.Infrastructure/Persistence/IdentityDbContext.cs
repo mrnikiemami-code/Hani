@@ -4,6 +4,7 @@ using Hani.Modules.Identity.Domain.Claims;
 using Hani.Modules.Identity.Domain.Gamification;
 using Hani.Modules.Identity.Domain.Media;
 using Hani.Modules.Identity.Domain.Reviews;
+using Hani.Modules.Identity.Domain.Security;
 using Hani.Modules.Identity.Domain.Users;
 using Hani.Modules.Identity.Domain.Wishlists;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,8 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
     public DbSet<BadgeDefinition> BadgeDefinitions => Set<BadgeDefinition>();
 
     public DbSet<UserBadge> UserBadges => Set<UserBadge>();
+
+    public DbSet<SecuritySettings> SecuritySettings => Set<SecuritySettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

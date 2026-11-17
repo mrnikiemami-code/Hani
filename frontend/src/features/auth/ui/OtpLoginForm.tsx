@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import ImageWithBasePath from "@/components/image-with-base-path";
@@ -14,6 +14,24 @@ export function OtpLoginForm({ locale }: { locale: string }) {
   const [devCode, setDevCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [resendAt, setResendAt] = useState(0);
+  const [remaining, setRemaining] = useState(0);
+
+  useEffect(() => {
+    if (!resendAt) {
+      setRemaining(0);
+      return;
+    }
+    const tick = () =>
+      setRemaining(Math.max(0, Math.ceil((resendAt - Date.now()) / 1000)));
+    tick();
+    const timer = window.setInterval(tick, 1000);
+    return () => window.clearInterval(timer);
+  }, [resendAt]);
+
+  const timeLabel = `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(
+    remaining % 60
+  ).padStart(2, "0")}`;
 
   async function sendCode() {
     setError(null);
@@ -25,8 +43,12 @@ export function OtpLoginForm({ locale }: { locale: string }) {
         body: JSON.stringify({ mobile })
       });
       if (!response.ok) throw new Error("request");
-      const data = (await response.json()) as { devCode: string | null };
+      const data = (await response.json()) as {
+        devCode: string | null;
+        retryAfterSeconds: number;
+      };
       setDevCode(data.devCode);
+      setResendAt(Date.now() + data.retryAfterSeconds * 1000);
       setStep("code");
     } catch {
       setError(t("invalid"));
@@ -132,6 +154,20 @@ export function OtpLoginForm({ locale }: { locale: string }) {
                   <button className="btn btn-primary w-100" type="submit" disabled={loading}>
                     {loading ? t("verifying") : t("verify")}
                   </button>
+                  {remaining > 0 ? (
+                    <p className="text-center text-gray-6 fs-13 mt-3 mb-0">
+                      {t("resendIn", { time: timeLabel })}
+                    </p>
+                  ) : (
+                    <button
+                      className="btn btn-link w-100 mt-2"
+                      type="button"
+                      onClick={() => void sendCode()}
+                      disabled={loading}
+                    >
+                      {t("resend")}
+                    </button>
+                  )}
                   <button
                     className="btn btn-link w-100 mt-2"
                     type="button"
@@ -139,6 +175,7 @@ export function OtpLoginForm({ locale }: { locale: string }) {
                       setStep("mobile");
                       setCode("");
                       setDevCode(null);
+                      setResendAt(0);
                     }}
                   >
                     {t("changeMobile")}

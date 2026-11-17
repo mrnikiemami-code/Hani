@@ -595,3 +595,4 @@
 - Content editor UX: Jalali schedule date picker + time, translated type/status labels, RTL CKEditor content for FA/AR, published date in Jalali, Section block guidance, and fixed revision insert concurrency on save.
 - Content table UX: server-side search/type/status filters, pagination/page count, compact responsive columns, and no nested table scrollbars.
 - Unified message system: `MessageProvider` provides timed toasts and modal confirmations/alerts for success, warning, question, and error; admin media/content/home editors now use it instead of local alerts or `window.confirm`.
+- OTP security phases 1-2: memory-first `IOtpSecurityState`, 120s code/cooldown, three distinct mobile changes per IP window, IP blocking, admin-editable `identity.security_settings`, admin security page, and login resend countdown. Redis can replace the state provider without changing handlers.

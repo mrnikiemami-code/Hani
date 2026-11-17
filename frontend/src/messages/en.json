@@ -222,7 +222,10 @@
     "sending": "Sending...",
     "verifying": "Verifying...",
     "invalid": "The code or mobile number is invalid.",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "resend": "Resend code",
+    "resendIn": "Resend available in {time}",
+    "codeValidFor": "Code is valid for {time}"
   },
   "checkout": {
     "title": "Complete booking",
@@ -420,7 +423,8 @@
     "navHomepage": "Homepage",
     "backToSite": "Back to site",
     "navMedia": "Media library",
-    "navContent": "Content"
+    "navContent": "Content",
+    "navSecurity": "Login security"
   },
   "adminMedia": {
     "title": "Media library",
@@ -566,5 +570,41 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "autoClose": "Closes in {seconds}s"
+  },
+  "adminSecurity": {
+    "title": "Login and OTP security",
+    "subtitle": "Manage code lifetime, resend cooldown, mobile changes, and IP limits.",
+    "navSecurity": "Login security",
+    "accessTitle": "Admin access required",
+    "accessHint": "Sign in with an admin account to change security settings.",
+    "save": "Save settings",
+    "saving": "Saving",
+    "saved": "Security settings saved.",
+    "error": "Could not save settings.",
+    "storageHint": "Rate-limit state is in memory by default. For multiple API instances, replace the same interface with a Redis implementation.",
+    "lifetimeSeconds": "Code lifetime (seconds)",
+    "lifetimeSecondsHint": "The code expires after this duration.",
+    "resendCooldownSeconds": "Resend cooldown (seconds)",
+    "resendCooldownSecondsHint": "No new code is issued for this mobile during this interval.",
+    "maxRequestsPerHour": "Max requests per hour",
+    "maxRequestsPerHourHint": "Per-mobile code request cap.",
+    "maxVerifyAttempts": "Max failed attempts",
+    "maxVerifyAttemptsHint": "The current code is locked after this many failures.",
+    "mobileChangeWindowSeconds": "Mobile change window (seconds)",
+    "mobileChangeWindowSecondsHint": "IP-based window for counting distinct mobile changes.",
+    "maxMobileChangesPerIp": "Max mobile changes per IP",
+    "maxMobileChangesPerIpHint": "The IP is temporarily blocked after this many changes.",
+    "ipBlockSeconds": "IP block duration (seconds)",
+    "ipBlockSecondsHint": "How long a blocked IP cannot request a code.",
+    "maxIpRequestsPerWindow": "Max IP requests per window",
+    "maxIpRequestsPerWindowHint": "Total request cap for one IP in the window.",
+    "ipRequestWindowSeconds": "IP request window (seconds)",
+    "ipRequestWindowSecondsHint": "Window used to count IP requests.",
+    "unlockTitle": "Manual unlock",
+    "unlockHint": "If a mobile or IP is blocked, enter one and clear the limit.",
+    "unlockMobile": "Mobile (optional)",
+    "unlockIp": "IP address (optional)",
+    "unlock": "Unlock",
+    "unlocked": "The limit was cleared."
   }
 }

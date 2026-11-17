@@ -152,7 +152,8 @@ public sealed class User : AggregateRoot<Guid>
         string codeHash,
         OtpPurpose purpose,
         DateTimeOffset now,
-        TimeSpan lifetime)
+        TimeSpan lifetime,
+        int maxAttempts = 5)
     {
         if (string.IsNullOrWhiteSpace(codeHash))
         {
@@ -165,7 +166,8 @@ public sealed class User : AggregateRoot<Guid>
             codeHash,
             purpose,
             now,
-            now.Add(lifetime));
+            now.Add(lifetime),
+            maxAttempts);
         _otpCodes.Add(otp);
         Touch(now);
         return otp;

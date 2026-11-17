@@ -17,7 +17,8 @@ public sealed class UserOtp : Entity<Guid>
         string codeHash,
         OtpPurpose purpose,
         DateTimeOffset createdAt,
-        DateTimeOffset expiresAt) : base(id)
+        DateTimeOffset expiresAt,
+        int maxAttempts = 5) : base(id)
     {
         UserId = userId;
         CodeHash = codeHash;
@@ -25,7 +26,7 @@ public sealed class UserOtp : Entity<Guid>
         CreatedAt = createdAt;
         ExpiresAt = expiresAt;
         Attempts = 0;
-        MaxAttempts = 5;
+        MaxAttempts = Math.Max(1, maxAttempts);
     }
 
     /// <summary>

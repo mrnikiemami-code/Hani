@@ -100,10 +100,25 @@ public static class IdentityAuthEndpoints
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(
-            new RequestOtpCommand(request.Mobile),
+            new RequestOtpCommand(request.Mobile, ResolveClientIp(context)),
             cancellationToken);
 
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Resolves the client IP. In production only trust forwarded headers from
+    /// known reverse proxies; direct connections use RemoteIpAddress.
+    /// </summary>
+    private static string? ResolveClientIp(HttpContext context)
+    {
+        var forwarded = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+        if (!string.IsNullOrWhiteSpace(forwarded))
+        {
+            return forwarded.Split(',')[0].Trim();
+        }
+
+        return context.Connection.RemoteIpAddress?.ToString();
     }
 
     /// <summary>

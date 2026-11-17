@@ -44,7 +44,7 @@ public sealed class OtpOptions
     /// <summary>
     /// Minimum interval between OTP requests in seconds.
     /// </summary>
-    public int ResendCooldownSeconds { get; set; } = 60;
+    public int ResendCooldownSeconds { get; set; } = 120;
 
     /// <summary>
     /// Maximum OTP requests per hour.

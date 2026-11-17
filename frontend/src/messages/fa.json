@@ -222,7 +222,10 @@
     "sending": "در حال ارسال...",
     "verifying": "در حال بررسی...",
     "invalid": "کد یا شماره معتبر نیست.",
-    "backHome": "بازگشت به خانه"
+    "backHome": "بازگشت به خانه",
+    "resend": "ارسال دوباره کد",
+    "resendIn": "ارسال مجدد تا {time}",
+    "codeValidFor": "کد تا {time} دیگر معتبر است"
   },
   "checkout": {
     "title": "تکمیل رزرو",
@@ -420,7 +423,8 @@
     "navHomepage": "صفحه اول",
     "backToSite": "بازگشت به سایت",
     "navMedia": "کتابخانه رسانه",
-    "navContent": "مدیریت محتوا"
+    "navContent": "مدیریت محتوا",
+    "navSecurity": "امنیت ورود"
   },
   "adminMedia": {
     "title": "کتابخانه رسانه",
@@ -566,5 +570,41 @@
     "cancel": "انصراف",
     "confirm": "تایید",
     "autoClose": "بسته می‌شود تا {seconds} ثانیه دیگر"
+  },
+  "adminSecurity": {
+    "title": "امنیت ورود و OTP",
+    "subtitle": "مدت اعتبار کد، فاصله ارسال مجدد و محدودیت‌های موبایل و IP را مدیریت کنید.",
+    "navSecurity": "امنیت ورود",
+    "accessTitle": "دسترسی مدیر لازم است",
+    "accessHint": "برای تغییر تنظیمات امنیتی با حساب مدیر وارد شوید.",
+    "save": "ذخیره تنظیمات",
+    "saving": "در حال ذخیره",
+    "saved": "تنظیمات امنیتی ذخیره شد.",
+    "error": "ذخیره تنظیمات انجام نشد.",
+    "storageHint": "ذخیره‌سازی محدودیت‌ها به‌صورت پیش‌فرض در حافظه است. برای چند نمونه API، همان اینترفیس را با Redis جایگزین کنید.",
+    "lifetimeSeconds": "مدت اعتبار کد (ثانیه)",
+    "lifetimeSecondsHint": "کد بعد از این مدت منقضی می‌شود.",
+    "resendCooldownSeconds": "فاصله ارسال مجدد (ثانیه)",
+    "resendCooldownSecondsHint": "در این بازه برای همان موبایل کد جدید صادر نمی‌شود.",
+    "maxRequestsPerHour": "حداکثر درخواست در ساعت",
+    "maxRequestsPerHourHint": "سقف درخواست کد برای هر موبایل.",
+    "maxVerifyAttempts": "حداکثر تلاش اشتباه",
+    "maxVerifyAttemptsHint": "بعد از این تعداد، کد فعلی قفل می‌شود.",
+    "mobileChangeWindowSeconds": "پنجره تغییر موبایل (ثانیه)",
+    "mobileChangeWindowSecondsHint": "بازه شمارش تغییر شماره‌ها بر اساس IP.",
+    "maxMobileChangesPerIp": "حداکثر تغییر موبایل بر IP",
+    "maxMobileChangesPerIpHint": "بعد از این تعداد، IP موقتاً بلاک می‌شود.",
+    "ipBlockSeconds": "مدت بلاک IP (ثانیه)",
+    "ipBlockSecondsHint": "مدت عدم امکان درخواست از IP بلاک‌شده.",
+    "maxIpRequestsPerWindow": "حداکثر درخواست IP در پنجره",
+    "maxIpRequestsPerWindowHint": "سقف کل درخواست‌های یک IP در پنجره.",
+    "ipRequestWindowSeconds": "پنجره درخواست IP (ثانیه)",
+    "ipRequestWindowSecondsHint": "بازه شمارش درخواست‌های IP.",
+    "unlockTitle": "آزادسازی دستی",
+    "unlockHint": "در صورت قفل شدن موبایل یا IP، یکی از آن‌ها را وارد و آزاد کنید.",
+    "unlockMobile": "موبایل (اختیاری)",
+    "unlockIp": "آی‌پی (اختیاری)",
+    "unlock": "آزادسازی",
+    "unlocked": "محدودیت با موفقیت پاک شد."
   }
 }

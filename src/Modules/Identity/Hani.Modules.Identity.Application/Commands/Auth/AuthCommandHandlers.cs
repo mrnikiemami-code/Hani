@@ -3,6 +3,7 @@ using System.Text;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Identity.Application.Abstractions;
+using Hani.Modules.Identity.Application.Security;
 using Hani.Modules.Identity.Domain.Users;
 using Microsoft.Extensions.Options;
 
@@ -13,6 +14,8 @@ internal sealed class RequestOtpCommandHandler(
     IOtpCodeGenerator generator,
     IOtpCodeHasher hasher,
     IOtpSender sender,
+    IOtpSecuritySettingsService security,
+    IOtpSecurityState securityState,
     IOptions<OtpOptions> options,
     IIdGenerator ids)
     : ICommandHandler<RequestOtpCommand, RequestOtpResult>
@@ -36,6 +39,7 @@ internal sealed class RequestOtpCommandHandler(
         var user = await users.GetByMobileAsync(mobile, cancellationToken);
         var now = DateTimeOffset.UtcNow;
         var configuration = options.Value;
+        var policy = await security.GetAsync(cancellationToken);
 
         if (user is not null && user.Status == UserStatus.Blocked)
         {
@@ -43,30 +47,22 @@ internal sealed class RequestOtpCommandHandler(
                 Error.Conflict("HANI-IDENTITY-1101", "User is blocked."));
         }
 
-        var recent = user?.OtpCodes
-            .OrderByDescending(otp => otp.CreatedAt)
-            .FirstOrDefault();
-
-        if (recent is not null &&
-            recent.CreatedAt > now.AddSeconds(-configuration.ResendCooldownSeconds))
+        var decision = await securityState.TryAcquireRequestAsync(
+            mobile,
+            request.IpAddress,
+            policy,
+            cancellationToken);
+        if (!decision.Allowed)
         {
-            var retryAfter = Math.Max(
-                1,
-                (int)Math.Ceiling((recent.CreatedAt.AddSeconds(
-                    configuration.ResendCooldownSeconds) - now).TotalSeconds));
-
+            var errorCode = decision.Reason == OtpRequestDenial.MobileCooldown
+                ? "HANI-IDENTITY-1102"
+                : decision.Reason == OtpRequestDenial.HourlyLimit
+                    ? "HANI-IDENTITY-1103"
+                    : "HANI-IDENTITY-1106";
             return Result<RequestOtpResult>.Failure(
                 Error.Conflict(
-                    "HANI-IDENTITY-1102",
-                    $"OTP was requested recently. Retry after {retryAfter} seconds."));
-        }
-
-        if (user is not null &&
-            user.OtpCodes.Count(otp => otp.CreatedAt > now.AddHours(-1)) >=
-            configuration.MaxRequestsPerHour)
-        {
-            return Result<RequestOtpResult>.Failure(
-                Error.Conflict("HANI-IDENTITY-1103", "Too many OTP requests."));
+                    errorCode,
+                    $"OTP request is temporarily blocked. Retry after {decision.RetryAfterSeconds} seconds."));
         }
 
         var isNewUser = user is null;
@@ -78,7 +74,8 @@ internal sealed class RequestOtpCommandHandler(
             hasher.Hash(code),
             OtpPurpose.Login,
             now,
-            TimeSpan.FromSeconds(configuration.LifetimeSeconds));
+            TimeSpan.FromSeconds(policy.LifetimeSeconds),
+            policy.MaxVerifyAttempts);
 
         if (isNewUser)
         {
@@ -93,7 +90,7 @@ internal sealed class RequestOtpCommandHandler(
 
         return Result<RequestOtpResult>.Success(new RequestOtpResult(
             otp.ExpiresAt,
-            configuration.ResendCooldownSeconds,
+            policy.ResendCooldownSeconds,
             configuration.ExposeCodeInResponse ? code : null));
     }
 }
