@@ -53,8 +53,12 @@ Jalali conversion exists only in the UI adapter.
   without page-level calendar code.
 - Dashboard `PredefinedDateRanges` box with calendar-aware month presets.
 - Home hero dropdowns are self-contained, searchable, and progressively
-  reveal more options on scroll. They are portaled to the body, always open below the trigger, and follow
-  the trigger on page scroll without clipping.
+  reveal more options on scroll. They are portaled to the body, always open
+  below the trigger, and follow the trigger on page scroll without clipping.
+- The desktop hero form is raised so the search fields are visible without
+  scrolling at 1366x768.
+- Local demo catalog labels were repaired; internal test hotels are excluded
+  from public search options and duplicate destination names are collapsed.
 - Public tour cards, home content, blog/content lists and details, agency
   profile, checkout, user/agent dashboards, invoices, payments, refunds,
   notifications and reviews now use the shared formatter.

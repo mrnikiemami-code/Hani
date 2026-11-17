@@ -203,6 +203,23 @@ test.describe("public smoke", () => {
     await expect(input).toHaveAttribute("data-iso-value", /^\d{4}-\d{2}-\d{2}$/);
   });
 
+  test("search options are unique and contain no corrupted labels", async ({
+    request
+  }) => {
+    const response = await request.get(
+      "http://localhost:5099/market/v1/search/options?locale=fa&scope=Foreign"
+    );
+    expect(response.status()).toBe(200);
+    const data = (await response.json()) as {
+      destinations: string[];
+      hotels: string[];
+    };
+    expect(new Set(data.destinations).size).toBe(data.destinations.length);
+    expect(new Set(data.hotels).size).toBe(data.hotels.length);
+    expect(data.destinations.every((name) => !name.includes("?"))).toBe(true);
+    expect(data.hotels.every((name) => !name.includes("?"))).toBe(true);
+  });
+
   test("api rejects Jalali-shaped dates and accepts Gregorian dates", async ({
     request
   }) => {

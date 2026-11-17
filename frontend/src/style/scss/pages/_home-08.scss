@@ -20,6 +20,9 @@
     flex-direction: column;
     justify-content: flex-end;
     z-index: 1;
+    @media (min-width: 992px) {
+        padding-bottom: 150px;
+    }
     @include mixins.respond-below(md){
         height: auto;
         padding-top: 45%;

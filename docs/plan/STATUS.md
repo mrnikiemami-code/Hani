@@ -577,3 +577,4 @@
 - Calendar/dropdown QA fix: repaired corrupted FA/AR message strings, date modal text verified, dropdown flips upward and stays inside viewport.
 - Date/dropdown QA follow-up: modal title deduplicated; dropdown always opens below and scrolls with the page.
 - Date label/portal follow-up: date labels appear only after selection, dropdown menu is portaled/fixed and follows scroll, FA/AR message strings verified clean.
+- Home search polish: hero form raised, dropdown portal positioning verified, demo catalog labels repaired, test hotels filtered.

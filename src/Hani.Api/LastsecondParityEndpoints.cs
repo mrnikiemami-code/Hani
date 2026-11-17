@@ -183,14 +183,14 @@ public static class LastsecondParityEndpoints
 
         var origins = tours.Value!.Items
             .Select(item => item.OriginDestinationName)
-            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Where(name => !string.IsNullOrWhiteSpace(name) && !name.Contains('?'))
             .Cast<string>()
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
             .ToArray();
         var destinations = tours.Value.Items
             .SelectMany(item => item.DestinationNames ?? [])
-            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Where(name => !string.IsNullOrWhiteSpace(name) && !name.Contains('?'))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
             .ToArray();
@@ -201,7 +201,9 @@ public static class LastsecondParityEndpoints
             .ToArray();
         var hotelNames = hotels.IsSuccess
             ? hotels.Value!.Items
+                .Where(item => !IsInternalDemoHotel(item.Slug))
                 .Select(item => item.Name)
+                .Where(name => !name.Contains('?'))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
                 .ToArray()
@@ -209,6 +211,11 @@ public static class LastsecondParityEndpoints
 
         return Results.Ok(new SearchOptionsDto(origins, destinations, durations, hotelNames));
     }
+
+    private static bool IsInternalDemoHotel(string slug) =>
+        slug.StartsWith("audit-", StringComparison.OrdinalIgnoreCase) ||
+        slug.StartsWith("gate5", StringComparison.OrdinalIgnoreCase) ||
+        slug.StartsWith("test-", StringComparison.OrdinalIgnoreCase);
 
     private static async Task<IResult> GetHomeAsync(
         string? locale,
