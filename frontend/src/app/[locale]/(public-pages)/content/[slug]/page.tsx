@@ -95,13 +95,27 @@ export default async function ContentPage({
               dangerouslySetInnerHTML={{
                 __html: sanitizeHtml(entry.body || t("noResults"), {
                   allowedTags: [
-                    "p", "br", "strong", "b", "em", "i", "u", "s",
+                    "p", "br", "strong", "b", "em", "i", "u", "s", "del",
                     "ul", "ol", "li", "h2", "h3", "h4", "blockquote",
-                    "a", "img", "table", "thead", "tbody", "tr", "th", "td"
+                    "a", "img", "table", "thead", "tbody", "tr", "th", "td",
+                    "span", "mark", "code", "pre", "hr", "sub", "sup",
+                    "figure", "figcaption"
                   ],
                   allowedAttributes: {
+                    "*": ["style"],
                     a: ["href", "title", "target", "rel"],
                     img: ["src", "alt", "width", "height", "loading"]
+                  },
+                  allowedStyles: {
+                    "*": {
+                      "text-align": [/^(left|right|center|justify)$/],
+                      "font-family": [/^[\w\s,"'()-]+$/],
+                      "font-size": [/^\d+(?:\.\d+)?(?:px|em|rem|pt|%)$/],
+                      "color": [/^#[0-9a-f]{3,8}$/i, /^rgba?\([\d\s,.%]+\)$/i],
+                      "background-color": [/^#[0-9a-f]{3,8}$/i, /^rgba?\([\d\s,.%]+\)$/i],
+                      "font-weight": [/^(normal|bold|[1-9]00)$/],
+                      "text-decoration": [/^(none|underline|line-through)$/]
+                    }
                   },
                   allowedSchemes: ["http", "https", "mailto"]
                 })

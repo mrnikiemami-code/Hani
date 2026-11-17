@@ -2,20 +2,47 @@
 
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
+  Alignment,
+  Autoformat,
   BlockQuote,
   Bold,
   ClassicEditor,
+  Code,
+  CodeBlock,
   Essentials,
+  FindAndReplace,
+  FontBackgroundColor,
+  FontColor,
+  FontFamily,
+  FontSize,
   Heading,
+  HorizontalLine,
+  Indent,
+  IndentBlock,
   Italic,
   Link,
   List,
   Paragraph,
+  RemoveFormat,
+  SpecialCharacters,
+  Strikethrough,
+  Subscript,
+  Superscript,
   Table,
   TableToolbar,
   Underline
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
+
+const fontFamilies = [
+  "default",
+  "Vazirmatn, Tahoma, sans-serif",
+  "Noto Kufi Arabic, Tahoma, sans-serif",
+  "Arial, sans-serif",
+  "Tahoma, sans-serif",
+  "Georgia, serif",
+  "Courier New, monospace"
+];
 
 /**
  * CKEditor 5 (GPL distribution) used by the content CMS. This module is loaded
@@ -31,7 +58,7 @@ export default function CkEditorImpl({
   ariaLabel?: string;
 }) {
   return (
-    <div aria-label={ariaLabel}>
+    <div aria-label={ariaLabel} className="hani-rich-editor">
       <CKEditor
         editor={ClassicEditor}
         data={value}
@@ -43,29 +70,77 @@ export default function CkEditorImpl({
             Bold,
             Italic,
             Underline,
+            Strikethrough,
+            Subscript,
+            Superscript,
+            Code,
+            CodeBlock,
             Link,
             List,
             Heading,
+            Alignment,
+            Autoformat,
             BlockQuote,
             Table,
-            TableToolbar
+            TableToolbar,
+            FontFamily,
+            FontSize,
+            FontColor,
+            FontBackgroundColor,
+            Indent,
+            IndentBlock,
+            HorizontalLine,
+            RemoveFormat,
+            FindAndReplace,
+            SpecialCharacters
           ],
           toolbar: [
             "undo",
             "redo",
             "|",
             "heading",
+            "fontFamily",
+            "fontSize",
             "|",
             "bold",
             "italic",
             "underline",
-            "link",
+            "strikethrough",
+            "subscript",
+            "superscript",
             "|",
+            "fontColor",
+            "fontBackgroundColor",
+            "|",
+            "alignment",
+            "|",
+            "link",
             "bulletedList",
             "numberedList",
+            "outdent",
+            "indent",
+            "|",
             "blockQuote",
-            "insertTable"
-          ]
+            "code",
+            "codeBlock",
+            "insertTable",
+            "horizontalLine",
+            "specialCharacters",
+            "findAndReplace",
+            "|",
+            "removeFormat"
+          ],
+          fontFamily: {
+            options: fontFamilies,
+            supportAllValues: true
+          },
+          fontSize: {
+            options: [10, 12, 14, 16, 18, 20, 24, 30, 36],
+            supportAllValues: true
+          },
+          table: {
+            contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"]
+          }
         }}
         onChange={(_event, editor) => onChange(editor.getData())}
       />

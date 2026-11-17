@@ -508,6 +508,10 @@
     "seoHeadings": "H2/H3 heading count: {count} (at least 2).",
     "seoImage": "Choose a hero image for social sharing and the content page.",
     "seoExcerpt": "Add an excerpt for cards and previews.",
-    "seoAllGood": "All baseline SEO checks pass."
+    "seoAllGood": "All baseline SEO checks pass.",
+    "status": "Status",
+    "updatedAt": "Last updated",
+    "actions": "Actions",
+    "backToList": "Back to list"
   }
 }

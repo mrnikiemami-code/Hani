@@ -345,6 +345,11 @@ html[lang="en"] body {
     min-width: 0;
   }
 
+  .media-tags-field {
+    width: 100%;
+    max-width: 520px;
+  }
+
   .media-folder-add {
     flex: 0 0 auto;
   }
@@ -364,6 +369,10 @@ html[lang="en"] body {
 
     .media-folder-select-row {
       flex-direction: column;
+    }
+
+    .media-tags-field {
+      max-width: none;
     }
 
     .media-library-heading,

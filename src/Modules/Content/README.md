@@ -81,3 +81,15 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 - Blog destination tags and related-post endpoint.
 - HTTP email/SMS notification sender; missing provider configuration falls back
   to structured logging.
+
+## Content Entry CMS
+
+- Admin list: `GET /internal/v1/content-entries`
+- Admin edit lookup: `GET /internal/v1/content-entries/{id}`
+- Create/update: `POST /internal/v1/content-entries`, `PUT /internal/v1/content-entries/{id}`
+- Lifecycle: publish, unpublish, schedule, delete, and revision restore
+- Public read: `GET /market/v1/content-entries/{slug}`
+- Bodies are rich HTML from CKEditor; public rendering sanitizes tags and CSS
+  styles before output.
+- Admin UI: `/[locale]/admin/content` is the table; create and edit use
+  `/[locale]/admin/content/new` and `/[locale]/admin/content/{id}`.

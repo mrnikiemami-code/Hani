@@ -312,3 +312,4 @@
 | H91-MEDIA-06 | Content CMS and revisions | ? | rich text/revisions/schedule/admin/public/sitemap |
 | H91-MEDIA-07 | S3/R2/cloud storage | ? Phase 5 | provider adapter |
 | H91-MEDIA-08 | Admin media/content polish | ? | 20MB uploads, tag chips, focal labels, CKEditor GPL, SEO audit, mobile shell |
+| H91-MEDIA-09 | Content admin table/editor split | ? | template table, create/edit/delete routes, rich editor toolbar |

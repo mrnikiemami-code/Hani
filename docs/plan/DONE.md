@@ -296,3 +296,5 @@
 | `2fc1b34` | Content CMS completion: rich text, revision restore, scheduling, usage sync, sitemap, media hero |
 | `7aeefbb` | Admin polish: 20MB uploads, chip tags, focal labels, CKEditor 5 GPL, SEO audit, mobile admin nav, content-media route |
 | `7bf0218` | Media upload UX: aligned tag row, chips below, folder creation modal beside the folder select |
+| `pending` | Media tag row: dedicated row with equal-width input, button, and hint |
+| `pending` | Content admin table + separate editor routes; expanded CKEditor toolbar and sanitized styles |

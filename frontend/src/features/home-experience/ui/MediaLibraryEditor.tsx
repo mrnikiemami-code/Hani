@@ -248,17 +248,19 @@ export function MediaLibraryEditor({
                 </button>
               </div>
             </div>
-            <div className="col-lg-4">
+            <div className="col-12 mt-2 media-tags-row">
               <label className="form-label">{t("tags")}</label>
-              <TagInput
-                tags={uploadTags}
-                onChange={setUploadTags}
-                placeholder={t("tagPlaceholder")}
-                addLabel={t("addTag")}
-                removeLabel={t("removeTag")}
-              />
-              <p className="fs-12 text-gray-6 mb-0 mt-1">{t("tagsHint")}</p>
-              <input type="hidden" name="tags" value={uploadTags.join(",")} />
+              <div className="media-tags-field">
+                <TagInput
+                  tags={uploadTags}
+                  onChange={setUploadTags}
+                  placeholder={t("tagPlaceholder")}
+                  addLabel={t("addTag")}
+                  removeLabel={t("removeTag")}
+                />
+                <p className="fs-12 text-gray-6 mb-0 mt-1">{t("tagsHint")}</p>
+                <input type="hidden" name="tags" value={uploadTags.join(",")} />
+              </div>
             </div>
             <div className="col-12 mt-2">
               <h3 className="h6 mb-0">{t("focalTitle")}</h3>

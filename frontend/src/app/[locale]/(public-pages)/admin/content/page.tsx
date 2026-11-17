@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { sessionGet } from "@/lib/hani/server-api";
-import type { MediaListResponse } from "@/features/home-experience/domain/media";
 import type { ContentEntry } from "@/features/home-experience/domain/content-entry";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 import { ContentManager } from "@/features/home-experience/ui/ContentManager";
@@ -24,10 +23,9 @@ export default async function AdminContentPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminContent" });
-  const [entries, media] = await Promise.all([
-    sessionGet<ContentEntry[]>("/internal/v1/content-entries"),
-    sessionGet<MediaListResponse>("/internal/v1/content-media?page=1&pageSize=100")
-  ]);
+  const entries = await sessionGet<ContentEntry[]>(
+    "/internal/v1/content-entries"
+  );
 
   if (entries.status === 401 || entries.status === 403) {
     return (
@@ -51,11 +49,7 @@ export default async function AdminContentPage({
       subtitle={t("subtitle")}
       active={t("navContent")}
     >
-      <ContentManager
-        locale={locale}
-        initialEntries={entries.data ?? []}
-        mediaAssets={media.data?.items ?? []}
-      />
+      <ContentManager locale={locale} initialEntries={entries.data ?? []} />
     </AdminPageShell>
   );
 }
