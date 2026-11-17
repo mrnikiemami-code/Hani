@@ -285,3 +285,4 @@
 | `89cceb2` | Date/dropdown QA follow-up: single modal title, dropdown always below, message strings repaired |
 | `e6248a8` | Date label/portal follow-up: conditional labels, portaled dropdown below trigger, repaired FA/AR strings |
 | `c56fa80` | Home search polish: raised hero form, repaired demo labels, filtered test hotels, unique options test |
+| `pending` | Search UX: no scroll jump on dropdown open, menu below and scroll-stable |

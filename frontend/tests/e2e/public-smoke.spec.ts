@@ -237,14 +237,19 @@ test.describe("public smoke", () => {
   test("home hero dropdowns open and filter by typing", async ({ page }) => {
     await page.goto("/fa");
     const origin = page.locator("#tour-scope-panel-foreign .booking-dropdown").first();
+    const scrollBefore = await page.evaluate(() => window.scrollY);
     await origin.locator("input.value-input").click();
+    const scrollAfter = await page.evaluate(() => window.scrollY);
+    expect(scrollAfter).toBe(scrollBefore);
     const menu = page.locator(".hani-booking-dropdown-menu");
     await expect(menu).toBeVisible();
     const menuBox = await menu.boundingBox();
+    const searchBox = await menu.getByRole("textbox").boundingBox();
     const viewportHeight = await page.evaluate(() => window.innerHeight);
     expect(menuBox).not.toBeNull();
+    expect(searchBox).not.toBeNull();
     expect(menuBox!.y).toBeGreaterThanOrEqual(0);
-    expect(menuBox!.y + menuBox!.height).toBeLessThanOrEqual(viewportHeight);
+    expect(searchBox!.y + searchBox!.height).toBeLessThanOrEqual(viewportHeight);
     const inputBox = await origin.locator("input.value-input").boundingBox();
     expect(inputBox).not.toBeNull();
     expect(menuBox!.y).toBeGreaterThanOrEqual(inputBox!.y + inputBox!.height);

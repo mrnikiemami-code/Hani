@@ -88,6 +88,8 @@
   from the active locale, not from hard-coded Persian arrays.
 - Search and booking date inputs must start empty. Do not silently prefill
   today/tomorrow; the user must choose the travel dates.
+- Opening a date picker or search dropdown must never change `window.scrollY`.
+  Use a centered modal or a body portal instead of scrolling the page.
 - The server has a global MediatR `GregorianDateBehavior`; do not bypass it
   with direct `DateOnly` endpoint parameters without an equivalent guard.
 - `scripts/verify.ps1` runs `frontend/scripts/check-date-architecture.mjs`;

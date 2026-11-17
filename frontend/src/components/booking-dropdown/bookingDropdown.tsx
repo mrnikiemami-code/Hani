@@ -27,7 +27,7 @@ type Props = {
 
 const DEFAULT_PAGE_SIZE = 8;
 const MENU_MAX_HEIGHT = 320;
-const MENU_MIN_HEIGHT = 180;
+const MENU_MIN_VISIBLE = 220;
 
 /**
  * Self-contained searchable dropdown used by the home hero. The menu is
@@ -82,7 +82,7 @@ export default function BookingDropdown({
     const top = rect.bottom + 6;
     const available = window.innerHeight - top - 12;
     const maxHeight = Math.max(
-      MENU_MIN_HEIGHT,
+      MENU_MIN_VISIBLE,
       Math.min(MENU_MAX_HEIGHT, available)
     );
 
@@ -97,14 +97,7 @@ export default function BookingDropdown({
   };
 
   const openMenu = () => {
-    const rect = inputRef.current?.getBoundingClientRect();
-    if (rect) {
-      const needed = MENU_MAX_HEIGHT + 20 - (window.innerHeight - rect.bottom);
-      if (needed > 0) {
-        window.scrollBy({ top: needed, behavior: "auto" });
-      }
-    }
-
+    // Never move the user's scroll position when opening search.
     setOpen(true);
   };
 
