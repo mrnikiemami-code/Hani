@@ -288,4 +288,4 @@
 | `5c79553` | Search UX: no scroll jump on dropdown open, menu below and scroll-stable |
 | `fb50871` | Homepage control panel: DB composition settings, admin editor, Lastsecond default order; agency advertising proposal |
 | `aef1c9e` | Admin homepage panel moved into template-derived agency shell |
-| `pending` | Content media library phase 1: WebP conversion, variants, local storage, admin media library |
+| `6dfddb6` | Content media library phase 1: WebP conversion, variants, local storage, admin media library |
