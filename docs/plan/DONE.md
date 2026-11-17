@@ -293,4 +293,4 @@
 | `5831b64` | Media Phase 3 backend foundation: folders, tags, focal metadata, replace endpoint |
 | `87cd00b` | Media phase 3 core: folders/tags/focal, replace, bulk delete, usage/audit APIs, admin controls |
 | `e42058b` | Content CMS core: entries/revisions, admin editor, public content page, draft/publish |
-| `pending` | Content CMS completion: rich text, revision restore, scheduling, usage sync, sitemap, media hero |
+| `2fc1b34` | Content CMS completion: rich text, revision restore, scheduling, usage sync, sitemap, media hero |
