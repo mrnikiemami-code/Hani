@@ -587,3 +587,4 @@
 - Media Phase 3 core: folders/tags/focal, replace, bulk delete, usage/audit APIs and admin controls. Usage/audit panels, crop variants, and per-agency quota remain.
 - Content CMS core: ContentEntry + revisions, admin content editor, public content page, draft/publish/unpublish, hero media/SEO fields.
 - Content CMS completion: rich text, revision restore, scheduled publish, automatic media usage, public page/API, content sitemap, media-backed hero variants. Draft preview remains.
+- Admin production polish: 20MB Server Action upload limit, chip-based tags, explicit focal-point labels, CKEditor 5 GPL editor, live SEO audit, responsive media/content layouts, and a compact mobile admin nav. Content media API is namespaced under `/internal/v1/content-media` to avoid the identity moderation route collision.

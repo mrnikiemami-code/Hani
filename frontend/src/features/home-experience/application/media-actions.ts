@@ -49,7 +49,7 @@ export async function uploadMedia(
   appendOptional(backendForm, "focalX", formData.get("focalX"));
   appendOptional(backendForm, "focalY", formData.get("focalY"));
 
-  const response = await fetch(`${apiBase}/internal/v1/media`, {
+  const response = await fetch(`${apiBase}/internal/v1/content-media`, {
     method: "POST",
     cache: "no-store",
     headers: { Authorization: `Bearer ${accessToken}` },
@@ -76,7 +76,7 @@ export async function updateMediaAlt(
     return { ok: false, error: "unauthorized" };
   }
 
-  const response = await fetch(`${apiBase}/internal/v1/media/${id}`, {
+  const response = await fetch(`${apiBase}/internal/v1/content-media/${id}`, {
     method: "PUT",
     cache: "no-store",
     headers: {
@@ -103,7 +103,7 @@ export async function createMediaFolder(
     return { ok: false, error: "unauthorized" };
   }
 
-  const response = await fetch(`${apiBase}/internal/v1/media/folders`, {
+  const response = await fetch(`${apiBase}/internal/v1/content-media/folders`, {
     method: "POST",
     cache: "no-store",
     headers: {
@@ -153,7 +153,7 @@ export async function replaceMedia(
   appendOptional(backendForm, "focalX", formData.get("focalX"));
   appendOptional(backendForm, "focalY", formData.get("focalY"));
 
-  const response = await fetch(`${apiBase}/internal/v1/media/${id}/replace`, {
+  const response = await fetch(`${apiBase}/internal/v1/content-media/${id}/replace`, {
     method: "POST",
     cache: "no-store",
     headers: { Authorization: `Bearer ${accessToken}` },
@@ -177,7 +177,7 @@ export async function bulkDeleteMedia(
     return { ok: false, error: "unauthorized" };
   }
 
-  const response = await fetch(`${apiBase}/internal/v1/media/bulk-delete`, {
+  const response = await fetch(`${apiBase}/internal/v1/content-media/bulk-delete`, {
     method: "POST",
     cache: "no-store",
     headers: {
@@ -204,7 +204,7 @@ export async function deleteMedia(
     return { ok: false, error: "unauthorized" };
   }
 
-  const response = await fetch(`${apiBase}/internal/v1/media/${id}`, {
+  const response = await fetch(`${apiBase}/internal/v1/content-media/${id}`, {
     method: "DELETE",
     cache: "no-store",
     headers: { Authorization: `Bearer ${accessToken}` }

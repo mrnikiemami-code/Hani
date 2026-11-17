@@ -24,7 +24,7 @@ public static class MediaEndpoints
             .WithName("Marketplace.GetMedia")
             .Produces<MediaAssetDto>();
 
-        var media = app.MapGroup("/internal/v1/media")
+        var media = app.MapGroup("/internal/v1/content-media")
             .WithTags("Internal.Media")
             .RequireAuthorization("Admin");
 

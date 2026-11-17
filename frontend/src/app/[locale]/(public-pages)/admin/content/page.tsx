@@ -26,7 +26,7 @@ export default async function AdminContentPage({
   const t = await getTranslations({ locale, namespace: "adminContent" });
   const [entries, media] = await Promise.all([
     sessionGet<ContentEntry[]>("/internal/v1/content-entries"),
-    sessionGet<MediaListResponse>("/internal/v1/media?page=1&pageSize=100")
+    sessionGet<MediaListResponse>("/internal/v1/content-media?page=1&pageSize=100")
   ]);
 
   if (entries.status === 401 || entries.status === 403) {

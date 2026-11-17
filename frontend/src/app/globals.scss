@@ -319,3 +319,116 @@ html[lang="en"] body {
 .flag-dropdown {
   display: none !important;
 }
+
+// Admin media library layout. These are responsive adjustments to the
+// template's Bootstrap components, not a new visual system.
+.media-library-editor {
+  .media-library-heading,
+  .media-selection-toolbar {
+    row-gap: .5rem;
+  }
+
+  .media-card {
+    overflow: hidden;
+  }
+
+  .media-card-image {
+    width: 100%;
+    display: block;
+  }
+
+  .media-folder-row {
+    align-items: stretch;
+  }
+
+  @media (max-width: 767.98px) {
+    .media-upload-form .form-control,
+    .media-upload-form .form-select,
+    .media-upload-form .btn,
+    .media-folder-row .form-control,
+    .media-folder-row .btn {
+      font-size: 16px;
+      min-height: 44px;
+    }
+
+    .media-upload-submit,
+    .media-folder-row .btn {
+      width: 100%;
+    }
+
+    .media-folder-row {
+      flex-direction: column;
+    }
+
+    .media-library-heading,
+    .media-selection-toolbar {
+      align-items: flex-start !important;
+      flex-direction: column;
+    }
+
+    .media-selection-toolbar .btn {
+      width: 100%;
+    }
+
+    .media-card .card-body {
+      padding: 1rem;
+    }
+
+    .media-select-box {
+      inset-inline-start: 0;
+      inset-inline-end: auto;
+    }
+  }
+}
+
+// Keep the admin sidebar usable on phones instead of pushing a tall card
+// above the editor. Desktop keeps the template's vertical agency sidebar.
+@media (max-width: 991.98px) {
+  .admin-sidebar.theiaStickySidebar {
+    position: static;
+  }
+
+  .admin-sidebar {
+    .user-sidebar-header {
+      display: none;
+    }
+
+    .card-body {
+      padding: .75rem;
+    }
+
+    .user-sidebar-body > ul {
+      display: flex;
+      gap: .5rem;
+      margin: 0;
+      padding: 0;
+      overflow-x: auto;
+      list-style: none;
+    }
+
+    .user-sidebar-body > ul > li {
+      flex: 0 0 auto;
+      margin-bottom: 0 !important;
+    }
+
+    .user-sidebar-body > ul > li > a {
+      white-space: nowrap;
+      padding: .5rem .75rem;
+    }
+  }
+}
+
+// CKEditor fits the template's form card and remains usable on mobile.
+.ck.ck-editor {
+  width: 100%;
+}
+
+.ck.ck-editor__editable_inline {
+  min-height: 320px;
+}
+
+@media (max-width: 767.98px) {
+  .ck.ck-editor__editable_inline {
+    min-height: 220px;
+  }
+}

@@ -29,10 +29,10 @@ A professional content and media library with:
 - EXIF removal on encoded output.
 - Local content storage under `wwwroot/media`.
 - Admin-only endpoints:
-  - `GET /internal/v1/media`
-  - `POST /internal/v1/media`
-  - `PUT /internal/v1/media/{id}`
-  - `DELETE /internal/v1/media/{id}`
+  - `GET /internal/v1/content-media`
+  - `POST /internal/v1/content-media`
+  - `PUT /internal/v1/content-media/{id}`
+  - `DELETE /internal/v1/content-media/{id}`
 - Required alt text, 15 MB limit, pixel limit.
 
 ### Admin UI

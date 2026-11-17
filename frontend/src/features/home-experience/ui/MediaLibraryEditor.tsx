@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import type { MediaAsset, MediaFolder } from "../domain/media";
+import { TagInput } from "@/components/hani/tag-input";
 import { HaniMediaImage, MEDIA_SIZES } from "./HaniMediaImage";
 import {
   bulkDeleteMedia,
@@ -28,6 +29,7 @@ export function MediaLibraryEditor({
   const [items, setItems] = useState(initialItems);
   const [folders, setFolders] = useState(initialFolders);
   const [newFolder, setNewFolder] = useState("");
+  const [uploadTags, setUploadTags] = useState<string[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "uploaded" | "error">("idle");
   const [pending, startTransition] = useTransition();
@@ -133,7 +135,7 @@ export function MediaLibraryEditor({
   };
 
   return (
-    <div>
+    <div className="media-library-editor">
       {status === "uploaded" && (
         <div className="alert alert-success" role="status">
           {t("uploaded")}
@@ -152,7 +154,7 @@ export function MediaLibraryEditor({
         </div>
         <div className="card-body">
           <form
-            className="row g-3"
+            className="row g-3 media-upload-form"
             action={(formData) => upload(formData)}
           >
             <div className="col-lg-5">
@@ -181,11 +183,7 @@ export function MediaLibraryEditor({
                 maxLength={300}
               />
             </div>
-            <div className="col-lg-3 d-flex align-items-end">
-              <button className="btn btn-primary w-100" disabled={pending}>
-                {pending ? t("uploading") : t("upload")}
-              </button>
-            </div>
+
             <div className="col-lg-6">
               <label className="form-label" htmlFor="media-caption">
                 {t("caption")}
@@ -222,15 +220,19 @@ export function MediaLibraryEditor({
               </select>
             </div>
             <div className="col-lg-4">
-              <label className="form-label" htmlFor="media-tags">
-                {t("tags")}
-              </label>
-              <input
-                id="media-tags"
-                className="form-control"
-                name="tags"
-                placeholder={t("tagsHint")}
+              <label className="form-label">{t("tags")}</label>
+              <TagInput
+                tags={uploadTags}
+                onChange={setUploadTags}
+                placeholder={t("tagPlaceholder")}
+                addLabel={t("addTag")}
+                removeLabel={t("removeTag")}
               />
+              <p className="fs-12 text-gray-6 mb-0 mt-1">{t("tagsHint")}</p>
+              <input type="hidden" name="tags" value={uploadTags.join(",")} />
+            </div>
+            <div className="col-12 mt-2">
+              <h3 className="h6 mb-0">{t("focalTitle")}</h3>
             </div>
             <div className="col-lg-2">
               <label className="form-label" htmlFor="media-focal-x">
@@ -258,8 +260,20 @@ export function MediaLibraryEditor({
                 max={100}
               />
             </div>
+            <div className="col-12">
+              <p className="fs-12 text-gray-6 mb-2">{t("focalHint")}</p>
+            </div>
+            <div className="col-12 d-flex justify-content-end">
+              <button
+                type="submit"
+                className="btn btn-primary px-4 media-upload-submit"
+                disabled={pending}
+              >
+                {pending ? t("uploading") : t("upload")}
+              </button>
+            </div>
           </form>
-          <div className="d-flex gap-2 mt-3">
+          <div className="d-flex gap-2 mt-3 media-folder-row">
             <input
               className="form-control"
               value={newFolder}
@@ -278,12 +292,12 @@ export function MediaLibraryEditor({
         </div>
       </div>
 
-      <div className="d-flex align-items-center justify-content-between mb-3">
+      <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 media-library-heading">
         <h2 className="h4 mb-0">{t("libraryTitle")}</h2>
         <span className="text-gray-6 fs-14">{t("count", { count: total })}</span>
       </div>
 
-      <div className="d-flex align-items-center justify-content-between mb-3">
+      <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 media-selection-toolbar">
         <span className="text-gray-6 fs-14">
           {t("selected", { count: selectedIds.length })}
         </span>
@@ -305,8 +319,8 @@ export function MediaLibraryEditor({
         <div className="row g-4">
           {items.map((item) => (
             <div className="col-xl-4 col-md-6" key={item.id}>
-              <div className="card border-0 shadow-sm h-100">
-                <div className="position-absolute p-2" style={{ zIndex: 2 }}>
+              <div className="card border-0 shadow-sm h-100 position-relative media-card">
+                <div className="position-absolute p-2 media-select-box" style={{ zIndex: 2 }}>
                   <input
                     className="form-check-input"
                     type="checkbox"
@@ -324,7 +338,7 @@ export function MediaLibraryEditor({
                 <HaniMediaImage
                   media={item}
                   sizes={MEDIA_SIZES.card}
-                  className="card-img-top"
+                  className="card-img-top media-card-image"
                   style={{ aspectRatio: "4 / 3", objectFit: "cover" }}
                 />
                 <div className="card-body">
@@ -362,7 +376,7 @@ export function MediaLibraryEditor({
                       ×
                     </button>
                   </div>
-                  <label className="btn btn-light btn-sm mt-2 w-100">
+                  <label className="btn btn-light btn-sm mt-2 w-100 media-replace">
                     {t("replace")}
                     <input
                       type="file"

@@ -17,6 +17,11 @@ if (!fs.existsSync(imgBaseFile) || fs.readFileSync(imgBaseFile, "utf8") !== imgB
 
 const nextConfig: NextConfig = {
   basePath,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "20mb"
+    }
+  },
   async redirects() {
     return [
       { source: "/:locale(fa|en|ar)/tour/tour-grid", destination: "/:locale/tours", permanent: false },

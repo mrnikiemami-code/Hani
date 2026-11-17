@@ -448,16 +448,21 @@
     "folder": "Folder",
     "noFolder": "No folder",
     "tags": "Tags",
-    "tagsHint": "Comma separated",
-    "focalX": "Focal X",
-    "focalY": "Focal Y",
+    "tagsHint": "Type a tag and choose Add.",
+    "focalX": "Horizontal focal point (%)",
+    "focalY": "Vertical focal point (%)",
     "selected": "{count} selected",
     "bulkDelete": "Delete selected",
     "bulkDeleteConfirm": "Delete the selected media?",
     "select": "Select",
     "replace": "Replace image",
     "newFolder": "New folder name",
-    "addFolder": "Add folder"
+    "addFolder": "Add folder",
+    "focalHint": "The focal point tells cropping which part of the image is most important.",
+    "addTag": "Add",
+    "removeTag": "Remove tag",
+    "focalTitle": "Image focal point",
+    "tagPlaceholder": "New tag"
   },
   "adminContent": {
     "title": "Content management",
@@ -490,6 +495,16 @@
     "accessTitle": "Admin access required",
     "accessHint": "Sign in with an admin account to manage content.",
     "schedule": "Schedule publication",
-    "scheduleButton": "Schedule"
+    "scheduleButton": "Schedule",
+    "seoAuditTitle": "SEO audit",
+    "seoHint": "Suggestions based on title length, meta description, content structure, and the hero image.",
+    "seoTitleLength": "SEO title length: {count} characters (target 30–60).",
+    "seoDescriptionLength": "Meta description length: {count} characters (target 120–160).",
+    "seoSlug": "The page URL should use lowercase English letters, numbers, and hyphens only.",
+    "seoBodyLength": "Content length: {count} words (at least 300 for a comprehensive page).",
+    "seoHeadings": "H2/H3 heading count: {count} (at least 2).",
+    "seoImage": "Choose a hero image for social sharing and the content page.",
+    "seoExcerpt": "Add an excerpt for cards and previews.",
+    "seoAllGood": "All baseline SEO checks pass."
   }
 }

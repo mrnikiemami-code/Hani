@@ -24,8 +24,8 @@ export default async function AdminMediaPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminMedia" });
   const [result, folderResult] = await Promise.all([
-    sessionGet<MediaListResponse>("/internal/v1/media?page=1&pageSize=24"),
-    sessionGet<MediaFolder[]>("/internal/v1/media/folders")
+    sessionGet<MediaListResponse>("/internal/v1/content-media?page=1&pageSize=24"),
+    sessionGet<MediaFolder[]>("/internal/v1/content-media/folders")
   ]);
 
   if (result.status === 401 || result.status === 403) {

@@ -311,3 +311,4 @@
 | H91-MEDIA-05 | Folders/tags/usage/replace | ? Core | folders/tags/focal/replace/bulk; usage/audit APIs; quota deferred |
 | H91-MEDIA-06 | Content CMS and revisions | ? | rich text/revisions/schedule/admin/public/sitemap |
 | H91-MEDIA-07 | S3/R2/cloud storage | ? Phase 5 | provider adapter |
+| H91-MEDIA-08 | Admin media/content polish | ? | 20MB uploads, tag chips, focal labels, CKEditor GPL, SEO audit, mobile shell |

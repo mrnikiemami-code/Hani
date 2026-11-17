@@ -39,7 +39,7 @@ export async function AdminPageShell({
         <div className="container">
           <div className="row">
             <div className="col-xl-3 col-lg-4">
-              <div className="card user-sidebar agent-sidebar mb-4 mb-lg-0 theiaStickySidebar">
+              <div className="card user-sidebar agent-sidebar admin-sidebar mb-4 mb-lg-0 theiaStickySidebar">
                 <div className="card-header user-sidebar-header text-center bg-gray-transparent">
                   <div className="agent-profile d-inline-flex">
                     <ImageWithBasePath

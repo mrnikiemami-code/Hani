@@ -11,12 +11,14 @@
     "check:date-architecture": "node scripts/check-date-architecture.mjs"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^12.0.0",
     "@fortawesome/fontawesome-free": "^7.3.1",
     "@react-google-maps/api": "^2.20.8",
     "@reduxjs/toolkit": "^2.13.0",
     "@tabler/icons-webfont": "^3.49.0",
     "antd": "^6.7.0",
     "bootstrap": "^5.3.8",
+    "ckeditor5": "^49.1.0",
     "date-fns": "^4.4.0",
     "dayjs": "^1.11.23",
     "gsap": "^3.15.0",

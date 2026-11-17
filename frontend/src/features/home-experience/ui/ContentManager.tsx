@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import DefaultEditor from "react-simple-wysiwyg";
+import { RichTextEditor } from "./RichTextEditor";
+import { ContentSeoPanel } from "./ContentSeoPanel";
 import type { MediaAsset } from "../domain/media";
 import type {
   ContentEntry,
@@ -346,11 +347,10 @@ export function ContentManager({
                 <label className="form-label" htmlFor="content-body">
                   {t("body")}
                 </label>
-                <DefaultEditor
-                  id="content-body"
+                <RichTextEditor
                   value={form.body}
-                  onChange={(event) => set("body", event.target.value)}
-                  className="form-control"
+                  onChange={(value) => set("body", value)}
+                  ariaLabel={t("body")}
                 />
               </div>
               <div className="col-md-6">
@@ -413,6 +413,8 @@ export function ContentManager({
                 />
               </div>
             </div>
+
+            <ContentSeoPanel form={form} />
           </div>
         </div>
       </div>

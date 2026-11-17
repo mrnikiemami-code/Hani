@@ -294,3 +294,4 @@
 | `87cd00b` | Media phase 3 core: folders/tags/focal, replace, bulk delete, usage/audit APIs, admin controls |
 | `e42058b` | Content CMS core: entries/revisions, admin editor, public content page, draft/publish |
 | `2fc1b34` | Content CMS completion: rich text, revision restore, scheduling, usage sync, sitemap, media hero |
+| `pending` | Admin polish: 20MB uploads, chip tags, focal labels, CKEditor 5 GPL, SEO audit, mobile admin nav, content-media route |

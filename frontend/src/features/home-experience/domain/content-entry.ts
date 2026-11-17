@@ -1,5 +1,5 @@
 export type ContentEntryType = "Page" | "Banner" | "Article" | "Section";
-export type ContentEntryStatus = "Draft" | "Published" | "Archived";
+export type ContentEntryStatus = "Draft" | "Published" | "Archived" | "Scheduled";
 
 export type ContentEntry = {
   id: string;
