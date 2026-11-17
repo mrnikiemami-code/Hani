@@ -68,6 +68,18 @@ public sealed class MediaAsset : AggregateRoot<Guid>
     /// <summary>Optional photo credit.</summary>
     public string? Credit { get; private set; }
 
+    /// <summary>Optional library folder.</summary>
+    public Guid? FolderId { get; private set; }
+
+    /// <summary>Library tags.</summary>
+    public string[] Tags { get; private set; } = [];
+
+    /// <summary>Horizontal focal point percentage (0-100).</summary>
+    public int? FocalX { get; private set; }
+
+    /// <summary>Vertical focal point percentage (0-100).</summary>
+    public int? FocalY { get; private set; }
+
     /// <summary>Whether the media can be served publicly.</summary>
     public bool IsPublic { get; private set; }
 
@@ -149,6 +161,79 @@ public sealed class MediaAsset : AggregateRoot<Guid>
         Caption = string.IsNullOrWhiteSpace(caption) ? null : caption.Trim();
         Credit = string.IsNullOrWhiteSpace(credit) ? null : credit.Trim();
         UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Updates folder, tags, and focal point metadata.</summary>
+    public void UpdateLibrary(
+        Guid? folderId,
+        IReadOnlyCollection<string> tags,
+        int? focalX,
+        int? focalY)
+    {
+        FolderId = folderId;
+        Tags = tags
+            .Where(tag => !string.IsNullOrWhiteSpace(tag))
+            .Select(tag => tag.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Take(20)
+            .ToArray();
+        FocalX = focalX is >= 0 and <= 100 ? focalX : null;
+        FocalY = focalY is >= 0 and <= 100 ? focalY : null;
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Replaces the canonical image and clears old variants.</summary>
+    public void ReplaceImage(
+        string storageKey,
+        string contentType,
+        long sizeBytes,
+        int width,
+        int height,
+        string hash)
+    {
+        StorageKey = storageKey;
+        ContentType = contentType;
+        SizeBytes = sizeBytes;
+        Width = width;
+        Height = height;
+        Hash = hash;
+        _variants.Clear();
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
+}
+
+/// <summary>Media library folder.</summary>
+public sealed class MediaFolder : AggregateRoot<Guid>
+{
+    private MediaFolder()
+    {
+    }
+
+    private MediaFolder(Guid id, string name, Guid? parentId) : base(id)
+    {
+        Name = name.Trim();
+        ParentId = parentId;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Folder display name.</summary>
+    public string Name { get; private set; } = string.Empty;
+
+    /// <summary>Optional parent folder.</summary>
+    public Guid? ParentId { get; private set; }
+
+    /// <summary>Creation time.</summary>
+    public DateTimeOffset CreatedAt { get; private set; }
+
+    /// <summary>Creates a folder.</summary>
+    public static MediaFolder Create(Guid id, string name, Guid? parentId = null)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Folder name is required.", nameof(name));
+        }
+
+        return new MediaFolder(id, name, parentId);
     }
 }
 

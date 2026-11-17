@@ -47,6 +47,7 @@ internal sealed class MediaAssetService(
             processed.Hash,
             input.AltText);
         asset.UpdateMetadata(input.AltText, input.Caption, input.Credit);
+        asset.UpdateLibrary(input.FolderId, input.Tags ?? [], input.FocalX, input.FocalY);
 
         foreach (var variant in processed.Variants)
         {
@@ -93,6 +94,10 @@ internal sealed class MediaAssetService(
         string altText,
         string? caption,
         string? credit,
+        Guid? folderId,
+        IReadOnlyCollection<string>? tags,
+        int? focalX,
+        int? focalY,
         CancellationToken cancellationToken)
     {
         var asset = await repository.GetAsync(id, cancellationToken);
@@ -102,7 +107,66 @@ internal sealed class MediaAssetService(
         }
 
         asset.UpdateMetadata(altText, caption, credit);
+        asset.UpdateLibrary(folderId, tags ?? [], focalX, focalY);
         await repository.SaveChangesAsync(cancellationToken);
+        return Map(asset);
+    }
+
+    public async Task<MediaAssetDto?> ReplaceAsync(
+        Guid id,
+        Stream content,
+        MediaUploadInput input,
+        CancellationToken cancellationToken)
+    {
+        var asset = await repository.GetAsync(id, cancellationToken);
+        if (asset is null)
+        {
+            return null;
+        }
+
+        var processed = await processor.ProcessAsync(content, cancellationToken);
+        var existing = await repository.GetByHashAsync(processed.Hash, cancellationToken);
+        if (existing is not null && existing.Id != id)
+        {
+            throw new InvalidOperationException("An identical media asset already exists.");
+        }
+
+        var oldVariants = asset.Variants.ToArray();
+        var canonical = processed.Variants.Single(variant => variant.IsCanonical);
+        asset.ReplaceImage(
+            BuildKey(processed.Hash, canonical.Width),
+            input.ContentType,
+            input.SizeBytes,
+            processed.Width,
+            processed.Height,
+            processed.Hash);
+        asset.UpdateMetadata(input.AltText, input.Caption, input.Credit);
+        asset.UpdateLibrary(input.FolderId, input.Tags ?? [], input.FocalX, input.FocalY);
+
+        foreach (var variant in processed.Variants)
+        {
+            var key = BuildKey(processed.Hash, variant.Width);
+            await storage.SaveAsync(
+                key,
+                new MemoryStream(variant.Content),
+                "image/webp",
+                cancellationToken);
+            asset.AddVariant(
+                ids.NewId(),
+                key,
+                variant.Format,
+                variant.Width,
+                variant.Height,
+                variant.Content.LongLength,
+                variant.IsCanonical);
+        }
+
+        await repository.SaveChangesAsync(cancellationToken);
+        foreach (var old in oldVariants)
+        {
+            await storage.DeleteAsync(old.StorageKey, cancellationToken);
+        }
+
         return Map(asset);
     }
 
@@ -147,6 +211,10 @@ internal sealed class MediaAssetService(
             asset.AltText,
             asset.Caption,
             asset.Credit,
+            asset.FolderId,
+            asset.Tags,
+            asset.FocalX,
+            asset.FocalY,
             storage.PublicUrl(asset.StorageKey),
             asset.CreatedAt,
             variants);

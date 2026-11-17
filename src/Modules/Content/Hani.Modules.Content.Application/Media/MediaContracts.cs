@@ -82,7 +82,11 @@ public sealed record MediaUploadInput(
     long SizeBytes,
     string AltText,
     string? Caption,
-    string? Credit);
+    string? Credit,
+    Guid? FolderId = null,
+    IReadOnlyCollection<string>? Tags = null,
+    int? FocalX = null,
+    int? FocalY = null);
 
 /// <summary>Media read model.</summary>
 public sealed record MediaAssetDto(
@@ -95,6 +99,10 @@ public sealed record MediaAssetDto(
     string AltText,
     string? Caption,
     string? Credit,
+    Guid? FolderId,
+    IReadOnlyList<string> Tags,
+    int? FocalX,
+    int? FocalY,
     string Url,
     DateTimeOffset CreatedAt,
     IReadOnlyList<MediaVariantDto> Variants);
@@ -132,6 +140,17 @@ public interface IMediaAssetService
         string altText,
         string? caption,
         string? credit,
+        Guid? folderId,
+        IReadOnlyCollection<string>? tags,
+        int? focalX,
+        int? focalY,
+        CancellationToken cancellationToken);
+
+    /// <summary>Replaces the image binary while keeping the asset id.</summary>
+    Task<MediaAssetDto?> ReplaceAsync(
+        Guid id,
+        Stream content,
+        MediaUploadInput input,
         CancellationToken cancellationToken);
 
     /// <summary>Deletes a media asset and its stored variants.</summary>

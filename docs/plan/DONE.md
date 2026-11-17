@@ -290,3 +290,4 @@
 | `aef1c9e` | Admin homepage panel moved into template-derived agency shell |
 | `6dfddb6` | Content media library phase 1: WebP conversion, variants, local storage, admin media library |
 | `16ed7e8` | Content media library phase 2: responsive WebP delivery, OG/preload, CDN switch, image sitemap |
+| `pending` | Media Phase 3 backend foundation: folders, tags, focal metadata, replace endpoint |

@@ -1,7 +1,11 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
+using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Content.Application.Media;
+using Hani.Modules.Content.Domain.Media;
+using Hani.Modules.Content.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Api;
@@ -32,6 +36,20 @@ public static class MediaEndpoints
             .WithName("Internal.UpdateMedia")
             .Produces<MediaAssetDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        media.MapPost("/{id:guid}/replace", ReplaceAsync)
+            .WithName("Internal.ReplaceMedia")
+            .DisableAntiforgery()
+            .Produces<MediaAssetDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        media.MapGet("/folders", ListFoldersAsync)
+            .WithName("Internal.ListMediaFolders")
+            .Produces<IReadOnlyList<MediaFolderDto>>();
+
+        media.MapPost("/folders", CreateFolderAsync)
+            .WithName("Internal.CreateMediaFolder")
+            .Produces<MediaFolderDto>();
 
         media.MapDelete("/{id:guid}", DeleteAsync)
             .WithName("Internal.DeleteMedia")
@@ -67,6 +85,10 @@ public static class MediaEndpoints
         [FromForm] string altText,
         [FromForm] string? caption,
         [FromForm] string? credit,
+        [FromForm] Guid? folderId,
+        [FromForm] string? tags,
+        [FromForm] int? focalX,
+        [FromForm] int? focalY,
         HttpContext context,
         IMediaAssetService service,
         CancellationToken cancellationToken)
@@ -88,7 +110,11 @@ public static class MediaEndpoints
                     file.Length,
                     altText,
                     caption,
-                    credit),
+                    credit,
+                    folderId,
+                    ParseTags(tags),
+                    focalX,
+                    focalY),
                 cancellationToken);
 
             return Results.Ok(result);
@@ -123,12 +149,101 @@ public static class MediaEndpoints
             request.AltText,
             request.Caption,
             request.Credit,
+            request.FolderId,
+            ParseTags(request.Tags),
+            request.FocalX,
+            request.FocalY,
             cancellationToken);
 
         return result is null
             ? context.ToProblem(Error.NotFound("HANI-MEDIA-1005", "Media asset was not found."))
             : Results.Ok(result);
     }
+
+    private static async Task<IResult> ReplaceAsync(
+        Guid id,
+        IFormFile file,
+        [FromForm] string altText,
+        [FromForm] string? caption,
+        [FromForm] string? credit,
+        [FromForm] Guid? folderId,
+        [FromForm] string? tags,
+        [FromForm] int? focalX,
+        [FromForm] int? focalY,
+        HttpContext context,
+        IMediaAssetService service,
+        CancellationToken cancellationToken)
+    {
+        if (file.Length is <= 0 or > 15 * 1024 * 1024)
+        {
+            return context.ToProblem(
+                Error.Validation("HANI-MEDIA-1001", "Media size must be between 1 byte and 15 MB."));
+        }
+
+        await using var stream = file.OpenReadStream();
+        try
+        {
+            var result = await service.ReplaceAsync(
+                id,
+                stream,
+                new MediaUploadInput(
+                    file.FileName,
+                    file.ContentType,
+                    file.Length,
+                    altText,
+                    caption,
+                    credit,
+                    folderId,
+                    ParseTags(tags),
+                    focalX,
+                    focalY),
+                cancellationToken);
+
+            return result is null
+                ? context.ToProblem(Error.NotFound("HANI-MEDIA-1005", "Media asset was not found."))
+                : Results.Ok(result);
+        }
+        catch (ArgumentException exception)
+        {
+            return context.ToProblem(Error.Validation("HANI-MEDIA-1002", exception.Message));
+        }
+        catch (InvalidOperationException exception)
+        {
+            return context.ToProblem(Error.Validation("HANI-MEDIA-1003", exception.Message));
+        }
+    }
+
+    private static async Task<IResult> ListFoldersAsync(
+        ContentDbContext db,
+        CancellationToken cancellationToken)
+        => Results.Ok(await db.MediaFolders
+            .AsNoTracking()
+            .OrderBy(folder => folder.Name)
+            .Select(folder => new MediaFolderDto(folder.Id, folder.Name, folder.ParentId))
+            .ToArrayAsync(cancellationToken));
+
+    private static async Task<IResult> CreateFolderAsync(
+        CreateMediaFolderRequest request,
+        HttpContext context,
+        ContentDbContext db,
+        IIdGenerator ids,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            return context.ToProblem(Error.Validation("HANI-MEDIA-1006", "Folder name is required."));
+        }
+
+        var folder = MediaFolder.Create(ids.NewId(), request.Name, request.ParentId);
+        await db.MediaFolders.AddAsync(folder, cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
+        return Results.Ok(new MediaFolderDto(folder.Id, folder.Name, folder.ParentId));
+    }
+
+    private static string[]? ParseTags(string? tags) =>
+        string.IsNullOrWhiteSpace(tags)
+            ? null
+            : tags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
     private static async Task<IResult> DeleteAsync(
         Guid id,
@@ -154,4 +269,14 @@ public sealed record MediaListResponse(
 public sealed record UpdateMediaMetadataRequest(
     string AltText,
     string? Caption,
-    string? Credit);
+    string? Credit,
+    Guid? FolderId = null,
+    string? Tags = null,
+    int? FocalX = null,
+    int? FocalY = null);
+
+/// <summary>Media folder response/request.</summary>
+public sealed record MediaFolderDto(Guid Id, string Name, Guid? ParentId);
+
+/// <summary>Create media folder request.</summary>
+public sealed record CreateMediaFolderRequest(string Name, Guid? ParentId = null);

@@ -786,6 +786,18 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("credit");
 
+                    b.Property<int?>("FocalX")
+                        .HasColumnType("integer")
+                        .HasColumnName("focal_x");
+
+                    b.Property<int?>("FocalY")
+                        .HasColumnType("integer")
+                        .HasColumnName("focal_y");
+
+                    b.Property<Guid?>("FolderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("folder_id");
+
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -816,6 +828,11 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("storage_key");
 
+                    b.PrimitiveCollection<string[]>("Tags")
+                        .IsRequired()
+                        .HasColumnType("text[]")
+                        .HasColumnName("tags");
+
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -829,6 +846,31 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.HasIndex("Hash");
 
                     b.ToTable("media_assets", "content");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Media.MediaFolder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_id");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("media_folders", "content");
                 });
 
             modelBuilder.Entity("Hani.Modules.Content.Domain.Media.MediaVariant", b =>

@@ -20,6 +20,10 @@ internal sealed class MediaAssetConfiguration : IEntityTypeConfiguration<MediaAs
         builder.Property(item => item.AltText).HasColumnName("alt_text").HasMaxLength(300).IsRequired();
         builder.Property(item => item.Caption).HasColumnName("caption").HasMaxLength(500);
         builder.Property(item => item.Credit).HasColumnName("credit").HasMaxLength(200);
+        builder.Property(item => item.FolderId).HasColumnName("folder_id");
+        builder.Property(item => item.Tags).HasColumnName("tags").HasColumnType("text[]");
+        builder.Property(item => item.FocalX).HasColumnName("focal_x");
+        builder.Property(item => item.FocalY).HasColumnName("focal_y");
         builder.Property(item => item.IsPublic).HasColumnName("is_public");
         builder.Property(item => item.CreatedAt).HasColumnName("created_at");
         builder.Property(item => item.UpdatedAt).HasColumnName("updated_at");
@@ -28,6 +32,18 @@ internal sealed class MediaAssetConfiguration : IEntityTypeConfiguration<MediaAs
             .WithOne()
             .HasForeignKey(variant => variant.MediaAssetId)
             .OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
+internal sealed class MediaFolderConfiguration : IEntityTypeConfiguration<MediaFolder>
+{
+    public void Configure(EntityTypeBuilder<MediaFolder> builder)
+    {
+        builder.ToTable("media_folders");
+        builder.HasKey(item => item.Id);
+        builder.Property(item => item.Name).HasColumnName("name").HasMaxLength(120).IsRequired();
+        builder.Property(item => item.ParentId).HasColumnName("parent_id");
+        builder.Property(item => item.CreatedAt).HasColumnName("created_at");
     }
 }
 

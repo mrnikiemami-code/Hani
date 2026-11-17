@@ -29,6 +29,7 @@ public sealed class ContentDbContext(DbContextOptions<ContentDbContext> options)
     public DbSet<HomePageSettings> HomePageSettings => Set<HomePageSettings>();
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
     public DbSet<MediaVariant> MediaVariants => Set<MediaVariant>();
+    public DbSet<MediaFolder> MediaFolders => Set<MediaFolder>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
