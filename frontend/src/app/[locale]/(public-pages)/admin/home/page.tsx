@@ -6,6 +6,7 @@ import {
   type HomePageSettingsResponse
 } from "@/features/home-experience/domain/home-page-settings";
 import { HomeSettingsEditor } from "@/features/home-experience/ui/HomeSettingsEditor";
+import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 
 export async function generateMetadata({
   params
@@ -34,20 +35,31 @@ export default async function AdminHomePage({
 
   if (result.status === 401 || result.status === 403) {
     return (
-      <div className="content">
-        <div className="container py-5">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-4">
-              <h1 className="h3">{t("accessTitle")}</h1>
-              <p className="text-gray-6 mb-0">{t("accessHint")}</p>
-            </div>
+      <AdminPageShell
+        locale={locale}
+        title={t("accessTitle")}
+        subtitle={t("accessHint")}
+        active={t("navHomepage")}
+      >
+        <div className="card border-0 shadow-sm">
+          <div className="card-body p-4">
+            <p className="text-gray-6 mb-0">{t("accessHint")}</p>
           </div>
         </div>
-      </div>
+      </AdminPageShell>
     );
   }
 
   const settings = normalizeHomePageSettings(result.data?.settings ?? null);
 
-  return <HomeSettingsEditor locale={locale} initialSettings={settings} />;
+  return (
+    <AdminPageShell
+      locale={locale}
+      title={t("title")}
+      subtitle={t("subtitle")}
+      active={t("navHomepage")}
+    >
+      <HomeSettingsEditor locale={locale} initialSettings={settings} />
+    </AdminPageShell>
+  );
 }

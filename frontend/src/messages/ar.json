@@ -412,6 +412,12 @@
     "sectionTestimonials": "آراء المسافرين",
     "sectionWhyChoose": "لماذا هاني",
     "accessTitle": "مطلوب صلاحية مدير",
-    "accessHint": "سجل الدخول بحساب مدير لتعديل الصفحة الرئيسية."
+    "accessHint": "سجل الدخول بحساب مدير لتعديل الصفحة الرئيسية.",
+    "breadcrumbHome": "الرئيسية",
+    "breadcrumbAdmin": "الإدارة",
+    "adminName": "مدير هاني",
+    "adminRole": "إدارة الصفحة الرئيسية",
+    "navHomepage": "الصفحة الرئيسية",
+    "backToSite": "العودة إلى الموقع"
   }
 }

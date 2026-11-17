@@ -287,3 +287,4 @@
 | `c56fa80` | Home search polish: raised hero form, repaired demo labels, filtered test hotels, unique options test |
 | `5c79553` | Search UX: no scroll jump on dropdown open, menu below and scroll-stable |
 | `fb50871` | Homepage control panel: DB composition settings, admin editor, Lastsecond default order; agency advertising proposal |
+| `pending` | Admin homepage panel moved into template-derived agency shell |

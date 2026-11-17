@@ -305,6 +305,15 @@ test.describe("public smoke", () => {
     await expect(menu).toBeVisible();
   });
 
+  test("admin homepage uses the template shell and is access-guarded", async ({
+    page
+  }) => {
+    await page.goto("/fa/admin/home");
+    await expect(page.locator(".agent-sidebar")).toHaveCount(1);
+    await expect(page.locator(".breadcrumb-bar")).toHaveCount(1);
+    await expect(page.locator("main#main-content")).toHaveCount(1);
+  });
+
   test("date modal stays inside the mobile viewport", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/fa");

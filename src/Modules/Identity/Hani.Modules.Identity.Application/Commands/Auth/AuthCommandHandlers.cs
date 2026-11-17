@@ -70,10 +70,7 @@ internal sealed class RequestOtpCommandHandler(
         }
 
         var isNewUser = user is null;
-        if (isNewUser)
-        {
-            user = User.Create(ids, mobile, now: now);
-        }
+        user ??= User.Create(ids, mobile, now: now);
 
         var code = generator.Generate();
         var otp = user.AddOtp(

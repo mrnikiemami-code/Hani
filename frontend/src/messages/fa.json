@@ -412,6 +412,12 @@
     "sectionTestimonials": "نظرات مسافران",
     "sectionWhyChoose": "چرا هانی",
     "accessTitle": "دسترسی مدیر لازم است",
-    "accessHint": "برای ویرایش صفحه اول با حساب مدیر وارد شوید."
+    "accessHint": "برای ویرایش صفحه اول با حساب مدیر وارد شوید.",
+    "breadcrumbHome": "خانه",
+    "breadcrumbAdmin": "مدیریت",
+    "adminName": "مدیر هانی",
+    "adminRole": "مدیریت صفحه اول",
+    "navHomepage": "صفحه اول",
+    "backToSite": "بازگشت به سایت"
   }
 }

@@ -83,23 +83,17 @@ export function HomeSettingsEditor({
   };
 
   return (
-    <div className="content">
-      <div className="container py-5">
-        <div className="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-4">
-          <div>
-            <span className="badge badge-primary mb-2">{t("badge")}</span>
-            <h1 className="mb-2">{t("title")}</h1>
-            <p className="text-gray-6 mb-0">{t("subtitle")}</p>
-          </div>
-          <button
-            type="button"
-            className="btn btn-primary"
-            disabled={pending}
-            onClick={save}
-          >
-            {pending ? t("saving") : t("save")}
-          </button>
-        </div>
+    <div>
+      <div className="d-flex justify-content-end mb-3">
+        <button
+          type="button"
+          className="btn btn-primary"
+          disabled={pending}
+          onClick={save}
+        >
+          {pending ? t("saving") : t("save")}
+        </button>
+      </div>
 
         {status === "saved" && (
           <div className="alert alert-success" role="status">
@@ -256,7 +250,6 @@ export function HomeSettingsEditor({
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }

@@ -14,7 +14,8 @@ Decision record: [`../adr/0033-homepage-composition-agency-advertising.md`](../a
 - Public read: `GET /market/v1/home-settings?locale=fa`.
 - Admin read/write: `GET/PUT /internal/v1/home-settings` with the `Admin`
   policy.
-- Admin page: `/[locale]/admin/home`.
+- Admin page: `/[locale]/admin/home`, wrapped in a template-derived
+  agency-dashboard shell (sidebar, breadcrumb, cards, forms, tables).
 - Admin can set:
   - hero image URL;
   - section visibility;

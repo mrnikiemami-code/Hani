@@ -21,6 +21,9 @@ from the organic layer.
 ## Decision
 
 1. **Home composition is data, not code.**
+   The control panel uses the template's agency-dashboard shell (sidebar,
+   breadcrumb, cards, forms, tables); it does not introduce a second admin
+   design system.
    Store `home_page_settings` per `key` and `locale` as JSONB. The public home
    reads it; only `Admin` can write it. Missing settings fall back to a
    versioned Lastsecond-parity default in the frontend.

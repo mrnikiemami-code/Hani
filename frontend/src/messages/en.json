@@ -412,6 +412,12 @@
     "sectionTestimonials": "Traveler testimonials",
     "sectionWhyChoose": "Why Hani",
     "accessTitle": "Admin access required",
-    "accessHint": "Sign in with an admin account to edit the homepage."
+    "accessHint": "Sign in with an admin account to edit the homepage.",
+    "breadcrumbHome": "Home",
+    "breadcrumbAdmin": "Admin",
+    "adminName": "Hani Admin",
+    "adminRole": "Homepage operations",
+    "navHomepage": "Homepage",
+    "backToSite": "Back to site"
   }
 }
