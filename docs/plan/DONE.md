@@ -291,4 +291,4 @@
 | `6dfddb6` | Content media library phase 1: WebP conversion, variants, local storage, admin media library |
 | `16ed7e8` | Content media library phase 2: responsive WebP delivery, OG/preload, CDN switch, image sitemap |
 | `5831b64` | Media Phase 3 backend foundation: folders, tags, focal metadata, replace endpoint |
-| `pending` | Media phase 3 core: folders/tags/focal, replace, bulk delete, usage/audit APIs, admin controls |
+| `87cd00b` | Media phase 3 core: folders/tags/focal, replace, bulk delete, usage/audit APIs, admin controls |
