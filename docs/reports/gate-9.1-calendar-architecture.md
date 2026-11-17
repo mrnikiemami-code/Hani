@@ -12,7 +12,8 @@ The first calendar architecture slice is implemented.
 
 - Persian (`fa`) date pickers now render a centered Jalali modal with
   Persian digits and no prefilled date. The modal uses one title; field
-  labels are not repeated in the header.
+  labels are not repeated in the header. Departure/return labels appear only
+  after that side has a selected date.
 - English and Arabic pickers stay Gregorian.
 - Picker and display components exchange canonical Gregorian
   `YYYY-MM-DD` values.
@@ -52,8 +53,8 @@ Jalali conversion exists only in the UI adapter.
   without page-level calendar code.
 - Dashboard `PredefinedDateRanges` box with calendar-aware month presets.
 - Home hero dropdowns are self-contained, searchable, and progressively
-  reveal more options on scroll. They always open below the trigger and remain usable while the page
-  scrolls.
+  reveal more options on scroll. They are portaled to the body, always open below the trigger, and follow
+  the trigger on page scroll without clipping.
 - Public tour cards, home content, blog/content lists and details, agency
   profile, checkout, user/agent dashboards, invoices, payments, refunds,
   notifications and reviews now use the shared formatter.
@@ -97,6 +98,7 @@ Jalali conversion exists only in the UI adapter.
 - `docs/reports/gate-9.1-home-mobile-fa.png`
 - `docs/reports/gate-9.1-home-jalali-modal-fa.png`
 - `docs/reports/gate-9.1-home-jalali-modal-mobile-fa.png`
+- `docs/reports/gate-9.1-home-jalali-selected-fa.png`
 - `docs/reports/gate-9.1-home-search-dropdown-fa.png`
 
 ## Remaining

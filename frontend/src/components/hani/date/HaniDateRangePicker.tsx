@@ -183,7 +183,11 @@ export function HaniDateRangePicker({
   const fields = (
     <>
       <div className="form-item" onClick={openPicker}>
-        <label className="form-label fs-14 text-default mb-1">{fromLabel}</label>
+        {currentValue?.start ? (
+          <label className="form-label fs-14 text-default mb-1">
+            {fromLabel}
+          </label>
+        ) : null}
         <input
           type="text"
           className={className}
@@ -206,7 +210,11 @@ export function HaniDateRangePicker({
       </div>
 
       <div className="form-item" onClick={openPicker}>
-        <label className="form-label fs-14 text-default mb-1">{toLabel}</label>
+        {currentValue?.end ? (
+          <label className="form-label fs-14 text-default mb-1">
+            {toLabel}
+          </label>
+        ) : null}
         <input
           type="text"
           className={className}

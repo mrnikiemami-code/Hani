@@ -133,6 +133,7 @@ test.describe("public smoke", () => {
     const input = page.locator("#tour-departure");
     await expect(input).toHaveValue("");
     await expect(input).toHaveAttribute("data-iso-value", "");
+    await expect(page.locator('label[for="tour-departure"]')).toHaveCount(0);
 
     await input.click();
     const modal = page.locator(".hani-date-modal");
@@ -150,6 +151,7 @@ test.describe("public smoke", () => {
     await expect(input).toHaveValue(/\//);
     await expect(input).toHaveAttribute("data-iso-value", /^\d{4}-\d{2}-\d{2}$/);
     await expect(modal).toHaveCount(0);
+    await expect(page.locator('label[for="tour-departure"]')).toHaveCount(1);
   });
 
   test("fa range modal returns two Gregorian dates", async ({ page }) => {
@@ -159,6 +161,9 @@ test.describe("public smoke", () => {
 
     await expect(start).toHaveValue("");
     await expect(end).toHaveValue("");
+    const labelsBefore = await page
+      .locator("#tour-scope-panel-foreign .form-item label")
+      .count();
 
     await start.click();
     await expect(page.locator(".hani-date-modal")).toBeVisible();
@@ -173,6 +178,9 @@ test.describe("public smoke", () => {
     await expect(end).toHaveValue(/\//);
     await expect(start).toHaveAttribute("data-iso-start", /^\d{4}-\d{2}-\d{2}$/);
     await expect(end).toHaveAttribute("data-iso-end", /^\d{4}-\d{2}-\d{2}$/);
+    await expect(page.locator("#tour-scope-panel-foreign .form-item label")).toHaveCount(
+      labelsBefore + 2
+    );
   });
 
   test("en date modal stays Gregorian", async ({ page }) => {
@@ -213,14 +221,27 @@ test.describe("public smoke", () => {
     await page.goto("/fa");
     const origin = page.locator("#tour-scope-panel-foreign .booking-dropdown").first();
     await origin.locator("input.value-input").click();
-    const menu = origin.locator(".dropdown-menu.show");
+    const menu = page.locator(".hani-booking-dropdown-menu");
     await expect(menu).toBeVisible();
     const menuBox = await menu.boundingBox();
     const viewportHeight = await page.evaluate(() => window.innerHeight);
     expect(menuBox).not.toBeNull();
     expect(menuBox!.y).toBeGreaterThanOrEqual(0);
     expect(menuBox!.y + menuBox!.height).toBeLessThanOrEqual(viewportHeight);
+    const inputBox = await origin.locator("input.value-input").boundingBox();
+    expect(inputBox).not.toBeNull();
+    expect(menuBox!.y).toBeGreaterThanOrEqual(inputBox!.y + inputBox!.height);
     expect(await menu.getByRole("option").count()).toBeGreaterThan(1);
+
+    await page.evaluate(() => window.scrollBy(0, 80));
+    await expect(menu).toBeVisible();
+    const movedMenuBox = await menu.boundingBox();
+    const movedInputBox = await origin.locator("input.value-input").boundingBox();
+    expect(movedMenuBox).not.toBeNull();
+    expect(movedInputBox).not.toBeNull();
+    expect(movedMenuBox!.y).toBeGreaterThanOrEqual(
+      movedInputBox!.y + movedInputBox!.height
+    );
 
     const optionText = (await menu.getByRole("option").nth(1).innerText())
       .split("\n")[0]
@@ -232,7 +253,7 @@ test.describe("public smoke", () => {
       .locator("#tour-scope-panel-foreign .booking-dropdown")
       .nth(3);
     await hotel.locator("input.value-input").click();
-    await expect(hotel.locator(".dropdown-menu.show")).toBeVisible();
+    await expect(menu).toBeVisible();
   });
 
   test("date modal stays inside the mobile viewport", async ({ page }) => {

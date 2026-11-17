@@ -22,6 +22,7 @@ export type HaniDatePickerProps = {
   disablePast?: boolean;
   disabled?: boolean;
   ariaLabel?: string;
+  label?: string;
   min?: IsoDate;
   max?: IsoDate;
 };
@@ -41,6 +42,7 @@ export function HaniDatePicker({
   disablePast = false,
   disabled = false,
   ariaLabel,
+  label,
   min,
   max
 }: HaniDatePickerProps) {
@@ -116,6 +118,11 @@ export function HaniDatePicker({
 
   return (
     <>
+      {currentValue && label ? (
+        <label className="form-label fs-14 text-default mb-1" htmlFor={id}>
+          {label}
+        </label>
+      ) : null}
       <input
         id={id}
         type="text"

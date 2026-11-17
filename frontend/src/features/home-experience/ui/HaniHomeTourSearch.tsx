@@ -196,13 +196,11 @@ export function HaniHomeTourSearch() {
                 />
               </div>
               <div className="form-item min-w-0">
-                <label className="form-label fs-14 text-default mb-1" htmlFor="tour-departure">
-                  {t("departure")}
-                </label>
                 <HaniDatePicker
                   id="tour-departure"
                   className="form-control datetimepicker"
                   placeholder={t("departure")}
+                  label={t("departure")}
                   disablePast
                   ariaLabel={t("departure")}
                 />
