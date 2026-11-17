@@ -416,10 +416,11 @@
     "breadcrumbHome": "خانه",
     "breadcrumbAdmin": "مدیریت",
     "adminName": "مدیر هانی",
-    "adminRole": "?????? ?????",
+    "adminRole": "مدیریت محتوا",
     "navHomepage": "صفحه اول",
     "backToSite": "بازگشت به سایت",
-    "navMedia": "کتابخانه رسانه"
+    "navMedia": "کتابخانه رسانه",
+    "navContent": "مدیریت محتوا"
   },
   "adminMedia": {
     "title": "کتابخانه رسانه",
@@ -455,7 +456,38 @@
     "bulkDeleteConfirm": "موارد انتخاب‌شده حذف شوند؟",
     "select": "انتخاب",
     "replace": "جایگزینی تصویر",
-    "newFolder": "??? ???? ????",
-    "addFolder": "?????? ????"
+    "newFolder": "نام پوشه جدید",
+    "addFolder": "افزودن پوشه"
+  },
+  "adminContent": {
+    "title": "مدیریت محتوا",
+    "subtitle": "صفحات، بنرها، مقالات و بخش‌های سایت را مدیریت کنید.",
+    "navContent": "مدیریت محتوا",
+    "entries": "محتواها",
+    "new": "محتوای جدید",
+    "edit": "ویرایش محتوا",
+    "create": "ایجاد محتوا",
+    "type": "نوع",
+    "locale": "زبان",
+    "slug": "نشانی",
+    "titleField": "عنوان",
+    "excerpt": "خلاصه",
+    "body": "متن",
+    "heroMedia": "تصویر اصلی از کتابخانه",
+    "noHeroMedia": "بدون تصویر",
+    "heroUrl": "آدرس تصویر اصلی",
+    "seoTitle": "عنوان SEO",
+    "seoDescription": "توضیح SEO",
+    "save": "ذخیره",
+    "saving": "در حال ذخیره...",
+    "saved": "محتوا ذخیره شد.",
+    "error": "عملیات انجام نشد.",
+    "publish": "انتشار",
+    "unpublish": "لغو انتشار",
+    "delete": "حذف",
+    "deleteConfirm": "این محتوا حذف شود؟",
+    "empty": "هنوز محتوایی وجود ندارد.",
+    "accessTitle": "دسترسی مدیر لازم است",
+    "accessHint": "برای مدیریت محتوا با حساب مدیر وارد شوید."
   }
 }

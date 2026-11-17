@@ -419,7 +419,8 @@
     "adminRole": "Content operations",
     "navHomepage": "Homepage",
     "backToSite": "Back to site",
-    "navMedia": "Media library"
+    "navMedia": "Media library",
+    "navContent": "Content"
   },
   "adminMedia": {
     "title": "Media library",
@@ -457,5 +458,36 @@
     "replace": "Replace image",
     "newFolder": "New folder name",
     "addFolder": "Add folder"
+  },
+  "adminContent": {
+    "title": "Content management",
+    "subtitle": "Manage pages, banners, articles, and site sections.",
+    "navContent": "Content",
+    "entries": "Entries",
+    "new": "New content",
+    "edit": "Edit content",
+    "create": "Create content",
+    "type": "Type",
+    "locale": "Locale",
+    "slug": "Slug",
+    "titleField": "Title",
+    "excerpt": "Excerpt",
+    "body": "Body",
+    "heroMedia": "Hero from media library",
+    "noHeroMedia": "No image",
+    "heroUrl": "Hero image URL",
+    "seoTitle": "SEO title",
+    "seoDescription": "SEO description",
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Content saved.",
+    "error": "The operation failed.",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this content?",
+    "empty": "No content yet.",
+    "accessTitle": "Admin access required",
+    "accessHint": "Sign in with an admin account to manage content."
   }
 }

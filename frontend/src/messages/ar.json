@@ -416,10 +416,11 @@
     "breadcrumbHome": "الرئيسية",
     "breadcrumbAdmin": "الإدارة",
     "adminName": "مدير هاني",
-    "adminRole": "????? ???????",
+    "adminRole": "إدارة المحتوى",
     "navHomepage": "الصفحة الرئيسية",
     "backToSite": "العودة إلى الموقع",
-    "navMedia": "مكتبة الوسائط"
+    "navMedia": "مكتبة الوسائط",
+    "navContent": "إدارة المحتوى"
   },
   "adminMedia": {
     "title": "مكتبة الوسائط",
@@ -455,7 +456,38 @@
     "bulkDeleteConfirm": "حذف الوسائط المحددة؟",
     "select": "تحديد",
     "replace": "استبدال الصورة",
-    "newFolder": "??? ???? ????",
-    "addFolder": "????? ????"
+    "newFolder": "اسم مجلد جديد",
+    "addFolder": "إضافة مجلد"
+  },
+  "adminContent": {
+    "title": "إدارة المحتوى",
+    "subtitle": "إدارة الصفحات والبنرات والمقالات وأقسام الموقع.",
+    "navContent": "إدارة المحتوى",
+    "entries": "المحتوى",
+    "new": "محتوى جديد",
+    "edit": "تعديل المحتوى",
+    "create": "إنشاء محتوى",
+    "type": "النوع",
+    "locale": "اللغة",
+    "slug": "الرابط",
+    "titleField": "العنوان",
+    "excerpt": "المقتطف",
+    "body": "النص",
+    "heroMedia": "الصورة الرئيسية من المكتبة",
+    "noHeroMedia": "بدون صورة",
+    "heroUrl": "رابط الصورة الرئيسية",
+    "seoTitle": "عنوان SEO",
+    "seoDescription": "وصف SEO",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ...",
+    "saved": "تم حفظ المحتوى.",
+    "error": "فشلت العملية.",
+    "publish": "نشر",
+    "unpublish": "إلغاء النشر",
+    "delete": "حذف",
+    "deleteConfirm": "حذف هذا المحتوى؟",
+    "empty": "لا يوجد محتوى بعد.",
+    "accessTitle": "مطلوب صلاحية مدير",
+    "accessHint": "سجل الدخول بحساب مدير لإدارة المحتوى."
   }
 }

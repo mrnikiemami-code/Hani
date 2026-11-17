@@ -177,6 +177,147 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.ToTable("content_comments", "content");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Content.ContentEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("body");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Excerpt")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("excerpt");
+
+                    b.Property<string>("HeroImageUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("hero_image_url");
+
+                    b.Property<Guid?>("HeroMediaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("hero_media_id");
+
+                    b.Property<string>("Locale")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("locale");
+
+                    b.Property<DateTimeOffset?>("PublishedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published_at");
+
+                    b.Property<string>("SeoDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("seo_description");
+
+                    b.Property<string>("SeoTitle")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("seo_title");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("slug");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("title");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("type");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Type", "Locale", "Slug")
+                        .IsUnique();
+
+                    b.ToTable("content_entries", "content");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Content.ContentEntryRevision", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("body");
+
+                    b.Property<DateTimeOffset>("CapturedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("captured_at");
+
+                    b.Property<Guid>("ContentEntryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("content_entry_id");
+
+                    b.Property<string>("Excerpt")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("excerpt");
+
+                    b.Property<string>("HeroImageUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("hero_image_url");
+
+                    b.Property<Guid?>("HeroMediaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("hero_media_id");
+
+                    b.Property<string>("SeoDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("seo_description");
+
+                    b.Property<string>("SeoTitle")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("seo_title");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContentEntryId");
+
+                    b.ToTable("content_entry_revisions", "content");
+                });
+
             modelBuilder.Entity("Hani.Modules.Content.Domain.Content.Travelogue", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1138,6 +1279,15 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.Navigation("Translations");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Content.ContentEntryRevision", b =>
+                {
+                    b.HasOne("Hani.Modules.Content.Domain.Content.ContentEntry", null)
+                        .WithMany("Revisions")
+                        .HasForeignKey("ContentEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Hani.Modules.Content.Domain.Content.Travelogue", b =>
                 {
                     b.OwnsMany("Hani.Modules.Content.Domain.Content.TravelogueDestination", "Destinations", b1 =>
@@ -1408,6 +1558,11 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                         .HasForeignKey("MediaAssetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Content.ContentEntry", b =>
+                {
+                    b.Navigation("Revisions");
                 });
 
             modelBuilder.Entity("Hani.Modules.Content.Domain.Media.MediaAsset", b =>

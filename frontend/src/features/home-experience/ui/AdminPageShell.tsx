@@ -76,6 +76,17 @@ export async function AdminPageShell({
                       </Link>
                     </li>
                     <li>
+                      <Link
+                        href="/admin/content"
+                        className={`d-flex align-items-center ${
+                          active === t("navContent") ? "active" : ""
+                        }`}
+                      >
+                        <i className="isax isax-document-text me-2" />
+                        {t("navContent")}
+                      </Link>
+                    </li>
+                    <li>
                       <Link href="/" className="d-flex align-items-center">
                         <i className="isax isax-arrow-left-2 me-2" />
                         {t("backToSite")}
