@@ -462,7 +462,10 @@
     "addTag": "افزودن",
     "removeTag": "حذف تگ",
     "focalTitle": "نقطه تمرکز تصویر",
-    "tagPlaceholder": "تگ جدید"
+    "tagPlaceholder": "تگ جدید",
+    "addFolderTitle": "افزودن پوشه جدید",
+    "addFolderHint": "پوشه جدید در فهرست پوشه‌ها قرار می‌گیرد و بلافاصله قابل انتخاب است.",
+    "cancel": "انصراف"
   },
   "adminContent": {
     "title": "مدیریت محتوا",

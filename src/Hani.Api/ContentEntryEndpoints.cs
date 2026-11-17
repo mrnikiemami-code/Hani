@@ -50,7 +50,8 @@ public static class ContentEntryEndpoints
         var query = db.ContentEntries.AsNoTracking().AsQueryable();
         if (!string.IsNullOrWhiteSpace(locale))
         {
-            query = query.Where(item => item.Locale == locale.ToLowerInvariant());
+            var normalizedLocale = locale.ToLowerInvariant();
+            query = query.Where(item => item.Locale == normalizedLocale);
         }
         if (type is not null)
         {
@@ -301,10 +302,11 @@ public static class ContentEntryEndpoints
         CancellationToken cancellationToken)
     {
         var normalizedLocale = languages.Normalize(locale);
+        var normalizedSlug = slug.ToLowerInvariant();
         var entry = await db.ContentEntries
             .AsNoTracking()
             .FirstOrDefaultAsync(item =>
-                item.Slug == slug.ToLowerInvariant() &&
+                item.Slug == normalizedSlug &&
                 item.Locale == normalizedLocale &&
                 item.Type == (type ?? ContentEntryType.Page) &&
                 (item.Status == ContentStatus.Published ||

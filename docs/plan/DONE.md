@@ -295,3 +295,4 @@
 | `e42058b` | Content CMS core: entries/revisions, admin editor, public content page, draft/publish |
 | `2fc1b34` | Content CMS completion: rich text, revision restore, scheduling, usage sync, sitemap, media hero |
 | `7aeefbb` | Admin polish: 20MB uploads, chip tags, focal labels, CKEditor 5 GPL, SEO audit, mobile admin nav, content-media route |
+| `pending` | Media upload UX: aligned tag row, chips below, folder creation modal beside the folder select |

@@ -462,7 +462,10 @@
     "addTag": "إضافة",
     "removeTag": "حذف الوسم",
     "focalTitle": "نقطة تركيز الصورة",
-    "tagPlaceholder": "وسم جديد"
+    "tagPlaceholder": "وسم جديد",
+    "addFolderTitle": "إضافة مجلد جديد",
+    "addFolderHint": "يُضاف المجلد الجديد إلى القائمة ويمكن اختياره فورًا.",
+    "cancel": "إلغاء"
   },
   "adminContent": {
     "title": "إدارة المحتوى",

@@ -588,3 +588,4 @@
 - Content CMS core: ContentEntry + revisions, admin content editor, public content page, draft/publish/unpublish, hero media/SEO fields.
 - Content CMS completion: rich text, revision restore, scheduled publish, automatic media usage, public page/API, content sitemap, media-backed hero variants. Draft preview remains.
 - Admin production polish: 20MB Server Action upload limit, chip-based tags, explicit focal-point labels, CKEditor 5 GPL editor, live SEO audit, responsive media/content layouts, and a compact mobile admin nav. Content media API is namespaced under `/internal/v1/content-media` to avoid the identity moderation route collision.
+- Media upload UX: tag input and add button share one aligned row with chips below; folder creation moved next to the folder select and opens a centered modal, with the old bottom folder form removed.

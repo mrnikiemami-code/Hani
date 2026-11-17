@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import type { MediaAsset, MediaFolder } from "../domain/media";
@@ -29,10 +30,25 @@ export function MediaLibraryEditor({
   const [items, setItems] = useState(initialItems);
   const [folders, setFolders] = useState(initialFolders);
   const [newFolder, setNewFolder] = useState("");
+  const [folderModalOpen, setFolderModalOpen] = useState(false);
   const [uploadTags, setUploadTags] = useState<string[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "uploaded" | "error">("idle");
   const [pending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!folderModalOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFolderModalOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [folderModalOpen]);
 
   const upload = (formData: FormData) => {
     startTransition(async () => {
@@ -67,6 +83,7 @@ export function MediaLibraryEditor({
       if (result.ok && result.data) {
         setFolders((current) => [...current, result.data!]);
         setNewFolder("");
+        setFolderModalOpen(false);
       } else {
         setStatus("error");
       }
@@ -210,14 +227,26 @@ export function MediaLibraryEditor({
               <label className="form-label" htmlFor="media-folder">
                 {t("folder")}
               </label>
-              <select id="media-folder" className="form-select" name="folderId">
-                <option value="">{t("noFolder")}</option>
-                {folders.map((folder) => (
-                  <option key={folder.id} value={folder.id}>
-                    {folder.name}
-                  </option>
-                ))}
-              </select>
+              <div className="d-flex gap-2 media-folder-select-row">
+                <select id="media-folder" className="form-select" name="folderId">
+                  <option value="">{t("noFolder")}</option>
+                  {folders.map((folder) => (
+                    <option key={folder.id} value={folder.id}>
+                      {folder.name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="btn btn-light text-nowrap media-folder-add"
+                  onClick={() => {
+                    setStatus("idle");
+                    setFolderModalOpen(true);
+                  }}
+                >
+                  {t("addFolder")}
+                </button>
+              </div>
             </div>
             <div className="col-lg-4">
               <label className="form-label">{t("tags")}</label>
@@ -273,22 +302,6 @@ export function MediaLibraryEditor({
               </button>
             </div>
           </form>
-          <div className="d-flex gap-2 mt-3 media-folder-row">
-            <input
-              className="form-control"
-              value={newFolder}
-              placeholder={t("newFolder")}
-              onChange={(event) => setNewFolder(event.target.value)}
-            />
-            <button
-              type="button"
-              className="btn btn-light"
-              onClick={addFolder}
-              disabled={pending || !newFolder.trim()}
-            >
-              {t("addFolder")}
-            </button>
-          </div>
         </div>
       </div>
 
@@ -404,6 +417,87 @@ export function MediaLibraryEditor({
           ))}
         </div>
       )}
+
+      {folderModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <>
+            <div
+              className="modal fade show d-block"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="media-folder-modal-title"
+              tabIndex={-1}
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) {
+                  setFolderModalOpen(false);
+                }
+              }}
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="media-folder-modal-title">
+                      {t("addFolderTitle")}
+                    </h5>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      aria-label={t("cancel")}
+                      onClick={() => setFolderModalOpen(false)}
+                    />
+                  </div>
+                  <div className="modal-body">
+                    {status === "error" && (
+                      <div className="alert alert-danger" role="alert">
+                        {t("error")}
+                      </div>
+                    )}
+                    <label className="form-label" htmlFor="media-new-folder">
+                      {t("newFolder")}
+                    </label>
+                    <input
+                      id="media-new-folder"
+                      className="form-control"
+                      value={newFolder}
+                      autoFocus
+                      maxLength={120}
+                      onChange={(event) => setNewFolder(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" && newFolder.trim()) {
+                          event.preventDefault();
+                          addFolder();
+                        }
+                      }}
+                    />
+                    <p className="fs-12 text-gray-6 mb-0 mt-2">
+                      {t("addFolderHint")}
+                    </p>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-light"
+                      onClick={() => setFolderModalOpen(false)}
+                    >
+                      {t("cancel")}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={addFolder}
+                      disabled={pending || !newFolder.trim()}
+                    >
+                      {t("addFolder")}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="modal-backdrop fade show" />
+          </>,
+          document.body
+        )}
     </div>
   );
 }

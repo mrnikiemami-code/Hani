@@ -462,7 +462,10 @@
     "addTag": "Add",
     "removeTag": "Remove tag",
     "focalTitle": "Image focal point",
-    "tagPlaceholder": "New tag"
+    "tagPlaceholder": "New tag",
+    "addFolderTitle": "Add a new folder",
+    "addFolderHint": "The new folder is added to the list and can be selected immediately.",
+    "cancel": "Cancel"
   },
   "adminContent": {
     "title": "Content management",

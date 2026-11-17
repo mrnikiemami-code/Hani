@@ -337,26 +337,32 @@ html[lang="en"] body {
     display: block;
   }
 
-  .media-folder-row {
+  .media-folder-select-row {
     align-items: stretch;
+  }
+
+  .media-folder-select-row .form-select {
+    min-width: 0;
+  }
+
+  .media-folder-add {
+    flex: 0 0 auto;
   }
 
   @media (max-width: 767.98px) {
     .media-upload-form .form-control,
     .media-upload-form .form-select,
-    .media-upload-form .btn,
-    .media-folder-row .form-control,
-    .media-folder-row .btn {
+    .media-upload-form .btn {
       font-size: 16px;
       min-height: 44px;
     }
 
     .media-upload-submit,
-    .media-folder-row .btn {
+    .media-folder-add {
       width: 100%;
     }
 
-    .media-folder-row {
+    .media-folder-select-row {
       flex-direction: column;
     }
 
