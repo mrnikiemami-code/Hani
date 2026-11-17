@@ -1,6 +1,7 @@
 using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Content.Application.Media;
 using Hani.Modules.Content.Domain.Media;
+using Hani.Modules.Content.Infrastructure.Persistence;
 
 namespace Hani.Modules.Content.Infrastructure.Storage;
 
@@ -8,7 +9,8 @@ internal sealed class MediaAssetService(
     IMediaAssetRepository repository,
     IContentMediaStorage storage,
     IImageProcessor processor,
-    IIdGenerator ids) : IMediaAssetService
+    IIdGenerator ids,
+    ContentDbContext dbContext) : IMediaAssetService
 {
     private const long MaxUploadBytes = 15 * 1024 * 1024;
 
@@ -69,6 +71,8 @@ internal sealed class MediaAssetService(
 
         await repository.AddAsync(asset, cancellationToken);
         await repository.SaveChangesAsync(cancellationToken);
+        AddAudit(asset.Id, "Uploaded");
+        await repository.SaveChangesAsync(cancellationToken);
         return Map(asset);
     }
 
@@ -108,6 +112,7 @@ internal sealed class MediaAssetService(
 
         asset.UpdateMetadata(altText, caption, credit);
         asset.UpdateLibrary(folderId, tags ?? [], focalX, focalY);
+        AddAudit(asset.Id, "MetadataUpdated");
         await repository.SaveChangesAsync(cancellationToken);
         return Map(asset);
     }
@@ -161,6 +166,7 @@ internal sealed class MediaAssetService(
                 variant.IsCanonical);
         }
 
+        AddAudit(asset.Id, "Replaced", input.FileName);
         await repository.SaveChangesAsync(cancellationToken);
         foreach (var old in oldVariants)
         {
@@ -183,6 +189,7 @@ internal sealed class MediaAssetService(
             await storage.DeleteAsync(variant.StorageKey, cancellationToken);
         }
 
+        AddAudit(asset.Id, "Deleted", asset.OriginalFileName);
         repository.Remove(asset);
         await repository.SaveChangesAsync(cancellationToken);
         return true;
@@ -218,6 +225,15 @@ internal sealed class MediaAssetService(
             storage.PublicUrl(asset.StorageKey),
             asset.CreatedAt,
             variants);
+    }
+
+    private void AddAudit(Guid mediaAssetId, string action, string? detail = null)
+    {
+        dbContext.MediaAuditLogs.Add(new MediaAuditLog(
+            ids.NewId(),
+            mediaAssetId,
+            action,
+            detail));
     }
 
     private static string BuildKey(string hash, int width) =>

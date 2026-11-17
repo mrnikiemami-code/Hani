@@ -51,6 +51,28 @@ public static class MediaEndpoints
             .WithName("Internal.CreateMediaFolder")
             .Produces<MediaFolderDto>();
 
+        media.MapPost("/bulk-delete", BulkDeleteAsync)
+            .WithName("Internal.BulkDeleteMedia")
+            .Produces(StatusCodes.Status204NoContent);
+
+        media.MapGet("/{id:guid}/usage", ListUsageAsync)
+            .WithName("Internal.ListMediaUsage");
+
+        media.MapPost("/{id:guid}/usage", AddUsageAsync)
+            .WithName("Internal.AddMediaUsage");
+
+        media.MapDelete("/{id:guid}/usage/{usageId:guid}", RemoveUsageAsync)
+            .WithName("Internal.RemoveMediaUsage");
+
+        media.MapGet("/{id:guid}/audit", ListAuditAsync)
+            .WithName("Internal.ListMediaAudit");
+
+        media.MapPut("/folders/{id:guid}", RenameFolderAsync)
+            .WithName("Internal.RenameMediaFolder");
+
+        media.MapDelete("/folders/{id:guid}", DeleteFolderAsync)
+            .WithName("Internal.DeleteMediaFolder");
+
         media.MapDelete("/{id:guid}", DeleteAsync)
             .WithName("Internal.DeleteMedia")
             .Produces(StatusCodes.Status204NoContent);
@@ -240,6 +262,126 @@ public static class MediaEndpoints
         return Results.Ok(new MediaFolderDto(folder.Id, folder.Name, folder.ParentId));
     }
 
+    private static async Task<IResult> BulkDeleteAsync(
+        BulkDeleteMediaRequest request,
+        IMediaAssetService service,
+        CancellationToken cancellationToken)
+    {
+        foreach (var id in request.Ids.Distinct())
+        {
+            await service.DeleteAsync(id, cancellationToken);
+        }
+
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> ListUsageAsync(
+        Guid id,
+        ContentDbContext db,
+        CancellationToken cancellationToken)
+        => Results.Ok(await db.MediaUsages
+            .AsNoTracking()
+            .Where(usage => usage.MediaAssetId == id)
+            .OrderByDescending(usage => usage.CreatedAt)
+            .Select(usage => new MediaUsageDto(
+                usage.Id,
+                usage.MediaAssetId,
+                usage.EntityType,
+                usage.EntityId,
+                usage.Field,
+                usage.CreatedAt))
+            .ToArrayAsync(cancellationToken));
+
+    private static async Task<IResult> AddUsageAsync(
+        Guid id,
+        AddMediaUsageRequest request,
+        HttpContext context,
+        ContentDbContext db,
+        IIdGenerator ids,
+        CancellationToken cancellationToken)
+    {
+        if (await db.MediaAssets.AllAsync(asset => asset.Id != id, cancellationToken))
+        {
+            return context.ToProblem(Error.NotFound("HANI-MEDIA-1005", "Media asset was not found."));
+        }
+
+        var usage = new MediaUsage(ids.NewId(), id, request.EntityType, request.EntityId, request.Field);
+        await db.MediaUsages.AddAsync(usage, cancellationToken);
+        await db.MediaAuditLogs.AddAsync(new MediaAuditLog(
+            ids.NewId(), id, "UsageAdded", $"{request.EntityType}:{request.EntityId}:{request.Field}"), cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
+        return Results.Ok(new MediaUsageDto(
+            usage.Id, usage.MediaAssetId, usage.EntityType, usage.EntityId, usage.Field, usage.CreatedAt));
+    }
+
+    private static async Task<IResult> RemoveUsageAsync(
+        Guid id,
+        Guid usageId,
+        ContentDbContext db,
+        CancellationToken cancellationToken)
+    {
+        var usage = await db.MediaUsages.FirstOrDefaultAsync(
+            item => item.Id == usageId && item.MediaAssetId == id,
+            cancellationToken);
+        if (usage is null)
+        {
+            return Results.NoContent();
+        }
+
+        db.MediaUsages.Remove(usage);
+        await db.SaveChangesAsync(cancellationToken);
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> ListAuditAsync(
+        Guid id,
+        ContentDbContext db,
+        CancellationToken cancellationToken)
+        => Results.Ok(await db.MediaAuditLogs
+            .AsNoTracking()
+            .Where(item => item.MediaAssetId == id)
+            .OrderByDescending(item => item.CreatedAt)
+            .Take(100)
+            .Select(item => new MediaAuditDto(
+                item.Id, item.MediaAssetId, item.Action, item.Detail, item.CreatedAt))
+            .ToArrayAsync(cancellationToken));
+
+    private static async Task<IResult> RenameFolderAsync(
+        Guid id,
+        RenameMediaFolderRequest request,
+        ContentDbContext db,
+        CancellationToken cancellationToken)
+    {
+        var folder = await db.MediaFolders.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (folder is null)
+        {
+            return Results.NotFound();
+        }
+
+        folder.Rename(request.Name);
+        await db.SaveChangesAsync(cancellationToken);
+        return Results.Ok(new MediaFolderDto(folder.Id, folder.Name, folder.ParentId));
+    }
+
+    private static async Task<IResult> DeleteFolderAsync(
+        Guid id,
+        ContentDbContext db,
+        CancellationToken cancellationToken)
+    {
+        var folder = await db.MediaFolders.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (folder is null)
+        {
+            return Results.NoContent();
+        }
+
+        await db.MediaAssets
+            .Where(asset => asset.FolderId == id)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(asset => asset.FolderId, (Guid?)null), cancellationToken);
+        db.MediaFolders.Remove(folder);
+        await db.SaveChangesAsync(cancellationToken);
+        return Results.NoContent();
+    }
+
     private static string[]? ParseTags(string? tags) =>
         string.IsNullOrWhiteSpace(tags)
             ? null
@@ -280,3 +422,32 @@ public sealed record MediaFolderDto(Guid Id, string Name, Guid? ParentId);
 
 /// <summary>Create media folder request.</summary>
 public sealed record CreateMediaFolderRequest(string Name, Guid? ParentId = null);
+
+/// <summary>Rename media folder request.</summary>
+public sealed record RenameMediaFolderRequest(string Name);
+
+/// <summary>Bulk delete request.</summary>
+public sealed record BulkDeleteMediaRequest(IReadOnlyList<Guid> Ids);
+
+/// <summary>Media usage response.</summary>
+public sealed record MediaUsageDto(
+    Guid Id,
+    Guid MediaAssetId,
+    string EntityType,
+    string EntityId,
+    string Field,
+    DateTimeOffset CreatedAt);
+
+/// <summary>Add media usage request.</summary>
+public sealed record AddMediaUsageRequest(
+    string EntityType,
+    string EntityId,
+    string Field);
+
+/// <summary>Media audit entry.</summary>
+public sealed record MediaAuditDto(
+    Guid Id,
+    Guid MediaAssetId,
+    string Action,
+    string? Detail,
+    DateTimeOffset CreatedAt);

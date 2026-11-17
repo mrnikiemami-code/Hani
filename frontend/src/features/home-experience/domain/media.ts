@@ -17,9 +17,19 @@ export type MediaAsset = {
   altText: string;
   caption: string | null;
   credit: string | null;
+  folderId: string | null;
+  tags: string[];
+  focalX: number | null;
+  focalY: number | null;
   url: string;
   createdAt: string;
   variants: MediaVariant[];
+};
+
+export type MediaFolder = {
+  id: string;
+  name: string;
+  parentId: string | null;
 };
 
 export type MediaListResponse = {

@@ -443,6 +443,19 @@
     "delete": "حذف",
     "deleteConfirm": "حذف هذه الصورة؟",
     "accessTitle": "مطلوب صلاحية مدير",
-    "accessHint": "سجل الدخول بحساب مدير لإدارة الوسائط."
+    "accessHint": "سجل الدخول بحساب مدير لإدارة الوسائط.",
+    "folder": "المجلد",
+    "noFolder": "بدون مجلد",
+    "tags": "الوسوم",
+    "tagsHint": "مفصولة بفواصل",
+    "focalX": "تركيز X",
+    "focalY": "تركيز Y",
+    "selected": "{count} محدد",
+    "bulkDelete": "حذف المحدد",
+    "bulkDeleteConfirm": "حذف الوسائط المحددة؟",
+    "select": "تحديد",
+    "replace": "استبدال الصورة",
+    "newFolder": "??? ???? ????",
+    "addFolder": "????? ????"
   }
 }

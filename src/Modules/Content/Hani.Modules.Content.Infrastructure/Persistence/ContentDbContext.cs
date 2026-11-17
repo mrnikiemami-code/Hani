@@ -30,6 +30,8 @@ public sealed class ContentDbContext(DbContextOptions<ContentDbContext> options)
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
     public DbSet<MediaVariant> MediaVariants => Set<MediaVariant>();
     public DbSet<MediaFolder> MediaFolders => Set<MediaFolder>();
+    public DbSet<MediaUsage> MediaUsages => Set<MediaUsage>();
+    public DbSet<MediaAuditLog> MediaAuditLogs => Set<MediaAuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -47,6 +47,35 @@ internal sealed class MediaFolderConfiguration : IEntityTypeConfiguration<MediaF
     }
 }
 
+internal sealed class MediaUsageConfiguration : IEntityTypeConfiguration<MediaUsage>
+{
+    public void Configure(EntityTypeBuilder<MediaUsage> builder)
+    {
+        builder.ToTable("media_usages");
+        builder.HasKey(item => item.Id);
+        builder.Property(item => item.MediaAssetId).HasColumnName("media_asset_id");
+        builder.Property(item => item.EntityType).HasColumnName("entity_type").HasMaxLength(100).IsRequired();
+        builder.Property(item => item.EntityId).HasColumnName("entity_id").HasMaxLength(200).IsRequired();
+        builder.Property(item => item.Field).HasColumnName("field").HasMaxLength(100).IsRequired();
+        builder.Property(item => item.CreatedAt).HasColumnName("created_at");
+        builder.HasIndex(item => new { item.MediaAssetId, item.EntityType, item.EntityId });
+    }
+}
+
+internal sealed class MediaAuditLogConfiguration : IEntityTypeConfiguration<MediaAuditLog>
+{
+    public void Configure(EntityTypeBuilder<MediaAuditLog> builder)
+    {
+        builder.ToTable("media_audit_logs");
+        builder.HasKey(item => item.Id);
+        builder.Property(item => item.MediaAssetId).HasColumnName("media_asset_id");
+        builder.Property(item => item.Action).HasColumnName("action").HasMaxLength(100).IsRequired();
+        builder.Property(item => item.Detail).HasColumnName("detail").HasMaxLength(2000);
+        builder.Property(item => item.CreatedAt).HasColumnName("created_at");
+        builder.HasIndex(item => new { item.MediaAssetId, item.CreatedAt });
+    }
+}
+
 internal sealed class MediaVariantConfiguration : IEntityTypeConfiguration<MediaVariant>
 {
     public void Configure(EntityTypeBuilder<MediaVariant> builder)

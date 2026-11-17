@@ -52,7 +52,13 @@ export function HaniMediaImage({
         decoding="async"
         fetchPriority={fetchPriority}
         className={className}
-        style={style}
+        style={{
+          ...style,
+          objectPosition:
+            media.focalX != null && media.focalY != null
+              ? `${media.focalX}% ${media.focalY}%`
+              : style?.objectPosition
+        }}
         data-media-id={media.id}
       />
     </picture>

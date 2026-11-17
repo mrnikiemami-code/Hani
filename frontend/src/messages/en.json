@@ -443,6 +443,19 @@
     "delete": "Delete",
     "deleteConfirm": "Delete this image?",
     "accessTitle": "Admin access required",
-    "accessHint": "Sign in with an admin account to manage media."
+    "accessHint": "Sign in with an admin account to manage media.",
+    "folder": "Folder",
+    "noFolder": "No folder",
+    "tags": "Tags",
+    "tagsHint": "Comma separated",
+    "focalX": "Focal X",
+    "focalY": "Focal Y",
+    "selected": "{count} selected",
+    "bulkDelete": "Delete selected",
+    "bulkDeleteConfirm": "Delete the selected media?",
+    "select": "Select",
+    "replace": "Replace image",
+    "newFolder": "New folder name",
+    "addFolder": "Add folder"
   }
 }

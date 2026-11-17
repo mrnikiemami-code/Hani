@@ -584,3 +584,4 @@
 - Content Media Library phase 1: WebP conversion, variants, content-addressed local storage, admin media library, alt/caption/credit. Phases 2?5 planned (responsive SEO delivery, folders/usage, CMS, cloud storage).
 - Content Media Library phase 2: responsive `<picture>`/WebP srcset, OG from hero, hero preload, CDN base switch, home image sitemap; 19 Playwright tests green.
 - Media Phase 3 backend foundation: folders, tags, focal point, replace-image endpoint. Phase 3 admin UI, usage/audit/bulk, Phase 4 CMS and Phase 5 cloud storage remain.
+- Media Phase 3 core: folders/tags/focal, replace, bulk delete, usage/audit APIs and admin controls. Usage/audit panels, crop variants, and per-agency quota remain.

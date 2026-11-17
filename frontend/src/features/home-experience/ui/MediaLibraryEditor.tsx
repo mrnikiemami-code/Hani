@@ -3,24 +3,32 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import type { MediaAsset } from "../domain/media";
+import type { MediaAsset, MediaFolder } from "../domain/media";
 import { HaniMediaImage, MEDIA_SIZES } from "./HaniMediaImage";
 import {
+  bulkDeleteMedia,
+  createMediaFolder,
   deleteMedia,
+  replaceMedia,
   updateMediaAlt,
   uploadMedia
 } from "../application/media-actions";
 
 export function MediaLibraryEditor({
   initialItems,
+  initialFolders,
   total
 }: {
   initialItems: MediaAsset[];
+  initialFolders: MediaFolder[];
   total: number;
 }) {
   const t = useTranslations("adminMedia");
   const router = useRouter();
   const [items, setItems] = useState(initialItems);
+  const [folders, setFolders] = useState(initialFolders);
+  const [newFolder, setNewFolder] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "uploaded" | "error">("idle");
   const [pending, startTransition] = useTransition();
 
@@ -43,6 +51,65 @@ export function MediaLibraryEditor({
       if (result.ok && result.data) {
         setItems((current) =>
           current.map((item) => (item.id === id ? result.data! : item))
+        );
+      } else {
+        setStatus("error");
+      }
+    });
+  };
+
+  const addFolder = () => {
+    if (!newFolder.trim()) return;
+    startTransition(async () => {
+      const result = await createMediaFolder(newFolder.trim());
+      if (result.ok && result.data) {
+        setFolders((current) => [...current, result.data!]);
+        setNewFolder("");
+      } else {
+        setStatus("error");
+      }
+    });
+  };
+
+  const removeSelected = () => {
+    if (selectedIds.length === 0 || !window.confirm(t("bulkDeleteConfirm"))) {
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await bulkDeleteMedia(selectedIds);
+      if (result.ok) {
+        setItems((current) =>
+          current.filter((item) => !selectedIds.includes(item.id))
+        );
+        setSelectedIds([]);
+      } else {
+        setStatus("error");
+      }
+    });
+  };
+
+  const replace = (id: string, file: File) => {
+    const item = items.find((current) => current.id === id);
+    if (!item) return;
+
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+    formData.append("altText", item.altText);
+    formData.append("caption", item.caption ?? "");
+    formData.append("credit", item.credit ?? "");
+    formData.append("folderId", item.folderId ?? "");
+    formData.append("tags", item.tags.join(","));
+    formData.append("focalX", String(item.focalX ?? ""));
+    formData.append("focalY", String(item.focalY ?? ""));
+
+    startTransition(async () => {
+      const result = await replaceMedia(id, formData);
+      if (result.ok && result.data) {
+        setItems((current) =>
+          current.map((currentItem) =>
+            currentItem.id === id ? result.data! : currentItem
+          )
         );
       } else {
         setStatus("error");
@@ -141,13 +208,93 @@ export function MediaLibraryEditor({
                 maxLength={200}
               />
             </div>
+            <div className="col-lg-4">
+              <label className="form-label" htmlFor="media-folder">
+                {t("folder")}
+              </label>
+              <select id="media-folder" className="form-select" name="folderId">
+                <option value="">{t("noFolder")}</option>
+                {folders.map((folder) => (
+                  <option key={folder.id} value={folder.id}>
+                    {folder.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="col-lg-4">
+              <label className="form-label" htmlFor="media-tags">
+                {t("tags")}
+              </label>
+              <input
+                id="media-tags"
+                className="form-control"
+                name="tags"
+                placeholder={t("tagsHint")}
+              />
+            </div>
+            <div className="col-lg-2">
+              <label className="form-label" htmlFor="media-focal-x">
+                {t("focalX")}
+              </label>
+              <input
+                id="media-focal-x"
+                className="form-control"
+                name="focalX"
+                type="number"
+                min={0}
+                max={100}
+              />
+            </div>
+            <div className="col-lg-2">
+              <label className="form-label" htmlFor="media-focal-y">
+                {t("focalY")}
+              </label>
+              <input
+                id="media-focal-y"
+                className="form-control"
+                name="focalY"
+                type="number"
+                min={0}
+                max={100}
+              />
+            </div>
           </form>
+          <div className="d-flex gap-2 mt-3">
+            <input
+              className="form-control"
+              value={newFolder}
+              placeholder={t("newFolder")}
+              onChange={(event) => setNewFolder(event.target.value)}
+            />
+            <button
+              type="button"
+              className="btn btn-light"
+              onClick={addFolder}
+              disabled={pending || !newFolder.trim()}
+            >
+              {t("addFolder")}
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="d-flex align-items-center justify-content-between mb-3">
         <h2 className="h4 mb-0">{t("libraryTitle")}</h2>
         <span className="text-gray-6 fs-14">{t("count", { count: total })}</span>
+      </div>
+
+      <div className="d-flex align-items-center justify-content-between mb-3">
+        <span className="text-gray-6 fs-14">
+          {t("selected", { count: selectedIds.length })}
+        </span>
+        <button
+          type="button"
+          className="btn btn-light btn-sm"
+          disabled={selectedIds.length === 0 || pending}
+          onClick={removeSelected}
+        >
+          {t("bulkDelete")}
+        </button>
       </div>
 
       {items.length === 0 ? (
@@ -159,6 +306,21 @@ export function MediaLibraryEditor({
           {items.map((item) => (
             <div className="col-xl-4 col-md-6" key={item.id}>
               <div className="card border-0 shadow-sm h-100">
+                <div className="position-absolute p-2" style={{ zIndex: 2 }}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    aria-label={t("select")}
+                    checked={selectedIds.includes(item.id)}
+                    onChange={(event) => {
+                      setSelectedIds((current) =>
+                        event.target.checked
+                          ? [...current, item.id]
+                          : current.filter((id) => id !== item.id)
+                      );
+                    }}
+                  />
+                </div>
                 <HaniMediaImage
                   media={item}
                   sizes={MEDIA_SIZES.card}
@@ -200,6 +362,19 @@ export function MediaLibraryEditor({
                       ×
                     </button>
                   </div>
+                  <label className="btn btn-light btn-sm mt-2 w-100">
+                    {t("replace")}
+                    <input
+                      type="file"
+                      className="d-none"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) replace(item.id, file);
+                        event.target.value = "";
+                      }}
+                    />
+                  </label>
                   <a
                     className="fs-12 d-inline-block mt-2 text-truncate w-100"
                     href={item.url}

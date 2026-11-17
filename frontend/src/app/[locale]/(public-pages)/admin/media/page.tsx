@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { sessionGet } from "@/lib/hani/server-api";
-import type { MediaListResponse } from "@/features/home-experience/domain/media";
+import type { MediaFolder, MediaListResponse } from "@/features/home-experience/domain/media";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 import { MediaLibraryEditor } from "@/features/home-experience/ui/MediaLibraryEditor";
 
@@ -23,9 +23,10 @@ export default async function AdminMediaPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminMedia" });
-  const result = await sessionGet<MediaListResponse>(
-    "/internal/v1/media?page=1&pageSize=24"
-  );
+  const [result, folderResult] = await Promise.all([
+    sessionGet<MediaListResponse>("/internal/v1/media?page=1&pageSize=24"),
+    sessionGet<MediaFolder[]>("/internal/v1/media/folders")
+  ]);
 
   if (result.status === 401 || result.status === 403) {
     return (
@@ -51,6 +52,7 @@ export default async function AdminMediaPage({
     >
       <MediaLibraryEditor
         initialItems={result.data?.items ?? []}
+        initialFolders={folderResult.data ?? []}
         total={result.data?.total ?? 0}
       />
     </AdminPageShell>

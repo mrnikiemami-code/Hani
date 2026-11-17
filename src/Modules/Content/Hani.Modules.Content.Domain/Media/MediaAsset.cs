@@ -225,6 +225,17 @@ public sealed class MediaFolder : AggregateRoot<Guid>
     /// <summary>Creation time.</summary>
     public DateTimeOffset CreatedAt { get; private set; }
 
+    /// <summary>Renames the folder.</summary>
+    public void Rename(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Folder name is required.", nameof(name));
+        }
+
+        Name = name.Trim();
+    }
+
     /// <summary>Creates a folder.</summary>
     public static MediaFolder Create(Guid id, string name, Guid? parentId = null)
     {
@@ -235,6 +246,81 @@ public sealed class MediaFolder : AggregateRoot<Guid>
 
         return new MediaFolder(id, name, parentId);
     }
+}
+
+/// <summary>
+/// Usage link between a media asset and a content/record field.
+/// </summary>
+public sealed class MediaUsage : AggregateRoot<Guid>
+{
+    private MediaUsage()
+    {
+    }
+
+    /// <summary>Creates a usage link.</summary>
+    public MediaUsage(
+        Guid id,
+        Guid mediaAssetId,
+        string entityType,
+        string entityId,
+        string field) : base(id)
+    {
+        MediaAssetId = mediaAssetId;
+        EntityType = entityType.Trim();
+        EntityId = entityId.Trim();
+        Field = field.Trim();
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Media asset id.</summary>
+    public Guid MediaAssetId { get; private set; }
+
+    /// <summary>Content type such as HomePage, TourProduct, BlogPost.</summary>
+    public string EntityType { get; private set; } = string.Empty;
+
+    /// <summary>Content entity id.</summary>
+    public string EntityId { get; private set; } = string.Empty;
+
+    /// <summary>Field name such as heroImage or coverImage.</summary>
+    public string Field { get; private set; } = string.Empty;
+
+    /// <summary>Creation time.</summary>
+    public DateTimeOffset CreatedAt { get; private set; }
+}
+
+/// <summary>
+/// Audit entry for a media library mutation.
+/// </summary>
+public sealed class MediaAuditLog : AggregateRoot<Guid>
+{
+    private MediaAuditLog()
+    {
+    }
+
+    /// <summary>Creates an audit entry.</summary>
+    public MediaAuditLog(
+        Guid id,
+        Guid mediaAssetId,
+        string action,
+        string? detail = null) : base(id)
+    {
+        MediaAssetId = mediaAssetId;
+        Action = action.Trim();
+        Detail = detail;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Media asset id.</summary>
+    public Guid MediaAssetId { get; private set; }
+
+    /// <summary>Action name.</summary>
+    public string Action { get; private set; } = string.Empty;
+
+    /// <summary>Optional detail.</summary>
+    public string? Detail { get; private set; }
+
+    /// <summary>Creation time.</summary>
+    public DateTimeOffset CreatedAt { get; private set; }
 }
 
 /// <summary>

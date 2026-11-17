@@ -848,6 +848,38 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.ToTable("media_assets", "content");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Media.MediaAuditLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("action");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Detail")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("detail");
+
+                    b.Property<Guid>("MediaAssetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("media_asset_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MediaAssetId", "CreatedAt");
+
+                    b.ToTable("media_audit_logs", "content");
+                });
+
             modelBuilder.Entity("Hani.Modules.Content.Domain.Media.MediaFolder", b =>
                 {
                     b.Property<Guid>("Id")
@@ -871,6 +903,45 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("media_folders", "content");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Media.MediaUsage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("EntityId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("entity_id");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("entity_type");
+
+                    b.Property<string>("Field")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("field");
+
+                    b.Property<Guid>("MediaAssetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("media_asset_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MediaAssetId", "EntityType", "EntityId");
+
+                    b.ToTable("media_usages", "content");
                 });
 
             modelBuilder.Entity("Hani.Modules.Content.Domain.Media.MediaVariant", b =>

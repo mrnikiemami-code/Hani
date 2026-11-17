@@ -308,6 +308,6 @@
 | H91-MEDIA-02 | Media DB and storage abstraction | ? | metadata + local storage |
 | H91-MEDIA-03 | Admin media library | ? | upload, alt, list, delete |
 | H91-MEDIA-04 | Responsive SEO delivery | ? | srcset/picture/LCP/OG/CDN/sitemap |
-| H91-MEDIA-05 | Folders/tags/usage/replace | ? Partial | folders/tags/focal/replace backend; UI/usage/audit/bulk remaining |
+| H91-MEDIA-05 | Folders/tags/usage/replace | ? Core | folders/tags/focal/replace/bulk; usage/audit APIs; quota deferred |
 | H91-MEDIA-06 | Content CMS and revisions | ? Phase 4 | pages/banners/articles |
 | H91-MEDIA-07 | S3/R2/cloud storage | ? Phase 5 | provider adapter |
