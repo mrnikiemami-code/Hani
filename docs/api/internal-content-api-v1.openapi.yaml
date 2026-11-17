@@ -6,6 +6,20 @@ info:
 servers:
   - url: https://api.hani.ir
 paths:
+  /internal/v1/content-entries:
+    get:
+      tags: [Content]
+      summary: List admin content entries with search, filters, and pagination
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 10 } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: type, in: query, schema: { type: string, enum: [Page, Banner, Article, Section] } }
+        - { name: status, in: query, schema: { type: string, enum: [Draft, Published, Archived, Scheduled] } }
+      responses:
+        '200': { description: Paged content entry list }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
   /internal/v1/content-entries/{id}:
     get:
       tags: [Content]

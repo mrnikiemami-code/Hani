@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import type { MediaFolder } from "../domain/media";
 import { createMediaFolder } from "../application/media-actions";
+import { useMessageBox } from "@/components/hani/message-provider";
 
 /**
  * Folder select with an inline add-folder action and a centered modal.
@@ -25,9 +26,9 @@ export function MediaFolderSelect({
   name?: string;
 }) {
   const t = useTranslations("adminMedia");
+  const messages = useMessageBox();
   const [open, setOpen] = useState(false);
   const [nameValue, setNameValue] = useState("");
-  const [error, setError] = useState(false);
   const [pending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -52,10 +53,10 @@ export function MediaFolderSelect({
         onFolderCreated(result.data);
         onChange(result.data.id);
         setNameValue("");
-        setError(false);
+        messages.toast({ kind: "success", message: t("folderCreated") });
         setOpen(false);
       } else {
-        setError(true);
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
@@ -80,10 +81,7 @@ export function MediaFolderSelect({
         <button
           type="button"
           className="btn btn-light text-nowrap media-folder-add"
-          onClick={() => {
-            setError(false);
-            setOpen(true);
-          }}
+          onClick={() => setOpen(true)}
         >
           {t("addFolder")}
         </button>
@@ -117,11 +115,6 @@ export function MediaFolderSelect({
                     />
                   </div>
                   <div className="modal-body">
-                    {error && (
-                      <div className="alert alert-danger" role="alert">
-                        {t("error")}
-                      </div>
-                    )}
                     <label className="form-label" htmlFor="media-new-folder">
                       {t("newFolder")}
                     </label>

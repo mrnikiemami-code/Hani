@@ -483,7 +483,9 @@
     "allFolders": "كل المجلدات",
     "paginationLabel": "ترقيم صفحات مكتبة الوسائط",
     "selectAll": "تحديد الكل",
-    "pageInfo": "الصفحة {page} من {total}"
+    "pageInfo": "الصفحة {page} من {total}",
+    "deleted": "تم حذف الوسائط.",
+    "folderCreated": "تم إنشاء المجلد."
   },
   "adminContent": {
     "title": "إدارة المحتوى",
@@ -530,6 +532,39 @@
     "status": "الحالة",
     "updatedAt": "آخر تحديث",
     "actions": "الإجراءات",
-    "backToList": "العودة إلى القائمة"
+    "backToList": "العودة إلى القائمة",
+    "typePage": "صفحة",
+    "typeBanner": "بانر",
+    "typeArticle": "مقال",
+    "typeSection": "قسم",
+    "statusDraft": "مسودة",
+    "statusPublished": "منشور",
+    "statusScheduled": "مجدول",
+    "statusArchived": "مؤرشف",
+    "publishedAt": "تاريخ النشر",
+    "notPublished": "غير منشور",
+    "scheduleDate": "تاريخ النشر",
+    "scheduleTime": "وقت النشر",
+    "deleted": "تم حذف المحتوى.",
+    "count": "{count} عنصر",
+    "searchLabel": "بحث",
+    "searchPlaceholder": "عنوان المحتوى أو رابطه",
+    "search": "بحث",
+    "reset": "مسح",
+    "allTypes": "كل الأنواع",
+    "allStatuses": "كل الحالات",
+    "pageInfo": "الصفحة {page} من {total}",
+    "paginationLabel": "ترقيم صفحات المحتوى",
+    "sectionHint": "القسم كتلة محتوى قابلة لإعادة الاستخدام. بعد النشر يتوفر على رابط المحتوى العام ويمكن استخدامه ككتلة في صفحات أخرى."
+  },
+  "messageBox": {
+    "success": "نجاح",
+    "warning": "تحذير",
+    "question": "تأكيد",
+    "error": "خطأ",
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "autoClose": "يُغلق بعد {seconds} ثانية"
   }
 }

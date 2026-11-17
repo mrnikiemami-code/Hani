@@ -483,7 +483,9 @@
     "allFolders": "All folders",
     "paginationLabel": "Media library pagination",
     "selectAll": "Select all",
-    "pageInfo": "Page {page} of {total}"
+    "pageInfo": "Page {page} of {total}",
+    "deleted": "Media deleted.",
+    "folderCreated": "Folder created."
   },
   "adminContent": {
     "title": "Content management",
@@ -530,6 +532,39 @@
     "status": "Status",
     "updatedAt": "Last updated",
     "actions": "Actions",
-    "backToList": "Back to list"
+    "backToList": "Back to list",
+    "typePage": "Page",
+    "typeBanner": "Banner",
+    "typeArticle": "Article",
+    "typeSection": "Section",
+    "statusDraft": "Draft",
+    "statusPublished": "Published",
+    "statusScheduled": "Scheduled",
+    "statusArchived": "Archived",
+    "publishedAt": "Published at",
+    "notPublished": "Not published",
+    "scheduleDate": "Publication date",
+    "scheduleTime": "Publication time",
+    "deleted": "Content deleted.",
+    "count": "{count} items",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Content title or slug",
+    "search": "Search",
+    "reset": "Clear",
+    "allTypes": "All types",
+    "allStatuses": "All statuses",
+    "pageInfo": "Page {page} of {total}",
+    "paginationLabel": "Content pagination",
+    "sectionHint": "A section is a reusable content block. Once published it is available at the public content URL and can be used as a block on other pages."
+  },
+  "messageBox": {
+    "success": "Success",
+    "warning": "Warning",
+    "question": "Confirm",
+    "error": "Error",
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "autoClose": "Closes in {seconds}s"
   }
 }

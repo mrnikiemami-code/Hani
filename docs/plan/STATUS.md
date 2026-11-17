@@ -592,3 +592,6 @@
 - Content admin IA: content list is now a template table with create/edit/delete actions; create and edit live on dedicated routes. CKEditor exposes font family/size/color, alignment, indentation, code, find/replace, special characters, and table controls, with sanitized rich-text output.
 - Media admin IA: media list is now a template table with search and folder filters, template pagination, bulk delete, and row edit/delete actions. Upload and metadata/replacement editing live on dedicated create and edit routes.
 - Media table layout: compact responsive columns collapse folder/tags/date at smaller widths, eliminating nested horizontal and vertical scrollbars; pagination and page count are always shown when the library has rows.
+- Content editor UX: Jalali schedule date picker + time, translated type/status labels, RTL CKEditor content for FA/AR, published date in Jalali, Section block guidance, and fixed revision insert concurrency on save.
+- Content table UX: server-side search/type/status filters, pagination/page count, compact responsive columns, and no nested table scrollbars.
+- Unified message system: `MessageProvider` provides timed toasts and modal confirmations/alerts for success, warning, question, and error; admin media/content/home editors now use it instead of local alerts or `window.confirm`.

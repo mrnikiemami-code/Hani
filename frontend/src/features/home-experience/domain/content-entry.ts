@@ -21,6 +21,13 @@ export type ContentEntry = {
   revisionCount: number;
 };
 
+export type ContentEntryListResponse = {
+  items: ContentEntry[];
+  page: number;
+  pageSize: number;
+  total: number;
+};
+
 export type ContentEntryWrite = Omit<
   ContentEntry,
   "id" | "status" | "publishedAt" | "scheduledAt" | "createdAt" | "updatedAt" | "revisionCount"

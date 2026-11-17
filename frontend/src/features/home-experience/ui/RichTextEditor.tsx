@@ -19,6 +19,7 @@ export function RichTextEditor(props: {
   value: string;
   onChange: (value: string) => void;
   ariaLabel?: string;
+  locale?: string;
 }) {
   return <CkEditorImpl {...props} />;
 }

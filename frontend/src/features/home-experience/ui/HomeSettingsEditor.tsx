@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { useMessageBox } from "@/components/hani/message-provider";
 import { useRouter } from "next/navigation";
 import {
   normalizeHomePageSettings,
@@ -33,11 +34,11 @@ export function HomeSettingsEditor({
   initialSettings: HomePageSettings;
 }) {
   const t = useTranslations("adminHome");
+  const messages = useMessageBox();
   const router = useRouter();
   const [settings, setSettings] = useState(() =>
     normalizeHomePageSettings(initialSettings)
   );
-  const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [pending, startTransition] = useTransition();
 
   const updateSection = (
@@ -50,7 +51,6 @@ export function HomeSettingsEditor({
         section.id === id ? { ...section, ...patch } : section
       )
     }));
-    setStatus("idle");
   };
 
   const moveSection = (index: number, direction: -1 | 1) => {
@@ -69,15 +69,16 @@ export function HomeSettingsEditor({
         }))
       };
     });
-    setStatus("idle");
   };
 
   const save = () => {
     startTransition(async () => {
       const result = await saveHomePageSettings(locale, settings);
-      setStatus(result.ok ? "saved" : "error");
       if (result.ok) {
+        messages.toast({ kind: "success", message: t("saved") });
         router.refresh();
+      } else {
+        messages.toast({ kind: "error", message: t("saveError") });
       }
     });
   };
@@ -94,17 +95,6 @@ export function HomeSettingsEditor({
           {pending ? t("saving") : t("save")}
         </button>
       </div>
-
-        {status === "saved" && (
-          <div className="alert alert-success" role="status">
-            {t("saved")}
-          </div>
-        )}
-        {status === "error" && (
-          <div className="alert alert-danger" role="alert">
-            {t("saveError")}
-          </div>
-        )}
 
         <div className="row g-4">
           <div className="col-xl-8">
@@ -126,8 +116,7 @@ export function HomeSettingsEditor({
                       ...current,
                       heroImageUrl: event.target.value
                     }));
-                    setStatus("idle");
-                  }}
+                                  }}
                   placeholder="https://cdn.hani.ir/home/hero.jpg"
                 />
                 <p className="fs-12 text-gray-6 mt-2 mb-0">

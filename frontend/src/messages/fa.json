@@ -483,7 +483,9 @@
     "allFolders": "همه پوشه‌ها",
     "paginationLabel": "صفحه‌بندی کتابخانه رسانه",
     "selectAll": "انتخاب همه",
-    "pageInfo": "صفحه {page} از {total}"
+    "pageInfo": "صفحه {page} از {total}",
+    "deleted": "رسانه حذف شد.",
+    "folderCreated": "پوشه ایجاد شد."
   },
   "adminContent": {
     "title": "مدیریت محتوا",
@@ -530,6 +532,39 @@
     "status": "وضعیت",
     "updatedAt": "آخرین به‌روزرسانی",
     "actions": "عملیات",
-    "backToList": "بازگشت به فهرست"
+    "backToList": "بازگشت به فهرست",
+    "typePage": "صفحه",
+    "typeBanner": "بنر",
+    "typeArticle": "مقاله",
+    "typeSection": "بخش",
+    "statusDraft": "پیش‌نویس",
+    "statusPublished": "منتشرشده",
+    "statusScheduled": "زمان‌بندی‌شده",
+    "statusArchived": "بایگانی",
+    "publishedAt": "تاریخ انتشار",
+    "notPublished": "منتشر نشده",
+    "scheduleDate": "تاریخ انتشار",
+    "scheduleTime": "ساعت انتشار",
+    "deleted": "محتوا حذف شد.",
+    "count": "{count} مورد",
+    "searchLabel": "جستجو",
+    "searchPlaceholder": "عنوان یا نشانی محتوا",
+    "search": "جستجو",
+    "reset": "پاک کردن",
+    "allTypes": "همه انواع",
+    "allStatuses": "همه وضعیت‌ها",
+    "pageInfo": "صفحه {page} از {total}",
+    "paginationLabel": "صفحه‌بندی مدیریت محتوا",
+    "sectionHint": "بخش یک بلوک محتوای قابل استفاده مجدد است. پس از انتشار از نشانی عمومی محتوا قابل دسترسی است و می‌تواند به‌عنوان بلوک در صفحات دیگر استفاده شود."
+  },
+  "messageBox": {
+    "success": "موفق",
+    "warning": "هشدار",
+    "question": "تایید",
+    "error": "خطا",
+    "close": "بستن",
+    "cancel": "انصراف",
+    "confirm": "تایید",
+    "autoClose": "بسته می‌شود تا {seconds} ثانیه دیگر"
   }
 }

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { usePathname, useRouter } from "next/navigation";
 import { formatIsoInstant } from "@/lib/hani/calendar";
+import { useMessageBox } from "@/components/hani/message-provider";
 import type { MediaAsset, MediaFolder } from "../domain/media";
 import {
   bulkDeleteMedia,
@@ -45,6 +46,7 @@ export function MediaManager({
   filters: { q: string; folderId: string };
 }) {
   const t = useTranslations("adminMedia");
+  const messages = useMessageBox();
   const router = useRouter();
   const pathname = usePathname();
   const [items, setItems] = useState(initialItems);
@@ -52,7 +54,6 @@ export function MediaManager({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [query, setQuery] = useState(filters.q);
   const [folderId, setFolderId] = useState(filters.folderId);
-  const [error, setError] = useState(false);
   const [pending, startTransition] = useTransition();
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -77,26 +78,37 @@ export function MediaManager({
     router.push(pathname);
   };
 
-  const remove = (item: MediaAsset) => {
-    if (!window.confirm(t("deleteConfirm"))) return;
+  const remove = async (item: MediaAsset) => {
+    const confirmed = await messages.confirm({
+      kind: "question",
+      title: t("deleteConfirm"),
+      message: item.originalFileName,
+      confirmLabel: t("delete")
+    });
+    if (!confirmed) return;
     startTransition(async () => {
       const result = await deleteMedia(item.id);
       if (result.ok) {
         setItems((current) => current.filter((entry) => entry.id !== item.id));
         setTotal((current) => Math.max(0, current - 1));
         setSelectedIds((current) => current.filter((id) => id !== item.id));
-        setError(false);
+        messages.toast({ kind: "success", message: t("deleted") });
         router.refresh();
       } else {
-        setError(true);
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
 
-  const removeSelected = () => {
-    if (selectedIds.length === 0 || !window.confirm(t("bulkDeleteConfirm"))) {
-      return;
-    }
+  const removeSelected = async () => {
+    if (selectedIds.length === 0) return;
+    const confirmed = await messages.confirm({
+      kind: "question",
+      title: t("bulkDeleteConfirm"),
+      message: t("selected", { count: selectedIds.length }),
+      confirmLabel: t("bulkDelete")
+    });
+    if (!confirmed) return;
     startTransition(async () => {
       const result = await bulkDeleteMedia(selectedIds);
       if (result.ok) {
@@ -105,10 +117,10 @@ export function MediaManager({
         );
         setTotal((current) => Math.max(0, current - selectedIds.length));
         setSelectedIds([]);
-        setError(false);
+        messages.toast({ kind: "success", message: t("deleted") });
         router.refresh();
       } else {
-        setError(true);
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
@@ -126,12 +138,6 @@ export function MediaManager({
         </Link>
       </div>
       <div className="card-body">
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            {t("error")}
-          </div>
-        )}
-
         <form className="row g-2 align-items-end mb-3 media-filter-form" onSubmit={applyFilters}>
           <div className="col-lg-5">
             <label className="form-label" htmlFor="media-search">

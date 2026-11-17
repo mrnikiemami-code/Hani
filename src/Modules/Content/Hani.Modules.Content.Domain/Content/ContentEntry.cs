@@ -146,9 +146,6 @@ public sealed class ContentEntry : AggregateRoot<Guid>
         HeroImageUrl = heroImageUrl?.Trim();
         SeoTitle = seoTitle?.Trim();
         SeoDescription = seoDescription?.Trim();
-        Status = ContentStatus.Draft;
-        PublishedAt = null;
-        ScheduledAt = null;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 

@@ -8,6 +8,7 @@ import ThemeSync from "@/providers/ThemeSync";
 import BootstrapJs from "@/providers/BootstrapJs";
 import RouteLoader from "@/components/loader/loader";
 import { TemplateTranslationProvider } from "@/components/hani/TemplateTranslationProvider";
+import { MessageProvider } from "@/components/hani/message-provider";
 import { routing } from "@/i18n/routing";
 import templateFa from "../../messages/template.fa.json";
 import templateAr from "../../messages/template.ar.json";
@@ -107,9 +108,11 @@ export default async function LocaleLayout({
           <ThemeSync />
           <RouteLoader />
           <NextIntlClientProvider messages={messages}>
-            <TemplateTranslationProvider dictionary={templateDictionary}>
-              <main id="main-content">{children}</main>
-            </TemplateTranslationProvider>
+            <MessageProvider>
+              <TemplateTranslationProvider dictionary={templateDictionary}>
+                <main id="main-content">{children}</main>
+              </TemplateTranslationProvider>
+            </MessageProvider>
           </NextIntlClientProvider>
         </StoreProvider>
         <BootstrapJs />

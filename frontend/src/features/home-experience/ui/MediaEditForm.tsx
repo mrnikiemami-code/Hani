@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { formatIsoInstant } from "@/lib/hani/calendar";
+import { useMessageBox } from "@/components/hani/message-provider";
 import type { MediaAsset, MediaFolder } from "../domain/media";
 import {
   replaceMedia,
@@ -34,6 +35,7 @@ export function MediaEditForm({
   initialFolders: MediaFolder[];
 }) {
   const t = useTranslations("adminMedia");
+  const messages = useMessageBox();
   const router = useRouter();
   const [asset, setAsset] = useState(media);
   const [folders, setFolders] = useState(initialFolders);
@@ -44,7 +46,6 @@ export function MediaEditForm({
   const [tags, setTags] = useState<string[]>(media.tags);
   const [focalX, setFocalX] = useState(media.focalX?.toString() ?? "");
   const [focalY, setFocalY] = useState(media.focalY?.toString() ?? "");
-  const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [pending, startTransition] = useTransition();
 
   const save = () => {
@@ -60,10 +61,10 @@ export function MediaEditForm({
       });
       if (result.ok && result.data) {
         setAsset(result.data);
-        setStatus("saved");
+        messages.toast({ kind: "success", message: t("saved") });
         router.refresh();
       } else {
-        setStatus("error");
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
@@ -82,10 +83,10 @@ export function MediaEditForm({
       const result = await replaceMedia(asset.id, formData);
       if (result.ok && result.data) {
         setAsset(result.data);
-        setStatus("saved");
+        messages.toast({ kind: "success", message: t("saved") });
         router.refresh();
       } else {
-        setStatus("error");
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
@@ -115,17 +116,6 @@ export function MediaEditForm({
         </div>
       </div>
       <div className="card-body">
-        {status === "saved" && (
-          <div className="alert alert-success" role="status">
-            {t("saved")}
-          </div>
-        )}
-        {status === "error" && (
-          <div className="alert alert-danger" role="alert">
-            {t("error")}
-          </div>
-        )}
-
         <div className="row g-4">
           <div className="col-lg-5">
             <div className="border rounded p-2 bg-light">

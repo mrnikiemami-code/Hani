@@ -300,3 +300,4 @@
 | `e835e68` | Content admin table + separate editor routes; expanded CKEditor toolbar and sanitized styles |
 | `c617368` | Media admin table: filters, pagination, create/edit routes |
 | `af11753` | Media table layout: no nested scroll, responsive columns, always-visible pagination |
+| `pending` | Content UX + message system: Jalali schedule, RTL editor, translated labels, filters/pagination, save fix, toast/modal |

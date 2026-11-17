@@ -4,8 +4,13 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { HaniDatePicker } from "@/components/hani/date/HaniDatePicker";
+import { useMessageBox } from "@/components/hani/message-provider";
+import { formatIsoInstant } from "@/lib/hani/calendar";
+import type { IsoDate } from "@/lib/hani/calendar";
 import { RichTextEditor } from "./RichTextEditor";
 import { ContentSeoPanel } from "./ContentSeoPanel";
+import { CONTENT_STATUS_LABEL_KEYS, CONTENT_TYPE_LABEL_KEYS } from "./content-labels";
 import type { MediaAsset } from "../domain/media";
 import type {
   ContentEntry,
@@ -17,6 +22,24 @@ import {
   saveContentEntry,
   scheduleContent
 } from "../application/content-actions";
+
+function localDatePart(value: string | null): IsoDate | null {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate()
+  ).padStart(2, "0")}` as IsoDate;
+}
+
+function localTimePart(value: string | null): string {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return `${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes()
+  ).padStart(2, "0")}`;
+}
 
 const EMPTY: ContentEntryWrite = {
   type: "Page",
@@ -45,9 +68,11 @@ export function ContentEditor({
   mediaAssets: MediaAsset[];
 }) {
   const t = useTranslations("adminContent");
+  const messages = useMessageBox();
   const router = useRouter();
   const [entryId, setEntryId] = useState(entry?.id ?? null);
   const [entryStatus, setEntryStatus] = useState(entry?.status ?? "Draft");
+  const [publishedAt, setPublishedAt] = useState(entry?.publishedAt ?? null);
   const [form, setForm] = useState<ContentEntryWrite>(
     entry
       ? {
@@ -64,8 +89,12 @@ export function ContentEditor({
         }
       : { ...EMPTY, locale }
   );
-  const [scheduleAt, setScheduleAt] = useState(entry?.scheduledAt ?? "");
-  const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
+  const [scheduleDate, setScheduleDate] = useState<IsoDate | null>(
+    localDatePart(entry?.scheduledAt ?? null)
+  );
+  const [scheduleTime, setScheduleTime] = useState(
+    localTimePart(entry?.scheduledAt ?? null)
+  );
   const [pending, startTransition] = useTransition();
 
   const set = <K extends keyof ContentEntryWrite>(
@@ -79,14 +108,14 @@ export function ContentEditor({
       if (result.ok && result.data) {
         setEntryId(result.data.id);
         setEntryStatus(result.data.status);
+        setPublishedAt(result.data.publishedAt);
+        messages.toast({ kind: "success", message: t("saved") });
         if (!entryId) {
           router.push(`/${locale}/admin/content/${result.data.id}`);
-        } else {
-          setStatus("saved");
         }
         router.refresh();
       } else {
-        setStatus("error");
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
@@ -97,23 +126,28 @@ export function ContentEditor({
       const result = await changeContentStatus(entryId, action);
       if (result.ok && result.data) {
         setEntryStatus(result.data.status);
-        setStatus("saved");
+        setPublishedAt(result.data.publishedAt);
+        messages.toast({ kind: "success", message: t("saved") });
       } else {
-        setStatus("error");
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
 
   const schedule = () => {
-    if (!entryId || !scheduleAt) return;
+    if (!entryId || !scheduleDate || !scheduleTime) return;
+    const scheduledAt = new Date(
+      `${scheduleDate}T${scheduleTime}:00`
+    ).toISOString();
     startTransition(async () => {
-      const result = await scheduleContent(entryId, scheduleAt);
+      const result = await scheduleContent(entryId, scheduledAt);
       if (result.ok && result.data) {
         setEntryStatus(result.data.status);
-        setScheduleAt(result.data.scheduledAt ?? "");
-        setStatus("saved");
+        setScheduleDate(localDatePart(result.data.scheduledAt));
+        setScheduleTime(localTimePart(result.data.scheduledAt));
+        messages.toast({ kind: "success", message: t("saved") });
       } else {
-        setStatus("error");
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
@@ -125,7 +159,14 @@ export function ContentEditor({
           <h2 className="h5 mb-1">{entryId ? t("edit") : t("create")}</h2>
           {entryId && (
             <p className="fs-13 text-gray-6 mb-0">
-              {entryStatus} · /{form.slug}
+              {t(CONTENT_STATUS_LABEL_KEYS[entryStatus])} · /{form.slug}
+              {" · "}
+              {t("publishedAt")}:{" "}
+              {publishedAt
+                ? formatIsoInstant(publishedAt, locale, {
+                    dateStyle: "medium"
+                  })
+                : t("notPublished")}
             </p>
           )}
         </div>
@@ -165,39 +206,42 @@ export function ContentEditor({
         </div>
       </div>
       <div className="card-body">
-        {status === "saved" && (
-          <div className="alert alert-success" role="status">
-            {t("saved")}
-          </div>
-        )}
-        {status === "error" && (
-          <div className="alert alert-danger" role="alert">
-            {t("error")}
-          </div>
-        )}
-
         {entryId && (
-          <div className="d-flex gap-2 align-items-end mb-3 flex-wrap">
-            <div className="flex-grow-1">
+          <div className="row g-2 align-items-end mb-3">
+            <div className="col-lg-5">
               <label className="form-label" htmlFor="content-schedule">
-                {t("schedule")}
+                {t("scheduleDate")}
               </label>
-              <input
+              <HaniDatePicker
                 id="content-schedule"
-                type="datetime-local"
-                className="form-control"
-                value={scheduleAt ? scheduleAt.slice(0, 16) : ""}
-                onChange={(event) => setScheduleAt(event.target.value)}
+                value={scheduleDate}
+                onChange={setScheduleDate}
+                placeholder={t("scheduleDate")}
+                ariaLabel={t("scheduleDate")}
               />
             </div>
-            <button
-              type="button"
-              className="btn btn-light"
-              onClick={schedule}
-              disabled={pending || !scheduleAt}
-            >
-              {t("scheduleButton")}
-            </button>
+            <div className="col-lg-3">
+              <label className="form-label" htmlFor="content-schedule-time">
+                {t("scheduleTime")}
+              </label>
+              <input
+                id="content-schedule-time"
+                type="time"
+                className="form-control"
+                value={scheduleTime}
+                onChange={(event) => setScheduleTime(event.target.value)}
+              />
+            </div>
+            <div className="col-lg-4">
+              <button
+                type="button"
+                className="btn btn-light w-100"
+                onClick={schedule}
+                disabled={pending || !scheduleDate || !scheduleTime}
+              >
+                {t("scheduleButton")}
+              </button>
+            </div>
           </div>
         )}
 
@@ -214,12 +258,15 @@ export function ContentEditor({
                 set("type", event.target.value as ContentEntryType)
               }
             >
-              {["Page", "Banner", "Article", "Section"].map((type) => (
+              {(["Page", "Banner", "Article", "Section"] as const).map((type) => (
                 <option key={type} value={type}>
-                  {type}
+                  {t(CONTENT_TYPE_LABEL_KEYS[type])}
                 </option>
               ))}
             </select>
+            {form.type === "Section" && (
+              <p className="fs-12 text-gray-6 mb-0 mt-1">{t("sectionHint")}</p>
+            )}
           </div>
           <div className="col-md-4">
             <label className="form-label" htmlFor="content-locale">
@@ -279,6 +326,7 @@ export function ContentEditor({
               value={form.body}
               onChange={(value) => set("body", value)}
               ariaLabel={t("body")}
+              locale={form.locale}
             />
           </div>
           <div className="col-md-6">

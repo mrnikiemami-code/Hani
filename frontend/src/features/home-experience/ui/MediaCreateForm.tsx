@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import type { MediaFolder } from "../domain/media";
 import { uploadMedia } from "../application/media-actions";
+import { useMessageBox } from "@/components/hani/message-provider";
 import { TagInput } from "@/components/hani/tag-input";
 import { MediaFolderSelect } from "./MediaFolderSelect";
 
@@ -21,21 +22,22 @@ export function MediaCreateForm({
   initialFolders: MediaFolder[];
 }) {
   const t = useTranslations("adminMedia");
+  const messages = useMessageBox();
   const router = useRouter();
   const [folders, setFolders] = useState(initialFolders);
   const [folderId, setFolderId] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [status, setStatus] = useState<"idle" | "error">("idle");
   const [pending, startTransition] = useTransition();
 
   const upload = (formData: FormData) => {
     startTransition(async () => {
       const result = await uploadMedia(formData);
       if (result.ok && result.data) {
+        messages.toast({ kind: "success", message: t("uploaded") });
         router.push(`/${locale}/admin/media/${result.data.id}`);
         router.refresh();
       } else {
-        setStatus("error");
+        messages.toast({ kind: "error", message: t("error") });
       }
     });
   };
@@ -53,11 +55,6 @@ export function MediaCreateForm({
         </Link>
       </div>
       <div className="card-body">
-        {status === "error" && (
-          <div className="alert alert-danger" role="alert">
-            {t("error")}
-          </div>
-        )}
         <form className="row g-3 media-upload-form" action={(fd) => upload(fd)}>
           <div className="col-lg-6">
             <label className="form-label" htmlFor="media-file">

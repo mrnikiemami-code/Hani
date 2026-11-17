@@ -51,19 +51,31 @@ const fontFamilies = [
 export default function CkEditorImpl({
   value,
   onChange,
-  ariaLabel
+  ariaLabel,
+  locale = "en"
 }: {
   value: string;
   onChange: (value: string) => void;
   ariaLabel?: string;
+  locale?: string;
 }) {
+  const direction = locale === "fa" || locale === "ar" ? "rtl" : "ltr";
   return (
-    <div aria-label={ariaLabel} className="hani-rich-editor">
+    <div
+      aria-label={ariaLabel}
+      className={`hani-rich-editor ${
+        direction === "rtl" ? "hani-rich-editor--rtl" : ""
+      }`}
+      dir={direction}
+    >
       <CKEditor
         editor={ClassicEditor}
         data={value}
         config={{
           licenseKey: "GPL",
+          language: {
+            content: locale === "fa" ? "fa" : locale === "ar" ? "ar" : "en"
+          },
           plugins: [
             Essentials,
             Paragraph,

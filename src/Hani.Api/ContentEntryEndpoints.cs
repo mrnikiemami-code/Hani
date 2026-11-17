@@ -42,11 +42,17 @@ public static class ContentEntryEndpoints
     }
 
     private static async Task<IResult> ListAdminAsync(
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        [FromQuery] string? q,
         [FromQuery] string? locale,
         [FromQuery] ContentEntryType? type,
+        [FromQuery] ContentStatus? status,
         ContentDbContext db,
         CancellationToken cancellationToken)
     {
+        var normalizedPage = page <= 0 ? 1 : page;
+        var normalizedPageSize = pageSize is <= 0 or > 100 ? 10 : pageSize;
         var query = db.ContentEntries.AsNoTracking().AsQueryable();
         if (!string.IsNullOrWhiteSpace(locale))
         {
@@ -57,16 +63,31 @@ public static class ContentEntryEndpoints
         {
             query = query.Where(item => item.Type == type);
         }
+        if (status is not null)
+        {
+            query = query.Where(item => item.Status == status);
+        }
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            var term = q.Trim();
+            query = query.Where(item =>
+                EF.Functions.ILike(item.Title, $"%{term}%") ||
+                EF.Functions.ILike(item.Slug, $"%{term}%"));
+        }
 
+        var total = await query.CountAsync(cancellationToken);
         var items = await query
             .OrderByDescending(item => item.UpdatedAt)
+            .Skip((normalizedPage - 1) * normalizedPageSize)
+            .Take(normalizedPageSize)
             .Select(item => new ContentEntryDto(
                 item.Id, item.Type, item.Slug, item.Locale, item.Title, item.Excerpt,
                 item.Body, item.HeroMediaId, item.HeroImageUrl, item.SeoTitle,
                 item.SeoDescription, item.Status, item.PublishedAt, item.ScheduledAt,
                 item.CreatedAt, item.UpdatedAt, item.Revisions.Count))
             .ToArrayAsync(cancellationToken);
-        return Results.Ok(items);
+        return Results.Ok(new ContentEntryListResponse(
+            items, normalizedPage, normalizedPageSize, total));
     }
 
     private static async Task<IResult> GetAdminAsync(
@@ -144,6 +165,7 @@ public static class ContentEntryEndpoints
             request.SeoTitle,
             request.SeoDescription,
             ids.NewId());
+        db.ContentEntryRevisions.Add(entry.Revisions.Last());
         entry.ChangeClassification(request.Type, languages.Normalize(request.Locale));
         await SyncUsageAsync(entry, db, ids, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
@@ -265,6 +287,7 @@ public static class ContentEntryEndpoints
             revision.SeoTitle,
             revision.SeoDescription,
             ids.NewId());
+        db.ContentEntryRevisions.Add(entry.Revisions.Last());
         await SyncUsageAsync(entry, db, ids, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
         return Results.Ok(ToDto(entry));
@@ -343,6 +366,13 @@ public sealed record ContentEntryDto(
     int RevisionCount);
 
 /// <summary>Content entry write request.</summary>
+/// <summary>Paged admin content entry response.</summary>
+public sealed record ContentEntryListResponse(
+    IReadOnlyList<ContentEntryDto> Items,
+    int Page,
+    int PageSize,
+    int Total);
+
 /// <summary>Schedule publication request.</summary>
 public sealed record ScheduleContentRequest(DateTimeOffset ScheduledAt);
 

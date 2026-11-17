@@ -84,7 +84,7 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 
 ## Content Entry CMS
 
-- Admin list: `GET /internal/v1/content-entries`
+- Admin list: `GET /internal/v1/content-entries?page=&pageSize=&q=&type=&status=`
 - Admin edit lookup: `GET /internal/v1/content-entries/{id}`
 - Create/update: `POST /internal/v1/content-entries`, `PUT /internal/v1/content-entries/{id}`
 - Lifecycle: publish, unpublish, schedule, delete, and revision restore
