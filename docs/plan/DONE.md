@@ -284,4 +284,4 @@
 | `fea4cf6` | Calendar/dropdown QA: repaired FA/AR message strings and kept dropdown menus inside the viewport |
 | `89cceb2` | Date/dropdown QA follow-up: single modal title, dropdown always below, message strings repaired |
 | `e6248a8` | Date label/portal follow-up: conditional labels, portaled dropdown below trigger, repaired FA/AR strings |
-| `pending` | Home search polish: raised hero form, repaired demo labels, filtered test hotels, unique options test |
+| `c56fa80` | Home search polish: raised hero form, repaired demo labels, filtered test hotels, unique options test |
