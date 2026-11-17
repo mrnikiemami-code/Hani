@@ -289,3 +289,4 @@
 | `fb50871` | Homepage control panel: DB composition settings, admin editor, Lastsecond default order; agency advertising proposal |
 | `aef1c9e` | Admin homepage panel moved into template-derived agency shell |
 | `6dfddb6` | Content media library phase 1: WebP conversion, variants, local storage, admin media library |
+| `pending` | Content media library phase 2: responsive WebP delivery, OG/preload, CDN switch, image sitemap |

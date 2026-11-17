@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import type { MediaAsset } from "../domain/media";
+import { HaniMediaImage, MEDIA_SIZES } from "./HaniMediaImage";
 import {
   deleteMedia,
   updateMediaAlt,
@@ -158,13 +159,9 @@ export function MediaLibraryEditor({
           {items.map((item) => (
             <div className="col-xl-4 col-md-6" key={item.id}>
               <div className="card border-0 shadow-sm h-100">
-                <img
-                  src={item.url}
-                  alt={item.altText}
-                  width={item.width}
-                  height={item.height}
-                  loading="lazy"
-                  decoding="async"
+                <HaniMediaImage
+                  media={item}
+                  sizes={MEDIA_SIZES.card}
                   className="card-img-top"
                   style={{ aspectRatio: "4 / 3", objectFit: "cover" }}
                 />

@@ -20,6 +20,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
+  const settings = await getHomePageSettings(locale);
+  const ogImage = settings.heroImageUrl
+    ? settings.heroImageUrl.startsWith("http")
+      ? settings.heroImageUrl
+      : absoluteUrl(settings.heroImageUrl)
+    : absoluteUrl("/assets/img/bg/adventure-bg.png");
   const languages = Object.fromEntries(
     routing.locales.map((item) => [item, absoluteUrl(`/${item}`)])
   );
@@ -37,13 +43,13 @@ export async function generateMetadata({
       title: t("title"),
       description: t("description"),
       url: absoluteUrl(`/${locale}`),
-      images: [absoluteUrl("/assets/img/bg/adventure-bg.png")]
+      images: [ogImage]
     },
     twitter: {
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-      images: [absoluteUrl("/assets/img/bg/adventure-bg.png")]
+      images: [ogImage]
     }
   };
 }
@@ -69,8 +75,17 @@ export default async function HomePage({
   const homeFeed = await getHomeFeed(locale, tourScope);
   const homeSettings = await getHomePageSettings(locale);
 
+  const heroImage = homeSettings.heroImageUrl
+    ? homeSettings.heroImageUrl.startsWith("http")
+      ? homeSettings.heroImageUrl
+      : absoluteUrl(homeSettings.heroImageUrl)
+    : "";
+
   return (
     <>
+      {heroImage ? (
+        <link rel="preload" as="image" href={heroImage} fetchPriority="high" />
+      ) : null}
       <HomeStructuredData locale={locale} feed={homeFeed} />
       <HomeExperienceRenderer
         definition={experience}

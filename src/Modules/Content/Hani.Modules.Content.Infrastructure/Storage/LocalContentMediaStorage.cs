@@ -16,6 +16,9 @@ public sealed class ContentMediaStorageOptions
 
     /// <summary>Public URL prefix.</summary>
     public string PublicBaseUrl { get; set; } = "http://localhost:5099/media";
+
+    /// <summary>Optional CDN prefix; when set it replaces PublicBaseUrl.</summary>
+    public string? CdnBaseUrl { get; set; }
 }
 
 internal sealed class LocalContentMediaStorage(
@@ -47,7 +50,10 @@ internal sealed class LocalContentMediaStorage(
 
     public string PublicUrl(string key)
     {
-        var baseUrl = options.Value.PublicBaseUrl.TrimEnd('/');
+        var baseUrl = (
+            string.IsNullOrWhiteSpace(options.Value.CdnBaseUrl)
+                ? options.Value.PublicBaseUrl
+                : options.Value.CdnBaseUrl).TrimEnd('/');
         return $"{baseUrl}/{key.Replace('\\', '/').TrimStart('/')}";
     }
 

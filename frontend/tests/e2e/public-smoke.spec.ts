@@ -111,6 +111,9 @@ test.describe("public smoke", () => {
     expect(sitemapBody).toContain("https://hani.ir/fa/tours?scope=domestic");
     expect(sitemapBody).toContain("https://hani.ir/en/tours?scope=foreign");
     expect(sitemapBody).toContain("https://hani.ir/ar/tours");
+    expect(sitemapBody).toContain(
+      "<image:loc>https://hani.ir/assets/img/bg/adventure-bg.png</image:loc>"
+    );
 
     const robots = await request.get("/robots.txt");
     expect(robots.status()).toBe(200);

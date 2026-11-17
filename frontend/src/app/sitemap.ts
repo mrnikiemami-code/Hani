@@ -26,6 +26,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: absoluteUrl(`/${locale}${suffix}`),
         changeFrequency: path === "" ? "daily" : "weekly",
         priority: path === "" ? 1 : path.startsWith("/tours") ? 0.9 : 0.7,
+        ...(path === ""
+          ? { images: [absoluteUrl("/assets/img/bg/adventure-bg.png")] }
+          : {}),
         alternates: {
           languages: Object.fromEntries(
             routing.locales.map((item) => [

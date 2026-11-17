@@ -307,7 +307,7 @@
 | H91-MEDIA-01 | WebP conversion service | ? | ImageSharp ? WebP variants |
 | H91-MEDIA-02 | Media DB and storage abstraction | ? | metadata + local storage |
 | H91-MEDIA-03 | Admin media library | ? | upload, alt, list, delete |
-| H91-MEDIA-04 | Responsive SEO delivery | ? Phase 2 | srcset/picture/LCP/OG |
+| H91-MEDIA-04 | Responsive SEO delivery | ? | srcset/picture/LCP/OG/CDN/sitemap |
 | H91-MEDIA-05 | Folders/tags/usage/replace | ? Phase 3 | library operations |
 | H91-MEDIA-06 | Content CMS and revisions | ? Phase 4 | pages/banners/articles |
 | H91-MEDIA-07 | S3/R2/cloud storage | ? Phase 5 | provider adapter |
