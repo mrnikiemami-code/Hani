@@ -203,6 +203,31 @@ test.describe("public smoke", () => {
     await expect(input).toHaveAttribute("data-iso-value", /^\d{4}-\d{2}-\d{2}$/);
   });
 
+  test("home settings expose the Lastsecond-parity section order", async ({
+    request
+  }) => {
+    const response = await request.get(
+      "http://localhost:5099/market/v1/home-settings?locale=fa"
+    );
+    expect(response.status()).toBe(200);
+    const data = (await response.json()) as {
+      settings: { sections: Array<{ id: string; enabled: boolean; order: number }> };
+    };
+    const enabled = data.settings.sections
+      .filter((section) => section.enabled)
+      .sort((left, right) => left.order - right.order)
+      .map((section) => section.id);
+    expect(enabled.slice(0, 7)).toEqual([
+      "featured",
+      "latestDomestic",
+      "latestForeign",
+      "visas",
+      "originCities",
+      "travelogues",
+      "magazine"
+    ]);
+  });
+
   test("search options are unique and contain no corrupted labels", async ({
     request
   }) => {
@@ -253,7 +278,9 @@ test.describe("public smoke", () => {
     const inputBox = await origin.locator("input.value-input").boundingBox();
     expect(inputBox).not.toBeNull();
     expect(menuBox!.y).toBeGreaterThanOrEqual(inputBox!.y + inputBox!.height);
-    expect(await menu.getByRole("option").count()).toBeGreaterThan(1);
+    await expect
+      .poll(async () => menu.getByRole("option").count())
+      .toBeGreaterThan(1);
 
     await page.evaluate(() => window.scrollBy(0, 80));
     await expect(menu).toBeVisible();

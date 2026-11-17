@@ -69,7 +69,8 @@ internal sealed class RequestOtpCommandHandler(
                 Error.Conflict("HANI-IDENTITY-1103", "Too many OTP requests."));
         }
 
-        if (user is null)
+        var isNewUser = user is null;
+        if (isNewUser)
         {
             user = User.Create(ids, mobile, now: now);
         }
@@ -82,9 +83,9 @@ internal sealed class RequestOtpCommandHandler(
             now,
             TimeSpan.FromSeconds(configuration.LifetimeSeconds));
 
-        if (user.Status == UserStatus.Pending)
+        if (isNewUser)
         {
-            await users.AddAsync(user, cancellationToken);
+            await users.AddAsync(user!, cancellationToken);
         }
         else
         {

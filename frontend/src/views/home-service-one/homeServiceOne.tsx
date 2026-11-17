@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslations } from "next-intl";
 import VideoModal from "../../components/video-modal/videoModal";
 import Link from "next/link";
@@ -24,6 +24,12 @@ import { parseTime } from '../../utils/dateFormat'
 import CircularText from '../../components/circular-text/circularText'
 import BannerCounter from "../../components/banner-counter/counter";
 import type { IsoDate } from "@/lib/hani/calendar";
+import {
+  DEFAULT_HOME_PAGE_SETTINGS,
+  orderedHomeSections,
+  type HomePageSettings,
+  type HomeSectionId
+} from "@/features/home-experience/domain/home-page-settings";
 type Mode = "flight" | "hotel" | "cruise" | "tour" | "bus" | "activity" | "visa" | "guide";
 
 type BookingState = {
@@ -75,8 +81,10 @@ type BookingState = {
 };
 const HomeServiceOne = ({
   tourScope,
+  homeSettings = DEFAULT_HOME_PAGE_SETTINGS
 }: {
   tourScope?: "Domestic" | "Foreign";
+  homeSettings?: HomePageSettings;
 }) => {
   const t = useTranslations("home");
   const [showModal, setShowModal] = useState(false);
@@ -225,10 +233,51 @@ const guidePassenger =
   const [busRadio, setbusRadio] = useState<string>("oneway");
   const [defaultDate] = useState(new Date());
   const defaultTime = parseTime("10:30 AM");
+
+  const renderSection = (id: HomeSectionId) => {
+    switch (id) {
+      case "featured":
+        return <HaniTrendingTours scope={tourScope} />;
+      case "latestDomestic":
+        return <HaniScopeTourSection scope="Domestic" titleKey="latestDomestic" />;
+      case "latestForeign":
+        return <HaniScopeTourSection scope="Foreign" titleKey="latestForeign" />;
+      case "visas":
+        return <HaniRecommendedVisas />;
+      case "originCities":
+        return <HaniOriginCities />;
+      case "travelogues":
+        return <HaniLatestContent variant="travelogues" />;
+      case "magazine":
+        return <HaniLatestContent variant="blog" />;
+      case "experience":
+        return <ExperienceSection />;
+      case "delivery":
+        return <DeliverySection />;
+      case "guide":
+        return <GuideSection />;
+      case "testimonials":
+        return <TestimonialSection />;
+      case "whyChoose":
+        return <ChooseSection />;
+      default:
+        return null;
+    }
+  };
+
+  const sections = orderedHomeSections(homeSettings);
+
   return (
     <>
       {/* Hero Section */}
-      <section className="hero-sec-eight">
+      <section
+        className="hero-sec-eight"
+        style={
+          homeSettings.heroImageUrl
+            ? { backgroundImage: `url("${homeSettings.heroImageUrl}")` }
+            : undefined
+        }
+      >
         <div className="container">
           <h1 className="animate-text">{t("heroTitle")}</h1>
           <div
@@ -2854,18 +2903,9 @@ const guidePassenger =
           </div>
       </section>
       {/* /Hero Section */}
-      <HaniTrendingTours scope={tourScope} />
-      <HaniScopeTourSection scope="Domestic" titleKey="latestDomestic" />
-      <HaniScopeTourSection scope="Foreign" titleKey="latestForeign" />
-      <HaniOriginCities />
-      <ExperienceSection />
-      <HaniRecommendedVisas />
-      <DeliverySection />
-      <GuideSection />
-      <TestimonialSection />
-      <ChooseSection />
-      <HaniLatestContent variant="travelogues" />
-      <HaniLatestContent variant="blog" />
+      {sections.map((section) => (
+        <Fragment key={section.id}>{renderSection(section.id)}</Fragment>
+      ))}
       <FooterSection />
 
 

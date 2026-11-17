@@ -452,6 +452,9 @@ builder.Services.AddAuthorization(options =>
         .RequireClaim("scope", "supplier.write"));
 
     options.AddPolicy("User", policy => policy.RequireAuthenticatedUser());
+    options.AddPolicy("Admin", policy => policy
+        .RequireAuthenticatedUser()
+        .RequireRole("Admin"));
 
     options.AddPolicy("Channel", policy => policy
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
@@ -587,6 +590,7 @@ app.MapTrustEndpoints();
 app.MapMarketplaceEndpoints();
 app.MapChannelEndpoints();
 app.MapDashboardEndpoints();
+app.MapHomeSettingsEndpoints();
 app.MapWishlistEndpoints();
 app.MapLastsecondParityEndpoints();
 app.MapBookingEndpoints();

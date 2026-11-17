@@ -94,6 +94,11 @@
   with direct `DateOnly` endpoint parameters without an equivalent guard.
 - `scripts/verify.ps1` runs `frontend/scripts/check-date-architecture.mjs`;
   do not add a page-level calendar or raw date formatter to make a build pass.
+- Homepage section order, visibility, and hero image are controlled by
+  `home_page_settings` through the admin panel. Do not hardcode a new home
+  section or reorder sections in a page component.
+- Organic agency placement must be contract-driven; paid placement must be a
+  separately labelled campaign and must never mutate organic ranking.
 - Read `docs/adr/0032-calendar-boundary-jalali-ui-gregorian-contract.md` and
   `docs/plan/CALENDAR-ARCHITECTURE-PLAN.md` before changing date UI, filters,
   invoices, reports, or booking forms.

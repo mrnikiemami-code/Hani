@@ -754,6 +754,32 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.ToTable("notifications", "content");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Settings.HomePageSettings", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("key");
+
+                    b.Property<string>("Locale")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("locale");
+
+                    b.Property<string>("SettingsJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("settings_json");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Key", "Locale");
+
+                    b.ToTable("home_page_settings", "content");
+                });
+
             modelBuilder.Entity("Hani.Modules.Content.Domain.Content.BlogPost", b =>
                 {
                     b.OwnsMany("Hani.Modules.Content.Domain.Content.BlogPostDestination", "Destinations", b1 =>

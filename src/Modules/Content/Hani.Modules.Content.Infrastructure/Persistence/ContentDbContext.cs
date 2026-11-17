@@ -1,6 +1,7 @@
 using Hani.Modules.Content.Domain.Content;
 using Hani.Modules.Content.Domain.Dashboard;
 using Hani.Modules.Content.Domain.Growth;
+using Hani.Modules.Content.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Content.Infrastructure.Persistence;
@@ -24,6 +25,7 @@ public sealed class ContentDbContext(DbContextOptions<ContentDbContext> options)
     public DbSet<AnalyticsEvent> AnalyticsEvents => Set<AnalyticsEvent>();
     public DbSet<UserMessage> UserMessages => Set<UserMessage>();
     public DbSet<UserDocument> UserDocuments => Set<UserDocument>();
+    public DbSet<HomePageSettings> HomePageSettings => Set<HomePageSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

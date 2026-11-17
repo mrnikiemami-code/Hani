@@ -8,6 +8,7 @@ import {
   resolveHomeExperience
 } from "@/features/home-experience/application/resolve-home-experience";
 import { getHomeFeed } from "@/features/home-experience/infrastructure/home-api";
+import { getHomePageSettings } from "@/features/home-experience/infrastructure/home-settings-api";
 import { HomeExperienceRenderer } from "@/features/home-experience/ui/HomeExperienceRenderer";
 import { getMyPreferences } from "@/features/preferences/infrastructure/preferences-api";
 import { HomeStructuredData } from "@/features/home-experience/ui/HomeStructuredData";
@@ -66,6 +67,7 @@ export default async function HomePage({
     cookie: cookieStore.get(HOME_EXPERIENCE_COOKIE)?.value
   });
   const homeFeed = await getHomeFeed(locale, tourScope);
+  const homeSettings = await getHomePageSettings(locale);
 
   return (
     <>
@@ -74,6 +76,7 @@ export default async function HomePage({
         definition={experience}
         homeFeed={homeFeed}
         tourScope={tourScope}
+        homeSettings={homeSettings}
       />
     </>
   );

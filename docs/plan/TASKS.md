@@ -288,3 +288,14 @@
 | H91-CAL-07 | Query/API payload guarantee | ? | Playwright checks Gregorian canonical values |
 | H91-CAL-09 | Architecture guard | ? | verify fails on direct calendar/raw date UI |
 | H91-CAL-08 | FA/EN/AR + mobile visual QA | ? | screenshots + Lighthouse 100 |
+
+## Phase 6.12 ? Homepage control panel and agency advertising (2026-11-17)
+
+| ID | ??? | ????? | DoD |
+|---|---|---|---|
+| H91-HOME-10 | Home settings storage/API | ? | JSONB per key+locale, public/admin endpoints |
+| H91-HOME-11 | Admin homepage control panel | ? | hero image, section order, visibility |
+| H91-HOME-12 | Lastsecond parity default order | ? | 7 core sections, static extras off |
+| H91-HOME-13 | Agency contract model | ? Proposed | ADR-0033 + plan |
+| H91-HOME-14 | Paid ad campaigns/creatives | ? Proposed | slots, campaign, billing, reports |
+| H91-HOME-15 | Media library/upload | ? Blocked | storage/CDN credentials |

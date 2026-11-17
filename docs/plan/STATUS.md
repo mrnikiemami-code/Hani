@@ -579,3 +579,4 @@
 - Date label/portal follow-up: date labels appear only after selection, dropdown menu is portaled/fixed and follows scroll, FA/AR message strings verified clean.
 - Home search polish: hero form raised, dropdown portal positioning verified, demo catalog labels repaired, test hotels filtered.
 - Search UX: opening dropdowns no longer changes scrollY; menu stays below and follows manual scroll.
+- Homepage control panel: `content.home_page_settings` (JSONB), public/admin settings API, `/[locale]/admin/home` editor, Lastsecond-parity order with optional template sections off by default. Agency advertising/contract model proposed in ADR-0033.

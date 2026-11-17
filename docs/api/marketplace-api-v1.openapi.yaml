@@ -18,6 +18,21 @@ tags:
   - name: Payment
 
 paths:
+  /home-settings:
+    get:
+      tags: [Catalog]
+      summary: Read homepage composition and hero image settings
+      parameters:
+        - { name: key, in: query, schema: { type: string, default: default } }
+        - { name: locale, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HomePageSettings' }
+        default: { $ref: '#/components/responses/Problem' }
+
   /search:
     get:
       tags: [Catalog]
@@ -1673,6 +1688,27 @@ components:
           schema: { $ref: '#/components/schemas/Problem' }
 
   schemas:
+    HomePageSettings:
+      type: object
+      required: [key, locale, settings]
+      properties:
+        key: { type: string }
+        locale: { type: string }
+        settings:
+          type: object
+          properties:
+            heroImageUrl: { type: string }
+            sections:
+              type: array
+              items:
+                type: object
+                required: [id, enabled, order]
+                properties:
+                  id: { type: string }
+                  enabled: { type: boolean }
+                  order: { type: integer }
+                  imageUrl: { type: string }
+        updatedAt: { type: [string, 'null'], format: date-time }
     Problem:
       type: object
       required: [type, title, status, code, correlationId, traceId]

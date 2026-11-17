@@ -286,3 +286,4 @@
 | `e6248a8` | Date label/portal follow-up: conditional labels, portaled dropdown below trigger, repaired FA/AR strings |
 | `c56fa80` | Home search polish: raised hero form, repaired demo labels, filtered test hotels, unique options test |
 | `5c79553` | Search UX: no scroll jump on dropdown open, menu below and scroll-stable |
+| `pending` | Homepage control panel: DB composition settings, admin editor, Lastsecond default order; agency advertising proposal |
