@@ -32,6 +32,10 @@ public static class MediaEndpoints
             .WithName("Internal.ListMedia")
             .Produces<MediaListResponse>();
 
+        media.MapGet("/{id:guid}", GetAdminAsync)
+            .WithName("Internal.GetMediaAsset")
+            .Produces<MediaAssetDto>();
+
         media.MapPost("", UploadAsync)
             .WithName("Internal.UploadMedia")
             .DisableAntiforgery()
@@ -95,10 +99,20 @@ public static class MediaEndpoints
         return media is null ? Results.NotFound() : Results.Ok(media);
     }
 
+    private static async Task<IResult> GetAdminAsync(
+        Guid id,
+        IMediaAssetService service,
+        CancellationToken cancellationToken)
+    {
+        var media = await service.GetAsync(id, cancellationToken);
+        return media is null ? Results.NotFound() : Results.Ok(media);
+    }
+
     private static async Task<IResult> ListAsync(
         [FromQuery] int page,
         [FromQuery] int pageSize,
         [FromQuery] string? q,
+        [FromQuery] Guid? folderId,
         IMediaAssetService service,
         CancellationToken cancellationToken)
     {
@@ -108,6 +122,7 @@ public static class MediaEndpoints
             normalizedPage,
             normalizedPageSize,
             q,
+            folderId,
             cancellationToken);
 
         return Results.Ok(new MediaListResponse(

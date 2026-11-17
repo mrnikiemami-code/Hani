@@ -93,3 +93,13 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
   styles before output.
 - Admin UI: `/[locale]/admin/content` is the table; create and edit use
   `/[locale]/admin/content/new` and `/[locale]/admin/content/{id}`.
+
+## Media Library
+
+- List: `GET /internal/v1/content-media?page=&pageSize=&q=&folderId=`
+- Edit lookup: `GET /internal/v1/content-media/{id}`
+- Upload: `POST /internal/v1/content-media`
+- Metadata update: `PUT /internal/v1/content-media/{id}`
+- Replace binary: `POST /internal/v1/content-media/{id}/replace`
+- Admin list uses a filterable, paginated template table; create and edit are
+  separate routes under `/[locale]/admin/media`.

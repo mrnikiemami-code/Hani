@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { sessionGet } from "@/lib/hani/server-api";
-import type { MediaFolder, MediaListResponse } from "@/features/home-experience/domain/media";
+import type {
+  MediaFolder,
+  MediaListResponse
+} from "@/features/home-experience/domain/media";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
-import { MediaLibraryEditor } from "@/features/home-experience/ui/MediaLibraryEditor";
+import { MediaManager } from "@/features/home-experience/ui/MediaManager";
+
+const PAGE_SIZE = 12;
 
 export async function generateMetadata({
   params
@@ -16,15 +21,32 @@ export async function generateMetadata({
 }
 
 export default async function AdminMediaPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string; q?: string; folderId?: string }>;
 }) {
   const { locale } = await params;
+  const sp = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminMedia" });
+  const page = Math.max(1, Number.parseInt(sp.page ?? "1", 10) || 1);
+  const q = typeof sp.q === "string" ? sp.q.trim() : "";
+  const folderId =
+    typeof sp.folderId === "string" &&
+    /^[0-9a-f-]{36}$/i.test(sp.folderId)
+      ? sp.folderId
+      : "";
+  const query = new URLSearchParams({
+    page: String(page),
+    pageSize: String(PAGE_SIZE)
+  });
+  if (q) query.set("q", q);
+  if (folderId) query.set("folderId", folderId);
+
   const [result, folderResult] = await Promise.all([
-    sessionGet<MediaListResponse>("/internal/v1/content-media?page=1&pageSize=24"),
+    sessionGet<MediaListResponse>(`/internal/v1/content-media?${query}`),
     sessionGet<MediaFolder[]>("/internal/v1/content-media/folders")
   ]);
 
@@ -50,10 +72,15 @@ export default async function AdminMediaPage({
       subtitle={t("subtitle")}
       active={t("navMedia")}
     >
-      <MediaLibraryEditor
+      <MediaManager
+        key={`${q}-${folderId}-${page}`}
+        locale={locale}
         initialItems={result.data?.items ?? []}
-        initialFolders={folderResult.data ?? []}
-        total={result.data?.total ?? 0}
+        initialTotal={result.data?.total ?? 0}
+        page={result.data?.page ?? page}
+        pageSize={PAGE_SIZE}
+        folders={folderResult.data ?? []}
+        filters={{ q, folderId }}
       />
     </AdminPageShell>
   );

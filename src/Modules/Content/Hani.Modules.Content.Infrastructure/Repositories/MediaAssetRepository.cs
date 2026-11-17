@@ -24,6 +24,7 @@ internal sealed class MediaAssetRepository(ContentDbContext dbContext) : IMediaA
         int page,
         int pageSize,
         string? query,
+        Guid? folderId,
         CancellationToken cancellationToken)
     {
         var source = dbContext.MediaAssets
@@ -37,6 +38,11 @@ internal sealed class MediaAssetRepository(ContentDbContext dbContext) : IMediaA
             source = source.Where(asset =>
                 asset.OriginalFileName.Contains(term) ||
                 asset.AltText.Contains(term));
+        }
+
+        if (folderId is not null)
+        {
+            source = source.Where(asset => asset.FolderId == folderId);
         }
 
         var total = await source.CountAsync(cancellationToken);

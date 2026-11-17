@@ -313,3 +313,4 @@
 | H91-MEDIA-07 | S3/R2/cloud storage | ? Phase 5 | provider adapter |
 | H91-MEDIA-08 | Admin media/content polish | ? | 20MB uploads, tag chips, focal labels, CKEditor GPL, SEO audit, mobile shell |
 | H91-MEDIA-09 | Content admin table/editor split | ? | template table, create/edit/delete routes, rich editor toolbar |
+| H91-MEDIA-10 | Media admin table/editor split | ? | filterable/paginated table, create/edit routes, folder filter |

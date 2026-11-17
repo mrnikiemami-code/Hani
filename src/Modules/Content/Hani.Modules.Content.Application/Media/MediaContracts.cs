@@ -21,6 +21,7 @@ public interface IMediaAssetRepository
         int page,
         int pageSize,
         string? query,
+        Guid? folderId,
         CancellationToken cancellationToken);
 
     /// <summary>Removes an asset and its variants.</summary>
@@ -135,6 +136,7 @@ public interface IMediaAssetService
         int page,
         int pageSize,
         string? query,
+        Guid? folderId,
         CancellationToken cancellationToken);
 
     /// <summary>Updates alt/caption/credit metadata.</summary>

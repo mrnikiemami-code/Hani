@@ -17,6 +17,41 @@ paths:
         '401': { description: Unauthorized }
         '403': { description: Forbidden }
         '404': { description: Not found }
+  /internal/v1/content-media:
+    get:
+      tags: [Media]
+      summary: List media assets with search, folder filter, and pagination
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 12 } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: folderId, in: query, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Paged media list }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+  /internal/v1/content-media/{id}:
+    get:
+      tags: [Media]
+      summary: Get a media asset for editing
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Media asset }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '404': { description: Not found }
+    put:
+      tags: [Media]
+      summary: Update media metadata, folder, tags, and focal point
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated media asset }
+        '400': { description: Invalid metadata }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '404': { description: Not found }
   /internal/v1/content/categories:
     post:
       tags: [Content]

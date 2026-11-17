@@ -86,6 +86,7 @@ internal sealed class MediaAssetService(
         int page,
         int pageSize,
         string? query,
+        Guid? folderId,
         CancellationToken cancellationToken)
     {
         var normalizedPage = Math.Max(1, page);
@@ -94,6 +95,7 @@ internal sealed class MediaAssetService(
             normalizedPage,
             normalizedPageSize,
             query,
+            folderId,
             cancellationToken);
 
         return (items.Select(Map).ToArray(), total);

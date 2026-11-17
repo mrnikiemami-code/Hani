@@ -67,6 +67,50 @@ export async function uploadMedia(
   return { ok: true, data: (await response.json()) as MediaAsset };
 }
 
+export async function updateMediaMetadata(
+  id: string,
+  input: {
+    altText: string;
+    caption: string;
+    credit: string;
+    folderId: string | null;
+    tags: string[];
+    focalX: number | null;
+    focalY: number | null;
+  }
+): Promise<MediaActionResult<MediaAsset>> {
+  const accessToken = await token();
+  if (!accessToken) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const response = await fetch(`${apiBase}/internal/v1/content-media/${id}`, {
+    method: "PUT",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      altText: input.altText,
+      caption: input.caption,
+      credit: input.credit,
+      folderId: input.folderId,
+      tags: input.tags.join(","),
+      focalX: input.focalX,
+      focalY: input.focalY
+    })
+  });
+
+  if (response.status === 401 || response.status === 403) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  return response.ok
+    ? { ok: true, data: (await response.json()) as MediaAsset }
+    : { ok: false, error: "failed" };
+}
+
 export async function updateMediaAlt(
   id: string,
   altText: string

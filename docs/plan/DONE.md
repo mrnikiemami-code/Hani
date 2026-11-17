@@ -298,3 +298,4 @@
 | `7bf0218` | Media upload UX: aligned tag row, chips below, folder creation modal beside the folder select |
 | `e835e68` | Media tag row: dedicated row with equal-width input, button, and hint |
 | `e835e68` | Content admin table + separate editor routes; expanded CKEditor toolbar and sanitized styles |
+| `pending` | Media admin table: filters, pagination, create/edit routes |
