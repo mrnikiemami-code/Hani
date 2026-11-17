@@ -482,7 +482,8 @@
     "reset": "پاک کردن",
     "allFolders": "همه پوشه‌ها",
     "paginationLabel": "صفحه‌بندی کتابخانه رسانه",
-    "selectAll": "انتخاب همه"
+    "selectAll": "انتخاب همه",
+    "pageInfo": "صفحه {page} از {total}"
   },
   "adminContent": {
     "title": "مدیریت محتوا",

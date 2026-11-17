@@ -482,7 +482,8 @@
     "reset": "Clear",
     "allFolders": "All folders",
     "paginationLabel": "Media library pagination",
-    "selectAll": "Select all"
+    "selectAll": "Select all",
+    "pageInfo": "Page {page} of {total}"
   },
   "adminContent": {
     "title": "Content management",

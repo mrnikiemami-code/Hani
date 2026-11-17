@@ -447,3 +447,97 @@ html[lang="en"] body {
     min-height: 220px;
   }
 }
+
+// Media/admin data table: fit the content column, avoid nested scrollbars, and
+// collapse lower-priority columns instead of forcing horizontal scrolling.
+.admin-table-wrap {
+  width: 100%;
+  overflow: visible;
+}
+
+.admin-data-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.admin-data-table .admin-check-cell {
+  width: 44px;
+}
+
+.admin-data-table th:nth-last-child(4),
+.admin-data-table td:nth-last-child(4) {
+  width: 130px;
+}
+
+.admin-data-table th:nth-last-child(3),
+.admin-data-table td:nth-last-child(3) {
+  width: 130px;
+}
+
+.admin-data-table th:nth-last-child(2),
+.admin-data-table td:nth-last-child(2) {
+  width: 120px;
+}
+
+.admin-data-table th:last-child,
+.admin-data-table td:last-child {
+  width: 170px;
+}
+
+.admin-data-table .media-asset-cell,
+.admin-data-table .media-asset-text {
+  min-width: 0;
+}
+
+.admin-data-table .media-table-thumb {
+  flex: 0 0 auto;
+}
+
+.admin-data-table .media-table-actions .btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 991.98px) {
+  .admin-data-table th:nth-last-child(2),
+  .admin-data-table td:nth-last-child(2) {
+    width: 110px;
+  }
+
+  .admin-data-table th:last-child,
+  .admin-data-table td:last-child {
+    width: 150px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .admin-data-table > thead > tr > th,
+  .admin-data-table > tbody > tr > td {
+    padding: .7rem .5rem !important;
+  }
+
+  .admin-data-table th:last-child,
+  .admin-data-table td:last-child {
+    width: 84px;
+  }
+
+  .admin-data-table .media-table-thumb {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .admin-data-table .media-asset-text {
+    overflow: hidden;
+  }
+
+  .admin-data-table .media-action-label {
+    display: none;
+  }
+
+  .admin-data-table .media-table-actions .btn {
+    padding: .35rem .45rem;
+  }
+
+  .paginations .page-item {
+    margin-inline-end: .35rem !important;
+  }
+}

@@ -482,7 +482,8 @@
     "reset": "مسح",
     "allFolders": "كل المجلدات",
     "paginationLabel": "ترقيم صفحات مكتبة الوسائط",
-    "selectAll": "تحديد الكل"
+    "selectAll": "تحديد الكل",
+    "pageInfo": "الصفحة {page} من {total}"
   },
   "adminContent": {
     "title": "إدارة المحتوى",

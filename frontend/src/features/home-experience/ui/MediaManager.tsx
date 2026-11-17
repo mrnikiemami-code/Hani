@@ -193,12 +193,12 @@ export function MediaManager({
           </button>
         </div>
 
-        <div className="custom-datatable-filter table-responsive">
-          <table className="table datatable align-middle mb-0">
+        <div className="admin-table-wrap">
+          <table className="table datatable admin-data-table align-middle mb-0">
             <caption className="visually-hidden">{t("libraryTitle")}</caption>
             <thead className="thead-light">
               <tr>
-                <th className="w-1">
+                <th className="admin-check-cell">
                   <input
                     className="form-check-input"
                     type="checkbox"
@@ -211,13 +211,10 @@ export function MediaManager({
                     }}
                   />
                 </th>
-                <th>{t("preview")}</th>
                 <th>{t("file")}</th>
-                <th>{t("altText")}</th>
-                <th>{t("folder")}</th>
-                <th>{t("tags")}</th>
-                <th>{t("dimensions")}</th>
-                <th>{t("createdAt")}</th>
+                <th className="d-none d-xl-table-cell">{t("folder")}</th>
+                <th className="d-none d-xl-table-cell">{t("tags")}</th>
+                <th className="d-none d-md-table-cell">{t("createdAt")}</th>
                 <th className="text-end">{t("actions")}</th>
               </tr>
             </thead>
@@ -226,7 +223,7 @@ export function MediaManager({
                 const folder = folders.find((entry) => entry.id === item.folderId);
                 return (
                   <tr key={item.id}>
-                    <td>
+                    <td className="admin-check-cell">
                       <input
                         className="form-check-input"
                         type="checkbox"
@@ -242,35 +239,35 @@ export function MediaManager({
                       />
                     </td>
                     <td>
-                      <HaniMediaImage
-                        media={item}
-                        sizes="72px"
-                        width={72}
-                        height={54}
-                        className="rounded media-table-thumb"
-                        style={{ width: 72, height: 54, objectFit: "cover" }}
-                      />
+                      <div className="d-flex align-items-center gap-2 media-asset-cell">
+                        <HaniMediaImage
+                          media={item}
+                          sizes="72px"
+                          width={72}
+                          height={54}
+                          className="rounded media-table-thumb"
+                          style={{ width: 72, height: 54, objectFit: "cover" }}
+                        />
+                        <div className="min-w-0 media-asset-text">
+                          <Link
+                            href={`/admin/media/${item.id}`}
+                            className="link-primary fw-medium d-block text-truncate"
+                            title={item.originalFileName}
+                          >
+                            {item.originalFileName}
+                          </Link>
+                          <span className="d-block fs-12 text-gray-6 text-truncate">
+                            {item.altText}
+                          </span>
+                          <span className="d-block fs-12 text-gray-5 text-truncate">
+                            {item.width}×{item.height} · {(item.sizeBytes / 1024).toFixed(0)} KB
+                            <span className="d-lg-none"> · {folder?.name ?? t("noFolder")}</span>
+                          </span>
+                        </div>
+                      </div>
                     </td>
-                    <td>
-                      <Link
-                        href={`/admin/media/${item.id}`}
-                        className="link-primary fw-medium d-block text-truncate"
-                        style={{ maxWidth: 180 }}
-                        title={item.originalFileName}
-                      >
-                        {item.originalFileName}
-                      </Link>
-                      <span className="fs-12 text-gray-6">
-                        {(item.sizeBytes / 1024).toFixed(0)} KB
-                      </span>
-                    </td>
-                    <td>
-                      <span className="d-block text-truncate" style={{ maxWidth: 220 }}>
-                        {item.altText}
-                      </span>
-                    </td>
-                    <td>{folder?.name ?? "—"}</td>
-                    <td>
+                    <td className="d-none d-xl-table-cell">{folder?.name ?? "—"}</td>
+                    <td className="d-none d-xl-table-cell">
                       <div className="d-flex flex-wrap gap-1">
                         {item.tags.slice(0, 2).map((tag) => (
                           <span key={tag} className="badge bg-light text-dark border">
@@ -285,23 +282,20 @@ export function MediaManager({
                         {item.tags.length === 0 && <span className="text-gray-5">—</span>}
                       </div>
                     </td>
-                    <td dir="ltr" className="text-start text-nowrap">
-                      {item.width}×{item.height}
-                    </td>
-                    <td className="text-nowrap">
+                    <td className="text-nowrap d-none d-md-table-cell">
                       {formatIsoInstant(item.createdAt, locale, {
                         dateStyle: "medium"
                       })}
                     </td>
                     <td>
-                      <div className="d-flex justify-content-end gap-2">
+                      <div className="d-flex justify-content-end gap-1 media-table-actions">
                         <Link
                           href={`/admin/media/${item.id}`}
                           className="btn btn-light btn-sm"
                           aria-label={`${t("edit")}: ${item.originalFileName}`}
                         >
-                          <i className="isax isax-edit-2 me-1" />
-                          {t("edit")}
+                          <i className="isax isax-edit-2" />
+                          <span className="media-action-label ms-1">{t("edit")}</span>
                         </Link>
                         <button
                           type="button"
@@ -310,8 +304,8 @@ export function MediaManager({
                           disabled={pending}
                           aria-label={`${t("delete")}: ${item.originalFileName}`}
                         >
-                          <i className="isax isax-trash me-1" />
-                          {t("delete")}
+                          <i className="isax isax-trash" />
+                          <span className="media-action-label ms-1">{t("delete")}</span>
                         </button>
                       </div>
                     </td>
@@ -320,7 +314,7 @@ export function MediaManager({
               })}
               {items.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="text-center text-gray-6 py-4">
+                  <td colSpan={6} className="text-center text-gray-6 py-4">
                     {t("empty")}
                   </td>
                 </tr>
@@ -329,50 +323,55 @@ export function MediaManager({
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <nav aria-label={t("paginationLabel")} className="mt-4">
-            <ul className="paginations d-flex justify-content-center align-items-center">
-              <li className={`page-item me-2 ${page <= 1 ? "disabled" : ""}`}>
-                <Link
-                  className="page-link-1 d-flex justify-content-center align-items-center"
-                  href={listHref(Math.max(1, page - 1))}
-                  aria-disabled={page <= 1}
-                >
-                  <i className="isax isax-arrow-left-2" />
-                </Link>
-              </li>
-              {pageItems(page, totalPages).map((item, index) =>
-                item === "ellipsis" ? (
-                  <li key={`ellipsis-${index}`} className="page-item me-2">
-                    <span className="page-link-1 d-flex justify-content-center align-items-center">
-                      …
-                    </span>
-                  </li>
-                ) : (
-                  <li key={item} className="page-item me-2">
-                    <Link
-                      className={`page-link-1 d-flex justify-content-center align-items-center ${
-                        item === page ? "active" : ""
-                      }`}
-                      href={listHref(item)}
-                      aria-current={item === page ? "page" : undefined}
-                    >
-                      {item}
-                    </Link>
-                  </li>
-                )
-              )}
-              <li className={`page-item ${page >= totalPages ? "disabled" : ""}`}>
-                <Link
-                  className="page-link-1 d-flex justify-content-center align-items-center"
-                  href={listHref(Math.min(totalPages, page + 1))}
-                  aria-disabled={page >= totalPages}
-                >
-                  <i className="isax isax-arrow-right-2" />
-                </Link>
-              </li>
-            </ul>
-          </nav>
+        {total > 0 && (
+          <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-4">
+            <span className="text-gray-6 fs-13">
+              {t("pageInfo", { page, total: totalPages })}
+            </span>
+            <nav aria-label={t("paginationLabel")}>
+              <ul className="paginations d-flex justify-content-center align-items-center mb-0">
+                <li className={`page-item me-2 ${page <= 1 ? "disabled" : ""}`}>
+                  <Link
+                    className="page-link-1 d-flex justify-content-center align-items-center"
+                    href={listHref(Math.max(1, page - 1))}
+                    aria-disabled={page <= 1}
+                  >
+                    <i className="isax isax-arrow-left-2" />
+                  </Link>
+                </li>
+                {pageItems(page, totalPages).map((item, index) =>
+                  item === "ellipsis" ? (
+                    <li key={`ellipsis-${index}`} className="page-item me-2">
+                      <span className="page-link-1 d-flex justify-content-center align-items-center">
+                        …
+                      </span>
+                    </li>
+                  ) : (
+                    <li key={item} className="page-item me-2">
+                      <Link
+                        className={`page-link-1 d-flex justify-content-center align-items-center ${
+                          item === page ? "active" : ""
+                        }`}
+                        href={listHref(item)}
+                        aria-current={item === page ? "page" : undefined}
+                      >
+                        {item}
+                      </Link>
+                    </li>
+                  )
+                )}
+                <li className={`page-item ${page >= totalPages ? "disabled" : ""}`}>
+                  <Link
+                    className="page-link-1 d-flex justify-content-center align-items-center"
+                    href={listHref(Math.min(totalPages, page + 1))}
+                    aria-disabled={page >= totalPages}
+                  >
+                    <i className="isax isax-arrow-right-2" />
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
         )}
       </div>
     </div>
