@@ -312,6 +312,10 @@ test.describe("public smoke", () => {
     await expect(page.locator(".agent-sidebar")).toHaveCount(1);
     await expect(page.locator(".breadcrumb-bar")).toHaveCount(1);
     await expect(page.locator("main#main-content")).toHaveCount(1);
+
+    await page.goto("/fa/admin/media");
+    await expect(page.locator(".agent-sidebar")).toHaveCount(1);
+    await expect(page.locator(".breadcrumb-bar")).toHaveCount(1);
   });
 
   test("date modal stays inside the mobile viewport", async ({ page }) => {

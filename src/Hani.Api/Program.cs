@@ -193,6 +193,8 @@ builder.Services.Configure<Hani.Modules.Content.Application.Notifications.Notifi
     builder.Configuration.GetSection("Notifications"));
 builder.Services.Configure<Hani.Modules.Identity.Infrastructure.Storage.MediaStorageOptions>(
     builder.Configuration.GetSection("Storage"));
+builder.Services.Configure<Hani.Modules.Content.Infrastructure.Storage.ContentMediaStorageOptions>(
+    builder.Configuration.GetSection("Storage"));
 builder.Services.Configure<FlightProviderOptions>(
     builder.Configuration.GetSection("FlightProvider"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
@@ -591,6 +593,7 @@ app.MapMarketplaceEndpoints();
 app.MapChannelEndpoints();
 app.MapDashboardEndpoints();
 app.MapHomeSettingsEndpoints();
+app.MapMediaEndpoints();
 app.MapWishlistEndpoints();
 app.MapLastsecondParityEndpoints();
 app.MapBookingEndpoints();

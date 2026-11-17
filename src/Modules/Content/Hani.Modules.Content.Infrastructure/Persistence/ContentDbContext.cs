@@ -1,6 +1,7 @@
 using Hani.Modules.Content.Domain.Content;
 using Hani.Modules.Content.Domain.Dashboard;
 using Hani.Modules.Content.Domain.Growth;
+using Hani.Modules.Content.Domain.Media;
 using Hani.Modules.Content.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,8 @@ public sealed class ContentDbContext(DbContextOptions<ContentDbContext> options)
     public DbSet<UserMessage> UserMessages => Set<UserMessage>();
     public DbSet<UserDocument> UserDocuments => Set<UserDocument>();
     public DbSet<HomePageSettings> HomePageSettings => Set<HomePageSettings>();
+    public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
+    public DbSet<MediaVariant> MediaVariants => Set<MediaVariant>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

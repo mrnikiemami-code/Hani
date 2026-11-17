@@ -416,8 +416,33 @@
     "breadcrumbHome": "خانه",
     "breadcrumbAdmin": "مدیریت",
     "adminName": "مدیر هانی",
-    "adminRole": "مدیریت صفحه اول",
+    "adminRole": "?????? ?????",
     "navHomepage": "صفحه اول",
-    "backToSite": "بازگشت به سایت"
+    "backToSite": "بازگشت به سایت",
+    "navMedia": "کتابخانه رسانه"
+  },
+  "adminMedia": {
+    "title": "کتابخانه رسانه",
+    "subtitle": "مدیریت تصاویر، تبدیل WebP، متن جایگزین و نسخه‌های واکنش‌گرا.",
+    "navMedia": "کتابخانه رسانه",
+    "uploadTitle": "آپلود تصویر",
+    "uploadHint": "همه تصاویر به‌صورت خودکار به WebP تبدیل می‌شوند.",
+    "file": "فایل تصویر",
+    "fileHint": "حداکثر ۱۵ مگابایت؛ JPEG/PNG/WebP/GIF/AVIF",
+    "altText": "متن جایگزین (Alt)",
+    "caption": "توضیح",
+    "credit": "عکس از",
+    "upload": "آپلود",
+    "uploading": "در حال تبدیل...",
+    "uploaded": "تصویر آپلود و به WebP تبدیل شد.",
+    "error": "عملیات انجام نشد.",
+    "libraryTitle": "رسانه‌ها",
+    "count": "{count} فایل",
+    "empty": "هنوز رسانه‌ای آپلود نشده است.",
+    "variants": "نسخه",
+    "delete": "حذف",
+    "deleteConfirm": "این تصویر حذف شود؟",
+    "accessTitle": "دسترسی مدیر لازم است",
+    "accessHint": "برای مدیریت رسانه با حساب مدیر وارد شوید."
   }
 }

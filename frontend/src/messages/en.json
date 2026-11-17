@@ -416,8 +416,33 @@
     "breadcrumbHome": "Home",
     "breadcrumbAdmin": "Admin",
     "adminName": "Hani Admin",
-    "adminRole": "Homepage operations",
+    "adminRole": "Content operations",
     "navHomepage": "Homepage",
-    "backToSite": "Back to site"
+    "backToSite": "Back to site",
+    "navMedia": "Media library"
+  },
+  "adminMedia": {
+    "title": "Media library",
+    "subtitle": "Manage images, WebP conversion, alt text, and responsive variants.",
+    "navMedia": "Media library",
+    "uploadTitle": "Upload image",
+    "uploadHint": "Every image is converted to WebP automatically.",
+    "file": "Image file",
+    "fileHint": "Maximum 15 MB; JPEG/PNG/WebP/GIF/AVIF",
+    "altText": "Alternative text (alt)",
+    "caption": "Caption",
+    "credit": "Credit",
+    "upload": "Upload",
+    "uploading": "Converting...",
+    "uploaded": "Image uploaded and converted to WebP.",
+    "error": "The operation failed.",
+    "libraryTitle": "Media",
+    "count": "{count} files",
+    "empty": "No media uploaded yet.",
+    "variants": "variants",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this image?",
+    "accessTitle": "Admin access required",
+    "accessHint": "Sign in with an admin account to manage media."
   }
 }

@@ -581,3 +581,4 @@
 - Search UX: opening dropdowns no longer changes scrollY; menu stays below and follows manual scroll.
 - Homepage control panel: `content.home_page_settings` (JSONB), public/admin settings API, `/[locale]/admin/home` editor, Lastsecond-parity order with optional template sections off by default. Agency advertising/contract model proposed in ADR-0033.
 - Admin homepage panel now uses the template agency-dashboard shell instead of a custom page layout.
+- Content Media Library phase 1: WebP conversion, variants, content-addressed local storage, admin media library, alt/caption/credit. Phases 2?5 planned (responsive SEO delivery, folders/usage, CMS, cloud storage).

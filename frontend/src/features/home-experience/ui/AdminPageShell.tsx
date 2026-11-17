@@ -65,6 +65,17 @@ export async function AdminPageShell({
                       </Link>
                     </li>
                     <li>
+                      <Link
+                        href="/admin/media"
+                        className={`d-flex align-items-center ${
+                          active === t("navMedia") ? "active" : ""
+                        }`}
+                      >
+                        <i className="isax isax-gallery me-2" />
+                        {t("navMedia")}
+                      </Link>
+                    </li>
+                    <li>
                       <Link href="/" className="d-flex align-items-center">
                         <i className="isax isax-arrow-left-2 me-2" />
                         {t("backToSite")}

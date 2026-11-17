@@ -416,8 +416,33 @@
     "breadcrumbHome": "الرئيسية",
     "breadcrumbAdmin": "الإدارة",
     "adminName": "مدير هاني",
-    "adminRole": "إدارة الصفحة الرئيسية",
+    "adminRole": "????? ???????",
     "navHomepage": "الصفحة الرئيسية",
-    "backToSite": "العودة إلى الموقع"
+    "backToSite": "العودة إلى الموقع",
+    "navMedia": "مكتبة الوسائط"
+  },
+  "adminMedia": {
+    "title": "مكتبة الوسائط",
+    "subtitle": "إدارة الصور والتحويل إلى WebP والنص البديل والنسخ المتجاوبة.",
+    "navMedia": "مكتبة الوسائط",
+    "uploadTitle": "رفع صورة",
+    "uploadHint": "يتم تحويل كل صورة تلقائياً إلى WebP.",
+    "file": "ملف الصورة",
+    "fileHint": "بحد أقصى 15 ميغابايت؛ JPEG/PNG/WebP/GIF/AVIF",
+    "altText": "النص البديل",
+    "caption": "التعليق",
+    "credit": "المصدر",
+    "upload": "رفع",
+    "uploading": "جارٍ التحويل...",
+    "uploaded": "تم رفع الصورة وتحويلها إلى WebP.",
+    "error": "فشلت العملية.",
+    "libraryTitle": "الوسائط",
+    "count": "{count} ملفات",
+    "empty": "لم يتم رفع أي وسائط بعد.",
+    "variants": "نسخ",
+    "delete": "حذف",
+    "deleteConfirm": "حذف هذه الصورة؟",
+    "accessTitle": "مطلوب صلاحية مدير",
+    "accessHint": "سجل الدخول بحساب مدير لإدارة الوسائط."
   }
 }

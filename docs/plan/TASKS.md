@@ -299,3 +299,15 @@
 | H91-HOME-13 | Agency contract model | ? Proposed | ADR-0033 + plan |
 | H91-HOME-14 | Paid ad campaigns/creatives | ? Proposed | slots, campaign, billing, reports |
 | H91-HOME-15 | Media library/upload | ? Blocked | storage/CDN credentials |
+
+## Phase 6.13 ? Content media library (2026-11-17)
+
+| ID | ??? | ????? | DoD |
+|---|---|---|---|
+| H91-MEDIA-01 | WebP conversion service | ? | ImageSharp ? WebP variants |
+| H91-MEDIA-02 | Media DB and storage abstraction | ? | metadata + local storage |
+| H91-MEDIA-03 | Admin media library | ? | upload, alt, list, delete |
+| H91-MEDIA-04 | Responsive SEO delivery | ? Phase 2 | srcset/picture/LCP/OG |
+| H91-MEDIA-05 | Folders/tags/usage/replace | ? Phase 3 | library operations |
+| H91-MEDIA-06 | Content CMS and revisions | ? Phase 4 | pages/banners/articles |
+| H91-MEDIA-07 | S3/R2/cloud storage | ? Phase 5 | provider adapter |

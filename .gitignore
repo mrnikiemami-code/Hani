@@ -63,3 +63,4 @@ logs/
 
 # ===== Purchased/reference assets (not source of truth) =====
 reference/
+src/Hani.Api/wwwroot/media/
