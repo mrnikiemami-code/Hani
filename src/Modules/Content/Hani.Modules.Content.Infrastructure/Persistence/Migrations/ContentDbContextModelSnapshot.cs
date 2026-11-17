@@ -216,6 +216,10 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("published_at");
 
+                    b.Property<DateTimeOffset?>("ScheduledAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("scheduled_at");
+
                     b.Property<string>("SeoDescription")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")

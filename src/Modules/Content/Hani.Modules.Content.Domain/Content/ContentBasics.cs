@@ -19,7 +19,8 @@ public enum ContentStatus
 {
     Draft = 0,
     Published = 1,
-    Archived = 2
+    Archived = 2,
+    Scheduled = 3
 }
 
 /// <summary>

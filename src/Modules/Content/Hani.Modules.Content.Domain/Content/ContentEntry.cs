@@ -86,6 +86,9 @@ public sealed class ContentEntry : AggregateRoot<Guid>
     /// <summary>Publication time.</summary>
     public DateTimeOffset? PublishedAt { get; private set; }
 
+    /// <summary>Scheduled publication time.</summary>
+    public DateTimeOffset? ScheduledAt { get; private set; }
+
     /// <summary>Creation time.</summary>
     public DateTimeOffset CreatedAt { get; private set; }
 
@@ -145,6 +148,7 @@ public sealed class ContentEntry : AggregateRoot<Guid>
         SeoDescription = seoDescription?.Trim();
         Status = ContentStatus.Draft;
         PublishedAt = null;
+        ScheduledAt = null;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 
@@ -160,7 +164,17 @@ public sealed class ContentEntry : AggregateRoot<Guid>
     public void Publish()
     {
         Status = ContentStatus.Published;
+        ScheduledAt = null;
         PublishedAt ??= DateTimeOffset.UtcNow;
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Schedules publication.</summary>
+    public void Schedule(DateTimeOffset scheduledAt)
+    {
+        Status = ContentStatus.Scheduled;
+        ScheduledAt = scheduledAt.ToUniversalTime();
+        PublishedAt = null;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 

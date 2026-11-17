@@ -22,6 +22,7 @@ internal sealed class ContentEntryConfiguration : IEntityTypeConfiguration<Conte
         builder.Property(item => item.SeoDescription).HasColumnName("seo_description").HasMaxLength(500);
         builder.Property(item => item.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(30);
         builder.Property(item => item.PublishedAt).HasColumnName("published_at");
+        builder.Property(item => item.ScheduledAt).HasColumnName("scheduled_at");
         builder.Property(item => item.CreatedAt).HasColumnName("created_at");
         builder.Property(item => item.UpdatedAt).HasColumnName("updated_at");
         builder.HasIndex(item => new { item.Type, item.Locale, item.Slug }).IsUnique();

@@ -488,6 +488,8 @@
     "deleteConfirm": "Delete this content?",
     "empty": "No content yet.",
     "accessTitle": "Admin access required",
-    "accessHint": "Sign in with an admin account to manage content."
+    "accessHint": "Sign in with an admin account to manage content.",
+    "schedule": "Schedule publication",
+    "scheduleButton": "Schedule"
   }
 }

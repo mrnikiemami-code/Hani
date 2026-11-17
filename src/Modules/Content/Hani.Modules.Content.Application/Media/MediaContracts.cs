@@ -127,6 +127,9 @@ public interface IMediaAssetService
         MediaUploadInput input,
         CancellationToken cancellationToken);
 
+    /// <summary>Gets one public media asset.</summary>
+    Task<MediaAssetDto?> GetAsync(Guid id, CancellationToken cancellationToken);
+
     /// <summary>Lists media assets.</summary>
     Task<(IReadOnlyList<MediaAssetDto> Items, int Total)> ListAsync(
         int page,

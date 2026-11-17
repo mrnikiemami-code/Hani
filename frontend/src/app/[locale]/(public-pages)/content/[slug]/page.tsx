@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import sanitizeHtml from "sanitize-html";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { absoluteUrl } from "@/lib/hani/site";
 import { formatIsoInstant } from "@/lib/hani/calendar";
 import { getPublishedContentEntry } from "@/features/home-experience/infrastructure/content-entry-api";
+import { getMediaAsset } from "@/features/home-experience/infrastructure/media-api";
+import { HaniMediaImage, MEDIA_SIZES } from "@/features/home-experience/ui/HaniMediaImage";
 
 export async function generateMetadata({
   params
@@ -56,6 +59,9 @@ export default async function ContentPage({
     notFound();
   }
   const t = await getTranslations({ locale, namespace: "common" });
+  const heroMedia = entry.heroMediaId
+    ? await getMediaAsset(entry.heroMediaId)
+    : null;
 
   return (
     <div className="content">
@@ -66,7 +72,15 @@ export default async function ContentPage({
             {entry.excerpt ? (
               <p className="lead text-gray-6">{entry.excerpt}</p>
             ) : null}
-            {entry.heroImageUrl ? (
+            {heroMedia ? (
+              <HaniMediaImage
+                media={heroMedia}
+                sizes={MEDIA_SIZES.detail}
+                loading="eager"
+                fetchPriority="high"
+                className="img-fluid rounded mb-4"
+              />
+            ) : entry.heroImageUrl ? (
               <img
                 src={entry.heroImageUrl}
                 alt={entry.title}
@@ -76,9 +90,23 @@ export default async function ContentPage({
                 decoding="async"
               />
             ) : null}
-            <div className="text-gray-7" style={{ whiteSpace: "pre-wrap" }}>
-              {entry.body || t("noResults")}
-            </div>
+            <div
+              className="text-gray-7"
+              dangerouslySetInnerHTML={{
+                __html: sanitizeHtml(entry.body || t("noResults"), {
+                  allowedTags: [
+                    "p", "br", "strong", "b", "em", "i", "u", "s",
+                    "ul", "ol", "li", "h2", "h3", "h4", "blockquote",
+                    "a", "img", "table", "thead", "tbody", "tr", "th", "td"
+                  ],
+                  allowedAttributes: {
+                    a: ["href", "title", "target", "rel"],
+                    img: ["src", "alt", "width", "height", "loading"]
+                  },
+                  allowedSchemes: ["http", "https", "mailto"]
+                })
+              }}
+            />
             <p className="fs-12 text-gray-5 mt-4 mb-0">
               {formatIsoInstant(entry.updatedAt, locale, { dateStyle: "medium" })}
             </p>

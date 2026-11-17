@@ -18,6 +18,12 @@ public static class MediaEndpoints
     /// <summary>Maps the admin-only content media endpoints.</summary>
     public static IEndpointRouteBuilder MapMediaEndpoints(this IEndpointRouteBuilder app)
     {
+        var publicMedia = app.MapGroup("/market/v1/media")
+            .WithTags("Marketplace.Media");
+        publicMedia.MapGet("/{id:guid}", GetPublicAsync)
+            .WithName("Marketplace.GetMedia")
+            .Produces<MediaAssetDto>();
+
         var media = app.MapGroup("/internal/v1/media")
             .WithTags("Internal.Media")
             .RequireAuthorization("Admin");
@@ -78,6 +84,15 @@ public static class MediaEndpoints
             .Produces(StatusCodes.Status204NoContent);
 
         return app;
+    }
+
+    private static async Task<IResult> GetPublicAsync(
+        Guid id,
+        IMediaAssetService service,
+        CancellationToken cancellationToken)
+    {
+        var media = await service.GetAsync(id, cancellationToken);
+        return media is null ? Results.NotFound() : Results.Ok(media);
     }
 
     private static async Task<IResult> ListAsync(

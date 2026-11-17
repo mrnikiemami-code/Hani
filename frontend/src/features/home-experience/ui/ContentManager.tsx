@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import DefaultEditor from "react-simple-wysiwyg";
 import type { MediaAsset } from "../domain/media";
 import type {
   ContentEntry,
@@ -10,7 +11,8 @@ import type {
 } from "../domain/content-entry";
 import {
   changeContentStatus,
-  saveContentEntry
+  saveContentEntry,
+  scheduleContent
 } from "../application/content-actions";
 
 const EMPTY: ContentEntryWrite = {
@@ -39,6 +41,7 @@ export function ContentManager({
   const [entries, setEntries] = useState(initialEntries);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [form, setForm] = useState<ContentEntryWrite>({ ...EMPTY, locale });
+  const [scheduleAt, setScheduleAt] = useState("");
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [pending, startTransition] = useTransition();
 
@@ -56,6 +59,7 @@ export function ContentManager({
       seoTitle: entry.seoTitle ?? "",
       seoDescription: entry.seoDescription ?? ""
     });
+    setScheduleAt(entry.scheduledAt ?? "");
     setStatus("idle");
   };
 
@@ -84,6 +88,22 @@ export function ContentManager({
         });
         setSelectedId(result.data.id);
         setStatus("saved");
+      } else {
+        setStatus("error");
+      }
+    });
+  };
+
+  const schedule = () => {
+    if (!selectedId || !scheduleAt) return;
+    startTransition(async () => {
+      const result = await scheduleContent(selectedId, scheduleAt);
+      if (result.ok && result.data) {
+        setEntries((current) =>
+          current.map((entry) =>
+            entry.id === result.data!.id ? result.data! : entry
+          )
+        );
       } else {
         setStatus("error");
       }
@@ -227,6 +247,31 @@ export function ContentManager({
               </div>
             )}
 
+            {selectedId && (
+              <div className="d-flex gap-2 align-items-end mb-3">
+                <div className="flex-grow-1">
+                  <label className="form-label" htmlFor="content-schedule">
+                    {t("schedule")}
+                  </label>
+                  <input
+                    id="content-schedule"
+                    type="datetime-local"
+                    className="form-control"
+                    value={scheduleAt ? scheduleAt.slice(0, 16) : ""}
+                    onChange={(event) => setScheduleAt(event.target.value)}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  onClick={schedule}
+                  disabled={pending || !scheduleAt}
+                >
+                  {t("scheduleButton")}
+                </button>
+              </div>
+            )}
+
             <div className="row g-3">
               <div className="col-md-4">
                 <label className="form-label" htmlFor="content-type">
@@ -301,12 +346,11 @@ export function ContentManager({
                 <label className="form-label" htmlFor="content-body">
                   {t("body")}
                 </label>
-                <textarea
+                <DefaultEditor
                   id="content-body"
-                  className="form-control"
-                  rows={8}
                   value={form.body}
                   onChange={(event) => set("body", event.target.value)}
+                  className="form-control"
                 />
               </div>
               <div className="col-md-6">

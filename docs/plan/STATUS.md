@@ -586,3 +586,4 @@
 - Media Phase 3 backend foundation: folders, tags, focal point, replace-image endpoint. Phase 3 admin UI, usage/audit/bulk, Phase 4 CMS and Phase 5 cloud storage remain.
 - Media Phase 3 core: folders/tags/focal, replace, bulk delete, usage/audit APIs and admin controls. Usage/audit panels, crop variants, and per-agency quota remain.
 - Content CMS core: ContentEntry + revisions, admin content editor, public content page, draft/publish/unpublish, hero media/SEO fields.
+- Content CMS completion: rich text, revision restore, scheduled publish, automatic media usage, public page/API, content sitemap, media-backed hero variants. Draft preview remains.

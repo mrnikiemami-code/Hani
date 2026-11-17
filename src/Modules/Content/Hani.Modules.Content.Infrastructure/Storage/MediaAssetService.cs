@@ -76,6 +76,12 @@ internal sealed class MediaAssetService(
         return Map(asset);
     }
 
+    public async Task<MediaAssetDto?> GetAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var asset = await repository.GetAsync(id, cancellationToken);
+        return asset is null ? null : Map(asset);
+    }
+
     public async Task<(IReadOnlyList<MediaAssetDto> Items, int Total)> ListAsync(
         int page,
         int pageSize,

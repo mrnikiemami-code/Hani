@@ -15,6 +15,7 @@ export type ContentEntry = {
   seoDescription: string | null;
   status: ContentEntryStatus;
   publishedAt: string | null;
+  scheduledAt: string | null;
   createdAt: string;
   updatedAt: string;
   revisionCount: number;
@@ -22,5 +23,5 @@ export type ContentEntry = {
 
 export type ContentEntryWrite = Omit<
   ContentEntry,
-  "id" | "status" | "publishedAt" | "createdAt" | "updatedAt" | "revisionCount"
+  "id" | "status" | "publishedAt" | "scheduledAt" | "createdAt" | "updatedAt" | "revisionCount"
 >;

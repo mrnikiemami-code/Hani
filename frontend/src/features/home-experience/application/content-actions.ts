@@ -47,6 +47,32 @@ export async function saveContentEntry(
     : { ok: false, error: "failed" };
 }
 
+export async function scheduleContent(
+  id: string,
+  scheduledAt: string
+): Promise<ContentActionResult<ContentEntry>> {
+  const accessToken = await token();
+  if (!accessToken) return { ok: false, error: "unauthorized" };
+
+  const response = await fetch(`${apiBase}/internal/v1/content-entries/${id}/schedule`, {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ scheduledAt })
+  });
+
+  if (response.status === 401 || response.status === 403) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  return response.ok
+    ? { ok: true, data: (await response.json()) as ContentEntry }
+    : { ok: false, error: "failed" };
+}
+
 export async function changeContentStatus(
   id: string,
   action: "publish" | "unpublish" | "delete"

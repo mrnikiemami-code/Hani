@@ -10,3 +10,14 @@ export async function getPublishedContentEntry(
     `/market/v1/content-entries/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}&type=Page`
   );
 }
+
+/** Lists published CMS pages for sitemap generation. */
+export async function getPublishedContentEntries(
+  locale: string
+): Promise<ContentEntry[]> {
+  return (
+    (await apiGet<ContentEntry[]>(
+      `/market/v1/content-entries?locale=${encodeURIComponent(locale)}&type=Page`
+    )) ?? []
+  );
+}
