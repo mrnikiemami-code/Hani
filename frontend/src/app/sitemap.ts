@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { absoluteUrl } from "@/lib/hani/site";
 import { getPublishedContentEntries } from "@/features/home-experience/infrastructure/content-entry-api";
+import { apiGet } from "@/lib/hani/api";
 
 const paths = [
   "",
@@ -28,6 +29,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           locale,
           path: `/content/${entry.slug}`,
           updatedAt: entry.updatedAt
+        }));
+      })
+    )
+  ).flat();
+
+  const hotelRoutes = (
+    await Promise.all(
+      routing.locales.map(async (locale) => {
+        const result = await apiGet<{
+          items: { slug: string }[];
+        }>(`/market/v1/hotels?page=1&pageSize=100&locale=${locale}`);
+        return (result?.items ?? []).map((hotel) => ({
+          locale,
+          slug: hotel.slug
         }));
       })
     )
@@ -62,6 +77,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: entry.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6
+    })),
+    ...hotelRoutes.map((hotel) => ({
+      url: absoluteUrl(`/${hotel.locale}/hotel/${hotel.slug}`),
+      changeFrequency: "weekly" as const,
+      priority: 0.8
     }))
   ];
 }

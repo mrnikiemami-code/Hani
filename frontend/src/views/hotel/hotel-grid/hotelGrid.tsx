@@ -126,7 +126,7 @@ const HotelGrid = ({
                             </div>
                             <div className="row justify-content-center">
                                 {hotels.map((hotel, index) => {
-                                    const detailHref = `${routes.hotelDetails}?slug=${encodeURIComponent(hotel.slug)}`;
+                                    const detailHref = `/hotel/${encodeURIComponent(hotel.slug)}`;
 
                                     return (
                                         <div className="col-xl-4 col-md-6 d-flex" key={hotel.hotelId}>

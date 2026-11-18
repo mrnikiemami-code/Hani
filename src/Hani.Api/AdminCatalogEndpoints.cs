@@ -4,9 +4,7 @@ using Hani.Modules.Catalog.Application.Commands.CreateHotel;
 using Hani.Modules.Catalog.Domain.Hotels;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
 using Hani.Modules.Catalog.Presentation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 

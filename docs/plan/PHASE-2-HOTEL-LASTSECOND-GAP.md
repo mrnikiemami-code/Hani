@@ -300,16 +300,22 @@ Covered in the first parity slice:
 - admin hotel editor route at `/[locale]/admin/products/hotels/{id}`
 - publication filtering on public hotel read paths
 
+Covered in the second parity slice:
+
+- public hotel detail route `/[locale]/hotel/{slug}`
+- gallery, amenities grouped by category, rooms and rates, contact, check-in/out
+- review summary, category rating breakdown, review list with photos/stay type
+- reservation-request widget connected to hotel inquiries
+- LodgingBusiness JSON-LD, canonical metadata, hotel sitemap
+- owner-claim entry point
+
 Still open before declaring hotel parity complete:
 
-- hotel policies (children, pets, cancellation, extra bed)
+- structured hotel policies (children, pets, cancellation, extra bed)
 - amenity catalog with codes/icons/localized names and filter counts
 - room inventory, availability, stop-sell, rate plans, taxes, and cancellation
-- category rating breakdown and review UI
-- public hotel detail parity
-- reservation-request widget
-- LodgingBusiness JSON-LD and hotel sitemap
-- owner claim and user-photo moderation UI
+- review helpful/report actions in the public UI
+- user-photo moderation UI
 
 ## 8. Planning decision
 
