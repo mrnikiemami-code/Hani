@@ -600,6 +600,8 @@ app.MapAdminIdentityEndpoints();
 app.MapAdminUsersEndpoints();
 app.MapAdminCatalogEndpoints();
 app.MapHotelFacetEndpoints();
+app.MapAdminBookingEndpoints();
+app.MapAdminFinanceEndpoints();
 app.MapWishlistEndpoints();
 app.MapLastsecondParityEndpoints();
 app.MapBookingEndpoints();

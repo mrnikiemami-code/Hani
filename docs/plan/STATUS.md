@@ -604,3 +604,4 @@
 - Hotel parity slice 2: public hotel detail with gallery, amenities, rooms, review breakdown/list, booking-request widget, JSON-LD, canonical metadata, hotel sitemap, and owner-claim entry.
 - Hotel parity slice 3: localized policies, amenity code/icon/sort, room inventory/rate/tax/cancellation/stop-sell fields, public helpful/report actions, and admin review/photo moderation.
 - Hotel parity completion: public hotel filter counts by stars/amenity, real filter application, public detail, reviews, booking request, JSON-LD, sitemap, owner claim, and moderation are done. Lastsecond content/review/inquiry parity is closed; online availability hold is a separate commerce capability.
+- Phase 3 started: admin bookings read model (orders, reservation requests, hotel inquiries), finance summary by payment/commission/payout status and currency, and enabled Bookings/Finance navigation. Booking detail/actions, refunds, settlement approval, and reconciliation workflow remain.

@@ -78,17 +78,17 @@ const ADMIN_NAV: AdminNavItem[] = [
   },
   {
     id: "bookings",
+    href: "/admin/bookings",
     labelKey: "bookings",
     icon: "isax isax-calendar-tick",
-    permission: "booking.view",
-    enabled: false
+    permission: "booking.view"
   },
   {
     id: "finance",
+    href: "/admin/finance",
     labelKey: "finance",
     icon: "isax isax-wallet",
-    permission: "finance.view",
-    enabled: false
+    permission: "finance.view"
   },
   {
     id: "content",

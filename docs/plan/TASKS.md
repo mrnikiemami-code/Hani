@@ -326,3 +326,4 @@
 | H91-HOTEL-03 | Hotel trust parity | ? Done | review breakdown/list/photos, recommendation, city rank, helpful/report, moderation |
 | H91-HOTEL-04 | Hotel request/commerce parity | ? Done | request form, inventory/rates/tax/cancellation, stop-sell |
 | H91-HOTEL-05 | Hotel public detail parity | ? Done | detail page, JSON-LD, sitemap, booking widget, owner claim, filters |
+| H91-ADMIN-04 | Phase 3 bookings/finance foundation | ? In progress | booking lists/counts, finance currency summary, nav; operations next |

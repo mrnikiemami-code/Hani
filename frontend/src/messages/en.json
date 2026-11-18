@@ -914,5 +914,41 @@
     "starAndUp": "{count} stars and up",
     "apply": "Apply filters",
     "results": "{count} hotels"
+  },
+  "adminBookings": {
+    "title": "Bookings & orders",
+    "subtitle": "Online orders, reservation requests, and hotel inquiries.",
+    "orders": "Online orders",
+    "requests": "Reservation requests",
+    "inquiries": "Hotel inquiries",
+    "search": "Search",
+    "searchPlaceholder": "Number, email, or id",
+    "number": "Number",
+    "agency": "Agency",
+    "status": "Status",
+    "payment": "Payment",
+    "amount": "Amount",
+    "contact": "Contact",
+    "createdAt": "Date",
+    "due": "Due",
+    "stay": "Stay",
+    "rooms": "Rooms",
+    "guests": "Guests",
+    "empty": "No records found.",
+    "count": "{count} items"
+  },
+  "adminFinance": {
+    "title": "Finance",
+    "subtitle": "Payment, commission, and payout totals by currency.",
+    "payments": "Payments",
+    "commissions": "Accrued commissions",
+    "payouts": "Payouts",
+    "refunds": "Refunds",
+    "status": "Status",
+    "currency": "Currency",
+    "count": "Count",
+    "amount": "Amount",
+    "refundCount": "{count} refunds",
+    "empty": "No data recorded."
   }
 }

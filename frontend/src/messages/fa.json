@@ -914,5 +914,41 @@
     "starAndUp": "{count} ستاره و بالاتر",
     "apply": "اعمال فیلتر",
     "results": "{count} هتل"
+  },
+  "adminBookings": {
+    "title": "رزرو و سفارش",
+    "subtitle": "سفارش‌های آنلاین، درخواست‌های رزرو و درخواست‌های هتل.",
+    "orders": "سفارش‌های آنلاین",
+    "requests": "درخواست‌های رزرو",
+    "inquiries": "درخواست‌های هتل",
+    "search": "جستجو",
+    "searchPlaceholder": "شماره، ایمیل یا شناسه",
+    "number": "شماره",
+    "agency": "آژانس",
+    "status": "وضعیت",
+    "payment": "پرداخت",
+    "amount": "مبلغ",
+    "contact": "مخاطب",
+    "createdAt": "تاریخ",
+    "due": "مهلت",
+    "stay": "اقامت",
+    "rooms": "اتاق",
+    "guests": "نفرات",
+    "empty": "موردی پیدا نشد.",
+    "count": "{count} مورد"
+  },
+  "adminFinance": {
+    "title": "امور مالی",
+    "subtitle": "خلاصه پرداخت‌ها، کمیسیون‌ها و تسویه‌ها به تفکیک ارز.",
+    "payments": "پرداخت‌ها",
+    "commissions": "کمیسیون‌های تحقق‌یافته",
+    "payouts": "تسویه‌ها",
+    "refunds": "استردادها",
+    "status": "وضعیت",
+    "currency": "ارز",
+    "count": "تعداد",
+    "amount": "مبلغ",
+    "refundCount": "{count} استرداد",
+    "empty": "داده‌ای ثبت نشده است."
   }
 }
