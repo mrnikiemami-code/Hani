@@ -133,10 +133,22 @@ const ADMIN_NAV: AdminNavItem[] = [
   },
   {
     id: "marketing",
+    href: "/admin/marketing/campaigns",
     labelKey: "marketing",
     icon: "isax isax-megaphone",
     permission: "marketing.view",
-    enabled: false
+    children: [
+      {
+        href: "/admin/marketing/campaigns",
+        labelKey: "campaigns",
+        permission: "marketing.view"
+      },
+      {
+        labelKey: "ads",
+        permission: "marketing.view",
+        enabled: false
+      }
+    ]
   },
   {
     id: "support",

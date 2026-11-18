@@ -140,6 +140,26 @@ A UI change is not done until:
 - The card/section is compared against the original template card.
 - The visual preview is updated.
 
+## 5.1 Mandatory responsive UI test gate
+
+Every UI change must be exercised directly, not only inspected in code:
+
+| Viewport | Minimum check |
+|---|---|
+| Desktop (1440x900) | full page, tables, forms, modals, dropdowns |
+| Tablet (820x1180) | sidebar/subnav, two-column forms, table overflow |
+| Mobile (390x844) | navigation, form controls, table scroll, tap targets |
+
+Rules:
+
+- Run the gate for FA/RTL, AR/RTL, and EN/LTR.
+- Check every changed page and every modal/action it opens.
+- Check for horizontal page overflow and nested table scrollbars.
+- Check empty, loading, error, and success states where applicable.
+- A UI change is not Done until desktop, tablet, and mobile checks pass.
+- Playwright output is the minimum evidence; screenshots are required when the
+  visual structure changes.
+
 ---
 
 ## 6. Current Adapters to Review

@@ -704,6 +704,20 @@ complete.
 
 ## 13. Acceptance scenario
 
+### UI verification gate
+
+No admin page or action is accepted from code review alone. Every change must
+be exercised directly in a browser at:
+
+- Desktop: 1440x900
+- Tablet: 820x1180
+- Mobile: 390x844
+
+For each viewport, verify FA/RTL, AR/RTL, and EN/LTR, including navigation,
+forms, tables, modals, empty/loading/error states, and horizontal overflow.
+Playwright output is the minimum evidence; screenshots are required when the
+visual structure changes.
+
 The first operational release is accepted only when this scenario works end to end:
 
 1. Super Admin signs in and creates an agency.

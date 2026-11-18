@@ -328,3 +328,4 @@
 | H91-HOTEL-05 | Hotel public detail parity | ? Done | detail page, JSON-LD, sitemap, booking widget, owner claim, filters |
 | H91-ADMIN-04 | Phase 3 bookings/finance operations | ? In progress | order detail/cancel, per-currency refunds, payout settlement, ledger/invoices/reconciliations; remaining phase-3 reads and operational polish |
 | H91-ADMIN-05 | Admin governance: audit + dual approval | ? Done | append-only audit, two-person refund/settlement, self-approval denial, bank evidence, approvals/audit pages |
+| H91-ADMIN-06 | Phase 4 marketing campaigns | ? Done | admin list/create/activate, localized content, Jalali dates, responsive table, audit |

@@ -150,6 +150,30 @@ paths:
       summary: Activate a campaign
       responses:
         '200': { description: Activated }
+  /internal/v1/admin/marketing/campaigns:
+    get:
+      tags: [AdminMarketing]
+      summary: List campaigns for the admin panel
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string, enum: [Draft, Active, Closed] } }
+      responses:
+        '200': { description: Paged campaign list }
+    post:
+      tags: [AdminMarketing]
+      summary: Create a campaign from the admin panel
+      responses:
+        '201': { description: Created campaign }
+  /internal/v1/admin/marketing/campaigns/{slug}/activate:
+    post:
+      tags: [AdminMarketing]
+      summary: Activate a campaign from the admin panel
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Activated }
   /internal/v1/growth/notifications:
     post:
       tags: [Growth]

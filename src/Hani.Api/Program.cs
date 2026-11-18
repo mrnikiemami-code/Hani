@@ -604,6 +604,7 @@ app.MapHotelFacetEndpoints();
 app.MapAdminBookingEndpoints();
 app.MapAdminFinanceEndpoints();
 app.MapAdminGovernanceEndpoints();
+app.MapAdminMarketingEndpoints();
 app.MapWishlistEndpoints();
 app.MapLastsecondParityEndpoints();
 app.MapBookingEndpoints();
