@@ -319,3 +319,4 @@
 | `5e06011` | Architecture: all endpoint DbContext access moved to Admin application services/read models; audit writer moved; endpoint ratchet allowlist empty |
 | `fb593c9` | Architecture: thin 12-line Program composition root, Configuration/Pipeline/Endpoints folders, middleware/health/audit folders, composition contract tests |
 | `7f0cc03` | Phase 5 channel administration: API client create/list/revoke, one-time secret, plans, white-label domain, webhook, audit, responsive UI |
+| `f62e672` | Phase 5 supplier integration: offer moderation, approve/reject with audit, supplier.write API scope, responsive admin UI |
