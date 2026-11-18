@@ -313,3 +313,4 @@
 | `2d6c8d6` | Phase 3 opening: bookings and finance admin read models |
 | `a1fc263` | Phase 3 operations: order detail/cancel, per-currency refunds, payout settlement, refunds/invoices/reconciliations/commissions/ledger admin tables |
 | `c0d9a20` | Admin governance: append-only audit, two-person refund/settlement approvals, self-approval denial audit, payout bank evidence, approvals/audit pages |
+| `00cd24e` | Phase 4 marketing: admin campaign list/create/activate, localized content, Jalali dates over Gregorian API, responsive table, audit events, desktop/tablet/mobile UI gate |
