@@ -596,3 +596,4 @@
 - Content table UX: server-side search/type/status filters, pagination/page count, compact responsive columns, and no nested table scrollbars.
 - Unified message system: `MessageProvider` provides timed toasts and modal confirmations/alerts for success, warning, question, and error; admin media/content/home editors now use it instead of local alerts or `window.confirm`.
 - OTP security phases 1-2: memory-first `IOtpSecurityState`, 120s code/cooldown, three distinct mobile changes per IP window, IP blocking, admin-editable `identity.security_settings`, admin security page, and login resend countdown. Redis can replace the state provider without changing handlers.
+- Admin panel architecture approved for planning: `docs/architecture/ADMIN-PANEL-ARCHITECTURE.md` defines the 12-section Super Admin IA, template component reuse, route map, RBAC, financial/audit rules, phased delivery, and end-to-end acceptance scenario.

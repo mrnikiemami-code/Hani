@@ -16,3 +16,7 @@
 4. `PLAN.md` بخش ۷ (فولدر بندی)
 5. `PLAN.md` بخش ۱۰ (Logging/Telemetry)
 6. `adr/` برای دلیل هر تصمیم
+
+## Admin architecture
+
+- [Hani Admin Panel Architecture](architecture/ADMIN-PANEL-ARCHITECTURE.md)
