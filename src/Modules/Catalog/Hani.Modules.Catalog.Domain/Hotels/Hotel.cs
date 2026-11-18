@@ -218,14 +218,16 @@ public sealed class Hotel : AggregateRoot<Guid>
         IIdGenerator ids,
         string locale,
         string name,
-        string? description = null)
+        string? description = null,
+        string? policies = null)
     {
         if (_translations.Any(item => string.Equals(item.Locale, locale, StringComparison.OrdinalIgnoreCase)))
         {
             throw new InvalidOperationException($"Translation '{locale}' already exists.");
         }
 
-        var translation = new HotelTranslation(ids.NewId(), Id, locale, name, description);
+        var translation = new HotelTranslation(
+            ids.NewId(), Id, locale, name, description, policies);
         _translations.Add(translation);
         Touch();
         return translation;
@@ -270,7 +272,14 @@ public sealed class Hotel : AggregateRoot<Guid>
 
         foreach (var amenity in amenities)
         {
-            _amenities.Add(new HotelAmenity(ids.NewId(), Id, amenity.Category, amenity.Name));
+            _amenities.Add(new HotelAmenity(
+                ids.NewId(),
+                Id,
+                amenity.Category,
+                amenity.Name,
+                amenity.Code,
+                amenity.Icon,
+                amenity.SortOrder));
         }
 
         Touch();
@@ -307,7 +316,16 @@ public sealed class Hotel : AggregateRoot<Guid>
                 room.Price,
                 room.Currency,
                 room.Description,
-                room.SortOrder));
+                room.SortOrder,
+                room.Inventory,
+                room.MaxOccupancy,
+                room.RoomSize,
+                room.BedType,
+                room.View,
+                room.RatePlan,
+                room.CancellationPolicy,
+                room.TaxPercent,
+                room.StopSell));
         }
 
         Touch();
@@ -363,7 +381,8 @@ public sealed class Hotel : AggregateRoot<Guid>
                 Id,
                 translation.Locale,
                 translation.Name,
-                translation.Description));
+                translation.Description,
+                translation.Policies));
         }
 
         Touch();
@@ -393,12 +412,14 @@ public sealed class HotelTranslation : Entity<Guid>
         Guid hotelId,
         string locale,
         string name,
-        string? description) : base(id)
+        string? description,
+        string? policies = null) : base(id)
     {
         HotelId = hotelId;
         Locale = locale.Trim().ToLowerInvariant();
         Name = name.Trim();
         Description = description?.Trim();
+        Policies = policies?.Trim();
     }
 
     /// <summary>
@@ -420,6 +441,9 @@ public sealed class HotelTranslation : Entity<Guid>
     /// Localized description.
     /// </summary>
     public string? Description { get; private set; }
+
+    /// <summary>Localized hotel policies text.</summary>
+    public string? Policies { get; private set; }
 }
 
 /// <summary>
@@ -431,11 +455,23 @@ public sealed class HotelAmenity : Entity<Guid>
     {
     }
 
-    internal HotelAmenity(Guid id, Guid hotelId, string category, string name) : base(id)
+    internal HotelAmenity(
+        Guid id,
+        Guid hotelId,
+        string category,
+        string name,
+        string? code = null,
+        string? icon = null,
+        int sortOrder = 0) : base(id)
     {
         HotelId = hotelId;
         Category = category.Trim();
         Name = name.Trim();
+        Code = string.IsNullOrWhiteSpace(code)
+            ? name.Trim().ToLowerInvariant().Replace(' ', '-')
+            : code.Trim().ToLowerInvariant();
+        Icon = string.IsNullOrWhiteSpace(icon) ? null : icon.Trim();
+        SortOrder = sortOrder;
     }
 
     /// <summary>
@@ -452,6 +488,15 @@ public sealed class HotelAmenity : Entity<Guid>
     /// Amenity name.
     /// </summary>
     public string Name { get; private set; } = string.Empty;
+
+    /// <summary>Stable amenity code used by filters.</summary>
+    public string Code { get; private set; } = string.Empty;
+
+    /// <summary>Optional icon class/key.</summary>
+    public string? Icon { get; private set; }
+
+    /// <summary>Display order.</summary>
+    public int SortOrder { get; private set; }
 }
 
 /// <summary>
@@ -547,7 +592,16 @@ public sealed class HotelRoom : Entity<Guid>
         decimal price,
         string currency,
         string? description,
-        int sortOrder) : base(id)
+        int sortOrder,
+        int inventory = 0,
+        int maxOccupancy = 0,
+        decimal? roomSize = null,
+        string? bedType = null,
+        string? view = null,
+        string? ratePlan = null,
+        string? cancellationPolicy = null,
+        decimal? taxPercent = null,
+        bool stopSell = false) : base(id)
     {
         HotelId = hotelId;
         Name = name.Trim();
@@ -559,6 +613,17 @@ public sealed class HotelRoom : Entity<Guid>
         Currency = currency.Trim().ToUpperInvariant();
         Description = description?.Trim();
         SortOrder = sortOrder;
+        Inventory = inventory;
+        MaxOccupancy = maxOccupancy;
+        RoomSize = roomSize;
+        BedType = string.IsNullOrWhiteSpace(bedType) ? null : bedType.Trim();
+        View = string.IsNullOrWhiteSpace(view) ? null : view.Trim();
+        RatePlan = string.IsNullOrWhiteSpace(ratePlan) ? null : ratePlan.Trim();
+        CancellationPolicy = string.IsNullOrWhiteSpace(cancellationPolicy)
+            ? null
+            : cancellationPolicy.Trim();
+        TaxPercent = taxPercent;
+        StopSell = stopSell;
     }
 
     /// <summary>Parent hotel.</summary>
@@ -590,6 +655,33 @@ public sealed class HotelRoom : Entity<Guid>
 
     /// <summary>Display order.</summary>
     public int SortOrder { get; private set; }
+
+    /// <summary>Room inventory/allotment.</summary>
+    public int Inventory { get; private set; }
+
+    /// <summary>Maximum occupancy.</summary>
+    public int MaxOccupancy { get; private set; }
+
+    /// <summary>Room size in square metres.</summary>
+    public decimal? RoomSize { get; private set; }
+
+    /// <summary>Bed configuration.</summary>
+    public string? BedType { get; private set; }
+
+    /// <summary>Room view.</summary>
+    public string? View { get; private set; }
+
+    /// <summary>Rate plan label.</summary>
+    public string? RatePlan { get; private set; }
+
+    /// <summary>Cancellation policy text.</summary>
+    public string? CancellationPolicy { get; private set; }
+
+    /// <summary>Tax percentage.</summary>
+    public decimal? TaxPercent { get; private set; }
+
+    /// <summary>Stop-sell flag.</summary>
+    public bool StopSell { get; private set; }
 }
 
 /// <summary>
@@ -604,14 +696,32 @@ public sealed record HotelRoomInput(
     decimal Price,
     string Currency,
     string? Description = null,
-    int SortOrder = 0);
+    int SortOrder = 0,
+    int Inventory = 0,
+    int MaxOccupancy = 0,
+    decimal? RoomSize = null,
+    string? BedType = null,
+    string? View = null,
+    string? RatePlan = null,
+    string? CancellationPolicy = null,
+    decimal? TaxPercent = null,
+    bool StopSell = false);
 
 /// <summary>
 /// Amenity input used by hotel creation and replacement.
 /// </summary>
-public sealed record HotelAmenityInput(string Category, string Name);
+public sealed record HotelAmenityInput(
+    string Category,
+    string Name,
+    string? Code = null,
+    string? Icon = null,
+    int SortOrder = 0);
 
 /// <summary>
 /// Translation input used by hotel creation.
 /// </summary>
-public sealed record HotelTranslationInput(string Locale, string Name, string? Description = null);
+public sealed record HotelTranslationInput(
+    string Locale,
+    string Name,
+    string? Description = null,
+    string? Policies = null);

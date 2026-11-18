@@ -712,15 +712,30 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("character varying(80)")
                                 .HasColumnName("category");
 
+                            b1.Property<string>("Code")
+                                .IsRequired()
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("code");
+
                             b1.Property<Guid>("HotelId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("hotel_id");
+
+                            b1.Property<string>("Icon")
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("icon");
 
                             b1.Property<string>("Name")
                                 .IsRequired()
                                 .HasMaxLength(200)
                                 .HasColumnType("character varying(200)")
                                 .HasColumnName("name");
+
+                            b1.Property<int>("SortOrder")
+                                .HasColumnType("integer")
+                                .HasColumnName("sort_order");
 
                             b1.HasKey("Id");
 
@@ -803,6 +818,15 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("integer")
                                 .HasColumnName("adults");
 
+                            b1.Property<string>("BedType")
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("bed_type");
+
+                            b1.Property<string>("CancellationPolicy")
+                                .HasColumnType("text")
+                                .HasColumnName("cancellation_policy");
+
                             b1.Property<int>("Children")
                                 .HasColumnType("integer")
                                 .HasColumnName("children");
@@ -821,6 +845,14 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("uuid")
                                 .HasColumnName("hotel_id");
 
+                            b1.Property<int>("Inventory")
+                                .HasColumnType("integer")
+                                .HasColumnName("inventory");
+
+                            b1.Property<int>("MaxOccupancy")
+                                .HasColumnType("integer")
+                                .HasColumnName("max_occupancy");
+
                             b1.Property<string>("MealPlan")
                                 .IsRequired()
                                 .HasMaxLength(40)
@@ -838,6 +870,16 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("numeric(18,2)")
                                 .HasColumnName("price");
 
+                            b1.Property<string>("RatePlan")
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("rate_plan");
+
+                            b1.Property<decimal?>("RoomSize")
+                                .HasPrecision(8, 2)
+                                .HasColumnType("numeric(8,2)")
+                                .HasColumnName("room_size");
+
                             b1.Property<string>("RoomType")
                                 .IsRequired()
                                 .HasMaxLength(80)
@@ -847,6 +889,20 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                             b1.Property<int>("SortOrder")
                                 .HasColumnType("integer")
                                 .HasColumnName("sort_order");
+
+                            b1.Property<bool>("StopSell")
+                                .HasColumnType("boolean")
+                                .HasColumnName("stop_sell");
+
+                            b1.Property<decimal?>("TaxPercent")
+                                .HasPrecision(5, 2)
+                                .HasColumnType("numeric(5,2)")
+                                .HasColumnName("tax_percent");
+
+                            b1.Property<string>("View")
+                                .HasMaxLength(120)
+                                .HasColumnType("character varying(120)")
+                                .HasColumnName("view");
 
                             b1.HasKey("Id");
 
@@ -884,6 +940,10 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasMaxLength(250)
                                 .HasColumnType("character varying(250)")
                                 .HasColumnName("name");
+
+                            b1.Property<string>("Policies")
+                                .HasColumnType("text")
+                                .HasColumnName("policies");
 
                             b1.HasKey("Id");
 

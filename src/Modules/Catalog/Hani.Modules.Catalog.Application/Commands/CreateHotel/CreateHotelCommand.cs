@@ -58,12 +58,21 @@ public sealed record HotelDto(
 /// <summary>
 /// Hotel translation read model.
 /// </summary>
-public sealed record HotelTranslationDto(string Locale, string Name, string? Description);
+public sealed record HotelTranslationDto(
+    string Locale,
+    string Name,
+    string? Description,
+    string? Policies = null);
 
 /// <summary>
 /// Hotel amenity read model.
 /// </summary>
-public sealed record HotelAmenityDto(string Category, string Name);
+public sealed record HotelAmenityDto(
+    string Category,
+    string Name,
+    string? Code = null,
+    string? Icon = null,
+    int SortOrder = 0);
 
 /// <summary>
 /// Hotel gallery image read model.
@@ -90,4 +99,13 @@ public sealed record HotelRoomDto(
     decimal Price,
     string Currency,
     string? Description,
-    int SortOrder);
+    int SortOrder,
+    int Inventory = 0,
+    int MaxOccupancy = 0,
+    decimal? RoomSize = null,
+    string? BedType = null,
+    string? View = null,
+    string? RatePlan = null,
+    string? CancellationPolicy = null,
+    decimal? TaxPercent = null,
+    bool StopSell = false);

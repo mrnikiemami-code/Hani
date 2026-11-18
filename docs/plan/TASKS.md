@@ -322,7 +322,7 @@
 | H91-ADMIN-02 | Admin phase 1 foundation | ? In progress | permission shell, dashboard, agencies, users; roles/audit/settings next |
 | H91-ADMIN-03 | Admin phase 2 catalogue slice | ? In progress | products overview, hotels read model/search/pagination; tours/flights/visas/forms next |
 | H91-HOTEL-01 | Hotel Lastsecond content parity | ? Partial | property type/contact/check-in/out/status/SEO done; policies remain |
-| H91-HOTEL-02 | Hotel media/amenity parity | ? Partial | categorized image/alt/cover/source/media done; amenity catalog remains |
-| H91-HOTEL-03 | Hotel trust parity | ? Partial | review breakdown/list/photos, recommendation, city rank done; helpful/report UI remains |
-| H91-HOTEL-04 | Hotel request/commerce parity | ? Planned | reservation request, inventory, rates, tax, cancellation |
+| H91-HOTEL-02 | Hotel media/amenity parity | ? Done | categorized image/alt/cover/source/media and amenity code/icon/sort done |
+| H91-HOTEL-03 | Hotel trust parity | ? Done | review breakdown/list/photos, recommendation, city rank, helpful/report, moderation |
+| H91-HOTEL-04 | Hotel request/commerce parity | ? Partial | request form, inventory/rates/tax/cancellation fields done; live availability calendar remains |
 | H91-HOTEL-05 | Hotel public detail parity | ? Partial | detail page, JSON-LD, sitemap, booking widget, owner claim done |

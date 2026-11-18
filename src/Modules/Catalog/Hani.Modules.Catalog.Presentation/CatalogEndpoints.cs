@@ -612,10 +612,19 @@ public static class CatalogEndpoints
                 request.Latitude,
                 request.Longitude,
                 request.Translations
-                    .Select(item => new HotelTranslationInput(item.Locale, item.Name, item.Description))
+                    .Select(item => new HotelTranslationInput(
+                        item.Locale,
+                        item.Name,
+                        item.Description,
+                        item.Policies))
                     .ToArray(),
                 request.Amenities
-                    .Select(item => new HotelAmenityInput(item.Category, item.Name))
+                    .Select(item => new HotelAmenityInput(
+                        item.Category,
+                        item.Name,
+                        item.Code,
+                        item.Icon,
+                        item.SortOrder))
                     .ToArray(),
                 request.Images?
                     .Select(item => new HotelImageInput(
@@ -638,7 +647,16 @@ public static class CatalogEndpoints
                         item.Price,
                         item.Currency,
                         item.Description,
-                        item.SortOrder))
+                        item.SortOrder,
+                        item.Inventory,
+                        item.MaxOccupancy,
+                        item.RoomSize,
+                        item.BedType,
+                        item.View,
+                        item.RatePlan,
+                        item.CancellationPolicy,
+                        item.TaxPercent,
+                        item.StopSell))
                     .ToArray() ?? [],
                 request.PropertyType,
                 request.ContactPhone,
@@ -871,12 +889,18 @@ public sealed record CreateTourProductRequest(
 public sealed record HotelTranslationRequest(
     string Locale,
     string Name,
-    string? Description = null);
+    string? Description = null,
+    string? Policies = null);
 
 /// <summary>
 /// HTTP request for a hotel amenity.
 /// </summary>
-public sealed record HotelAmenityRequest(string Category, string Name);
+public sealed record HotelAmenityRequest(
+    string Category,
+    string Name,
+    string? Code = null,
+    string? Icon = null,
+    int SortOrder = 0);
 
 /// <summary>
 /// HTTP request for a hotel gallery image.
@@ -903,7 +927,16 @@ public sealed record HotelRoomRequest(
     decimal Price,
     string Currency,
     string? Description = null,
-    int SortOrder = 0);
+    int SortOrder = 0,
+    int Inventory = 0,
+    int MaxOccupancy = 0,
+    decimal? RoomSize = null,
+    string? BedType = null,
+    string? View = null,
+    string? RatePlan = null,
+    string? CancellationPolicy = null,
+    decimal? TaxPercent = null,
+    bool StopSell = false);
 
 /// <summary>
 /// HTTP request to create a canonical hotel.

@@ -111,6 +111,11 @@ const ADMIN_NAV: AdminNavItem[] = [
         href: "/admin/media",
         labelKey: "media",
         permission: "content.view"
+      },
+      {
+        href: "/admin/content/moderation",
+        labelKey: "moderation",
+        permission: "content.view"
       }
     ]
   },

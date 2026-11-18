@@ -309,13 +309,20 @@ Covered in the second parity slice:
 - LodgingBusiness JSON-LD, canonical metadata, hotel sitemap
 - owner-claim entry point
 
-Still open before declaring hotel parity complete:
+Covered in the third parity slice:
 
-- structured hotel policies (children, pets, cancellation, extra bed)
-- amenity catalog with codes/icons/localized names and filter counts
-- room inventory, availability, stop-sell, rate plans, taxes, and cancellation
+- localized hotel policies text per translation
+- amenity code, icon, category, and sort order with admin editing
+- room inventory, max occupancy, room size, bed type, view, rate plan,
+  cancellation policy, tax percentage, and stop-sell flag
 - review helpful/report actions in the public UI
-- user-photo moderation UI
+- admin moderation page for pending reviews and user photos
+
+Remaining as a follow-up refinement:
+
+- public amenity filter counts grouped by catalog code
+- date-based availability calendar and stop-sell scheduling
+- online availability hold versus the current inquiry-only booking request
 
 ## 8. Planning decision
 

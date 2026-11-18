@@ -69,10 +69,15 @@ internal sealed class GetHotelBySlugQueryHandler(
             hotel.Latitude,
             hotel.Longitude,
             hotel.Translations
-                .Select(item => new HotelTranslationDto(item.Locale, item.Name, item.Description))
+                .Select(item => new HotelTranslationDto(
+                    item.Locale,
+                    item.Name,
+                    item.Description,
+                    item.Policies))
                 .ToArray(),
             hotel.Amenities
-                .Select(item => new HotelAmenityDto(item.Category, item.Name))
+                .Select(item => new HotelAmenityDto(
+                    item.Category, item.Name, item.Code, item.Icon, item.SortOrder))
                 .ToArray(),
             hotel.Images
                 .OrderBy(item => item.SortOrder)
@@ -97,7 +102,16 @@ internal sealed class GetHotelBySlugQueryHandler(
                     item.Price,
                     item.Currency,
                     item.Description,
-                    item.SortOrder))
+                    item.SortOrder,
+                    item.Inventory,
+                    item.MaxOccupancy,
+                    item.RoomSize,
+                    item.BedType,
+                    item.View,
+                    item.RatePlan,
+                    item.CancellationPolicy,
+                    item.TaxPercent,
+                    item.StopSell))
                 .ToArray(),
             summary?.AverageRating,
             summary?.ReviewCount ?? 0,

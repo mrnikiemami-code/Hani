@@ -2,6 +2,7 @@ export type AdminHotelTranslation = {
   locale: string;
   name: string;
   description: string | null;
+  policies: string | null;
 };
 
 export type AdminHotelImage = {
@@ -15,7 +16,13 @@ export type AdminHotelImage = {
   mediaAssetId: string | null;
 };
 
-export type AdminHotelAmenity = { category: string; name: string };
+export type AdminHotelAmenity = {
+  category: string;
+  name: string;
+  code: string | null;
+  icon: string | null;
+  sortOrder: number;
+};
 
 export type AdminHotelRoom = {
   name: string;
@@ -27,6 +34,15 @@ export type AdminHotelRoom = {
   currency: string;
   description: string | null;
   sortOrder: number;
+  inventory: number;
+  maxOccupancy: number;
+  roomSize: number | null;
+  bedType: string | null;
+  view: string | null;
+  ratePlan: string | null;
+  cancellationPolicy: string | null;
+  taxPercent: number | null;
+  stopSell: boolean;
 };
 
 export type AdminHotelDetail = {

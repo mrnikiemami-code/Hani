@@ -41,6 +41,7 @@ internal sealed class HotelConfiguration : IEntityTypeConfiguration<Hotel>
             translations.Property(item => item.Locale).HasColumnName("locale").HasMaxLength(10).IsRequired();
             translations.Property(item => item.Name).HasColumnName("name").HasMaxLength(250).IsRequired();
             translations.Property(item => item.Description).HasColumnName("description").HasColumnType("text");
+            translations.Property(item => item.Policies).HasColumnName("policies").HasColumnType("text");
             translations.HasIndex(item => new { item.HotelId, item.Locale })
                 .IsUnique()
                 .HasDatabaseName("ux_hotel_translations_hotel_locale");
@@ -56,6 +57,9 @@ internal sealed class HotelConfiguration : IEntityTypeConfiguration<Hotel>
             amenities.Property(item => item.HotelId).HasColumnName("hotel_id");
             amenities.Property(item => item.Category).HasColumnName("category").HasMaxLength(80).IsRequired();
             amenities.Property(item => item.Name).HasColumnName("name").HasMaxLength(200).IsRequired();
+            amenities.Property(item => item.Code).HasColumnName("code").HasMaxLength(120).IsRequired();
+            amenities.Property(item => item.Icon).HasColumnName("icon").HasMaxLength(120);
+            amenities.Property(item => item.SortOrder).HasColumnName("sort_order").IsRequired();
             amenities.HasIndex(item => new { item.HotelId, item.Category, item.Name })
                 .IsUnique()
                 .HasDatabaseName("ux_hotel_amenities_hotel_category_name");
@@ -98,6 +102,15 @@ internal sealed class HotelConfiguration : IEntityTypeConfiguration<Hotel>
             rooms.Property(item => item.Currency).HasColumnName("currency").HasMaxLength(3).IsRequired();
             rooms.Property(item => item.Description).HasColumnName("description").HasColumnType("text");
             rooms.Property(item => item.SortOrder).HasColumnName("sort_order").IsRequired();
+            rooms.Property(item => item.Inventory).HasColumnName("inventory").IsRequired();
+            rooms.Property(item => item.MaxOccupancy).HasColumnName("max_occupancy").IsRequired();
+            rooms.Property(item => item.RoomSize).HasColumnName("room_size").HasPrecision(8, 2);
+            rooms.Property(item => item.BedType).HasColumnName("bed_type").HasMaxLength(120);
+            rooms.Property(item => item.View).HasColumnName("view").HasMaxLength(120);
+            rooms.Property(item => item.RatePlan).HasColumnName("rate_plan").HasMaxLength(120);
+            rooms.Property(item => item.CancellationPolicy).HasColumnName("cancellation_policy").HasColumnType("text");
+            rooms.Property(item => item.TaxPercent).HasColumnName("tax_percent").HasPrecision(5, 2);
+            rooms.Property(item => item.StopSell).HasColumnName("stop_sell").IsRequired();
             rooms.HasIndex(item => new { item.HotelId, item.SortOrder })
                 .HasDatabaseName("ix_hotel_rooms_hotel_sort");
             rooms.UsePropertyAccessMode(PropertyAccessMode.Field);

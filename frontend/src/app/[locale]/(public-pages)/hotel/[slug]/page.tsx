@@ -9,6 +9,7 @@ import {
   getHotelReviews
 } from "@/features/hotels/infrastructure/hotel-detail-api";
 import { HotelBookingRequest } from "@/features/hotels/ui/HotelBookingRequest";
+import { HotelReviewActions } from "@/features/hotels/ui/HotelReviewActions";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -297,6 +298,10 @@ export default async function HotelDetailPage({
                         </p>
                         {review.title && <h3 className="h6">{review.title}</h3>}
                         <p className="mb-2">{review.comment}</p>
+                        <HotelReviewActions
+                          reviewId={review.reviewId}
+                          helpfulCount={review.helpfulCount}
+                        />
                         {review.photos.length > 0 && (
                           <div className="d-flex gap-2 flex-wrap">
                             {review.photos.map((photo) => (

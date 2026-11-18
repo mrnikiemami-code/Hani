@@ -4,6 +4,7 @@ export type HotelDetailTranslation = {
   locale: string;
   name: string;
   description: string | null;
+  policies: string | null;
 };
 
 export type HotelDetailImage = {
@@ -17,7 +18,13 @@ export type HotelDetailImage = {
   mediaAssetId: string | null;
 };
 
-export type HotelDetailAmenity = { category: string; name: string };
+export type HotelDetailAmenity = {
+  category: string;
+  name: string;
+  code: string | null;
+  icon: string | null;
+  sortOrder: number;
+};
 export type HotelDetailRoom = {
   name: string;
   roomType: string;
@@ -28,6 +35,15 @@ export type HotelDetailRoom = {
   currency: string;
   description: string | null;
   sortOrder: number;
+  inventory: number;
+  maxOccupancy: number;
+  roomSize: number | null;
+  bedType: string | null;
+  view: string | null;
+  ratePlan: string | null;
+  cancellationPolicy: string | null;
+  taxPercent: number | null;
+  stopSell: boolean;
 };
 
 export type HotelDetail = {

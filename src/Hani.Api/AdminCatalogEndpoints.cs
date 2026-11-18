@@ -83,9 +83,10 @@ public static class AdminCatalogEndpoints
             request.SeoTitle,
             request.SeoDescription);
         hotel.ReplaceTranslations(ids, request.Translations.Select(item =>
-            new HotelTranslationInput(item.Locale, item.Name, item.Description)));
+            new HotelTranslationInput(item.Locale, item.Name, item.Description, item.Policies)));
         hotel.ReplaceAmenities(ids, request.Amenities.Select(item =>
-            new HotelAmenityInput(item.Category, item.Name)));
+            new HotelAmenityInput(
+                item.Category, item.Name, item.Code, item.Icon, item.SortOrder)));
         hotel.ReplaceImages(ids, (request.Images ?? []).Select(item =>
             new HotelImageInput(
                 item.Url,
@@ -106,7 +107,16 @@ public static class AdminCatalogEndpoints
                 item.Price,
                 item.Currency,
                 item.Description,
-                item.SortOrder)));
+                item.SortOrder,
+                item.Inventory,
+                item.MaxOccupancy,
+                item.RoomSize,
+                item.BedType,
+                item.View,
+                item.RatePlan,
+                item.CancellationPolicy,
+                item.TaxPercent,
+                item.StopSell)));
         await db.SaveChangesAsync(cancellationToken);
         return Results.Ok(MapHotel(hotel));
     }
@@ -146,14 +156,22 @@ public static class AdminCatalogEndpoints
         hotel.Address,
         hotel.Latitude,
         hotel.Longitude,
-        hotel.Translations.Select(item => new HotelTranslationDto(item.Locale, item.Name, item.Description)).ToArray(),
-        hotel.Amenities.Select(item => new HotelAmenityDto(item.Category, item.Name)).ToArray(),
+        hotel.Translations.Select(item => new HotelTranslationDto(
+            item.Locale, item.Name, item.Description, item.Policies)).ToArray(),
+        hotel.Amenities
+            .OrderBy(item => item.SortOrder)
+            .Select(item => new HotelAmenityDto(
+                item.Category, item.Name, item.Code, item.Icon, item.SortOrder))
+            .ToArray(),
         hotel.Images.OrderBy(item => item.SortOrder).Select(item => new HotelImageDto(
             item.Url, item.Caption, item.SortOrder, item.Category, item.AltText,
             item.IsCover, item.Source, item.MediaAssetId)).ToArray(),
         hotel.Rooms.OrderBy(item => item.SortOrder).Select(item => new HotelRoomDto(
             item.Name, item.RoomType, item.MealPlan, item.Adults, item.Children,
-            item.Price, item.Currency, item.Description, item.SortOrder)).ToArray(),
+            item.Price, item.Currency, item.Description, item.SortOrder,
+            item.Inventory, item.MaxOccupancy, item.RoomSize, item.BedType,
+            item.View, item.RatePlan, item.CancellationPolicy, item.TaxPercent,
+            item.StopSell)).ToArray(),
         PropertyType: hotel.PropertyType.ToString(),
         ContactPhone: hotel.ContactPhone,
         WebsiteUrl: hotel.WebsiteUrl,

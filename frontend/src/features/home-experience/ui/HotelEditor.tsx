@@ -35,7 +35,8 @@ export function HotelEditor({
         initial.translations.find((translation) => translation.locale === locale) ?? {
           locale,
           name: "",
-          description: ""
+          description: "",
+          policies: ""
         }
     )
   }));
@@ -48,7 +49,7 @@ export function HotelEditor({
 
   const setTranslation = (
     locale: string,
-    key: "name" | "description",
+    key: "name" | "description" | "policies",
     value: string
   ) =>
     setForm((current) => {
@@ -68,11 +69,36 @@ export function HotelEditor({
               {
                 locale,
                 name: key === "name" ? value : "",
-                description: key === "description" ? value : null
+                description: key === "description" ? value : null,
+                policies: key === "policies" ? value : null
               }
             ]
       };
     });
+
+  const setAmenity = <K extends keyof AdminHotelDetail["amenities"][number]>(
+    index: number,
+    key: K,
+    value: AdminHotelDetail["amenities"][number][K]
+  ) =>
+    setForm((current) => ({
+      ...current,
+      amenities: current.amenities.map((amenity, amenityIndex) =>
+        amenityIndex === index ? { ...amenity, [key]: value } : amenity
+      )
+    }));
+
+  const setRoom = <K extends keyof AdminHotelDetail["rooms"][number]>(
+    index: number,
+    key: K,
+    value: AdminHotelDetail["rooms"][number][K]
+  ) =>
+    setForm((current) => ({
+      ...current,
+      rooms: current.rooms.map((room, roomIndex) =>
+        roomIndex === index ? { ...room, [key]: value } : room
+      )
+    }));
 
   const setImage = <K extends keyof AdminHotelImage>(
     index: number,
@@ -96,7 +122,7 @@ export function HotelEditor({
             (locale) =>
               result.data!.translations.find(
                 (translation) => translation.locale === locale
-              ) ?? { locale, name: "", description: "" }
+              ) ?? { locale, name: "", description: "", policies: "" }
           )
         });
         messages.toast({ kind: "success", message: t("saved") });
@@ -114,7 +140,8 @@ export function HotelEditor({
       existing ?? {
         locale,
         name: "",
-        description: ""
+        description: "",
+        policies: ""
       }
     );
   });
@@ -347,6 +374,265 @@ export function HotelEditor({
                     )
                   }
                 />
+                <label className="form-label mt-2" htmlFor={`hotel-policies-${translation.locale}`}>
+                  {t("policies")}
+                </label>
+                <textarea
+                  id={`hotel-policies-${translation.locale}`}
+                  className="form-control"
+                  rows={2}
+                  value={translation.policies ?? ""}
+                  onChange={(event) =>
+                    setTranslation(
+                      translation.locale,
+                      "policies",
+                      event.target.value
+                    )
+                  }
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <hr className="my-4" />
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+          <div>
+            <h3 className="h6 mb-1">{t("amenitiesTitle")}</h3>
+            <p className="fs-12 text-gray-6 mb-0">{t("amenitiesHint")}</p>
+          </div>
+          <button
+            type="button"
+            className="btn btn-light btn-sm"
+            onClick={() =>
+              set("amenities", [
+                ...form.amenities,
+                {
+                  category: "General",
+                  name: "",
+                  code: "",
+                  icon: null,
+                  sortOrder: form.amenities.length
+                }
+              ])
+            }
+          >
+            {t("addAmenity")}
+          </button>
+        </div>
+        <div className="row g-2">
+          {form.amenities.map((amenity, index) => (
+            <div className="col-lg-6" key={`${amenity.code}-${index}`}>
+              <div className="border rounded p-2">
+                <div className="row g-2">
+                  <div className="col-md-4">
+                    <input
+                      className="form-control form-control-sm"
+                      placeholder={t("category")}
+                      value={amenity.category}
+                      onChange={(event) =>
+                        setAmenity(index, "category", event.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      className="form-control form-control-sm"
+                      placeholder={t("name")}
+                      value={amenity.name}
+                      onChange={(event) =>
+                        setAmenity(index, "name", event.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="col-md-3">
+                    <input
+                      className="form-control form-control-sm"
+                      dir="ltr"
+                      placeholder={t("code")}
+                      value={amenity.code ?? ""}
+                      onChange={(event) =>
+                        setAmenity(index, "code", event.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="col-md-1 d-flex align-items-center">
+                    <button
+                      type="button"
+                      className="btn btn-link text-danger p-0"
+                      onClick={() =>
+                        set(
+                          "amenities",
+                          form.amenities.filter((_, itemIndex) => itemIndex !== index)
+                        )
+                      }
+                    >
+                      ?
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <hr className="my-4" />
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+          <div>
+            <h3 className="h6 mb-1">{t("roomsEditorTitle")}</h3>
+            <p className="fs-12 text-gray-6 mb-0">{t("roomsEditorHint")}</p>
+          </div>
+          <button
+            type="button"
+            className="btn btn-light btn-sm"
+            onClick={() =>
+              set("rooms", [
+                ...form.rooms,
+                {
+                  name: "",
+                  roomType: "Double",
+                  mealPlan: "BB",
+                  adults: 2,
+                  children: 0,
+                  price: 0,
+                  currency: "IRR",
+                  description: "",
+                  sortOrder: form.rooms.length,
+                  inventory: 0,
+                  maxOccupancy: 2,
+                  roomSize: null,
+                  bedType: null,
+                  view: null,
+                  ratePlan: null,
+                  cancellationPolicy: null,
+                  taxPercent: null,
+                  stopSell: false
+                }
+              ])
+            }
+          >
+            {t("addRoom")}
+          </button>
+        </div>
+        <div className="d-flex flex-column gap-3">
+          {form.rooms.map((room, index) => (
+            <div className="border rounded p-3" key={`${room.name}-${index}`}>
+              <div className="row g-2">
+                <div className="col-md-3">
+                  <label className="form-label fs-12">{t("name")}</label>
+                  <input
+                    className="form-control form-control-sm"
+                    value={room.name}
+                    onChange={(event) => setRoom(index, "name", event.target.value)}
+                  />
+                </div>
+                <div className="col-md-2">
+                  <label className="form-label fs-12">{t("roomType")}</label>
+                  <input
+                    className="form-control form-control-sm"
+                    dir="ltr"
+                    value={room.roomType}
+                    onChange={(event) => setRoom(index, "roomType", event.target.value)}
+                  />
+                </div>
+                <div className="col-md-2">
+                  <label className="form-label fs-12">{t("mealPlan")}</label>
+                  <input
+                    className="form-control form-control-sm"
+                    dir="ltr"
+                    value={room.mealPlan}
+                    onChange={(event) => setRoom(index, "mealPlan", event.target.value)}
+                  />
+                </div>
+                <div className="col-md-2">
+                  <label className="form-label fs-12">{t("price")}</label>
+                  <input
+                    className="form-control form-control-sm"
+                    type="number"
+                    value={room.price}
+                    onChange={(event) => setRoom(index, "price", Number(event.target.value))}
+                  />
+                </div>
+                <div className="col-md-1">
+                  <label className="form-label fs-12">{t("currency")}</label>
+                  <input
+                    className="form-control form-control-sm"
+                    dir="ltr"
+                    value={room.currency}
+                    onChange={(event) => setRoom(index, "currency", event.target.value)}
+                  />
+                </div>
+                <div className="col-md-2 d-flex align-items-end justify-content-end">
+                  <button
+                    type="button"
+                    className="btn btn-light btn-sm text-danger"
+                    onClick={() =>
+                      set(
+                        "rooms",
+                        form.rooms.filter((_, roomIndex) => roomIndex !== index)
+                      )
+                    }
+                  >
+                    {t("remove")}
+                  </button>
+                </div>
+                {[
+                  ["adults", t("adults"), "number"],
+                  ["children", t("children"), "number"],
+                  ["inventory", t("inventory"), "number"],
+                  ["maxOccupancy", t("maxOccupancy"), "number"],
+                  ["roomSize", t("roomSize"), "number"],
+                  ["taxPercent", t("taxPercent"), "number"],
+                  ["bedType", t("bedType"), "text"],
+                  ["view", t("view"), "text"],
+                  ["ratePlan", t("ratePlan"), "text"]
+                ].map(([key, label, type]) => (
+                  <div className="col-md-2" key={key}>
+                    <label className="form-label fs-12">{label}</label>
+                    <input
+                      className="form-control form-control-sm"
+                      dir={type === "text" ? "ltr" : undefined}
+                      type={type}
+                      value={String(room[key as keyof typeof room] ?? "")}
+                      onChange={(event) => {
+                        const raw = event.target.value;
+                        const value =
+                          type === "number" ? (raw ? Number(raw) : null) : raw;
+                        setRoom(
+                          index,
+                          key as keyof typeof room,
+                          value as never
+                        );
+                      }}
+                    />
+                  </div>
+                ))}
+                <div className="col-md-6">
+                  <label className="form-label fs-12">{t("cancellationPolicy")}</label>
+                  <input
+                    className="form-control form-control-sm"
+                    value={room.cancellationPolicy ?? ""}
+                    onChange={(event) =>
+                      setRoom(index, "cancellationPolicy", event.target.value)
+                    }
+                  />
+                </div>
+                <div className="col-md-2 d-flex align-items-end">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={`room-stop-${index}`}
+                      checked={room.stopSell}
+                      onChange={(event) =>
+                        setRoom(index, "stopSell", event.target.checked)
+                      }
+                    />
+                    <label className="form-check-label fs-12" htmlFor={`room-stop-${index}`}>
+                      {t("stopSell")}
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

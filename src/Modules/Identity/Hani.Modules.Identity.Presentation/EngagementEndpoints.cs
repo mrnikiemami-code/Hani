@@ -24,7 +24,9 @@ public static class EngagementEndpoints
     public static IEndpointRouteBuilder MapEngagementEndpoints(this IEndpointRouteBuilder app)
     {
         var market = app.MapGroup("/market/v1").WithTags("Marketplace.Engagement");
-        var internalApi = app.MapGroup("/internal/v1").WithTags("Internal.Engagement");
+        var internalApi = app.MapGroup("/internal/v1")
+            .WithTags("Internal.Engagement")
+            .RequireAuthorization("Admin");
 
         market.MapPost("/reviews", CreateReviewAsync)
             .WithName("Marketplace.CreateReview")

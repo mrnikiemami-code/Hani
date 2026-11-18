@@ -36,7 +36,12 @@ internal sealed class CreateHotelCommandHandler(
 
             foreach (var translation in request.Translations)
             {
-                hotel.AddTranslation(ids, translation.Locale, translation.Name, translation.Description);
+                hotel.AddTranslation(
+                    ids,
+                    translation.Locale,
+                    translation.Name,
+                    translation.Description,
+                    translation.Policies);
             }
 
             hotel.ReplaceAmenities(ids, request.Amenities);

@@ -308,3 +308,4 @@
 | `b845415` | Hotel Lastsecond parity gap analysis added to phase 2 planning |
 | `6534bac` | Hotel parity slice 1: content fields, gallery metadata, lifecycle/SEO, admin editor, published filtering |
 | `40302e6` | Hotel parity slice 2: public detail, reviews, booking request, JSON-LD, sitemap, owner claim |
+| `pending` | Hotel parity slice 3: policies, amenity metadata, room commerce fields, review actions, moderation |
