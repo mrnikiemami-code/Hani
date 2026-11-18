@@ -307,4 +307,4 @@
 | `6d52c29` | Admin phase 2 opening: products overview, live hotel catalogue table/search/pagination |
 | `b845415` | Hotel Lastsecond parity gap analysis added to phase 2 planning |
 | `6534bac` | Hotel parity slice 1: content fields, gallery metadata, lifecycle/SEO, admin editor, published filtering |
-| `pending` | Hotel parity slice 2: public detail, reviews, booking request, JSON-LD, sitemap, owner claim |
+| `40302e6` | Hotel parity slice 2: public detail, reviews, booking request, JSON-LD, sitemap, owner claim |
