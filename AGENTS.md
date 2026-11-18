@@ -48,6 +48,7 @@
 - ساخت GUID با `Guid.NewGuid`/`Guid.CreateVersion7` خارج از Infrastructure؛ از `IIdGenerator` استفاده شود.
 - hard-code کردن فهرست زبان‌ها یا fallback زبانی؛ از `Localization` و `ILanguageCatalog` استفاده شود.
 - ساخت خروجی خطای دستی در endpoint (`Results.Problem`/`Results.BadRequest`/...)؛ فقط `HttpContext.ToProblem(...)` مجاز است.
+- تزریق یا کوئری مستقیم `DbContext`/EF Core در endpoint ممنوع است؛ endpoint فقط `ISender` و application command/query را صدا می‌زند و کوئری‌های خواندنی از طریق read-model port در Application و پیاده‌سازی در Infrastructure انجام می‌شوند.
 - حذف یا دور زدن `correlationId` در پاسخ‌های خطا.
 - تغییر یا حذف یک `GAP` در Baseline بدون نسخه جدید و ADR/Waiver.
 - بستن یک Gate با P0 باز از همان Gate یا Gateهای قبلی.

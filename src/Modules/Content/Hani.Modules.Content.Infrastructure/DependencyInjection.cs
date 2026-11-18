@@ -1,6 +1,8 @@
 using Hani.Modules.Content.Application.Abstractions;
 using Hani.Modules.Content.Application.Media;
+using Hani.Modules.Content.Application.Queries.AdminAds;
 using Hani.Modules.Content.Infrastructure.Notifications;
+using Hani.Modules.Content.Infrastructure.ReadModels;
 using Hani.Modules.Content.Infrastructure.Repositories;
 using Hani.Modules.Content.Infrastructure.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,7 @@ public static class DependencyInjection
     public static IServiceCollection AddContentInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IContentRepository, ContentRepository>();
+        services.AddScoped<IAdminAdsReadModel, AdminAdsReadModel>();
         services.AddScoped<IMediaAssetRepository, MediaAssetRepository>();
         services.AddSingleton<IContentMediaStorage, LocalContentMediaStorage>();
         services.AddSingleton<IImageProcessor, SkiaMediaProcessor>();

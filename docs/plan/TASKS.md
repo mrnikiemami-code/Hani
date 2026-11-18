@@ -332,3 +332,5 @@
 | H91-ADMIN-07 | Phase 4 operational reports | ? Done | orders/revenue/refunds/commission/payouts/agencies/catalog/users/support KPIs, responsive tables |
 | H91-ADMIN-08 | Phase 4 support + notifications | ? Done | ticket list/create/detail/reply/internal note/status, notification outbox + retry, audit |
 | H91-ADMIN-09 | Phase 4 advertising | ? Done | ad slot/creative admin, impressions/clicks, audit |
+| H91-ARCH-01 | Endpoint DbContext remediation: ads | ? Done | application query, read-model port, infrastructure implementation, ratchet test, architecture report |
+| H91-ARCH-02 | Endpoint DbContext remediation: remaining admin | ? In progress | 13 endpoint files in debt allowlist; marketing/support/notifications/reports next |

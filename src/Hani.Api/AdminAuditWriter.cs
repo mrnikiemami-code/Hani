@@ -7,12 +7,30 @@ using Hani.Modules.Identity.Infrastructure.Persistence;
 namespace Hani.Api;
 
 /// <summary>
-/// Creates append-only admin audit events from the current HTTP actor. The
-/// caller owns the unit of work and must persist the returned event.
+/// Append-only admin audit writer for the current HTTP actor.
 /// </summary>
-public sealed class AdminAuditWriter(IIdGenerator ids)
+public sealed class AdminAuditWriter(IIdGenerator ids, IdentityDbContext identity)
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+
+    /// <summary>
+    /// Records and persists an audit event. The endpoint only supplies HTTP
+    /// actor data and the audited change.
+    /// </summary>
+    public async Task RecordAsync(
+        HttpContext context,
+        string action,
+        string entityType,
+        string entityId,
+        string reason,
+        Guid? agencyId = null,
+        object? before = null,
+        object? after = null,
+        CancellationToken cancellationToken = default)
+    {
+        Record(context, identity, action, entityType, entityId, reason, agencyId, before, after);
+        await identity.SaveChangesAsync(cancellationToken);
+    }
 
     /// <summary>
     /// Adds an audit event to the identity context. The caller must call
