@@ -311,3 +311,4 @@
 | `f86b072` | Hotel parity slice 3: policies, amenity metadata, room commerce fields, review actions, moderation |
 | `8936c29` | Hotel parity completion: facet filters, policies, amenities, room commerce fields, review actions, moderation |
 | `2d6c8d6` | Phase 3 opening: bookings and finance admin read models |
+| `a1fc263` | Phase 3 operations: order detail/cancel, per-currency refunds, payout settlement, refunds/invoices/reconciliations/commissions/ledger admin tables |
