@@ -306,4 +306,4 @@
 | `91eacc5` | Admin phase 1 foundation: permission shell, dashboard, agencies, users, protected admin endpoints |
 | `6d52c29` | Admin phase 2 opening: products overview, live hotel catalogue table/search/pagination |
 | `b845415` | Hotel Lastsecond parity gap analysis added to phase 2 planning |
-| `pending` | Hotel parity slice 1: content fields, gallery metadata, lifecycle/SEO, admin editor, published filtering |
+| `6534bac` | Hotel parity slice 1: content fields, gallery metadata, lifecycle/SEO, admin editor, published filtering |
