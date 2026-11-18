@@ -2,6 +2,27 @@ using Hani.BuildingBlocks.Domain;
 
 namespace Hani.Modules.Catalog.Domain.Hotels;
 
+/// <summary>Physical hotel/property category.</summary>
+public enum HotelPropertyType
+{
+    Hotel = 0,
+    Resort = 1,
+    Apartment = 2,
+    Boutique = 3,
+    Villa = 4,
+    Hostel = 5
+}
+
+/// <summary>Editorial and operational lifecycle of a hotel.</summary>
+public enum HotelStatus
+{
+    Draft = 0,
+    InReview = 1,
+    Published = 2,
+    Suspended = 3,
+    Archived = 4
+}
+
 /// <summary>
 /// Canonical hotel owned by the platform and referenced by agency offers.
 /// </summary>
@@ -23,7 +44,14 @@ public sealed class Hotel : AggregateRoot<Guid>
         int stars,
         string? address,
         decimal? latitude,
-        decimal? longitude) : base(id)
+        decimal? longitude,
+        HotelPropertyType propertyType = HotelPropertyType.Hotel,
+        string? contactPhone = null,
+        string? websiteUrl = null,
+        string? checkInTime = null,
+        string? checkOutTime = null,
+        string? seoTitle = null,
+        string? seoDescription = null) : base(id)
     {
         Slug = slug;
         DestinationId = destinationId;
@@ -31,6 +59,14 @@ public sealed class Hotel : AggregateRoot<Guid>
         Address = address;
         Latitude = latitude;
         Longitude = longitude;
+        PropertyType = propertyType;
+        ContactPhone = contactPhone;
+        WebsiteUrl = websiteUrl;
+        CheckInTime = checkInTime;
+        CheckOutTime = checkOutTime;
+        SeoTitle = seoTitle;
+        SeoDescription = seoDescription;
+        Status = HotelStatus.Draft;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = CreatedAt;
     }
@@ -64,6 +100,30 @@ public sealed class Hotel : AggregateRoot<Guid>
     /// Optional longitude.
     /// </summary>
     public decimal? Longitude { get; private set; }
+
+    /// <summary>Hotel/property category.</summary>
+    public HotelPropertyType PropertyType { get; private set; }
+
+    /// <summary>Public contact phone.</summary>
+    public string? ContactPhone { get; private set; }
+
+    /// <summary>Official website.</summary>
+    public string? WebsiteUrl { get; private set; }
+
+    /// <summary>Check-in time text such as 14:00.</summary>
+    public string? CheckInTime { get; private set; }
+
+    /// <summary>Check-out time text such as 12:00.</summary>
+    public string? CheckOutTime { get; private set; }
+
+    /// <summary>Lifecycle state.</summary>
+    public HotelStatus Status { get; private set; }
+
+    /// <summary>SEO title.</summary>
+    public string? SeoTitle { get; private set; }
+
+    /// <summary>SEO description.</summary>
+    public string? SeoDescription { get; private set; }
 
     /// <summary>
     /// Creation time.
@@ -105,7 +165,14 @@ public sealed class Hotel : AggregateRoot<Guid>
         int stars,
         string? address = null,
         decimal? latitude = null,
-        decimal? longitude = null)
+        decimal? longitude = null,
+        HotelPropertyType propertyType = HotelPropertyType.Hotel,
+        string? contactPhone = null,
+        string? websiteUrl = null,
+        string? checkInTime = null,
+        string? checkOutTime = null,
+        string? seoTitle = null,
+        string? seoDescription = null)
     {
         if (string.IsNullOrWhiteSpace(slug))
         {
@@ -134,7 +201,14 @@ public sealed class Hotel : AggregateRoot<Guid>
             stars,
             string.IsNullOrWhiteSpace(address) ? null : address.Trim(),
             latitude,
-            longitude);
+            longitude,
+            propertyType,
+            string.IsNullOrWhiteSpace(contactPhone) ? null : contactPhone.Trim(),
+            string.IsNullOrWhiteSpace(websiteUrl) ? null : websiteUrl.Trim(),
+            string.IsNullOrWhiteSpace(checkInTime) ? null : checkInTime.Trim(),
+            string.IsNullOrWhiteSpace(checkOutTime) ? null : checkOutTime.Trim(),
+            string.IsNullOrWhiteSpace(seoTitle) ? null : seoTitle.Trim(),
+            string.IsNullOrWhiteSpace(seoDescription) ? null : seoDescription.Trim());
     }
 
     /// <summary>
@@ -176,7 +250,12 @@ public sealed class Hotel : AggregateRoot<Guid>
                 Id,
                 image.Url,
                 image.Caption,
-                image.SortOrder));
+                image.SortOrder,
+                image.Category,
+                image.AltText,
+                image.IsCover,
+                image.Source,
+                image.MediaAssetId));
         }
 
         Touch();
@@ -231,6 +310,69 @@ public sealed class Hotel : AggregateRoot<Guid>
                 room.SortOrder));
         }
 
+        Touch();
+    }
+
+    /// <summary>Updates editable hotel content and lifecycle state.</summary>
+    public void UpdateDetails(
+        string slug,
+        Guid destinationId,
+        int stars,
+        string? address,
+        decimal? latitude,
+        decimal? longitude,
+        HotelPropertyType propertyType,
+        string? contactPhone,
+        string? websiteUrl,
+        string? checkInTime,
+        string? checkOutTime,
+        HotelStatus status,
+        string? seoTitle,
+        string? seoDescription)
+    {
+        Slug = slug.Trim().ToLowerInvariant();
+        DestinationId = destinationId;
+        Stars = stars;
+        Address = string.IsNullOrWhiteSpace(address) ? null : address.Trim();
+        Latitude = latitude;
+        Longitude = longitude;
+        PropertyType = propertyType;
+        ContactPhone = string.IsNullOrWhiteSpace(contactPhone) ? null : contactPhone.Trim();
+        WebsiteUrl = string.IsNullOrWhiteSpace(websiteUrl) ? null : websiteUrl.Trim();
+        CheckInTime = string.IsNullOrWhiteSpace(checkInTime) ? null : checkInTime.Trim();
+        CheckOutTime = string.IsNullOrWhiteSpace(checkOutTime) ? null : checkOutTime.Trim();
+        Status = status;
+        SeoTitle = string.IsNullOrWhiteSpace(seoTitle) ? null : seoTitle.Trim();
+        SeoDescription = string.IsNullOrWhiteSpace(seoDescription) ? null : seoDescription.Trim();
+        Touch();
+    }
+
+    /// <summary>Replaces localized hotel content.</summary>
+    public void ReplaceTranslations(IIdGenerator ids, IEnumerable<HotelTranslationInput> translations)
+    {
+        _translations.Clear();
+        foreach (var translation in translations)
+        {
+            if (string.IsNullOrWhiteSpace(translation.Name))
+            {
+                throw new ArgumentException("Hotel translation name is required.", nameof(translations));
+            }
+
+            _translations.Add(new HotelTranslation(
+                ids.NewId(),
+                Id,
+                translation.Locale,
+                translation.Name,
+                translation.Description));
+        }
+
+        Touch();
+    }
+
+    /// <summary>Moves the hotel to published state.</summary>
+    public void Publish()
+    {
+        Status = HotelStatus.Published;
         Touch();
     }
 
@@ -326,12 +468,22 @@ public sealed class HotelImage : Entity<Guid>
         Guid hotelId,
         string url,
         string? caption,
-        int sortOrder) : base(id)
+        int sortOrder,
+        string? category = null,
+        string? altText = null,
+        bool isCover = false,
+        string? source = null,
+        Guid? mediaAssetId = null) : base(id)
     {
         HotelId = hotelId;
         Url = url.Trim();
         Caption = caption?.Trim();
         SortOrder = sortOrder;
+        Category = string.IsNullOrWhiteSpace(category) ? null : category.Trim();
+        AltText = string.IsNullOrWhiteSpace(altText) ? null : altText.Trim();
+        IsCover = isCover;
+        Source = string.IsNullOrWhiteSpace(source) ? "Hani" : source.Trim();
+        MediaAssetId = mediaAssetId;
     }
 
     /// <summary>Parent hotel.</summary>
@@ -345,12 +497,35 @@ public sealed class HotelImage : Entity<Guid>
 
     /// <summary>Display order.</summary>
     public int SortOrder { get; private set; }
+
+    /// <summary>Gallery category such as Rooms, Restaurant, or Lobby.</summary>
+    public string? Category { get; private set; }
+
+    /// <summary>SEO alt text.</summary>
+    public string? AltText { get; private set; }
+
+    /// <summary>Whether this is the cover/hero image.</summary>
+    public bool IsCover { get; private set; }
+
+    /// <summary>Image source such as Hani, Agency, or User.</summary>
+    public string? Source { get; private set; }
+
+    /// <summary>Optional Media Library asset id.</summary>
+    public Guid? MediaAssetId { get; private set; }
 }
 
 /// <summary>
 /// Gallery image input used by hotel creation and replacement.
 /// </summary>
-public sealed record HotelImageInput(string Url, string? Caption = null, int SortOrder = 0);
+public sealed record HotelImageInput(
+    string Url,
+    string? Caption = null,
+    int SortOrder = 0,
+    string? Category = null,
+    string? AltText = null,
+    bool IsCover = false,
+    string? Source = null,
+    Guid? MediaAssetId = null);
 
 /// <summary>
 /// Hotel room and board option.

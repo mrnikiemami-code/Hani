@@ -76,7 +76,15 @@ internal sealed class GetHotelBySlugQueryHandler(
                 .ToArray(),
             hotel.Images
                 .OrderBy(item => item.SortOrder)
-                .Select(item => new HotelImageDto(item.Url, item.Caption, item.SortOrder))
+                .Select(item => new HotelImageDto(
+                    item.Url,
+                    item.Caption,
+                    item.SortOrder,
+                    item.Category,
+                    item.AltText,
+                    item.IsCover,
+                    item.Source,
+                    item.MediaAssetId))
                 .ToArray(),
             hotel.Rooms
                 .OrderBy(item => item.SortOrder)
@@ -97,5 +105,13 @@ internal sealed class GetHotelBySlugQueryHandler(
                 ? null
                 : Math.Round(summary.RecommendedCount * 100m / summary.ReviewCount, 1),
             rank,
-            userPhotos);
+            userPhotos,
+            hotel.PropertyType.ToString(),
+            hotel.ContactPhone,
+            hotel.WebsiteUrl,
+            hotel.CheckInTime,
+            hotel.CheckOutTime,
+            hotel.Status.ToString(),
+            hotel.SeoTitle,
+            hotel.SeoDescription);
 }

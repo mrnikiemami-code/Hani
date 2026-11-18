@@ -1,0 +1,48 @@
+openapi: 3.1.0
+info:
+  title: Hani Internal Catalog API
+  version: 1.0.0
+  description: Admin catalogue read and hotel content operations.
+servers:
+  - url: https://api.hani.ir
+paths:
+  /internal/v1/admin/catalog/hotels:
+    get:
+      tags: [Catalog]
+      summary: List hotels in the admin catalogue
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: locale, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Paged hotel catalogue }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+  /internal/v1/admin/catalog/hotels/{id}:
+    get:
+      tags: [Catalog]
+      summary: Get a hotel with translations, gallery, amenities, and rooms
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Hotel detail }
+        '404': { description: Not found }
+    put:
+      tags: [Catalog]
+      summary: Update hotel content, contact, publication, SEO, gallery, amenities, and rooms
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated hotel detail }
+        '400': { description: Invalid hotel content }
+        '404': { description: Not found }
+  /internal/v1/admin/catalog/hotels/{id}/publish:
+    post:
+      tags: [Catalog]
+      summary: Publish a hotel
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Published hotel }
+        '404': { description: Not found }

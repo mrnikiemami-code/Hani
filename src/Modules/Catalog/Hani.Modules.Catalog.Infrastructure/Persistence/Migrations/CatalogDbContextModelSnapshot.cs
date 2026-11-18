@@ -240,6 +240,21 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("address");
 
+                    b.Property<string>("CheckInTime")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("check_in_time");
+
+                    b.Property<string>("CheckOutTime")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("check_out_time");
+
+                    b.Property<string>("ContactPhone")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("contact_phone");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -258,6 +273,22 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         .HasColumnType("numeric(9,6)")
                         .HasColumnName("longitude");
 
+                    b.Property<string>("PropertyType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("property_type");
+
+                    b.Property<string>("SeoDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("seo_description");
+
+                    b.Property<string>("SeoTitle")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("seo_title");
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(120)
@@ -268,9 +299,20 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("stars");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("status");
+
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
+
+                    b.Property<string>("WebsiteUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("website_url");
 
                     b.HasKey("Id");
 
@@ -698,18 +740,41 @@ namespace Hani.Modules.Catalog.Infrastructure.Persistence.Migrations
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
 
+                            b1.Property<string>("AltText")
+                                .HasMaxLength(300)
+                                .HasColumnType("character varying(300)")
+                                .HasColumnName("alt_text");
+
                             b1.Property<string>("Caption")
                                 .HasMaxLength(300)
                                 .HasColumnType("character varying(300)")
                                 .HasColumnName("caption");
 
+                            b1.Property<string>("Category")
+                                .HasMaxLength(60)
+                                .HasColumnType("character varying(60)")
+                                .HasColumnName("category");
+
                             b1.Property<Guid>("HotelId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("hotel_id");
 
+                            b1.Property<bool>("IsCover")
+                                .HasColumnType("boolean")
+                                .HasColumnName("is_cover");
+
+                            b1.Property<Guid?>("MediaAssetId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("media_asset_id");
+
                             b1.Property<int>("SortOrder")
                                 .HasColumnType("integer")
                                 .HasColumnName("sort_order");
+
+                            b1.Property<string>("Source")
+                                .HasMaxLength(30)
+                                .HasColumnType("character varying(30)")
+                                .HasColumnName("source");
 
                             b1.Property<string>("Url")
                                 .IsRequired()

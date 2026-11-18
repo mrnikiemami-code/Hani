@@ -17,6 +17,14 @@ internal sealed class HotelConfiguration : IEntityTypeConfiguration<Hotel>
         builder.Property(hotel => hotel.Address).HasColumnName("address").HasMaxLength(500);
         builder.Property(hotel => hotel.Latitude).HasColumnName("latitude").HasPrecision(9, 6);
         builder.Property(hotel => hotel.Longitude).HasColumnName("longitude").HasPrecision(9, 6);
+        builder.Property(hotel => hotel.PropertyType).HasColumnName("property_type").HasConversion<string>().HasMaxLength(30).IsRequired();
+        builder.Property(hotel => hotel.ContactPhone).HasColumnName("contact_phone").HasMaxLength(40);
+        builder.Property(hotel => hotel.WebsiteUrl).HasColumnName("website_url").HasMaxLength(500);
+        builder.Property(hotel => hotel.CheckInTime).HasColumnName("check_in_time").HasMaxLength(10);
+        builder.Property(hotel => hotel.CheckOutTime).HasColumnName("check_out_time").HasMaxLength(10);
+        builder.Property(hotel => hotel.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(30).IsRequired();
+        builder.Property(hotel => hotel.SeoTitle).HasColumnName("seo_title").HasMaxLength(250);
+        builder.Property(hotel => hotel.SeoDescription).HasColumnName("seo_description").HasMaxLength(500);
         builder.Property(hotel => hotel.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(hotel => hotel.UpdatedAt).HasColumnName("updated_at").IsRequired();
 
@@ -64,6 +72,11 @@ internal sealed class HotelConfiguration : IEntityTypeConfiguration<Hotel>
             images.Property(item => item.Url).HasColumnName("url").HasMaxLength(1000).IsRequired();
             images.Property(item => item.Caption).HasColumnName("caption").HasMaxLength(300);
             images.Property(item => item.SortOrder).HasColumnName("sort_order").IsRequired();
+            images.Property(item => item.Category).HasColumnName("category").HasMaxLength(60);
+            images.Property(item => item.AltText).HasColumnName("alt_text").HasMaxLength(300);
+            images.Property(item => item.IsCover).HasColumnName("is_cover").IsRequired();
+            images.Property(item => item.Source).HasColumnName("source").HasMaxLength(30);
+            images.Property(item => item.MediaAssetId).HasColumnName("media_asset_id");
             images.HasIndex(item => new { item.HotelId, item.SortOrder })
                 .HasDatabaseName("ix_hotel_images_hotel_sort");
             images.UsePropertyAccessMode(PropertyAccessMode.Field);

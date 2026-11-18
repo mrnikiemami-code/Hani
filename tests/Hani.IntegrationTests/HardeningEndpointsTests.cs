@@ -259,6 +259,7 @@ public sealed class HardeningEndpointsTests(PostgresFixture fixture)
                 $"gate81-hotel-{suffix}",
                 city.Id,
                 4);
+            hotel.Publish();
             hotelId = hotel.Id;
 
             await db.Destinations.AddRangeAsync(continent, country, city);

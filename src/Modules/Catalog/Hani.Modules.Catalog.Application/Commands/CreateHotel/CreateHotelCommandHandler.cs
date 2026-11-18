@@ -23,7 +23,16 @@ internal sealed class CreateHotelCommandHandler(
                 request.Stars,
                 request.Address,
                 request.Latitude,
-                request.Longitude);
+                request.Longitude,
+                Enum.TryParse<HotelPropertyType>(request.PropertyType, true, out var propertyType)
+                    ? propertyType
+                    : HotelPropertyType.Hotel,
+                request.ContactPhone,
+                request.WebsiteUrl,
+                request.CheckInTime,
+                request.CheckOutTime,
+                request.SeoTitle,
+                request.SeoDescription);
 
             foreach (var translation in request.Translations)
             {
@@ -33,6 +42,11 @@ internal sealed class CreateHotelCommandHandler(
             hotel.ReplaceAmenities(ids, request.Amenities);
             hotel.ReplaceImages(ids, request.Images);
             hotel.ReplaceRooms(ids, request.Rooms);
+            if (string.IsNullOrWhiteSpace(request.Status) ||
+                string.Equals(request.Status, "Published", StringComparison.OrdinalIgnoreCase))
+            {
+                hotel.Publish();
+            }
             await hotels.AddAsync(hotel, cancellationToken);
             return Result<Guid>.Success(hotel.Id);
         }

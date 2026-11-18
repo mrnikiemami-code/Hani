@@ -287,7 +287,31 @@ Reuse the purchased template's add-hotel/edit-hotel page structure. Do not build
 - Hotel publication has draft/review/published/suspended states and audit history.
 - IRR and USD room/rate components remain separate; no cross-currency sum without FX.
 
-## 7. Planning decision
+## 7. Implementation update (2026-11-18)
+
+Covered in the first parity slice:
+
+- property type
+- contact phone and website
+- check-in and check-out times
+- hotel lifecycle status
+- SEO title and description
+- gallery category, alt text, cover flag, source, and optional media asset id
+- admin hotel editor route at `/[locale]/admin/products/hotels/{id}`
+- publication filtering on public hotel read paths
+
+Still open before declaring hotel parity complete:
+
+- hotel policies (children, pets, cancellation, extra bed)
+- amenity catalog with codes/icons/localized names and filter counts
+- room inventory, availability, stop-sell, rate plans, taxes, and cancellation
+- category rating breakdown and review UI
+- public hotel detail parity
+- reservation-request widget
+- LodgingBusiness JSON-LD and hotel sitemap
+- owner claim and user-photo moderation UI
+
+## 8. Planning decision
 
 The hotel form is **not complete** with the current fields. Lastsecond parity requires the additions above. Slice A and Slice B are part of Phase 2; Slice C is required before Hani sells hotel inventory online.
 

@@ -9,6 +9,8 @@ export type AdminHotel = {
   imageCount: number;
   amenityCount: number;
   createdAt: string;
+  propertyType: string;
+  status: string;
 };
 
 export type AdminHotelListResponse = {

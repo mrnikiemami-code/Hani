@@ -618,7 +618,15 @@ public static class CatalogEndpoints
                     .Select(item => new HotelAmenityInput(item.Category, item.Name))
                     .ToArray(),
                 request.Images?
-                    .Select(item => new HotelImageInput(item.Url, item.Caption, item.SortOrder))
+                    .Select(item => new HotelImageInput(
+                        item.Url,
+                        item.Caption,
+                        item.SortOrder,
+                        item.Category,
+                        item.AltText,
+                        item.IsCover,
+                        item.Source,
+                        item.MediaAssetId))
                     .ToArray() ?? [],
                 request.Rooms?
                     .Select(item => new HotelRoomInput(
@@ -631,7 +639,15 @@ public static class CatalogEndpoints
                         item.Currency,
                         item.Description,
                         item.SortOrder))
-                    .ToArray() ?? []),
+                    .ToArray() ?? [],
+                request.PropertyType,
+                request.ContactPhone,
+                request.WebsiteUrl,
+                request.CheckInTime,
+                request.CheckOutTime,
+                request.SeoTitle,
+                request.SeoDescription,
+                request.Status),
             cancellationToken);
 
         return result.IsSuccess
@@ -865,7 +881,15 @@ public sealed record HotelAmenityRequest(string Category, string Name);
 /// <summary>
 /// HTTP request for a hotel gallery image.
 /// </summary>
-public sealed record HotelImageRequest(string Url, string? Caption = null, int SortOrder = 0);
+public sealed record HotelImageRequest(
+    string Url,
+    string? Caption = null,
+    int SortOrder = 0,
+    string? Category = null,
+    string? AltText = null,
+    bool IsCover = false,
+    string? Source = null,
+    Guid? MediaAssetId = null);
 
 /// <summary>
 /// HTTP request for a hotel room option.
@@ -894,7 +918,15 @@ public sealed record CreateHotelRequest(
     IReadOnlyList<HotelTranslationRequest> Translations,
     IReadOnlyList<HotelAmenityRequest> Amenities,
     IReadOnlyList<HotelImageRequest>? Images = null,
-    IReadOnlyList<HotelRoomRequest>? Rooms = null);
+    IReadOnlyList<HotelRoomRequest>? Rooms = null,
+    string? PropertyType = null,
+    string? ContactPhone = null,
+    string? WebsiteUrl = null,
+    string? CheckInTime = null,
+    string? CheckOutTime = null,
+    string? SeoTitle = null,
+    string? SeoDescription = null,
+    string? Status = null);
 
 /// <summary>
 /// HTTP query for hotel search.

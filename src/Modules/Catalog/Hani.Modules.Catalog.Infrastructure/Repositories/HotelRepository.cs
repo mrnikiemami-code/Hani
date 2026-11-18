@@ -24,7 +24,9 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
             .Include(hotel => hotel.Amenities)
             .Include(hotel => hotel.Images)
             .Include(hotel => hotel.Rooms)
-            .FirstOrDefaultAsync(hotel => hotel.Slug == normalizedSlug, cancellationToken);
+            .FirstOrDefaultAsync(
+                hotel => hotel.Slug == normalizedSlug && hotel.Status == HotelStatus.Published,
+                cancellationToken);
     }
 
     public async Task<IReadOnlyList<Hotel>> SearchAsync(
@@ -61,7 +63,8 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
             .Include(hotel => hotel.Amenities)
             .Include(hotel => hotel.Images)
             .Include(hotel => hotel.Rooms)
-            .Where(hotel => hotel.Latitude != null && hotel.Longitude != null)
+            .Where(hotel => hotel.Status == HotelStatus.Published &&
+                hotel.Latitude != null && hotel.Longitude != null)
             .ToArrayAsync(cancellationToken);
 
     public async Task<IReadOnlyList<Hotel>> ListByDestinationAsync(
@@ -69,7 +72,8 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
         CancellationToken cancellationToken)
         => await dbContext.Hotels
             .AsNoTracking()
-            .Where(hotel => hotel.DestinationId == destinationId)
+            .Where(hotel => hotel.DestinationId == destinationId &&
+                hotel.Status == HotelStatus.Published)
             .ToArrayAsync(cancellationToken);
 
     public async Task<IReadOnlyList<Hotel>> ListByDestinationsAsync(
@@ -84,7 +88,8 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
         var ids = destinationIds.Distinct().ToArray();
         return await dbContext.Hotels
             .AsNoTracking()
-            .Where(hotel => ids.Contains(hotel.DestinationId))
+            .Where(hotel => ids.Contains(hotel.DestinationId) &&
+                hotel.Status == HotelStatus.Published)
             .ToArrayAsync(cancellationToken);
     }
 
@@ -111,6 +116,7 @@ internal sealed class HotelRepository(CatalogDbContext dbContext) : IHotelReposi
             .Include(hotel => hotel.Amenities)
             .Include(hotel => hotel.Images)
             .Include(hotel => hotel.Rooms)
+            .Where(hotel => hotel.Status == HotelStatus.Published)
             .AsQueryable();
 
         if (destinationIds is not null)
