@@ -226,7 +226,7 @@
     "resend": "إعادة إرسال الرمز",
     "resendIn": "إعادة الإرسال متاحة بعد {time}",
     "codeValidFor": "الرمز صالح لمدة {time}",
-    "codeExpired": "????? ?????? ?????. ???? ????? ??????."
+    "codeExpired": "انتهت صلاحية الرمز. اطلب رمزًا جديدًا."
   },
   "checkout": {
     "title": "إكمال الحجز",
@@ -625,7 +625,12 @@
     "contentPages": "صفحات المحتوى",
     "media": "مكتبة الوسائط",
     "security": "الأمان",
-    "soon": "قريبًا"
+    "soon": "قريبًا",
+    "productsOverview": "نظرة عامة على المنتجات",
+    "hotels": "الفنادق",
+    "tours": "الجولات",
+    "flights": "الرحلات",
+    "visas": "التأشيرات"
   },
   "adminDashboard": {
     "title": "لوحة الإدارة",
@@ -699,5 +704,34 @@
     "reset": "مسح",
     "pageInfo": "الصفحة {page} من {total}",
     "paginationLabel": "ترقيم صفحات المستخدمين"
+  },
+  "adminProducts": {
+    "overviewTitle": "منتجات السفر",
+    "overviewSubtitle": "كاتالوج Hani المشترك وعروض الوكالات.",
+    "hotelsTitle": "الفنادق",
+    "hotelsSubtitle": "الفنادق المسجلة في كتالوج Hani.",
+    "hotelsHint": "استعراض الفنادق والغرف والصور والمرافق",
+    "tours": "الجولات",
+    "toursHint": "الجولة الرئيسية والتواريخ وعروض الوكالات",
+    "flights": "الرحلات",
+    "flightsHint": "المسارات والأسعار والموردون",
+    "visas": "التأشيرات",
+    "visasHint": "الدول والمتطلبات والشروط",
+    "live": "نشط",
+    "soon": "المرحلة التالية",
+    "search": "بحث",
+    "searchPlaceholder": "اسم الفندق أو slug",
+    "hotel": "الفندق",
+    "stars": "النجوم",
+    "address": "العنوان",
+    "rooms": "الغرف",
+    "images": "الصور",
+    "amenities": "المرافق",
+    "createdAt": "تاريخ الإنشاء",
+    "empty": "لا يوجد فندق يطابق هذا الفلتر.",
+    "count": "{count} فندق",
+    "pageInfo": "الصفحة {page} من {total}",
+    "paginationLabel": "ترقيم صفحات الفنادق",
+    "reset": "مسح"
   }
 }

@@ -226,7 +226,7 @@
     "resend": "ارسال دوباره کد",
     "resendIn": "ارسال مجدد تا {time}",
     "codeValidFor": "کد تا {time} دیگر معتبر است",
-    "codeExpired": "?? ????? ??? ?? ?? ???? ??????."
+    "codeExpired": "کد منقضی شد؛ یک کد جدید بگیرید."
   },
   "checkout": {
     "title": "تکمیل رزرو",
@@ -625,7 +625,12 @@
     "contentPages": "صفحات محتوا",
     "media": "کتابخانه رسانه",
     "security": "امنیت",
-    "soon": "به‌زودی"
+    "soon": "به‌زودی",
+    "productsOverview": "نمای کلی محصولات",
+    "hotels": "هتل‌ها",
+    "tours": "تورها",
+    "flights": "پروازها",
+    "visas": "ویزاها"
   },
   "adminDashboard": {
     "title": "داشبورد مدیریتی",
@@ -699,5 +704,34 @@
     "reset": "پاک کردن",
     "pageInfo": "صفحه {page} از {total}",
     "paginationLabel": "صفحه‌بندی کاربران"
+  },
+  "adminProducts": {
+    "overviewTitle": "محصولات سفر",
+    "overviewSubtitle": "کاتالوگ مشترک Hani و پیشنهادهای آژانس‌ها.",
+    "hotelsTitle": "هتل‌ها",
+    "hotelsSubtitle": "کاتالوگ هتل‌های ثبت‌شده در Hani.",
+    "hotelsHint": "مشاهده کاتالوگ فعلی، اتاق‌ها، تصاویر و امکانات",
+    "tours": "تورها",
+    "toursHint": "تور مادر، تاریخ حرکت و پیشنهادهای آژانس",
+    "flights": "پروازها",
+    "flightsHint": "مسیرها، نرخ‌ها و تأمین‌کنندگان",
+    "visas": "ویزاها",
+    "visasHint": "کشورها، مدارک و شرایط",
+    "live": "فعال",
+    "soon": "فاز بعد",
+    "search": "جستجو",
+    "searchPlaceholder": "نام هتل یا slug",
+    "hotel": "هتل",
+    "stars": "ستاره",
+    "address": "آدرس",
+    "rooms": "اتاق",
+    "images": "تصویر",
+    "amenities": "امکانات",
+    "createdAt": "تاریخ ایجاد",
+    "empty": "هتلی با این فیلتر پیدا نشد.",
+    "count": "{count} هتل",
+    "pageInfo": "صفحه {page} از {total}",
+    "paginationLabel": "صفحه‌بندی هتل‌ها",
+    "reset": "پاک کردن"
   }
 }

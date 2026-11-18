@@ -625,7 +625,12 @@
     "contentPages": "Content pages",
     "media": "Media library",
     "security": "Security",
-    "soon": "Soon"
+    "soon": "Soon",
+    "productsOverview": "Products overview",
+    "hotels": "Hotels",
+    "tours": "Tours",
+    "flights": "Flights",
+    "visas": "Visas"
   },
   "adminDashboard": {
     "title": "Admin dashboard",
@@ -699,5 +704,34 @@
     "reset": "Clear",
     "pageInfo": "Page {page} of {total}",
     "paginationLabel": "User pagination"
+  },
+  "adminProducts": {
+    "overviewTitle": "Travel products",
+    "overviewSubtitle": "Hani shared catalogue and agency offers.",
+    "hotelsTitle": "Hotels",
+    "hotelsSubtitle": "Hotels registered in the Hani catalogue.",
+    "hotelsHint": "Explore current hotels, rooms, images, and amenities",
+    "tours": "Tours",
+    "toursHint": "Master tours, departures, and agency offers",
+    "flights": "Flights",
+    "flightsHint": "Routes, fares, and suppliers",
+    "visas": "Visas",
+    "visasHint": "Countries, requirements, and conditions",
+    "live": "Live",
+    "soon": "Next phase",
+    "search": "Search",
+    "searchPlaceholder": "Hotel name or slug",
+    "hotel": "Hotel",
+    "stars": "Stars",
+    "address": "Address",
+    "rooms": "Rooms",
+    "images": "Images",
+    "amenities": "Amenities",
+    "createdAt": "Created",
+    "empty": "No hotel matches these filters.",
+    "count": "{count} hotels",
+    "pageInfo": "Page {page} of {total}",
+    "paginationLabel": "Hotel pagination",
+    "reset": "Clear"
   }
 }

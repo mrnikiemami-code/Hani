@@ -13,9 +13,10 @@ type AdminNavItem = {
   permission: string;
   enabled?: boolean;
   children?: Array<{
-    href: string;
+    href?: string;
     labelKey: string;
     permission: string;
+    enabled?: boolean;
   }>;
 };
 
@@ -43,10 +44,37 @@ const ADMIN_NAV: AdminNavItem[] = [
   },
   {
     id: "products",
+    href: "/admin/products",
     labelKey: "products",
     icon: "isax isax-map",
     permission: "catalog.view",
-    enabled: false
+    children: [
+      {
+        href: "/admin/products",
+        labelKey: "productsOverview",
+        permission: "catalog.view"
+      },
+      {
+        href: "/admin/products/hotels",
+        labelKey: "hotels",
+        permission: "catalog.view"
+      },
+      {
+        labelKey: "tours",
+        permission: "catalog.view",
+        enabled: false
+      },
+      {
+        labelKey: "flights",
+        permission: "catalog.view",
+        enabled: false
+      },
+      {
+        labelKey: "visas",
+        permission: "catalog.view",
+        enabled: false
+      }
+    ]
   },
   {
     id: "bookings",
@@ -217,25 +245,34 @@ export async function AdminPageShell({
                           )}
                           {activeSection === item.id && childItems.length > 0 && (
                             <ul className="admin-subnav">
-                              {childItems.map((child) => (
-                                <li key={child.href}>
-                                  <Link
-                                    href={child.href}
-                                    className={
-                                      activeChild === child.labelKey
-                                        ? "active"
-                                        : undefined
-                                    }
-                                    aria-current={
-                                      activeChild === child.labelKey
-                                        ? "page"
-                                        : undefined
-                                    }
-                                  >
-                                    {nav(child.labelKey)}
-                                  </Link>
-                                </li>
-                              ))}
+                              {childItems.map((child) =>
+                                child.enabled === false || !child.href ? (
+                                  <li key={child.labelKey}>
+                                    <span className="admin-nav-disabled d-flex align-items-center">
+                                      {nav(child.labelKey)}
+                                      <small className="ms-auto">{nav("soon")}</small>
+                                    </span>
+                                  </li>
+                                ) : (
+                                  <li key={child.href}>
+                                    <Link
+                                      href={child.href}
+                                      className={
+                                        activeChild === child.labelKey
+                                          ? "active"
+                                          : undefined
+                                      }
+                                      aria-current={
+                                        activeChild === child.labelKey
+                                          ? "page"
+                                          : undefined
+                                      }
+                                    >
+                                      {nav(child.labelKey)}
+                                    </Link>
+                                  </li>
+                                )
+                              )}
                             </ul>
                           )}
                         </li>

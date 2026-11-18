@@ -320,3 +320,4 @@
 | H91-SEC-02 | OTP Redis adapter | ? Future | replace InMemoryOtpSecurityState with shared Redis implementation |
 | H91-ADMIN-01 | Admin panel architecture | ? Planning | 12-section IA, template reuse map, RBAC, finance/audit rules, delivery phases |
 | H91-ADMIN-02 | Admin phase 1 foundation | ? In progress | permission shell, dashboard, agencies, users; roles/audit/settings next |
+| H91-ADMIN-03 | Admin phase 2 catalogue slice | ? In progress | products overview, hotels read model/search/pagination; tours/flights/visas/forms next |
