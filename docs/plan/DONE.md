@@ -317,3 +317,4 @@
 | `09c568f` | Phase 4 operations: reports, support ticket workspace, notification retry, ad slots/creatives, responsive UI sweep |
 | `cd44438` | Architecture: ads endpoint moved to application query/read model, DbContext ratchet test, endpoint DB-access review report |
 | `5e06011` | Architecture: all endpoint DbContext access moved to Admin application services/read models; audit writer moved; endpoint ratchet allowlist empty |
+| `fb593c9` | Architecture: thin 12-line Program composition root, Configuration/Pipeline/Endpoints folders, middleware/health/audit folders, composition contract tests |
