@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { usePathname, useRouter } from "next/navigation";
 import { formatIsoInstant } from "@/lib/hani/calendar";
 import type { AdminUser, AdminUserListResponse } from "../domain/admin-user";
+import { UserRoleSelect } from "./UserRoleSelect";
 
 const pageItems = (page: number, totalPages: number): Array<number | "ellipsis"> => {
   if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -160,7 +161,9 @@ export function UserManager({
                       {user.email ? ` · ${user.email}` : ""}
                     </span>
                   </td>
-                  <td className="d-none d-md-table-cell">{t(`role${user.role}`)}</td>
+                  <td className="d-none d-md-table-cell">
+                    <UserRoleSelect userId={user.id} role={user.role} />
+                  </td>
                   <td>
                     <span className="badge rounded-pill badge-secondary">
                       {t(`status${user.status}`)}

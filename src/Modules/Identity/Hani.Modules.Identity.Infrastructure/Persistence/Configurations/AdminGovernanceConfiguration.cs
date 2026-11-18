@@ -1,4 +1,5 @@
 using Hani.Modules.Identity.Domain.Governance;
+using Hani.Modules.Identity.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -66,5 +67,36 @@ internal sealed class AdminApprovalRequestConfiguration
             .HasDatabaseName("ix_admin_approval_requests_status_requested");
         builder.HasIndex(item => new { item.Type, item.EntityId })
             .HasDatabaseName("ix_admin_approval_requests_type_entity");
+    }
+}
+
+internal sealed class RolePermissionGrantConfiguration : IEntityTypeConfiguration<RolePermissionGrant>
+{
+    public void Configure(EntityTypeBuilder<RolePermissionGrant> builder)
+    {
+        builder.ToTable("role_permissions");
+        builder.HasKey(item => item.Id);
+        builder.Property(item => item.Id).HasColumnName("id");
+        builder.Property(item => item.Role).HasColumnName("role").HasMaxLength(64).IsRequired();
+        builder.Property(item => item.Permission).HasColumnName("permission").HasMaxLength(120).IsRequired();
+        builder.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
+        builder.HasIndex(item => new { item.Role, item.Permission })
+            .IsUnique()
+            .HasDatabaseName("ux_role_permissions_role_permission");
+    }
+}
+
+internal sealed class PlatformSettingsConfiguration : IEntityTypeConfiguration<PlatformSettings>
+{
+    public void Configure(EntityTypeBuilder<PlatformSettings> builder)
+    {
+        builder.ToTable("platform_settings");
+        builder.HasKey(item => item.Id);
+        builder.Property(item => item.Id).HasColumnName("id");
+        builder.Property(item => item.Key).HasColumnName("key").HasMaxLength(120).IsRequired();
+        builder.Property(item => item.Json).HasColumnName("json").HasColumnType("jsonb").IsRequired();
+        builder.Property(item => item.UpdatedAt).HasColumnName("updated_at").IsRequired();
+        builder.Property(item => item.UpdatedBy).HasColumnName("updated_by");
+        builder.HasIndex(item => item.Key).IsUnique().HasDatabaseName("ux_platform_settings_key");
     }
 }

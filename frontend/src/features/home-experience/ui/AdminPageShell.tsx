@@ -202,15 +202,25 @@ const ADMIN_NAV: AdminNavItem[] = [
   },
   {
     id: "settings",
-    href: "/admin/security",
+    href: "/admin/settings",
     labelKey: "settings",
     icon: "isax isax-setting-2",
     permission: "settings.view",
     children: [
       {
+        href: "/admin/settings",
+        labelKey: "baseSettings",
+        permission: "settings.view"
+      },
+      {
         href: "/admin/security",
         labelKey: "security",
         permission: "settings.view"
+      },
+      {
+        href: "/admin/roles",
+        labelKey: "roles",
+        permission: "role.manage"
       },
       {
         href: "/admin/audit",

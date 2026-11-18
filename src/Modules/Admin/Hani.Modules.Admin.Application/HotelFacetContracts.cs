@@ -20,5 +20,5 @@ public sealed record HotelAmenityFacet(
 public interface IHotelFacetService
 {
     /// <summary>Returns published hotel facets.</summary>
-    Task<HotelFacetsDto> GetAsync(CancellationToken cancellationToken);
+    Task<HotelFacetsDto> GetFacetsAsync(CancellationToken cancellationToken);
 }

@@ -18,5 +18,5 @@ public static class HotelFacetEndpoints
     private static async Task<IResult> GetAsync(
         IHotelFacetService facets,
         CancellationToken cancellationToken)
-        => Results.Ok(await facets.GetAsync(cancellationToken));
+        => Results.Ok(await facets.GetFacetsAsync(cancellationToken));
 }

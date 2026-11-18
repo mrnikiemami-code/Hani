@@ -642,7 +642,9 @@
     "notifications": "الإشعارات",
     "disputes": "النزاعات",
     "channel": "Channel API",
-    "suppliers": "الموردون"
+    "suppliers": "الموردون",
+    "roles": "الأدوار والصلاحيات",
+    "baseSettings": "الإعدادات الأساسية"
   },
   "adminDashboard": {
     "title": "لوحة الإدارة",
@@ -689,7 +691,38 @@
     "count": "{count} وكالة",
     "pageInfo": "الصفحة {page} من {total}",
     "previous": "السابق",
-    "next": "التالي"
+    "next": "التالي",
+    "detailTitle": "تفاصيل الوكالة",
+    "back": "رجوع",
+    "open": "التفاصيل",
+    "approveHint": "الموافقة تعتمد المستندات المرفوعة أيضًا.",
+    "rejectTitle": "رفض الوكالة",
+    "rejectReason": "سبب الرفض",
+    "rejected": "تم رفض الوكالة.",
+    "saving": "جارٍ الحفظ",
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "documents": "المستندات",
+    "documentType": "نوع المستند",
+    "documentStatus": "الحالة",
+    "uploadedAt": "وقت الرفع",
+    "document": "المستند",
+    "openDocument": "عرض المستند",
+    "noDocuments": "لا توجد مستندات.",
+    "contract": "العقد والترخيص",
+    "licenseType": "نوع الترخيص",
+    "licenseFile": "ملف الترخيص",
+    "licenseIssuedAt": "تاريخ إصدار الترخيص",
+    "managerName": "المدير",
+    "staffCount": "عدد الموظفين",
+    "province": "المحافظة",
+    "address": "العنوان",
+    "contactEmail": "البريد",
+    "contactPhone": "الهاتف",
+    "website": "الموقع",
+    "subscription": "صلاحية الاشتراك",
+    "submittedAt": "وقت الإرسال",
+    "reviewedAt": "وقت المراجعة"
   },
   "adminUsers": {
     "title": "المستخدمون والصلاحيات",
@@ -715,7 +748,9 @@
     "empty": "لا يوجد مستخدم يطابق هذا الفلتر.",
     "reset": "مسح",
     "pageInfo": "الصفحة {page} من {total}",
-    "paginationLabel": "ترقيم صفحات المستخدمين"
+    "paginationLabel": "ترقيم صفحات المستخدمين",
+    "roleChanged": "تم تغيير دور المستخدم.",
+    "error": "فشلت العملية."
   },
   "adminProducts": {
     "overviewTitle": "منتجات السفر",
@@ -1366,5 +1401,33 @@
     "statusApproved": "معتمد",
     "statusRejected": "مرفوض",
     "statusArchived": "مؤرشف"
+  },
+  "adminRoles": {
+    "title": "الأدوار والصلاحيات",
+    "subtitle": "مصفوفة صلاحيات كل دور؛ التغييرات تؤثر على تنقل الإدارة فورًا.",
+    "save": "حفظ الصلاحيات",
+    "saving": "جارٍ الحفظ",
+    "saved": "تم حفظ صلاحيات الدور.",
+    "error": "فشل الحفظ.",
+    "roleAdmin": "المدير الأعلى",
+    "roleAgencyStaff": "موظف الوكالة",
+    "roleCustomer": "العميل",
+    "roleAuthor": "الكاتب"
+  },
+  "adminSettings": {
+    "title": "إعدادات المنصة الأساسية",
+    "subtitle": "العلامة والدعم والعملة الافتراضية والروابط القانونية ورسالة الصيانة.",
+    "brandName": "اسم العلامة",
+    "supportEmail": "بريد الدعم",
+    "supportPhone": "هاتف الدعم",
+    "defaultCurrency": "العملة الافتراضية",
+    "termsUrl": "رابط الشروط",
+    "privacyUrl": "رابط الخصوصية",
+    "maintenanceMessage": "رسالة الصيانة",
+    "updatedAt": "آخر تحديث",
+    "save": "حفظ الإعدادات",
+    "saving": "جارٍ الحفظ",
+    "saved": "تم حفظ الإعدادات الأساسية.",
+    "error": "فشل الحفظ."
   }
 }

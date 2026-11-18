@@ -642,7 +642,9 @@
     "notifications": "اعلان‌ها",
     "disputes": "اختلاف‌ها",
     "channel": "Channel API",
-    "suppliers": "تأمین‌کنندگان"
+    "suppliers": "تأمین‌کنندگان",
+    "roles": "نقش‌ها و دسترسی‌ها",
+    "baseSettings": "تنظیمات پایه"
   },
   "adminDashboard": {
     "title": "داشبورد مدیریتی",
@@ -689,7 +691,38 @@
     "count": "{count} آژانس",
     "pageInfo": "صفحه {page} از {total}",
     "previous": "قبلی",
-    "next": "بعدی"
+    "next": "بعدی",
+    "detailTitle": "جزئیات آژانس",
+    "back": "بازگشت",
+    "open": "جزئیات",
+    "approveHint": "پس از تأیید، اسناد نیز تأیید می‌شوند.",
+    "rejectTitle": "رد آژانس",
+    "rejectReason": "دلیل رد",
+    "rejected": "آژانس رد شد.",
+    "saving": "در حال ثبت",
+    "close": "بستن",
+    "cancel": "انصراف",
+    "documents": "اسناد",
+    "documentType": "نوع سند",
+    "documentStatus": "وضعیت",
+    "uploadedAt": "زمان بارگذاری",
+    "document": "سند",
+    "openDocument": "مشاهده سند",
+    "noDocuments": "سندی ثبت نشده است.",
+    "contract": "قرارداد و مجوز",
+    "licenseType": "نوع مجوز",
+    "licenseFile": "فایل مجوز",
+    "licenseIssuedAt": "تاریخ صدور مجوز",
+    "managerName": "نام مدیر",
+    "staffCount": "تعداد کارکنان",
+    "province": "استان",
+    "address": "آدرس",
+    "contactEmail": "ایمیل",
+    "contactPhone": "تلفن",
+    "website": "وب‌سایت",
+    "subscription": "اعتبار اشتراک",
+    "submittedAt": "زمان ارسال",
+    "reviewedAt": "زمان بررسی"
   },
   "adminUsers": {
     "title": "کاربران و دسترسی",
@@ -715,7 +748,9 @@
     "empty": "کاربری با این فیلتر پیدا نشد.",
     "reset": "پاک کردن",
     "pageInfo": "صفحه {page} از {total}",
-    "paginationLabel": "صفحه‌بندی کاربران"
+    "paginationLabel": "صفحه‌بندی کاربران",
+    "roleChanged": "نقش کاربر تغییر کرد.",
+    "error": "عملیات انجام نشد."
   },
   "adminProducts": {
     "overviewTitle": "محصولات سفر",
@@ -1366,5 +1401,33 @@
     "statusApproved": "تأییدشده",
     "statusRejected": "ردشده",
     "statusArchived": "بایگانی"
+  },
+  "adminRoles": {
+    "title": "نقش‌ها و دسترسی‌ها",
+    "subtitle": "ماتریس مجوزهای هر نقش؛ تغییرات فوراً روی ناوبری ادمین اثر می‌گذارد.",
+    "save": "ذخیره دسترسی‌ها",
+    "saving": "در حال ذخیره",
+    "saved": "دسترسی‌های نقش ذخیره شد.",
+    "error": "ذخیره انجام نشد.",
+    "roleAdmin": "مدیر ارشد",
+    "roleAgencyStaff": "کارمند آژانس",
+    "roleCustomer": "مشتری",
+    "roleAuthor": "نویسنده"
+  },
+  "adminSettings": {
+    "title": "تنظیمات پایه پلتفرم",
+    "subtitle": "برند، پشتیبانی، ارز پیش‌فرض، لینک‌های حقوقی و پیام نگهداری.",
+    "brandName": "نام برند",
+    "supportEmail": "ایمیل پشتیبانی",
+    "supportPhone": "تلفن پشتیبانی",
+    "defaultCurrency": "ارز پیش‌فرض",
+    "termsUrl": "لینک شرایط و ضوابط",
+    "privacyUrl": "لینک حریم خصوصی",
+    "maintenanceMessage": "پیام حالت نگهداری",
+    "updatedAt": "آخرین به‌روزرسانی",
+    "save": "ذخیره تنظیمات",
+    "saving": "در حال ذخیره",
+    "saved": "تنظیمات پایه ذخیره شد.",
+    "error": "ذخیره انجام نشد."
   }
 }

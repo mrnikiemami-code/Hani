@@ -6,6 +6,7 @@ using Hani.Modules.Identity.Domain.Governance;
 using Hani.Modules.Identity.Domain.Media;
 using Hani.Modules.Identity.Domain.Reviews;
 using Hani.Modules.Identity.Domain.Security;
+using Hani.Modules.Identity.Domain.Settings;
 using Hani.Modules.Identity.Domain.Users;
 using Hani.Modules.Identity.Domain.Wishlists;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,10 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
     public DbSet<AdminAuditEvent> AdminAuditEvents => Set<AdminAuditEvent>();
 
     public DbSet<AdminApprovalRequest> AdminApprovalRequests => Set<AdminApprovalRequest>();
+
+    public DbSet<RolePermissionGrant> RolePermissionGrants => Set<RolePermissionGrant>();
+
+    public DbSet<PlatformSettings> PlatformSettings => Set<PlatformSettings>();
 
     /// <summary>
     /// Audit rows are append-only. Reject updates and deletes before they reach

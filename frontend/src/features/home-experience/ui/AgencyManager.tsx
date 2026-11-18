@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { formatIsoInstant } from "@/lib/hani/calendar";
 import { useMessageBox } from "@/components/hani/message-provider";
 import type { AdminAgency } from "../domain/admin-agency";

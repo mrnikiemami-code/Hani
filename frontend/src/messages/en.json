@@ -642,7 +642,9 @@
     "notifications": "Notifications",
     "disputes": "Disputes",
     "channel": "Channel API",
-    "suppliers": "Suppliers"
+    "suppliers": "Suppliers",
+    "roles": "Roles & permissions",
+    "baseSettings": "Base settings"
   },
   "adminDashboard": {
     "title": "Admin dashboard",
@@ -689,7 +691,38 @@
     "count": "{count} agencies",
     "pageInfo": "Page {page} of {total}",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "detailTitle": "Agency detail",
+    "back": "Back",
+    "open": "Details",
+    "approveHint": "Approval also approves the uploaded documents.",
+    "rejectTitle": "Reject agency",
+    "rejectReason": "Rejection reason",
+    "rejected": "Agency rejected.",
+    "saving": "Saving",
+    "close": "Close",
+    "cancel": "Cancel",
+    "documents": "Documents",
+    "documentType": "Document type",
+    "documentStatus": "Status",
+    "uploadedAt": "Uploaded at",
+    "document": "Document",
+    "openDocument": "Open document",
+    "noDocuments": "No documents recorded.",
+    "contract": "Contract and license",
+    "licenseType": "License type",
+    "licenseFile": "License file",
+    "licenseIssuedAt": "License issued at",
+    "managerName": "Manager",
+    "staffCount": "Staff count",
+    "province": "Province",
+    "address": "Address",
+    "contactEmail": "Email",
+    "contactPhone": "Phone",
+    "website": "Website",
+    "subscription": "Subscription valid until",
+    "submittedAt": "Submitted at",
+    "reviewedAt": "Reviewed at"
   },
   "adminUsers": {
     "title": "Users & access",
@@ -715,7 +748,9 @@
     "empty": "No user matches these filters.",
     "reset": "Clear",
     "pageInfo": "Page {page} of {total}",
-    "paginationLabel": "User pagination"
+    "paginationLabel": "User pagination",
+    "roleChanged": "User role changed.",
+    "error": "The operation failed."
   },
   "adminProducts": {
     "overviewTitle": "Travel products",
@@ -1366,5 +1401,33 @@
     "statusApproved": "Approved",
     "statusRejected": "Rejected",
     "statusArchived": "Archived"
+  },
+  "adminRoles": {
+    "title": "Roles and permissions",
+    "subtitle": "Permission matrix per role; changes affect admin navigation immediately.",
+    "save": "Save permissions",
+    "saving": "Saving",
+    "saved": "Role permissions saved.",
+    "error": "The save failed.",
+    "roleAdmin": "Super Admin",
+    "roleAgencyStaff": "Agency staff",
+    "roleCustomer": "Customer",
+    "roleAuthor": "Author"
+  },
+  "adminSettings": {
+    "title": "Platform base settings",
+    "subtitle": "Brand, support, default currency, legal links, and maintenance message.",
+    "brandName": "Brand name",
+    "supportEmail": "Support email",
+    "supportPhone": "Support phone",
+    "defaultCurrency": "Default currency",
+    "termsUrl": "Terms URL",
+    "privacyUrl": "Privacy URL",
+    "maintenanceMessage": "Maintenance message",
+    "updatedAt": "Last updated",
+    "save": "Save settings",
+    "saving": "Saving",
+    "saved": "Base settings saved.",
+    "error": "The save failed."
   }
 }

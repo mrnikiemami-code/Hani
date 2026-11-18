@@ -6,7 +6,7 @@ namespace Hani.Modules.Admin.Infrastructure;
 
 internal sealed partial class AdminService : IHotelFacetService
 {
-    public async Task<HotelFacetsDto> GetAsync(CancellationToken cancellationToken)
+    public async Task<HotelFacetsDto> GetFacetsAsync(CancellationToken cancellationToken)
     {
         var hotels = await catalog.Hotels
             .AsNoTracking()

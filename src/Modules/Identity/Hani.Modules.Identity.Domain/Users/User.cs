@@ -185,6 +185,13 @@ public sealed class User : AggregateRoot<Guid>
     /// <summary>
     /// Marks the user active after a successful OTP verification.
     /// </summary>
+    /// <summary>Changes the user's authorization role.</summary>
+    public void ChangeRole(UserRole role)
+    {
+        Role = role;
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
     public void Activate(DateTimeOffset now)
     {
         if (Status == UserStatus.Blocked)

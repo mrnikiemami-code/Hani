@@ -23,3 +23,23 @@ export async function approveAgency(id: string): Promise<{ ok: boolean }> {
 
   return { ok: response.ok };
 }
+
+export async function rejectAgency(
+  id: string,
+  reason: string
+): Promise<{ ok: boolean }> {
+  const accessToken = await token();
+  if (!accessToken) return { ok: false };
+
+  const response = await fetch(`${apiBase}/internal/v1/agencies/${id}/reject`, {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ reason })
+  });
+
+  return { ok: response.ok };
+}

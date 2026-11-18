@@ -631,6 +631,38 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.ToTable("admin_audit_events", "identity");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Governance.RolePermissionGrant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Permission")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("permission");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("role");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Role", "Permission")
+                        .IsUnique()
+                        .HasDatabaseName("ux_role_permissions_role_permission");
+
+                    b.ToTable("role_permissions", "identity");
+                });
+
             modelBuilder.Entity("Hani.Modules.Identity.Domain.Media.MediaAsset", b =>
                 {
                     b.Property<Guid>("Id")
@@ -847,6 +879,41 @@ namespace Hani.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.HasKey("Key");
 
                     b.ToTable("security_settings", "identity");
+                });
+
+            modelBuilder.Entity("Hani.Modules.Identity.Domain.Settings.PlatformSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Json")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("json");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("key");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique()
+                        .HasDatabaseName("ux_platform_settings_key");
+
+                    b.ToTable("platform_settings", "identity");
                 });
 
             modelBuilder.Entity("Hani.Modules.Identity.Domain.Users.User", b =>
