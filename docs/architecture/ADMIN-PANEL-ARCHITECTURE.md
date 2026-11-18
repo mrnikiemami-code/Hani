@@ -663,6 +663,13 @@ Audit records are immutable for normal admins. The system records denied attempt
 - inventory/capacity
 - validation, approval, publication
 
+Hotel scope is expanded by the Lastsecond parity review in
+[`docs/plan/PHASE-2-HOTEL-LASTSECOND-GAP.md`](../plan/PHASE-2-HOTEL-LASTSECOND-GAP.md):
+contact/policies, categorized media, amenity catalog, review breakdown,
+recommendation/rank, booking request, LodgingBusiness JSON-LD, and hotel
+publication/audit states are required before the hotel form is considered
+complete.
+
 ### Phase 3 — Booking, payment, settlement
 
 - online bookings

@@ -305,3 +305,4 @@
 | `1b6c42d` | Admin panel architecture document: 12-section IA, template reuse, RBAC, finance/audit, phases, acceptance |
 | `91eacc5` | Admin phase 1 foundation: permission shell, dashboard, agencies, users, protected admin endpoints |
 | `6d52c29` | Admin phase 2 opening: products overview, live hotel catalogue table/search/pagination |
+| `pending` | Hotel Lastsecond parity gap analysis added to phase 2 planning |

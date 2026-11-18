@@ -321,3 +321,7 @@
 | H91-ADMIN-01 | Admin panel architecture | ? Planning | 12-section IA, template reuse map, RBAC, finance/audit rules, delivery phases |
 | H91-ADMIN-02 | Admin phase 1 foundation | ? In progress | permission shell, dashboard, agencies, users; roles/audit/settings next |
 | H91-ADMIN-03 | Admin phase 2 catalogue slice | ? In progress | products overview, hotels read model/search/pagination; tours/flights/visas/forms next |
+| H91-HOTEL-01 | Hotel Lastsecond content parity | ? Planned | contact, policies, property type, SEO, publication state |
+| H91-HOTEL-02 | Hotel media/amenity parity | ? Planned | categorized media, cover, media variants, amenity catalog |
+| H91-HOTEL-03 | Hotel trust parity | ? Planned | review breakdown, recommendation, city rank, user photos |
+| H91-HOTEL-04 | Hotel request/commerce parity | ? Planned | reservation request, inventory, rates, tax, cancellation |
