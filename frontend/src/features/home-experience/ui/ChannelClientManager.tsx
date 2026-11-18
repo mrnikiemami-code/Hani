@@ -15,7 +15,8 @@ const SCOPES = [
   "channel.catalog.read",
   "channel.booking.read",
   "channel.booking.write",
-  "channel.finance.read"
+  "channel.finance.read",
+  "supplier.write"
 ] as const;
 
 /** Admin API client management with one-time secret display. */

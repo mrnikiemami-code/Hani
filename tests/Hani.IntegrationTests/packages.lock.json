@@ -822,6 +822,8 @@
           "Hani.Modules.Payments.Infrastructure": "[1.0.0, )",
           "Hani.Modules.Settlement.Application": "[1.0.0, )",
           "Hani.Modules.Settlement.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Supply.Application": "[1.0.0, )",
+          "Hani.Modules.Supply.Infrastructure": "[1.0.0, )",
           "Microsoft.EntityFrameworkCore": "[10.0.15, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.15, )"
         }

@@ -187,9 +187,9 @@ const ADMIN_NAV: AdminNavItem[] = [
         permission: "integration.view"
       },
       {
+        href: "/admin/integrations/suppliers",
         labelKey: "suppliers",
-        permission: "integration.view",
-        enabled: false
+        permission: "integration.view"
       }
     ]
   },

@@ -17,6 +17,8 @@
     <ProjectReference Include="..\..\Payments\Hani.Modules.Payments.Infrastructure\Hani.Modules.Payments.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Settlement\Hani.Modules.Settlement.Application\Hani.Modules.Settlement.Application.csproj" />
     <ProjectReference Include="..\..\Settlement\Hani.Modules.Settlement.Infrastructure\Hani.Modules.Settlement.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Supply\Hani.Modules.Supply.Application\Hani.Modules.Supply.Application.csproj" />
+    <ProjectReference Include="..\..\Supply\Hani.Modules.Supply.Infrastructure\Hani.Modules.Supply.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" />

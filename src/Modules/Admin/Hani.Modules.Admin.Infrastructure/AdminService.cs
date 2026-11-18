@@ -7,6 +7,7 @@ using Hani.Modules.Content.Infrastructure.Persistence;
 using Hani.Modules.Identity.Infrastructure.Persistence;
 using Hani.Modules.Payments.Infrastructure.Persistence;
 using Hani.Modules.Settlement.Infrastructure.Persistence;
+using Hani.Modules.Supply.Infrastructure.Persistence;
 using MediatR;
 
 namespace Hani.Modules.Admin.Infrastructure;
@@ -20,9 +21,10 @@ internal sealed partial class AdminService(
     BookingDbContext booking,
     PaymentsDbContext payments,
     SettlementDbContext settlement,
+    SupplyDbContext supply,
     CatalogDbContext catalog,
     IdentityDbContext identity,
     ContentDbContext content,
     IIdGenerator ids,
     ILanguageCatalog languages,
-    ISender sender) : IAdminReportService, IAdminUserService, IHotelFacetService, IAdminMarketingService, IAdminNotificationService, IAdminFinanceService, IAdminBookingService, IAdminHomeSettingsService, IAdminSupportService, IContentEntryService, IAdminCatalogService, IAdminGovernanceService, IAdminChannelService;
+    ISender sender) : IAdminReportService, IAdminUserService, IHotelFacetService, IAdminMarketingService, IAdminNotificationService, IAdminFinanceService, IAdminBookingService, IAdminHomeSettingsService, IAdminSupportService, IContentEntryService, IAdminCatalogService, IAdminGovernanceService, IAdminChannelService, IAdminSupplierService;

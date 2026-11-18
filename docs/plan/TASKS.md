@@ -336,3 +336,6 @@
 | H91-ARCH-02 | Endpoint DbContext remediation: remaining admin | ? Done | all endpoints moved to application services/read models; audit writer moved; allowlist empty |
 | H91-ARCH-03 | API composition-root cleanup | ? Done | thin Program, Configuration/Pipeline/Endpoints folders, middleware/health/audit folders, composition tests |
 | H91-ADMIN-10 | Phase 5 channel API administration | ? Done | API clients create/list/revoke, one-time secret, plans, white-label, webhook, audit, responsive UI |
+| H91-ADMIN-11 | Phase 5 supplier integration admin | ? Done | supplier offer moderation, approve/reject, audit, supplier scope, responsive UI |
+| H91-ADMIN-12 | Phase 5 flight ticketing | ? Blocked | requires real flight provider credentials and ticketing contract |
+| H91-ADMIN-13 | Phase 5 advanced BI | ? Partial | operational KPI reports done; exports/cohort/trend BI remains |

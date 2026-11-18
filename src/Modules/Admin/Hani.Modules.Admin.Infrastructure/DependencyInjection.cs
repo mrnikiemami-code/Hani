@@ -37,6 +37,8 @@ public static class DependencyInjection
         services.AddScoped<IAdminAuditWriter, AdminAuditWriter>();
         services.AddScoped<IAdminChannelService>(
             provider => provider.GetRequiredService<AdminService>());
+        services.AddScoped<IAdminSupplierService>(
+            provider => provider.GetRequiredService<AdminService>());
         return services;
     }
 }
