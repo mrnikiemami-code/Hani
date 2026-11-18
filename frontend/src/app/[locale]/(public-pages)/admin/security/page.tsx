@@ -33,6 +33,7 @@ export default async function AdminSecurityPage({
         subtitle={t("accessHint")}
         active={t("navSecurity")}
         activeSection="settings"
+        activeChild="security"
       >
         <div className="card border-0 shadow-sm">
           <div className="card-body p-4 text-gray-6">{t("accessHint")}</div>
@@ -48,6 +49,7 @@ export default async function AdminSecurityPage({
       subtitle={t("subtitle")}
       active={t("navSecurity")}
         activeSection="settings"
+        activeChild="security"
     >
       <SecuritySettingsEditor
         initialSettings={

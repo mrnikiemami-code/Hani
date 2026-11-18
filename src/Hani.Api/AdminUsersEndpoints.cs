@@ -1,6 +1,5 @@
 using Hani.Modules.Identity.Domain.Users;
 using Hani.Modules.Identity.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;

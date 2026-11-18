@@ -691,7 +691,14 @@ html[lang="en"] body {
     color: #526b7a;
   }
 
-  .admin-subnav a:hover {
+  .admin-subnav a:hover,
+  .admin-subnav a.active {
     color: #ff725e;
+  }
+
+  .admin-subnav a.active {
+    font-weight: 600;
+    background: #fff4f1;
+    border-radius: 4px;
   }
 }

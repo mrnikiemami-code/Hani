@@ -72,6 +72,7 @@ export default async function AdminContentPage({
         subtitle={t("accessHint")}
         active={t("navContent")}
         activeSection="content"
+        activeChild="contentPages"
       >
         <div className="card border-0 shadow-sm">
           <div className="card-body p-4 text-gray-6">{t("accessHint")}</div>
@@ -87,6 +88,7 @@ export default async function AdminContentPage({
       subtitle={t("subtitle")}
       active={t("navContent")}
         activeSection="content"
+        activeChild="contentPages"
     >
       <ContentManager
         key={`${q}-${type}-${status}-${page}`}

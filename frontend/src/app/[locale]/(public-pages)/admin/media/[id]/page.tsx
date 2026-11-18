@@ -40,6 +40,7 @@ export default async function AdminMediaEditPage({
         subtitle={t("accessHint")}
         active={t("navMedia")}
         activeSection="content"
+        activeChild="media"
       >
         <div className="card border-0 shadow-sm">
           <div className="card-body p-4 text-gray-6">{t("accessHint")}</div>
@@ -59,6 +60,7 @@ export default async function AdminMediaEditPage({
       subtitle={t("subtitle")}
       active={t("navMedia")}
         activeSection="content"
+        activeChild="media"
     >
       <MediaEditForm
         locale={locale}

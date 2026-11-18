@@ -41,6 +41,7 @@ export default async function AdminHomePage({
         subtitle={t("accessHint")}
         active={t("navHomepage")}
         activeSection="content"
+        activeChild="homepage"
       >
         <div className="card border-0 shadow-sm">
           <div className="card-body p-4">
@@ -60,6 +61,7 @@ export default async function AdminHomePage({
       subtitle={t("subtitle")}
       active={t("navHomepage")}
         activeSection="content"
+        activeChild="homepage"
     >
       <HomeSettingsEditor locale={locale} initialSettings={settings} />
     </AdminPageShell>

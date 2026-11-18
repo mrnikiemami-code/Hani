@@ -140,6 +140,7 @@ export async function AdminPageShell({
   subtitle,
   active,
   activeSection,
+  activeChild,
   children
 }: {
   locale: string;
@@ -147,6 +148,7 @@ export async function AdminPageShell({
   subtitle: string;
   active: string;
   activeSection?: string;
+  activeChild?: string;
   children: React.ReactNode;
 }) {
   const t = await getTranslations({ locale, namespace: "adminHome" });
@@ -217,7 +219,19 @@ export async function AdminPageShell({
                             <ul className="admin-subnav">
                               {childItems.map((child) => (
                                 <li key={child.href}>
-                                  <Link href={child.href}>
+                                  <Link
+                                    href={child.href}
+                                    className={
+                                      activeChild === child.labelKey
+                                        ? "active"
+                                        : undefined
+                                    }
+                                    aria-current={
+                                      activeChild === child.labelKey
+                                        ? "page"
+                                        : undefined
+                                    }
+                                  >
                                     {nav(child.labelKey)}
                                   </Link>
                                 </li>
