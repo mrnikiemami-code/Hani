@@ -133,3 +133,18 @@
   filter, not two duplicated pages.
 - Read `docs/architecture/LASTSECOND-PARITY-PLUS.md` before changing home,
   search, listing, or detail pages.
+
+## 9. API composition root (mandatory)
+
+- `src/Hani.Api/Program.cs` must stay thin: `AddHaniApi()`, `UseHaniApi()`,
+  `Run()`, and `public partial class Program`.
+- No `AddDbContext`, `AddScoped`, `AddSingleton`, `AddTransient`, auth,
+  localization, rate limiting, health checks, middleware, or endpoint mapping
+  inside `Program.cs`.
+- Service registrations live under `src/Hani.Api/Configuration/`.
+- The request pipeline lives under `src/Hani.Api/Pipeline/`; API middleware
+  lives under `src/Hani.Api/Middleware/`.
+- Endpoint mapping lives in `Endpoints/EndpointRegistration.cs`; admin files
+  live in `Endpoints/Admin/`, public files in `Endpoints/Public/`, and channel
+  files in `Endpoints/Channel/`.
+- Read `docs/architecture/API-COMPOSITION-ROOT.md` before changing the host.

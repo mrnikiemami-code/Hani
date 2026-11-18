@@ -34,7 +34,7 @@ public sealed class EndpointDbContextRatchetTests
     public void Ads_Endpoint_Must_Use_Application_Queries()
     {
         var root = FindRepositoryRoot();
-        var path = Path.Combine(root, "src", "Hani.Api", "AdminAdsEndpoints.cs");
+        var path = Path.Combine(root, "src", "Hani.Api", "Endpoints", "Admin", "AdminAdsEndpoints.cs");
         var source = File.ReadAllText(path);
 
         source.Contains("DbContext", StringComparison.Ordinal).ShouldBeFalse();

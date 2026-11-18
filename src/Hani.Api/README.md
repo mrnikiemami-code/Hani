@@ -1,21 +1,42 @@
 # Hani API Host
 
-> Composition Root: تنها جایی که ماژول‌ها، DbContextها، Auth، Cache، Messaging و Observability به هم وصل می‌شوند.
+## Composition root
 
-## مسئولیت‌ها
+`Program.cs` is intentionally tiny:
 
-- ثبت MediatR برای همه ماژول‌ها
-- ثبت Validatorها
-- ثبت `DbContext`ها (Supply / Catalog / Identity)
-- ثبت Cache / Messaging / Observability
-- ثبت Authentication (API Key) و Authorization Policy
-- Request Localization (FA/EN/AR)
-- TenantMiddleware
-- Map کردن Endpointهای ماژول‌ها
-- `/health`
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+builder.AddHaniApi();
 
-## قواعد
+var app = builder.Build();
+app.UseHaniApi();
+app.Run();
 
-- هیچ منطق دامنه‌ای در `Program.cs` نوشته نمی‌شود.
-- هر ماژول فقط `Presentation` و `Infrastructure` خودش را expose می‌کند.
-- Endpointهای Supplier با policy `Supplier` محافظت می‌شوند.
+public partial class Program;
+```
+
+## Folder layout
+
+```text
+src/Hani.Api/
+  Configuration/        service registration extensions
+  Pipeline/             request pipeline extension
+  Endpoints/            endpoint registration
+  Endpoints/Admin/      admin endpoint files
+  Endpoints/Public/     public endpoint files
+  Endpoints/Channel/    channel endpoint files
+  Middleware/           API-specific middleware
+  Health/               health checks
+  Auditing/             HTTP actor/audit adapters
+```
+
+## Rules
+
+- Do not add `AddScoped`/`AddDbContext`/auth/localization/rate limiting to
+  `Program.cs`.
+- Add service registrations under `Configuration/`.
+- Add middleware under `Middleware/` and register it in `Pipeline/`.
+- Add endpoint files under `Endpoints/{Admin|Public|Channel}/` and map them
+  in `Endpoints/EndpointRegistration.cs`.
+- Do not inject `DbContext` into endpoints.
+- Read `docs/architecture/API-COMPOSITION-ROOT.md`.
