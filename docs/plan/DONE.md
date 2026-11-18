@@ -309,4 +309,4 @@
 | `6534bac` | Hotel parity slice 1: content fields, gallery metadata, lifecycle/SEO, admin editor, published filtering |
 | `40302e6` | Hotel parity slice 2: public detail, reviews, booking request, JSON-LD, sitemap, owner claim |
 | `f86b072` | Hotel parity slice 3: policies, amenity metadata, room commerce fields, review actions, moderation |
-| `pending` | Hotel parity completion: facet filters, policies, amenities, room commerce fields, review actions, moderation |
+| `8936c29` | Hotel parity completion: facet filters, policies, amenities, room commerce fields, review actions, moderation |
