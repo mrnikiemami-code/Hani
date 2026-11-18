@@ -225,7 +225,8 @@
     "backHome": "العودة للرئيسية",
     "resend": "إعادة إرسال الرمز",
     "resendIn": "إعادة الإرسال متاحة بعد {time}",
-    "codeValidFor": "الرمز صالح لمدة {time}"
+    "codeValidFor": "الرمز صالح لمدة {time}",
+    "codeExpired": "????? ?????? ?????. ???? ????? ??????."
   },
   "checkout": {
     "title": "إكمال الحجز",

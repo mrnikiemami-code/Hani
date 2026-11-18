@@ -7,7 +7,7 @@ namespace Hani.Modules.Identity.Infrastructure.Security;
 /// <see cref="IOtpSecurityState"/>; a Redis-backed implementation can replace it
 /// for multi-instance deployments without changing request handlers.
 /// </summary>
-internal sealed class InMemoryOtpSecurityState : IOtpSecurityState
+internal sealed class InMemoryOtpSecurityState : IOtpSecurityState, IDisposable
 {
     private sealed class IpState
     {
@@ -91,6 +91,8 @@ internal sealed class InMemoryOtpSecurityState : IOtpSecurityState
             gate.Release();
         }
     }
+
+    public void Dispose() => gate.Dispose();
 
     public async Task ResetAsync(
         string? mobile,

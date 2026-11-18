@@ -225,7 +225,8 @@
     "backHome": "بازگشت به خانه",
     "resend": "ارسال دوباره کد",
     "resendIn": "ارسال مجدد تا {time}",
-    "codeValidFor": "کد تا {time} دیگر معتبر است"
+    "codeValidFor": "کد تا {time} دیگر معتبر است",
+    "codeExpired": "?? ????? ??? ?? ?? ???? ??????."
   },
   "checkout": {
     "title": "تکمیل رزرو",

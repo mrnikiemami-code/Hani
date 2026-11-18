@@ -225,7 +225,8 @@
     "backHome": "Back to home",
     "resend": "Resend code",
     "resendIn": "Resend available in {time}",
-    "codeValidFor": "Code is valid for {time}"
+    "codeValidFor": "Code is valid for {time}",
+    "codeExpired": "The code expired. Request a new code."
   },
   "checkout": {
     "title": "Complete booking",

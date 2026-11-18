@@ -15,23 +15,38 @@ export function OtpLoginForm({ locale }: { locale: string }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [resendAt, setResendAt] = useState(0);
+  const [codeExpiresAt, setCodeExpiresAt] = useState(0);
   const [remaining, setRemaining] = useState(0);
+  const [codeRemaining, setCodeRemaining] = useState(0);
 
   useEffect(() => {
-    if (!resendAt) {
+    if (!resendAt && !codeExpiresAt) {
       setRemaining(0);
+      setCodeRemaining(0);
       return;
     }
-    const tick = () =>
-      setRemaining(Math.max(0, Math.ceil((resendAt - Date.now()) / 1000)));
+    const tick = () => {
+      setRemaining(
+        resendAt ? Math.max(0, Math.ceil((resendAt - Date.now()) / 1000)) : 0
+      );
+      setCodeRemaining(
+        codeExpiresAt
+          ? Math.max(0, Math.ceil((codeExpiresAt - Date.now()) / 1000))
+          : 0
+      );
+    };
     tick();
     const timer = window.setInterval(tick, 1000);
     return () => window.clearInterval(timer);
-  }, [resendAt]);
+  }, [codeExpiresAt, resendAt]);
 
   const timeLabel = `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(
     remaining % 60
   ).padStart(2, "0")}`;
+  const codeTimeLabel = `${String(Math.floor(codeRemaining / 60)).padStart(2, "0")}:${String(
+    codeRemaining % 60
+  ).padStart(2, "0")}`;
+  const codeExpired = codeExpiresAt > 0 && codeRemaining === 0;
 
   async function sendCode() {
     setError(null);
@@ -45,10 +60,12 @@ export function OtpLoginForm({ locale }: { locale: string }) {
       if (!response.ok) throw new Error("request");
       const data = (await response.json()) as {
         devCode: string | null;
+        expiresAt: string;
         retryAfterSeconds: number;
       };
       setDevCode(data.devCode);
       setResendAt(Date.now() + data.retryAfterSeconds * 1000);
+      setCodeExpiresAt(new Date(data.expiresAt).getTime());
       setStep("code");
     } catch {
       setError(t("invalid"));
@@ -151,7 +168,16 @@ export function OtpLoginForm({ locale }: { locale: string }) {
                       required
                     />
                   </div>
-                  <button className="btn btn-primary w-100" type="submit" disabled={loading}>
+                  <p className={`text-center fs-13 mt-3 mb-0 ${codeExpired ? "text-danger" : "text-gray-6"}`}>
+                    {codeExpired
+                      ? t("codeExpired")
+                      : t("codeValidFor", { time: codeTimeLabel })}
+                  </p>
+                  <button
+                    className="btn btn-primary w-100 mt-2"
+                    type="submit"
+                    disabled={loading || codeExpired}
+                  >
                     {loading ? t("verifying") : t("verify")}
                   </button>
                   {remaining > 0 ? (
@@ -176,6 +202,7 @@ export function OtpLoginForm({ locale }: { locale: string }) {
                       setCode("");
                       setDevCode(null);
                       setResendAt(0);
+                      setCodeExpiresAt(0);
                     }}
                   >
                     {t("changeMobile")}
