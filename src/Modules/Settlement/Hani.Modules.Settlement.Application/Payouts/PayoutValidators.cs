@@ -34,6 +34,13 @@ public sealed class MarkPayoutPaidCommandValidator : AbstractValidator<MarkPayou
     public MarkPayoutPaidCommandValidator()
     {
         RuleFor(command => command.PayoutId).NotEmpty().WithErrorCode("HANI-SETTLEMENT-3115");
+        RuleFor(command => command.BankReference).NotEmpty().MaximumLength(200)
+            .WithErrorCode("HANI-SETTLEMENT-3116");
+        RuleFor(command => command.DocumentUrl).NotEmpty().MaximumLength(1000)
+            .Must(value => Uri.TryCreate(value, UriKind.Absolute, out var uri) &&
+                (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+            .WithErrorCode("HANI-SETTLEMENT-3117");
+        RuleFor(command => command.ApprovedBy).NotEmpty().WithErrorCode("HANI-SETTLEMENT-3118");
     }
 }
 

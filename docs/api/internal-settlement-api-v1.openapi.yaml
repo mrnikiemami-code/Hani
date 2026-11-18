@@ -93,9 +93,20 @@ paths:
   /settlements/payouts/{payoutId}/paid:
     post:
       tags: [Settlement]
-      summary: Mark a payout paid
+      summary: Mark a payout paid with bank evidence
       parameters:
         - { name: payoutId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [bankReference, documentUrl, approvedBy]
+              properties:
+                bankReference: { type: string, maxLength: 200 }
+                documentUrl: { type: string, format: uri, maxLength: 1000 }
+                approvedBy: { type: string, format: uuid }
       responses:
         '200': { description: Paid }
         default: { $ref: '#/components/responses/Problem' }

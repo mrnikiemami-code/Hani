@@ -159,3 +159,21 @@ Client → X-Api-Key + X-Api-Secret
   implementation for multi-instance deployments.
 - Defaults: 120s code lifetime/cooldown, 3 distinct mobiles per IP window,
   configurable IP block, hourly mobile cap, and configurable failed attempts.
+
+## Admin governance (2026-11-18)
+
+- `AdminAuditEvent` is an append-only record with actor, role, action,
+  entity, before/after JSON, reason, correlation id, IP, and user agent.
+  `IdentityDbContext` rejects updates and deletes of audit rows.
+- `AdminApprovalRequest` implements two-person approval for refunds and
+  settlements. The approver must differ from the requester; self-approval
+  attempts are denied and audited.
+- Settlement approvals store the bank reference and receipt URL. The payout
+  is marked paid only after approval.
+- Tables: `admin_audit_events`, `admin_approval_requests`.
+- Migration: `AddAdminGovernance`.
+- Admin endpoints: `/internal/v1/admin/approvals`,
+  `/internal/v1/admin/approvals/refunds`,
+  `/internal/v1/admin/approvals/settlements`,
+  `/internal/v1/admin/approvals/{id}/approve`,
+  `/internal/v1/admin/approvals/{id}/reject`, `/internal/v1/admin/audit`.

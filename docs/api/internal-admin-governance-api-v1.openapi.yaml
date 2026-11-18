@@ -1,0 +1,245 @@
+openapi: 3.1.0
+info:
+  title: Hani Internal Admin Governance API - Draft v1
+  version: 1.0.0
+  description: Two-person approvals and immutable administrative audit endpoints.
+servers:
+  - url: https://api.hani.ir/internal/v1
+    description: Production
+  - url: http://localhost:5099/internal/v1
+    description: Local
+
+tags:
+  - name: Admin.Governance
+
+paths:
+  /admin/approvals:
+    get:
+      tags: [Admin.Governance]
+      summary: List approval requests
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: status, in: query, required: false, schema: { type: string, enum: [Pending, Approved, Rejected, Failed] } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Approval' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/approvals/refunds:
+    post:
+      tags: [Admin.Governance]
+      summary: Request a refund approval
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orderId, paymentIntentId, amount, currency, reason]
+              properties:
+                orderId: { type: string, format: uuid }
+                paymentIntentId: { type: string, format: uuid }
+                amount: { type: number, exclusiveMinimum: 0 }
+                currency: { type: string, minLength: 3, maxLength: 3 }
+                reason: { type: string, minLength: 1, maxLength: 1000 }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Approval' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/approvals/settlements:
+    post:
+      tags: [Admin.Governance]
+      summary: Request a settlement approval with bank evidence
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [payoutId, bankReference, documentUrl, reason]
+              properties:
+                payoutId: { type: string, format: uuid }
+                bankReference: { type: string, minLength: 1, maxLength: 200 }
+                documentUrl: { type: string, format: uri, maxLength: 1000 }
+                reason: { type: string, minLength: 1, maxLength: 1000 }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Approval' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/approvals/{id}/approve:
+    post:
+      tags: [Admin.Governance]
+      summary: Approve and execute a pending request
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string, maxLength: 1000 }
+      responses:
+        '200':
+          description: Approved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Approval' }
+        '403': { $ref: '#/components/responses/Problem' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/approvals/{id}/reject:
+    post:
+      tags: [Admin.Governance]
+      summary: Reject a pending request
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 1, maxLength: 1000 }
+      responses:
+        '200':
+          description: Rejected
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Approval' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/audit:
+    get:
+      tags: [Admin.Governance]
+      summary: List immutable audit events
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: action, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, total, page, pageSize]
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/AuditEvent' }
+                  total: { type: integer }
+                  page: { type: integer }
+                  pageSize: { type: integer }
+        default: { $ref: '#/components/responses/Problem' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Problem:
+      description: RFC 7807 problem details
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+    Approval:
+      type: object
+      required:
+        [id, type, status, entityType, entityId, amount, currency, requestedReason,
+         requestedBy, requestedAt]
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, enum: [Refund, Settlement] }
+        status: { type: string, enum: [Pending, Approved, Rejected, Failed] }
+        entityType: { type: string }
+        entityId: { type: string, format: uuid }
+        amount: { type: number }
+        currency: { type: string }
+        paymentIntentId: { type: string, format: uuid, nullable: true }
+        bankReference: { type: string, nullable: true }
+        documentUrl: { type: string, format: uri, nullable: true }
+        requestedReason: { type: string }
+        requestedBy: { type: string, format: uuid }
+        requestedByMobile: { type: string }
+        requestedAt: { type: string, format: date-time }
+        decidedBy: { type: string, format: uuid, nullable: true }
+        decidedByMobile: { type: string, nullable: true }
+        decidedAt: { type: string, format: date-time, nullable: true }
+        decisionReason: { type: string, nullable: true }
+        failureReason: { type: string, nullable: true }
+
+    AuditEvent:
+      type: object
+      required:
+        [id, occurredAt, actorRole, action, entityType, entityId, reason,
+         correlationId]
+      properties:
+        id: { type: string, format: uuid }
+        occurredAt: { type: string, format: date-time }
+        actorUserId: { type: string, format: uuid, nullable: true }
+        actorMobile: { type: string, nullable: true }
+        actorRole: { type: string }
+        agencyId: { type: string, format: uuid, nullable: true }
+        action: { type: string }
+        entityType: { type: string }
+        entityId: { type: string }
+        beforeJson: { type: string, nullable: true }
+        afterJson: { type: string, nullable: true }
+        reason: { type: string }
+        correlationId: { type: string }
+        ipAddress: { type: string, nullable: true }
+        userAgent: { type: string, nullable: true }
+
+    Problem:
+      type: object
+      required: [type, title, status, code, correlationId, traceId]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        code: { type: string }
+        detail: { type: string }
+        instance: { type: string }
+        correlationId: { type: string }
+        traceId: { type: string }
+        locale: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }

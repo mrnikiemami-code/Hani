@@ -37,6 +37,9 @@ internal sealed class PayoutConfiguration : IEntityTypeConfiguration<Payout>
         builder.Property(item => item.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(item => item.PaidAt).HasColumnName("paid_at");
+        builder.Property(item => item.BankReference).HasColumnName("bank_reference").HasMaxLength(200);
+        builder.Property(item => item.DocumentUrl).HasColumnName("document_url").HasMaxLength(1000);
+        builder.Property(item => item.ApprovedBy).HasColumnName("approved_by");
         builder.HasIndex(item => new { item.AgencyId, item.Status }).HasDatabaseName("ix_payouts_agency_status");
     }
 }

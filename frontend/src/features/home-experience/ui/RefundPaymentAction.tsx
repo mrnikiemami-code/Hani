@@ -1,12 +1,13 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMessageBox } from "@/components/hani/message-provider";
 import { formatMoney } from "@/lib/hani/money";
 import { refundAdminOrder } from "../application/admin-booking-actions";
 
-/** Refunds a single payment intent so each currency is refunded separately. */
+/** Requests a refund approval for one payment intent. */
 export function RefundPaymentAction({
   orderId,
   paymentIntentId,
@@ -22,6 +23,7 @@ export function RefundPaymentAction({
 }) {
   const t = useTranslations("adminBookings");
   const messages = useMessageBox();
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
 
   const refund = async () => {
@@ -31,7 +33,7 @@ export function RefundPaymentAction({
       message: t("refundHint", {
         amount: formatMoney(amount, currency, locale)
       }),
-      confirmLabel: t("refund")
+      confirmLabel: t("requestRefund")
     });
     if (!confirmed) return;
     startTransition(async () => {
@@ -39,10 +41,12 @@ export function RefundPaymentAction({
         orderId,
         paymentIntentId,
         amount,
+        currency,
         t("refundReason")
       );
       if (result.ok) {
-        messages.toast({ kind: "success", message: t("refunded") });
+        messages.toast({ kind: "success", message: t("refundRequested") });
+        router.refresh();
       } else {
         messages.toast({ kind: "error", message: t("refundError") });
       }
@@ -56,7 +60,7 @@ export function RefundPaymentAction({
       onClick={refund}
       disabled={pending}
     >
-      {pending ? t("refunding") : t("refund")}
+      {pending ? t("requesting") : t("requestRefund")}
     </button>
   );
 }

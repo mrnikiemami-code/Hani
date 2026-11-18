@@ -1,8 +1,6 @@
 using Hani.Modules.Payments.Infrastructure.Persistence;
-using Hani.Modules.Settlement.Application.Payouts;
 using Hani.Modules.Settlement.Domain.Commissions;
 using Hani.Modules.Settlement.Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
@@ -25,12 +23,6 @@ public static class AdminFinanceEndpoints
             .WithName("Internal.ListAdminPayouts")
             .RequireAuthorization("Admin")
             .Produces<IReadOnlyList<AdminPayoutDto>>();
-
-        app.MapPost("/internal/v1/admin/finance/payouts/{id:guid}/paid", MarkPayoutPaidAsync)
-            .WithTags("Internal.Admin.Finance")
-            .WithName("Internal.MarkAdminPayoutPaid")
-            .RequireAuthorization("Admin")
-            .Produces<bool>();
 
         app.MapGet("/internal/v1/admin/finance/refunds", ListRefundsAsync)
             .WithTags("Internal.Admin.Finance")
@@ -201,21 +193,13 @@ public static class AdminFinanceEndpoints
                 item.Amount,
                 item.Currency,
                 item.Status.ToString(),
-                item.CreatedAt))
+                item.CreatedAt,
+                item.PaidAt,
+                item.BankReference,
+                item.DocumentUrl,
+                item.ApprovedBy))
             .ToArrayAsync(cancellationToken);
         return Results.Ok(payouts);
-    }
-
-    private static async Task<IResult> MarkPayoutPaidAsync(
-        Guid id,
-        HttpContext context,
-        ISender sender,
-        CancellationToken cancellationToken)
-    {
-        var result = await sender.Send(new MarkPayoutPaidCommand(id), cancellationToken);
-        return result.IsSuccess
-            ? Results.Ok(result.Value)
-            : Hani.BuildingBlocks.AspNetCore.HaniProblemDetails.ToResult(context, result.Error!);
     }
 
     private static async Task<IResult> GetAsync(
@@ -276,7 +260,11 @@ public sealed record AdminPayoutDto(
     decimal Amount,
     string Currency,
     string Status,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    DateTimeOffset? PaidAt,
+    string? BankReference,
+    string? DocumentUrl,
+    Guid? ApprovedBy);
 
 /// <summary>Payment totals grouped by status and currency.</summary>
 public sealed record PaymentCurrencySummary(

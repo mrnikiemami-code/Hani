@@ -24,6 +24,7 @@ public static class AdminIdentityEndpoints
         public const string IntegrationView = "integration.view";
         public const string ReportView = "report.view";
         public const string SettingsView = "settings.view";
+        public const string AuditView = "audit.view";
         public const string RoleManage = "role.manage";
 
         /// <summary>All permissions granted to the Super Admin role today.</summary>
@@ -42,6 +43,7 @@ public static class AdminIdentityEndpoints
             IntegrationView,
             ReportView,
             SettingsView,
+            AuditView,
             RoleManage
         ];
     }

@@ -72,6 +72,57 @@ export type AdminPayout = {
   currency: string;
   status: string;
   createdAt: string;
+  paidAt: string | null;
+  bankReference: string | null;
+  documentUrl: string | null;
+  approvedBy: string | null;
+};
+
+export type AdminApproval = {
+  id: string;
+  type: string;
+  status: string;
+  entityType: string;
+  entityId: string;
+  amount: number;
+  currency: string;
+  paymentIntentId: string | null;
+  bankReference: string | null;
+  documentUrl: string | null;
+  requestedReason: string;
+  requestedBy: string;
+  requestedByMobile: string;
+  requestedAt: string;
+  decidedBy: string | null;
+  decidedByMobile: string | null;
+  decidedAt: string | null;
+  decisionReason: string | null;
+  failureReason: string | null;
+};
+
+export type AdminAudit = {
+  id: string;
+  occurredAt: string;
+  actorUserId: string | null;
+  actorMobile: string | null;
+  actorRole: string;
+  agencyId: string | null;
+  action: string;
+  entityType: string;
+  entityId: string;
+  beforeJson: string | null;
+  afterJson: string | null;
+  reason: string;
+  correlationId: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+};
+
+export type AdminAuditPage = {
+  items: AdminAudit[];
+  total: number;
+  page: number;
+  pageSize: number;
 };
 
 export type AdminRefund = {

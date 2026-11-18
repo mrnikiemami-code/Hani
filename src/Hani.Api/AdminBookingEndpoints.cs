@@ -1,11 +1,9 @@
-using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Booking.Application.Commands.CancelOrder;
 using Hani.Modules.Booking.Application.Commands.CreateOrder;
 using Hani.Modules.Booking.Application.Queries.GetOrder;
 using Hani.Modules.Booking.Infrastructure.Persistence;
-using Hani.Modules.Payments.Application.Commands.Finance;
-using Hani.Modules.Payments.Domain.PaymentIntents;
+using Hani.Modules.Identity.Infrastructure.Persistence;
 using Hani.Modules.Payments.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -38,11 +36,6 @@ public static class AdminBookingEndpoints
             .RequireAuthorization("Admin")
             .Produces<bool>();
 
-        app.MapPost("/internal/v1/admin/bookings/orders/{id:guid}/refund", RefundOrderAsync)
-            .WithTags("Internal.Admin.Booking")
-            .WithName("Internal.RefundAdminOrder")
-            .RequireAuthorization("Admin");
-
         app.MapGet("/internal/v1/admin/bookings/orders/{id:guid}/payments", ListPaymentsAsync)
             .WithTags("Internal.Admin.Booking")
             .WithName("Internal.ListAdminOrderPayments")
@@ -66,12 +59,29 @@ public static class AdminBookingEndpoints
         CancelOrderRequest request,
         HttpContext context,
         ISender sender,
+        IdentityDbContext identity,
+        AdminAuditWriter audit,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(
             new CancelOrderCommand(id, request.Reason),
             cancellationToken);
-        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        audit.Record(
+            context,
+            identity,
+            "booking.order.cancelled",
+            "Order",
+            id.ToString(),
+            request.Reason,
+            before: new { status = "Active" },
+            after: new { status = "Cancelled" });
+        await identity.SaveChangesAsync(cancellationToken);
+        return Results.Ok(result.Value);
     }
 
     private static async Task<IResult> ListPaymentsAsync(
@@ -92,49 +102,6 @@ public static class AdminBookingEndpoints
                 item.CreatedAt))
             .ToArrayAsync(cancellationToken);
         return Results.Ok(rows);
-    }
-
-    private static async Task<IResult> RefundOrderAsync(
-        Guid id,
-        AdminRefundRequest request,
-        HttpContext context,
-        ISender sender,
-        PaymentsDbContext payments,
-        CancellationToken cancellationToken)
-    {
-        var intentQuery = payments.PaymentIntents
-            .AsNoTracking()
-            .Where(item => item.OrderId == id && item.Status == PaymentIntentStatus.Succeeded);
-        if (request.PaymentIntentId is { } paymentIntentId)
-        {
-            intentQuery = intentQuery.Where(item => item.Id == paymentIntentId);
-        }
-
-        var intent = await intentQuery
-            .OrderByDescending(item => item.CreatedAt)
-            .FirstOrDefaultAsync(cancellationToken);
-        if (intent is null)
-        {
-            return context.ToProblem(
-                Error.Validation("HANI-PAYMENT-2100", "No successful payment intent exists for this order."));
-        }
-
-        var refundAmount = request.Amount ?? intent.Amount;
-        if (refundAmount <= 0 || refundAmount > intent.Amount)
-        {
-            return context.ToProblem(
-                Error.Validation("HANI-PAYMENT-2101", "The refund amount must be within the paid amount."));
-        }
-
-        var result = await sender.Send(
-            new RequestRefundCommand(
-                id,
-                intent.Id,
-                refundAmount,
-                intent.Currency,
-                request.Reason),
-            cancellationToken);
-        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     private static async Task<IResult> ListAsync(
@@ -232,12 +199,6 @@ public sealed record AdminBookingsResponse(
     IReadOnlyList<AdminOrderDto> Orders,
     IReadOnlyList<AdminReservationDto> Requests,
     IReadOnlyList<AdminHotelInquiryDto> Inquiries);
-
-/// <summary>Admin refund request.</summary>
-public sealed record AdminRefundRequest(
-    string Reason,
-    Guid? PaymentIntentId = null,
-    decimal? Amount = null);
 
 /// <summary>Admin order payment row.</summary>
 public sealed record AdminOrderPaymentDto(

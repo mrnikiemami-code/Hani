@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { sessionGet } from "@/lib/hani/server-api";
 import { formatIsoDate, formatIsoInstant } from "@/lib/hani/calendar";
 import { formatMoney } from "@/lib/hani/money";
@@ -240,9 +241,14 @@ export default async function AdminFinancePage({
       activeSection="finance"
     >
       <div className="card border-0 shadow-sm mb-4">
-        <div className="card-body d-flex justify-content-between">
+        <div className="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
           <span className="fs-14 text-gray-6">{t("refunds")}</span>
           <strong>{t("refundCount", { count: data.refundCount })}</strong>
+        </div>
+        <div className="card-footer bg-white d-flex justify-content-end">
+          <Link href="/admin/finance/approvals" className="btn btn-primary btn-sm">
+            {t("approvals")}
+          </Link>
         </div>
       </div>
 
@@ -259,6 +265,9 @@ export default async function AdminFinancePage({
                   <th>{t("period")}</th>
                   <th>{t("amount")}</th>
                   <th>{t("status")}</th>
+                  <th>{t("bankReference")}</th>
+                  <th>{t("settlementDocument")}</th>
+                  <th>{t("paidAt")}</th>
                   <th className="text-end">{t("actions")}</th>
                 </tr>
               </thead>
@@ -272,6 +281,28 @@ export default async function AdminFinancePage({
                     </td>
                     <td>{formatMoney(payout.amount, payout.currency, locale)}</td>
                     <td>{payout.status}</td>
+                    <td dir="ltr">{payout.bankReference ?? "—"}</td>
+                    <td>
+                      {payout.documentUrl ? (
+                        <a
+                          href={payout.documentUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="link-primary"
+                        >
+                          {t("viewDocument")}
+                        </a>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td className="text-nowrap">
+                      {payout.paidAt
+                        ? formatIsoInstant(payout.paidAt, locale, {
+                            dateStyle: "medium"
+                          })
+                        : "—"}
+                    </td>
                     <td className="text-end">
                       {payout.status === "Pending" ? (
                         <PayoutAction payoutId={payout.id} />

@@ -113,11 +113,18 @@ public static class SettlementEndpoints
     /// </summary>
     private static async Task<IResult> MarkPayoutPaidAsync(
         Guid payoutId,
+        MarkPayoutPaidRequest request,
         HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new MarkPayoutPaidCommand(payoutId), cancellationToken);
+        var result = await sender.Send(
+            new MarkPayoutPaidCommand(
+                payoutId,
+                request.BankReference,
+                request.DocumentUrl,
+                request.ApprovedBy),
+            cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
@@ -219,3 +226,11 @@ public sealed record CreatePayoutRequest(
     DateOnly PeriodEnd,
     decimal Amount,
     string Currency);
+
+/// <summary>
+/// Settlement evidence for marking a payout paid.
+/// </summary>
+public sealed record MarkPayoutPaidRequest(
+    string BankReference,
+    string DocumentUrl,
+    Guid ApprovedBy);

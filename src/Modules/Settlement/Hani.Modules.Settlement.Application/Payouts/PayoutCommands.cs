@@ -19,8 +19,15 @@ public sealed record CreatePayoutCommand(
     decimal Amount,
     string Currency) : ICommand<PayoutDto>;
 
-/// <summary>Mark a payout paid.</summary>
-public sealed record MarkPayoutPaidCommand(Guid PayoutId) : ICommand<bool>;
+/// <summary>
+/// Mark a payout paid. The command requires a bank reference, a settlement
+/// document, and the administrator who approved the transfer.
+/// </summary>
+public sealed record MarkPayoutPaidCommand(
+    Guid PayoutId,
+    string BankReference,
+    string DocumentUrl,
+    Guid ApprovedBy) : ICommand<bool>;
 
 /// <summary>Read settlement terms.</summary>
 public sealed record GetSettlementTermsQuery(Guid AgencyId) : IQuery<SettlementTermsDto>;
@@ -47,7 +54,10 @@ public sealed record PayoutDto(
     string Currency,
     string Status,
     DateTimeOffset CreatedAt,
-    DateTimeOffset? PaidAt);
+    DateTimeOffset? PaidAt,
+    string? BankReference,
+    string? DocumentUrl,
+    Guid? ApprovedBy);
 
 /// <summary>Persistence abstraction for settlement terms and payouts.</summary>
 public interface IPayoutRepository

@@ -2,6 +2,7 @@ using Hani.Modules.Identity.Domain.Agencies;
 using Hani.Modules.Identity.Domain.ApiClients;
 using Hani.Modules.Identity.Domain.Claims;
 using Hani.Modules.Identity.Domain.Gamification;
+using Hani.Modules.Identity.Domain.Governance;
 using Hani.Modules.Identity.Domain.Media;
 using Hani.Modules.Identity.Domain.Reviews;
 using Hani.Modules.Identity.Domain.Security;
@@ -39,6 +40,41 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
     public DbSet<UserBadge> UserBadges => Set<UserBadge>();
 
     public DbSet<SecuritySettings> SecuritySettings => Set<SecuritySettings>();
+
+    public DbSet<AdminAuditEvent> AdminAuditEvents => Set<AdminAuditEvent>();
+
+    public DbSet<AdminApprovalRequest> AdminApprovalRequests => Set<AdminApprovalRequest>();
+
+    /// <summary>
+    /// Audit rows are append-only. Reject updates and deletes before they reach
+    /// PostgreSQL so a compromised admin code path cannot rewrite history.
+    /// </summary>
+    public override int SaveChanges()
+    {
+        EnsureAuditRowsAreImmutable();
+        return base.SaveChanges();
+    }
+
+    /// <summary>
+    /// Audit rows are append-only. Reject updates and deletes before they reach
+    /// PostgreSQL so a compromised admin code path cannot rewrite history.
+    /// </summary>
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        EnsureAuditRowsAreImmutable();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void EnsureAuditRowsAreImmutable()
+    {
+        foreach (var entry in ChangeTracker.Entries<AdminAuditEvent>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException("Admin audit events are immutable.");
+            }
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

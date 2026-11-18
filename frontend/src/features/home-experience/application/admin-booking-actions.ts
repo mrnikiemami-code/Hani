@@ -7,60 +7,68 @@ const apiBase =
   process.env.NEXT_PUBLIC_API_BASE_URL ??
   "http://localhost:5099";
 
+async function post(path: string, body: unknown): Promise<{ ok: boolean }> {
+  const token = (await cookies()).get("hani_access_token")?.value;
+  if (!token) return { ok: false };
+  const response = await fetch(`${apiBase}${path}`, {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+  return { ok: response.ok };
+}
+
 export async function cancelAdminOrder(
   id: string,
   reason: string
 ): Promise<{ ok: boolean }> {
-  const token = (await cookies()).get("hani_access_token")?.value;
-  if (!token) return { ok: false };
-  const response = await fetch(
-    `${apiBase}/internal/v1/admin/bookings/orders/${id}/cancel`,
-    {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ reason })
-    }
-  );
-  return { ok: response.ok };
+  return post(`/internal/v1/admin/bookings/orders/${id}/cancel`, { reason });
 }
 
 export async function refundAdminOrder(
-  id: string,
+  orderId: string,
   paymentIntentId: string,
   amount: number,
+  currency: string,
   reason: string
 ): Promise<{ ok: boolean }> {
-  const token = (await cookies()).get("hani_access_token")?.value;
-  if (!token) return { ok: false };
-  const response = await fetch(
-    `${apiBase}/internal/v1/admin/bookings/orders/${id}/refund`,
-    {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ reason, paymentIntentId, amount })
-    }
-  );
-  return { ok: response.ok };
+  return post("/internal/v1/admin/approvals/refunds", {
+    orderId,
+    paymentIntentId,
+    amount,
+    currency,
+    reason
+  });
 }
 
-export async function markPayoutPaid(id: string): Promise<{ ok: boolean }> {
-  const accessToken = (await cookies()).get("hani_access_token")?.value;
-  if (!accessToken) return { ok: false };
-  const response = await fetch(
-    `${apiBase}/internal/v1/admin/finance/payouts/${id}/paid`,
-    {
-      method: "POST",
-      cache: "no-store",
-      headers: { Authorization: `Bearer ${accessToken}` }
-    }
-  );
-  return { ok: response.ok };
+export async function requestSettlementApproval(
+  payoutId: string,
+  bankReference: string,
+  documentUrl: string,
+  reason: string
+): Promise<{ ok: boolean }> {
+  return post("/internal/v1/admin/approvals/settlements", {
+    payoutId,
+    bankReference,
+    documentUrl,
+    reason
+  });
+}
+
+export async function approveAdminApproval(
+  id: string,
+  reason: string
+): Promise<{ ok: boolean }> {
+  return post(`/internal/v1/admin/approvals/${id}/approve`, { reason });
+}
+
+export async function rejectAdminApproval(
+  id: string,
+  reason: string
+): Promise<{ ok: boolean }> {
+  return post(`/internal/v1/admin/approvals/${id}/reject`, { reason });
 }

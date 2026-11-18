@@ -54,3 +54,8 @@
 - صف `Lead/RFQ` (Safarsaz، تور سفارشی، هتل، ویزا) + Match/Close.
 - صف `PriceDiscrepancy` + Resolve.
 - ثبت پرداخت اقساط (پیش‌پرداخت/کارمزد/چک) و پرداخت آفلاین (Cash/BankTransfer/Cheque) با رسید.
+
+## Internal Admin Governance
+
+- `internal-admin-governance-api-v1.openapi.yaml`: two-person financial
+  approvals and immutable audit queries under `/internal/v1/admin`.

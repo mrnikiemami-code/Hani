@@ -210,6 +210,7 @@ builder.Services.AddHaniMessaging<SupplyDbContext>(builder.Configuration);
 builder.Services.AddSingleton<ICurrentTenant, CurrentTenant>();
 builder.Services.AddSingleton<IIdempotencyStore, InMemoryIdempotencyStore>();
 builder.Services.AddSingleton<IIdGenerator, Uuid7IdGenerator>();
+builder.Services.AddScoped<AdminAuditWriter>();
 
 // ---------------------------------------------------------------------------
 // CQRS: MediatR handlers + pipeline behaviors (log -> validate -> idempotency)
@@ -602,6 +603,7 @@ app.MapAdminCatalogEndpoints();
 app.MapHotelFacetEndpoints();
 app.MapAdminBookingEndpoints();
 app.MapAdminFinanceEndpoints();
+app.MapAdminGovernanceEndpoints();
 app.MapWishlistEndpoints();
 app.MapLastsecondParityEndpoints();
 app.MapBookingEndpoints();

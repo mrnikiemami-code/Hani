@@ -65,7 +65,10 @@ internal sealed class CreatePayoutCommandHandler(IPayoutRepository payouts, IIdG
             payout.Currency,
             payout.Status.ToString(),
             payout.CreatedAt,
-            payout.PaidAt);
+            payout.PaidAt,
+            payout.BankReference,
+            payout.DocumentUrl,
+            payout.ApprovedBy);
 }
 
 internal sealed class MarkPayoutPaidCommandHandler(IPayoutRepository payouts)
@@ -82,7 +85,10 @@ internal sealed class MarkPayoutPaidCommandHandler(IPayoutRepository payouts)
             return Result<bool>.Failure(Error.NotFound("HANI-SETTLEMENT-3103", "Payout was not found."));
         }
 
-        payout.MarkPaid();
+        payout.MarkPaid(
+            request.BankReference,
+            request.DocumentUrl,
+            request.ApprovedBy);
         await payouts.SaveChangesAsync(cancellationToken);
         return Result<bool>.Success(true);
     }

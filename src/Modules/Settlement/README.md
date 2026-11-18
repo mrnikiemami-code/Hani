@@ -55,3 +55,12 @@ Order.Paid (Booking)
   "DefaultMaxAmount": null
 }
 ```
+
+## Admin governance (2026-11-18)
+
+- `Payout` now persists `bank_reference`, `document_url`, `approved_by`, and `paid_at`.
+- `POST /internal/v1/settlements/payouts/{payoutId}/paid` requires
+  `bankReference`, `documentUrl`, and `approvedBy`.
+- Admin UI does not call this endpoint directly. It creates a
+  `Settlement` approval request through the identity governance API.
+- Migration: `AddPayoutSettlementEvidence`.

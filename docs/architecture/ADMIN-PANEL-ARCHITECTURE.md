@@ -505,6 +505,7 @@ Existing `/admin/security` (OTP policy) belongs here as a subpage.
 /[locale]/admin/finance/commissions
 /[locale]/admin/finance/settlements
 /[locale]/admin/finance/ledger
+/[locale]/admin/finance/approvals
 /[locale]/admin/content/pages
 /[locale]/admin/content/blog
 /[locale]/admin/content/destinations
@@ -520,6 +521,7 @@ Existing `/admin/security` (OTP policy) belongs here as a subpage.
 /[locale]/admin/reports
 /[locale]/admin/settings
 /[locale]/admin/settings/security
+/[locale]/admin/audit
 ```
 
 The route name is stable; permissions decide whether it is reachable and visible.

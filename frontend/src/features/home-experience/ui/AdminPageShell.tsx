@@ -88,7 +88,19 @@ const ADMIN_NAV: AdminNavItem[] = [
     href: "/admin/finance",
     labelKey: "finance",
     icon: "isax isax-wallet",
-    permission: "finance.view"
+    permission: "finance.view",
+    children: [
+      {
+        href: "/admin/finance",
+        labelKey: "financeOverview",
+        permission: "finance.view"
+      },
+      {
+        href: "/admin/finance/approvals",
+        labelKey: "approvals",
+        permission: "finance.view"
+      }
+    ]
   },
   {
     id: "content",
@@ -158,6 +170,11 @@ const ADMIN_NAV: AdminNavItem[] = [
         href: "/admin/security",
         labelKey: "security",
         permission: "settings.view"
+      },
+      {
+        href: "/admin/audit",
+        labelKey: "audit",
+        permission: "audit.view"
       }
     ]
   }

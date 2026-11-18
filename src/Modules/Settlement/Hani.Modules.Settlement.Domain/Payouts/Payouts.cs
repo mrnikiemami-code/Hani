@@ -140,6 +140,15 @@ public sealed class Payout : AggregateRoot<Guid>
     /// <summary>Payment time.</summary>
     public DateTimeOffset? PaidAt { get; private set; }
 
+    /// <summary>Bank transfer reference supplied when the payout was settled.</summary>
+    public string? BankReference { get; private set; }
+
+    /// <summary>Link to the bank receipt or settlement document.</summary>
+    public string? DocumentUrl { get; private set; }
+
+    /// <summary>Administrator who approved the settlement.</summary>
+    public Guid? ApprovedBy { get; private set; }
+
     /// <summary>Creates a pending payout.</summary>
     public static Payout Create(
         IIdGenerator ids,
@@ -158,9 +167,44 @@ public sealed class Payout : AggregateRoot<Guid>
         return new Payout(ids.NewId(), agencyId, periodStart, periodEnd, amount, currency);
     }
 
-    /// <summary>Marks the payout paid.</summary>
-    public void MarkPaid(DateTimeOffset? now = null)
+    /// <summary>
+    /// Marks the payout paid with a bank reference, a document link, and the
+    /// approving administrator. A payout cannot be settled without documents.
+    /// </summary>
+    public void MarkPaid(
+        string bankReference,
+        string documentUrl,
+        Guid approvedBy,
+        DateTimeOffset? now = null)
     {
+        if (Status == PayoutStatus.Paid)
+        {
+            throw new InvalidOperationException("The payout is already paid.");
+        }
+
+        if (Status == PayoutStatus.Cancelled)
+        {
+            throw new InvalidOperationException("A cancelled payout cannot be paid.");
+        }
+
+        if (approvedBy == Guid.Empty ||
+            string.IsNullOrWhiteSpace(bankReference) ||
+            string.IsNullOrWhiteSpace(documentUrl))
+        {
+            throw new ArgumentException(
+                "Bank reference, settlement document, and approver are required.");
+        }
+
+        if (!Uri.TryCreate(documentUrl, UriKind.Absolute, out var documentUri) ||
+            (documentUri.Scheme != Uri.UriSchemeHttp &&
+             documentUri.Scheme != Uri.UriSchemeHttps))
+        {
+            throw new ArgumentException("The settlement document must be an HTTP or HTTPS link.");
+        }
+
+        BankReference = bankReference.Trim();
+        DocumentUrl = documentUrl.Trim();
+        ApprovedBy = approvedBy;
         Status = PayoutStatus.Paid;
         PaidAt = now ?? DateTimeOffset.UtcNow;
     }

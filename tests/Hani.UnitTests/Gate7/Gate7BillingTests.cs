@@ -92,7 +92,10 @@ public sealed class Gate7BillingTests
 
         terms.Cycle.ShouldBe(SettlementCycle.Weekly);
         payout.Status.ShouldBe(PayoutStatus.Pending);
-        payout.MarkPaid();
+        payout.MarkPaid(
+            "bank-ref-1234",
+            "https://documents.hani.ir/payouts/1.pdf",
+            TestIds.Generator.NewId());
         payout.Status.ShouldBe(PayoutStatus.Paid);
     }
 }
