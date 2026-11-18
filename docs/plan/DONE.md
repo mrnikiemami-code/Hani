@@ -302,4 +302,4 @@
 | `af11753` | Media table layout: no nested scroll, responsive columns, always-visible pagination |
 | `1b1fbf4` | Content UX + message system: Jalali schedule, RTL editor, translated labels, filters/pagination, save fix, toast/modal |
 | `bb414a1` | OTP security phases 1-2: memory state provider, 120s timer/cooldown, IP/mobile changes, admin security settings |
-| `pending` | Admin panel architecture document: 12-section IA, template reuse, RBAC, finance/audit, phases, acceptance |
+| `1b6c42d` | Admin panel architecture document: 12-section IA, template reuse, RBAC, finance/audit, phases, acceptance |
