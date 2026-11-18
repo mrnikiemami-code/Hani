@@ -335,3 +335,4 @@
 | H91-ARCH-01 | Endpoint DbContext remediation: ads | ? Done | application query, read-model port, infrastructure implementation, ratchet test, architecture report |
 | H91-ARCH-02 | Endpoint DbContext remediation: remaining admin | ? Done | all endpoints moved to application services/read models; audit writer moved; allowlist empty |
 | H91-ARCH-03 | API composition-root cleanup | ? Done | thin Program, Configuration/Pipeline/Endpoints folders, middleware/health/audit folders, composition tests |
+| H91-ADMIN-10 | Phase 5 channel API administration | ? Done | API clients create/list/revoke, one-time secret, plans, white-label, webhook, audit, responsive UI |

@@ -65,6 +65,7 @@ public static class EndpointRegistration
         app.MapAdminReportEndpoints();
         app.MapAdminNotificationEndpoints();
         app.MapAdminSupportEndpoints();
+        app.MapAdminChannelEndpoints();
         MapContentAdminEndpoints(app);
     }
 

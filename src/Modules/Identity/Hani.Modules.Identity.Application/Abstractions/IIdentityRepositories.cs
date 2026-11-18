@@ -68,6 +68,12 @@ public interface IApiClientRepository
     /// Adds an API client and saves changes.
     /// </summary>
     Task AddAsync(ApiClient apiClient, CancellationToken cancellationToken);
+
+    /// <summary>Returns an API client by id.</summary>
+    Task<ApiClient?> GetAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>Persists pending changes.</summary>
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }
 
 /// <summary>

@@ -25,4 +25,4 @@ internal sealed partial class AdminService(
     ContentDbContext content,
     IIdGenerator ids,
     ILanguageCatalog languages,
-    ISender sender) : IAdminReportService, IAdminUserService, IHotelFacetService, IAdminMarketingService, IAdminNotificationService, IAdminFinanceService, IAdminBookingService, IAdminHomeSettingsService, IAdminSupportService, IContentEntryService, IAdminCatalogService, IAdminGovernanceService;
+    ISender sender) : IAdminReportService, IAdminUserService, IHotelFacetService, IAdminMarketingService, IAdminNotificationService, IAdminFinanceService, IAdminBookingService, IAdminHomeSettingsService, IAdminSupportService, IContentEntryService, IAdminCatalogService, IAdminGovernanceService, IAdminChannelService;

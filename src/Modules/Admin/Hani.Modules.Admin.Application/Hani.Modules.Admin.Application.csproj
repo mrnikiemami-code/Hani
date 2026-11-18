@@ -7,6 +7,9 @@
     <ProjectReference Include="..\..\Content\Hani.Modules.Content.Domain\Hani.Modules.Content.Domain.csproj" />
     <ProjectReference Include="..\..\Catalog\Hani.Modules.Catalog.Application\Hani.Modules.Catalog.Application.csproj" />
     <ProjectReference Include="..\..\Catalog\Hani.Modules.Catalog.Domain\Hani.Modules.Catalog.Domain.csproj" />
+    <ProjectReference Include="..\..\Identity\Hani.Modules.Identity.Application\Hani.Modules.Identity.Application.csproj" />
+    <ProjectReference Include="..\..\Identity\Hani.Modules.Identity.Domain\Hani.Modules.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Hani.Contracts\Hani.Contracts.Identity\Hani.Contracts.Identity.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" />

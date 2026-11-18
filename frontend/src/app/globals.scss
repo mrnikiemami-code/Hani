@@ -459,6 +459,14 @@ html[lang="en"] body {
   overflow: visible;
 }
 
+body:has(.admin-sidebar) {
+  overflow-x: hidden;
+}
+
+html:has(.admin-sidebar) {
+  overflow-x: hidden;
+}
+
 .admin-data-table {
   width: 100%;
   table-layout: fixed;

@@ -110,4 +110,10 @@ internal sealed class ApiClientRepository(IdentityDbContext dbContext) : IApiCli
         await dbContext.ApiClients.AddAsync(apiClient, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public Task<ApiClient?> GetAsync(Guid id, CancellationToken cancellationToken)
+        => dbContext.ApiClients.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken)
+        => dbContext.SaveChangesAsync(cancellationToken);
 }

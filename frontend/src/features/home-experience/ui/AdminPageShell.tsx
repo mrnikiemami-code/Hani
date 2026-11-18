@@ -176,10 +176,22 @@ const ADMIN_NAV: AdminNavItem[] = [
   },
   {
     id: "integrations",
+    href: "/admin/channel",
     labelKey: "integrations",
     icon: "isax isax-code",
     permission: "integration.view",
-    enabled: false
+    children: [
+      {
+        href: "/admin/channel",
+        labelKey: "channel",
+        permission: "integration.view"
+      },
+      {
+        labelKey: "suppliers",
+        permission: "integration.view",
+        enabled: false
+      }
+    ]
   },
   {
     id: "reports",

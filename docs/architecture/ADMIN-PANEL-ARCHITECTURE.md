@@ -517,6 +517,7 @@ Existing `/admin/security` (OTP policy) belongs here as a subpage.
 /[locale]/admin/support/tickets
 /[locale]/admin/support/disputes
 /[locale]/admin/notifications
+/[locale]/admin/channel
 /[locale]/admin/integrations/suppliers
 /[locale]/admin/integrations/channels
 /[locale]/admin/reports

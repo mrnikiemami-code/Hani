@@ -28,5 +28,5 @@ read models and operations. It exists so HTTP endpoint files never inject a
 `IAdminReportService`, `IAdminUserService`, `IHotelFacetService`,
 `IAdminMarketingService`, `IAdminNotificationService`, `IAdminFinanceService`,
 `IAdminBookingService`, `IAdminHomeSettingsService`, `IAdminSupportService`,
-`IContentEntryService`, `IAdminCatalogService`, `IAdminGovernanceService`,
+`IContentEntryService`, `IAdminCatalogService`, `IAdminGovernanceService`, `IAdminChannelService`,
 `IAdminAuditWriter`.
