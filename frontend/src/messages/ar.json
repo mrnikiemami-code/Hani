@@ -151,7 +151,8 @@
     "roundTrip": "ذهاب وعودة",
     "departureOnly": "ذهاب فقط",
     "returnOnly": "عودة فقط",
-    "chooseDates": "اختر التواريخ"
+    "chooseDates": "اختر التواريخ",
+    "hotelsFound": "تم العثور على {count} فندق"
   },
   "meta": {
     "title": "هاني — سفر ذكي",
@@ -903,5 +904,15 @@
     "error": "فشلت العملية.",
     "emptyReviews": "لا توجد تقييمات بانتظار المراجعة.",
     "emptyMedia": "لا توجد وسائط بانتظار المراجعة."
+  },
+  "hotelFilters": {
+    "title": "الفلاتر",
+    "reset": "مسح",
+    "searchLabel": "البحث باسم الفندق",
+    "searchPlaceholder": "اسم الفندق",
+    "stars": "تصنيف الفندق",
+    "starAndUp": "{count} نجوم وأكثر",
+    "apply": "تطبيق الفلاتر",
+    "results": "{count} فندق"
   }
 }

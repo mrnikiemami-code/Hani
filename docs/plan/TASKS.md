@@ -324,5 +324,5 @@
 | H91-HOTEL-01 | Hotel Lastsecond content parity | ? Partial | property type/contact/check-in/out/status/SEO done; policies remain |
 | H91-HOTEL-02 | Hotel media/amenity parity | ? Done | categorized image/alt/cover/source/media and amenity code/icon/sort done |
 | H91-HOTEL-03 | Hotel trust parity | ? Done | review breakdown/list/photos, recommendation, city rank, helpful/report, moderation |
-| H91-HOTEL-04 | Hotel request/commerce parity | ? Partial | request form, inventory/rates/tax/cancellation fields done; live availability calendar remains |
-| H91-HOTEL-05 | Hotel public detail parity | ? Partial | detail page, JSON-LD, sitemap, booking widget, owner claim done |
+| H91-HOTEL-04 | Hotel request/commerce parity | ? Done | request form, inventory/rates/tax/cancellation, stop-sell |
+| H91-HOTEL-05 | Hotel public detail parity | ? Done | detail page, JSON-LD, sitemap, booking widget, owner claim, filters |

@@ -151,7 +151,8 @@
     "roundTrip": "رفت و برگشت",
     "departureOnly": "فقط رفت",
     "returnOnly": "فقط برگشت",
-    "chooseDates": "تاریخ‌ها را انتخاب کنید"
+    "chooseDates": "تاریخ‌ها را انتخاب کنید",
+    "hotelsFound": "{count} هتل پیدا شد"
   },
   "meta": {
     "title": "هانی — سفر هوشمند",
@@ -903,5 +904,15 @@
     "error": "عملیات انجام نشد.",
     "emptyReviews": "نظری در انتظار بررسی نیست.",
     "emptyMedia": "رسانه‌ای در انتظار بررسی نیست."
+  },
+  "hotelFilters": {
+    "title": "فیلترها",
+    "reset": "پاک کردن",
+    "searchLabel": "جستجوی نام هتل",
+    "searchPlaceholder": "نام هتل",
+    "stars": "درجه هتل",
+    "starAndUp": "{count} ستاره و بالاتر",
+    "apply": "اعمال فیلتر",
+    "results": "{count} هتل"
   }
 }

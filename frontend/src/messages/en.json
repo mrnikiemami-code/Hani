@@ -151,7 +151,8 @@
     "roundTrip": "Round trip",
     "departureOnly": "Departure only",
     "returnOnly": "Return only",
-    "chooseDates": "Choose your dates"
+    "chooseDates": "Choose your dates",
+    "hotelsFound": "{count} hotels found"
   },
   "meta": {
     "title": "Hani — Smart travel",
@@ -903,5 +904,15 @@
     "error": "The operation failed.",
     "emptyReviews": "No reviews are awaiting moderation.",
     "emptyMedia": "No media is awaiting moderation."
+  },
+  "hotelFilters": {
+    "title": "Filters",
+    "reset": "Reset",
+    "searchLabel": "Search by hotel name",
+    "searchPlaceholder": "Hotel name",
+    "stars": "Hotel class",
+    "starAndUp": "{count} stars and up",
+    "apply": "Apply filters",
+    "results": "{count} hotels"
   }
 }

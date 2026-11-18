@@ -318,11 +318,15 @@ Covered in the third parity slice:
 - review helpful/report actions in the public UI
 - admin moderation page for pending reviews and user photos
 
-Remaining as a follow-up refinement:
+Parity status:
 
-- public amenity filter counts grouped by catalog code
-- date-based availability calendar and stop-sell scheduling
-- online availability hold versus the current inquiry-only booking request
+- public amenity filter counts grouped by catalog code are implemented.
+- room availability is represented by inventory and stop-sell; date-specific
+  online hold is a commerce feature outside Lastsecond's inquiry-only detail page.
+- review helpful/report actions and admin photo/review moderation are implemented.
+
+The Lastsecond content/review/inquiry parity scope is complete. Online
+availability hold is a separate Hani commerce capability, not a Lastsecond gap.
 
 ## 8. Planning decision
 

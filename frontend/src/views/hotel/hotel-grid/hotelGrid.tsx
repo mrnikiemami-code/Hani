@@ -10,17 +10,22 @@ import type { HotelSearchItem } from "@/features/hotels/domain/hotel-search";
 import { useTranslations } from "next-intl";
 import { formatMoney } from "@/lib/hani/money";
 import HotelFilter from '../hotelFilter';
+import type { HotelFacets } from "@/features/hotels/infrastructure/hotels-api";
 
 const HotelGrid = ({
     hotels = [],
     totalCount,
     page,
     locale,
+    facets,
+    filters,
 }: {
     hotels?: HotelSearchItem[];
     totalCount?: number;
     page?: number;
     locale?: string;
+    facets?: HotelFacets | null;
+    filters?: { q: string; minStars: string; amenity: string };
 }) => {
     const routes = all_routes
     const t = useTranslations("common");
@@ -65,13 +70,16 @@ const HotelGrid = ({
 
                         {/* Sidebar */}
                         <div className="col-xl-3 col-lg-3 ">
-                            <HotelFilter />
+                            <HotelFilter
+                                facets={facets ?? null}
+                                filters={filters ?? { q: "", minStars: "", amenity: "" }}
+                            />
                         </div>
                         {/* /Sidebar */}
 
                         <div className="col-xl-9 col-lg-8 theiaStickySidebar">
                             <div className="d-flex align-items-center justify-content-between flex-wrap">
-                                <h6 className="mb-3">1920 Hotels Found on Your Search</h6>
+                                <h6 className="mb-3">{t("hotelsFound", { count: totalCount ?? hotels.length })}</h6>
                                 <div className="d-flex align-items-center flex-wrap">
                                     <div className="list-item d-flex align-items-center mb-3">
                                         <Link href={routes.hotelGrid} className="list-icon active me-2"><i className="isax isax-grid-1"></i></Link>
