@@ -1,0 +1,115 @@
+openapi: 3.1.0
+info:
+  title: Hani Internal Admin Operations API - Draft v1
+  version: 1.0.0
+  description: Operational reports, support tickets, notification outbox, and advertising admin endpoints.
+servers:
+  - url: https://api.hani.ir/internal/v1
+    description: Production
+  - url: http://localhost:5099/internal/v1
+    description: Local
+
+tags:
+  - name: Admin.Reports
+  - name: Admin.Support
+  - name: Admin.Notifications
+  - name: Admin.Ads
+
+paths:
+  /admin/reports/overview:
+    get:
+      tags: [Admin.Reports]
+      summary: Operational KPI overview
+      parameters:
+        - { name: days, in: query, schema: { type: integer, minimum: 1, maximum: 3650, default: 30 } }
+      responses:
+        '200': { description: Report overview }
+
+  /admin/notifications:
+    get:
+      tags: [Admin.Notifications]
+      summary: List notification outbox
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }
+        - { name: status, in: query, schema: { type: string, enum: [Pending, Sent, Failed] } }
+        - { name: channel, in: query, schema: { type: string, enum: [Email, Sms] } }
+        - { name: q, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Paged notification outbox }
+
+  /admin/notifications/{id}/retry:
+    post:
+      tags: [Admin.Notifications]
+      summary: Requeue a failed notification
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Requeued }
+
+  /admin/support/tickets:
+    get:
+      tags: [Admin.Support]
+      summary: List support tickets
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string, enum: [Open, InProgress, WaitingCustomer, Resolved, Closed] } }
+        - { name: priority, in: query, schema: { type: string, enum: [Low, Normal, High, Urgent] } }
+      responses:
+        '200': { description: Paged ticket list }
+    post:
+      tags: [Admin.Support]
+      summary: Create a support ticket
+      responses:
+        '201': { description: Created ticket }
+
+  /admin/support/tickets/{id}:
+    get:
+      tags: [Admin.Support]
+      summary: Get a support ticket thread
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Ticket detail }
+        '404': { description: Not found }
+
+  /admin/support/tickets/{id}/messages:
+    post:
+      tags: [Admin.Support]
+      summary: Add an admin reply or internal note
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated ticket }
+
+  /admin/support/tickets/{id}/update:
+    post:
+      tags: [Admin.Support]
+      summary: Change status, priority, or assignee
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated ticket }
+
+  /admin/marketing/ad-slots:
+    get:
+      tags: [Admin.Ads]
+      summary: List ad slots with creatives and delivery counters
+      responses:
+        '200': { description: Ad slots }
+    post:
+      tags: [Admin.Ads]
+      summary: Create an ad slot
+      responses:
+        '201': { description: Slot id }
+
+  /admin/marketing/ad-slots/{code}/creatives:
+    post:
+      tags: [Admin.Ads]
+      summary: Add a creative to a slot
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      responses:
+        '201': { description: Creative id }

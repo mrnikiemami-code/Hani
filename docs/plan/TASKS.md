@@ -329,3 +329,6 @@
 | H91-ADMIN-04 | Phase 3 bookings/finance operations | ? In progress | order detail/cancel, per-currency refunds, payout settlement, ledger/invoices/reconciliations; remaining phase-3 reads and operational polish |
 | H91-ADMIN-05 | Admin governance: audit + dual approval | ? Done | append-only audit, two-person refund/settlement, self-approval denial, bank evidence, approvals/audit pages |
 | H91-ADMIN-06 | Phase 4 marketing campaigns | ? Done | admin list/create/activate, localized content, Jalali dates, responsive table, audit |
+| H91-ADMIN-07 | Phase 4 operational reports | ? Done | orders/revenue/refunds/commission/payouts/agencies/catalog/users/support KPIs, responsive tables |
+| H91-ADMIN-08 | Phase 4 support + notifications | ? Done | ticket list/create/detail/reply/internal note/status, notification outbox + retry, audit |
+| H91-ADMIN-09 | Phase 4 advertising | ? Done | ad slot/creative admin, impressions/clicks, audit |

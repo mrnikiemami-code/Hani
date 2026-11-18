@@ -144,18 +144,35 @@ const ADMIN_NAV: AdminNavItem[] = [
         permission: "marketing.view"
       },
       {
+        href: "/admin/marketing/ads",
         labelKey: "ads",
-        permission: "marketing.view",
-        enabled: false
+        permission: "marketing.view"
       }
     ]
   },
   {
     id: "support",
+    href: "/admin/support/tickets",
     labelKey: "support",
     icon: "isax isax-message-question",
     permission: "support.view",
-    enabled: false
+    children: [
+      {
+        href: "/admin/support/tickets",
+        labelKey: "tickets",
+        permission: "support.view"
+      },
+      {
+        href: "/admin/notifications",
+        labelKey: "notifications",
+        permission: "support.view"
+      },
+      {
+        labelKey: "disputes",
+        permission: "support.view",
+        enabled: false
+      }
+    ]
   },
   {
     id: "integrations",
@@ -166,10 +183,10 @@ const ADMIN_NAV: AdminNavItem[] = [
   },
   {
     id: "reports",
+    href: "/admin/reports",
     labelKey: "reports",
     icon: "isax isax-chart-2",
-    permission: "report.view",
-    enabled: false
+    permission: "report.view"
   },
   {
     id: "settings",

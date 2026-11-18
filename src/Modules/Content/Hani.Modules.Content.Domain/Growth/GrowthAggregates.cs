@@ -685,6 +685,17 @@ public sealed class Notification : AggregateRoot<Guid>
         NextAttemptAt = nextAttemptAt.ToUniversalTime();
         Status = NotificationStatus.Pending;
     }
+
+    /// <summary>
+    /// Requeues a permanently failed notification after an administrator has
+    /// inspected and corrected the underlying problem.
+    /// </summary>
+    public void Retry(DateTimeOffset? now = null)
+    {
+        Status = NotificationStatus.Pending;
+        LastError = null;
+        NextAttemptAt = now ?? DateTimeOffset.UtcNow;
+    }
 }
 
 /// <summary>Recorded product/content analytics event.</summary>

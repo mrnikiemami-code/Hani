@@ -59,3 +59,8 @@
 
 - `internal-admin-governance-api-v1.openapi.yaml`: two-person financial
   approvals and immutable audit queries under `/internal/v1/admin`.
+
+## Internal Admin Operations
+
+- `internal-admin-operations-api-v1.openapi.yaml`: operational reports,
+  support tickets, notification outbox, and advertising admin endpoints.

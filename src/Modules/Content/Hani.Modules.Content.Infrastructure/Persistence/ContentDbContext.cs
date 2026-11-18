@@ -3,6 +3,7 @@ using Hani.Modules.Content.Domain.Dashboard;
 using Hani.Modules.Content.Domain.Growth;
 using Hani.Modules.Content.Domain.Media;
 using Hani.Modules.Content.Domain.Settings;
+using Hani.Modules.Content.Domain.Support;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Content.Infrastructure.Persistence;
@@ -34,6 +35,7 @@ public sealed class ContentDbContext(DbContextOptions<ContentDbContext> options)
     public DbSet<MediaAuditLog> MediaAuditLogs => Set<MediaAuditLog>();
     public DbSet<ContentEntry> ContentEntries => Set<ContentEntry>();
     public DbSet<ContentEntryRevision> ContentEntryRevisions => Set<ContentEntryRevision>();
+    public DbSet<SupportTicket> SupportTickets => Set<SupportTicket>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

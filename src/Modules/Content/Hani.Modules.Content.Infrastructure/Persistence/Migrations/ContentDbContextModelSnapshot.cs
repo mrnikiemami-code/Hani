@@ -1160,6 +1160,95 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.ToTable("home_page_settings", "content");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Support.SupportTicket", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("AssignedTo")
+                        .HasColumnType("uuid")
+                        .HasColumnName("assigned_to");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("category");
+
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("contact_email");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("contact_name");
+
+                    b.Property<string>("ContactPhone")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("contact_phone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset>("LastMessageAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_message_at");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("priority");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("subject");
+
+                    b.Property<string>("TicketNumber")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("ticket_number");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactEmail")
+                        .HasDatabaseName("ix_support_tickets_email");
+
+                    b.HasIndex("TicketNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_support_tickets_number");
+
+                    b.HasIndex("Status", "Priority")
+                        .HasDatabaseName("ix_support_tickets_status_priority");
+
+                    b.ToTable("support_tickets", "content");
+                });
+
             modelBuilder.Entity("Hani.Modules.Content.Domain.Content.BlogPost", b =>
                 {
                     b.OwnsMany("Hani.Modules.Content.Domain.Content.BlogPostDestination", "Destinations", b1 =>
@@ -1562,6 +1651,55 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                         .HasForeignKey("MediaAssetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Support.SupportTicket", b =>
+                {
+                    b.OwnsMany("Hani.Modules.Content.Domain.Support.SupportMessage", "Messages", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("AuthorType")
+                                .IsRequired()
+                                .HasMaxLength(32)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("author_type");
+
+                            b1.Property<Guid?>("AuthorUserId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("author_user_id");
+
+                            b1.Property<string>("Body")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("body");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_at");
+
+                            b1.Property<bool>("IsInternal")
+                                .HasColumnType("boolean")
+                                .HasColumnName("is_internal");
+
+                            b1.Property<Guid>("TicketId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("ticket_id");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("TicketId", "CreatedAt")
+                                .HasDatabaseName("ix_support_messages_ticket_time");
+
+                            b1.ToTable("support_messages", "content");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TicketId");
+                        });
+
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Hani.Modules.Content.Domain.Content.ContentEntry", b =>

@@ -103,3 +103,15 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 - Replace binary: `POST /internal/v1/content-media/{id}/replace`
 - Admin list uses a filterable, paginated template table; create and edit are
   separate routes under `/[locale]/admin/media`.
+
+## Operations: support and notifications (2026-11-18)
+
+- `SupportTicket` + `SupportMessage` persist customer/admin threads and
+  internal notes in `content.support_tickets` and `content.support_messages`.
+- Admin endpoints cover ticket list, create, detail, reply, internal notes,
+  status, priority, and assignee changes.
+- `Notification.Retry()` requeues a permanently failed outbox item. Admin
+  retry is audited through the identity governance audit log.
+- Admin routes: `/admin/support/tickets`, `/admin/notifications`,
+  `/admin/reports`, `/admin/marketing/ads`.
+- Migration: `AddSupportTickets`.
