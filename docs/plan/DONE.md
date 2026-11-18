@@ -316,3 +316,4 @@
 | `00cd24e` | Phase 4 marketing: admin campaign list/create/activate, localized content, Jalali dates over Gregorian API, responsive table, audit events, desktop/tablet/mobile UI gate |
 | `09c568f` | Phase 4 operations: reports, support ticket workspace, notification retry, ad slots/creatives, responsive UI sweep |
 | `cd44438` | Architecture: ads endpoint moved to application query/read model, DbContext ratchet test, endpoint DB-access review report |
+| `5e06011` | Architecture: all endpoint DbContext access moved to Admin application services/read models; audit writer moved; endpoint ratchet allowlist empty |
