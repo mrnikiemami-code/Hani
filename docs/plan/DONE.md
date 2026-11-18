@@ -303,3 +303,4 @@
 | `1b1fbf4` | Content UX + message system: Jalali schedule, RTL editor, translated labels, filters/pagination, save fix, toast/modal |
 | `bb414a1` | OTP security phases 1-2: memory state provider, 120s timer/cooldown, IP/mobile changes, admin security settings |
 | `1b6c42d` | Admin panel architecture document: 12-section IA, template reuse, RBAC, finance/audit, phases, acceptance |
+| `pending` | Admin phase 1 foundation: permission shell, dashboard, agencies, users, protected admin endpoints |

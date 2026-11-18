@@ -26,7 +26,8 @@ public static class DashboardEndpoints
         group.MapGet("/traveler", GetTravelerAsync)
             .WithName("Internal.GetTravelerDashboard");
         group.MapGet("/admin", GetAdminAsync)
-            .WithName("Internal.GetAdminDashboard");
+            .WithName("Internal.GetAdminDashboard")
+            .RequireAuthorization("Admin");
 
         var me = app.MapGroup("/market/v1/me").WithTags("Marketplace.Dashboard");
 

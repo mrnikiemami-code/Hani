@@ -22,7 +22,9 @@ public static class AgencyOnboardingEndpoints
     public static IEndpointRouteBuilder MapAgencyOnboardingEndpoints(this IEndpointRouteBuilder app)
     {
         var market = app.MapGroup("/market/v1/agencies").WithTags("Marketplace.Agency");
-        var internalApi = app.MapGroup("/internal/v1/agencies").WithTags("Internal.Agency");
+        var internalApi = app.MapGroup("/internal/v1/agencies")
+            .WithTags("Internal.Agency")
+            .RequireAuthorization("Admin");
 
         market.MapPost("/onboarding", CreateOnboardingAsync)
             .WithName("Marketplace.CreateAgencyOnboarding")

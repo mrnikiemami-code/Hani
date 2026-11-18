@@ -663,3 +663,35 @@ html[lang="en"] body {
     width: 84px;
   }
 }
+
+.admin-sidebar {
+  .admin-nav-disabled {
+    color: #9aa7b4;
+    padding: .5rem;
+    font-size: 14px;
+    cursor: default;
+  }
+
+  .admin-nav-disabled small {
+    font-size: 10px;
+    color: #b7c2cc;
+  }
+
+  .admin-subnav {
+    list-style: none;
+    margin: .2rem 0 .5rem;
+    margin-inline-start: 1.75rem;
+    padding: 0;
+  }
+
+  .admin-subnav a {
+    display: block;
+    padding: .35rem .5rem;
+    font-size: 13px;
+    color: #526b7a;
+  }
+
+  .admin-subnav a:hover {
+    color: #ff725e;
+  }
+}

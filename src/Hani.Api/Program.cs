@@ -596,6 +596,8 @@ app.MapHomeSettingsEndpoints();
 app.MapMediaEndpoints();
 app.MapContentEntryEndpoints();
 app.MapSecurityEndpoints();
+app.MapAdminIdentityEndpoints();
+app.MapAdminUsersEndpoints();
 app.MapWishlistEndpoints();
 app.MapLastsecondParityEndpoints();
 app.MapBookingEndpoints();

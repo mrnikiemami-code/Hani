@@ -34,6 +34,7 @@ export default async function AdminMediaCreatePage({
         title={t("accessTitle")}
         subtitle={t("accessHint")}
         active={t("navMedia")}
+        activeSection="content"
       >
         <div className="card border-0 shadow-sm">
           <div className="card-body p-4 text-gray-6">{t("accessHint")}</div>
@@ -48,6 +49,7 @@ export default async function AdminMediaCreatePage({
       title={t("uploadTitle")}
       subtitle={t("uploadHint")}
       active={t("navMedia")}
+        activeSection="content"
     >
       <MediaCreateForm locale={locale} initialFolders={folders.data ?? []} />
     </AdminPageShell>

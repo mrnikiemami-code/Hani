@@ -15,8 +15,39 @@ tags:
   - name: Claims
   - name: Media
   - name: Security
+  - name: Admin
 
 paths:
+  /internal/v1/admin/me:
+    get:
+      tags: [Admin]
+      summary: Get the authenticated admin identity and effective permissions
+      responses:
+        '200': { description: Admin identity }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+  /internal/v1/admin/users:
+    get:
+      tags: [Admin]
+      summary: List users for the admin directory
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: role, in: query, schema: { type: string, enum: [Customer, Author, AgencyStaff, Admin] } }
+        - { name: status, in: query, schema: { type: string, enum: [Pending, Active, Blocked, Deleted] } }
+      responses:
+        '200': { description: Paged admin user directory }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+  /internal/v1/dashboard/admin:
+    get:
+      tags: [Admin]
+      summary: Get admin order dashboard totals
+      responses:
+        '200': { description: Admin dashboard summary }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
   /internal/v1/security/otp:
     get:
       tags: [Security]

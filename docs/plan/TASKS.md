@@ -319,3 +319,4 @@
 | H91-SEC-01 | OTP security phases 1-2 | ? | memory state provider, 120s timer, IP/mobile limits, admin settings |
 | H91-SEC-02 | OTP Redis adapter | ? Future | replace InMemoryOtpSecurityState with shared Redis implementation |
 | H91-ADMIN-01 | Admin panel architecture | ? Planning | 12-section IA, template reuse map, RBAC, finance/audit rules, delivery phases |
+| H91-ADMIN-02 | Admin phase 1 foundation | ? In progress | permission shell, dashboard, agencies, users; roles/audit/settings next |

@@ -17,7 +17,9 @@ public static class IdentityEndpoints
 {
     public static IEndpointRouteBuilder MapIdentityEndpoints(this IEndpointRouteBuilder app)
     {
-        var agencies = app.MapGroup("/internal/v1/agencies").WithTags("Internal.Identity");
+        var agencies = app.MapGroup("/internal/v1/agencies")
+            .WithTags("Internal.Identity")
+            .RequireAuthorization("Admin");
 
         agencies.MapPost("/", CreateAgencyAsync)
             .WithName("Internal.CreateAgency")

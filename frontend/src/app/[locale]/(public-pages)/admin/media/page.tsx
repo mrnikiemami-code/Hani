@@ -57,6 +57,7 @@ export default async function AdminMediaPage({
         title={t("accessTitle")}
         subtitle={t("accessHint")}
         active={t("navMedia")}
+        activeSection="content"
       >
         <div className="card border-0 shadow-sm">
           <div className="card-body p-4 text-gray-6">{t("accessHint")}</div>
@@ -71,6 +72,7 @@ export default async function AdminMediaPage({
       title={t("title")}
       subtitle={t("subtitle")}
       active={t("navMedia")}
+        activeSection="content"
     >
       <MediaManager
         key={`${q}-${folderId}-${page}`}
