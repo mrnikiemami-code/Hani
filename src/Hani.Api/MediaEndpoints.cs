@@ -1,11 +1,7 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
-using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Content.Application.Media;
-using Hani.Modules.Content.Domain.Media;
-using Hani.Modules.Content.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Api;
@@ -266,30 +262,27 @@ public static class MediaEndpoints
     }
 
     private static async Task<IResult> ListFoldersAsync(
-        ContentDbContext db,
+        IMediaAssetService service,
         CancellationToken cancellationToken)
-        => Results.Ok(await db.MediaFolders
-            .AsNoTracking()
-            .OrderBy(folder => folder.Name)
-            .Select(folder => new MediaFolderDto(folder.Id, folder.Name, folder.ParentId))
-            .ToArrayAsync(cancellationToken));
+        => Results.Ok(await service.ListFoldersAsync(cancellationToken));
 
     private static async Task<IResult> CreateFolderAsync(
         CreateMediaFolderRequest request,
         HttpContext context,
-        ContentDbContext db,
-        IIdGenerator ids,
+        IMediaAssetService service,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name))
+        try
         {
-            return context.ToProblem(Error.Validation("HANI-MEDIA-1006", "Folder name is required."));
+            return Results.Ok(await service.CreateFolderAsync(
+                request.Name,
+                request.ParentId,
+                cancellationToken));
         }
-
-        var folder = MediaFolder.Create(ids.NewId(), request.Name, request.ParentId);
-        await db.MediaFolders.AddAsync(folder, cancellationToken);
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(new MediaFolderDto(folder.Id, folder.Name, folder.ParentId));
+        catch (ArgumentException exception)
+        {
+            return context.ToProblem(Error.Validation("HANI-MEDIA-1006", exception.Message));
+        }
     }
 
     private static async Task<IResult> BulkDeleteAsync(
@@ -307,108 +300,60 @@ public static class MediaEndpoints
 
     private static async Task<IResult> ListUsageAsync(
         Guid id,
-        ContentDbContext db,
+        IMediaAssetService service,
         CancellationToken cancellationToken)
-        => Results.Ok(await db.MediaUsages
-            .AsNoTracking()
-            .Where(usage => usage.MediaAssetId == id)
-            .OrderByDescending(usage => usage.CreatedAt)
-            .Select(usage => new MediaUsageDto(
-                usage.Id,
-                usage.MediaAssetId,
-                usage.EntityType,
-                usage.EntityId,
-                usage.Field,
-                usage.CreatedAt))
-            .ToArrayAsync(cancellationToken));
+        => Results.Ok(await service.ListUsageAsync(id, cancellationToken));
 
     private static async Task<IResult> AddUsageAsync(
         Guid id,
         AddMediaUsageRequest request,
         HttpContext context,
-        ContentDbContext db,
-        IIdGenerator ids,
+        IMediaAssetService service,
         CancellationToken cancellationToken)
     {
-        if (await db.MediaAssets.AllAsync(asset => asset.Id != id, cancellationToken))
-        {
-            return context.ToProblem(Error.NotFound("HANI-MEDIA-1005", "Media asset was not found."));
-        }
-
-        var usage = new MediaUsage(ids.NewId(), id, request.EntityType, request.EntityId, request.Field);
-        await db.MediaUsages.AddAsync(usage, cancellationToken);
-        await db.MediaAuditLogs.AddAsync(new MediaAuditLog(
-            ids.NewId(), id, "UsageAdded", $"{request.EntityType}:{request.EntityId}:{request.Field}"), cancellationToken);
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(new MediaUsageDto(
-            usage.Id, usage.MediaAssetId, usage.EntityType, usage.EntityId, usage.Field, usage.CreatedAt));
+        var usage = await service.AddUsageAsync(
+            id,
+            request.EntityType,
+            request.EntityId,
+            request.Field,
+            cancellationToken);
+        return usage is null
+            ? context.ToProblem(Error.NotFound("HANI-MEDIA-1005", "Media asset was not found."))
+            : Results.Ok(usage);
     }
 
     private static async Task<IResult> RemoveUsageAsync(
         Guid id,
         Guid usageId,
-        ContentDbContext db,
+        IMediaAssetService service,
         CancellationToken cancellationToken)
     {
-        var usage = await db.MediaUsages.FirstOrDefaultAsync(
-            item => item.Id == usageId && item.MediaAssetId == id,
-            cancellationToken);
-        if (usage is null)
-        {
-            return Results.NoContent();
-        }
-
-        db.MediaUsages.Remove(usage);
-        await db.SaveChangesAsync(cancellationToken);
+        await service.RemoveUsageAsync(id, usageId, cancellationToken);
         return Results.NoContent();
     }
 
     private static async Task<IResult> ListAuditAsync(
         Guid id,
-        ContentDbContext db,
+        IMediaAssetService service,
         CancellationToken cancellationToken)
-        => Results.Ok(await db.MediaAuditLogs
-            .AsNoTracking()
-            .Where(item => item.MediaAssetId == id)
-            .OrderByDescending(item => item.CreatedAt)
-            .Take(100)
-            .Select(item => new MediaAuditDto(
-                item.Id, item.MediaAssetId, item.Action, item.Detail, item.CreatedAt))
-            .ToArrayAsync(cancellationToken));
+        => Results.Ok(await service.ListAuditAsync(id, cancellationToken));
 
     private static async Task<IResult> RenameFolderAsync(
         Guid id,
         RenameMediaFolderRequest request,
-        ContentDbContext db,
+        IMediaAssetService service,
         CancellationToken cancellationToken)
     {
-        var folder = await db.MediaFolders.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        if (folder is null)
-        {
-            return Results.NotFound();
-        }
-
-        folder.Rename(request.Name);
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(new MediaFolderDto(folder.Id, folder.Name, folder.ParentId));
+        var folder = await service.RenameFolderAsync(id, request.Name, cancellationToken);
+        return folder is null ? Results.NotFound() : Results.Ok(folder);
     }
 
     private static async Task<IResult> DeleteFolderAsync(
         Guid id,
-        ContentDbContext db,
+        IMediaAssetService service,
         CancellationToken cancellationToken)
     {
-        var folder = await db.MediaFolders.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        if (folder is null)
-        {
-            return Results.NoContent();
-        }
-
-        await db.MediaAssets
-            .Where(asset => asset.FolderId == id)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(asset => asset.FolderId, (Guid?)null), cancellationToken);
-        db.MediaFolders.Remove(folder);
-        await db.SaveChangesAsync(cancellationToken);
+        await service.DeleteFolderAsync(id, cancellationToken);
         return Results.NoContent();
     }
 
@@ -447,9 +392,6 @@ public sealed record UpdateMediaMetadataRequest(
     int? FocalX = null,
     int? FocalY = null);
 
-/// <summary>Media folder response/request.</summary>
-public sealed record MediaFolderDto(Guid Id, string Name, Guid? ParentId);
-
 /// <summary>Create media folder request.</summary>
 public sealed record CreateMediaFolderRequest(string Name, Guid? ParentId = null);
 
@@ -458,15 +400,6 @@ public sealed record RenameMediaFolderRequest(string Name);
 
 /// <summary>Bulk delete request.</summary>
 public sealed record BulkDeleteMediaRequest(IReadOnlyList<Guid> Ids);
-
-/// <summary>Media usage response.</summary>
-public sealed record MediaUsageDto(
-    Guid Id,
-    Guid MediaAssetId,
-    string EntityType,
-    string EntityId,
-    string Field,
-    DateTimeOffset CreatedAt);
 
 /// <summary>Add media usage request.</summary>
 public sealed record AddMediaUsageRequest(

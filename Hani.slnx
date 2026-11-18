@@ -16,6 +16,10 @@
     <Project Path="src/Hani.Contracts/Hani.Contracts.Supply/Hani.Contracts.Supply.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Admin/">
+    <Project Path="src/Modules/Admin/Hani.Modules.Admin.Application/Hani.Modules.Admin.Application.csproj" />
+    <Project Path="src/Modules/Admin/Hani.Modules.Admin.Infrastructure/Hani.Modules.Admin.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Booking/">
     <Project Path="src/Modules/Booking/Hani.Modules.Booking.Application/Hani.Modules.Booking.Application.csproj" />
     <Project Path="src/Modules/Booking/Hani.Modules.Booking.Domain/Hani.Modules.Booking.Domain.csproj" />

@@ -2,7 +2,7 @@
 
 - **Date:** 2026-11-18
 - **Severity:** High
-- **Status:** Ads slice fixed; 13 endpoint files remain in a ratcheted debt allowlist
+- **Status:** Resolved on 2026-11-19; no endpoint file injects DbContext and the debt allowlist is empty
 - **Scope:** `src/Hani.Api`
 - **Related:** Clean Architecture dependency rule, CQRS read models, ADR-0032 (contract boundaries)
 
@@ -22,14 +22,13 @@ This is not allowed. An endpoint may authenticate, validate transport input,
 send an application command/query, map the result to HTTP, and return a
 problem response. It must not know that PostgreSQL or EF Core exists.
 
-`AdminAdsEndpoints.cs` was the reported example and is now fixed. The rest of
-the admin surface is tracked below as architectural debt.
+`AdminAdsEndpoints.cs` was the reported example; the entire admin surface has
+now been moved behind application interfaces/read models.
 
 ## 2. Evidence
 
 At review time, 13 endpoint files contained both endpoint mappings and
-`DbContext`/EF Core access. `AdminAdsEndpoints.cs` has been removed from this
-list by the fix in this change.
+`DbContext`/EF Core access. All of them have been removed from the API layer.
 
 | Endpoint file | Direct DbContext references | Affected modules |
 |---|---:|---|
@@ -47,7 +46,8 @@ list by the fix in this change.
 | `HotelFacetEndpoints.cs` | 1 | Catalog |
 | `MediaEndpoints.cs` | 8 | Content |
 
-This is not a single bad endpoint. It is a repeated delivery-layer pattern.
+This was not a single bad endpoint. It was a repeated delivery-layer pattern
+and is now closed.
 
 ## 3. Why This Is a Serious Problem
 
@@ -107,9 +107,10 @@ should own this.
 4. Audit writing was exposed as a `DbContext`-taking helper, encouraging
    endpoints to own persistence.
 
-## 5. Immediate Fix: Advertising Slice
+## 5. Reference Fix: Advertising Slice
 
-The reported `AdminAdsEndpoints.cs` is now clean.
+The reported `AdminAdsEndpoints.cs` is clean and is now the reference pattern
+for every admin endpoint.
 
 ### Before
 
@@ -170,13 +171,14 @@ Rules:
 
 1. Any new endpoint file that contains endpoint mappings and `DbContext`/EF
    Core fails the architecture suite.
-2. The existing 13 files are an explicit allowlist.
-3. `AdminAdsEndpoints.cs` is not in the allowlist and has a dedicated
-   assertion that it uses `ListAdminAdSlotsQuery` and no persistence types.
+2. The allowlist is now empty.
+3. `AdminAdsEndpoints.cs` has a dedicated assertion that it uses
+   `ListAdminAdSlotsQuery` and no persistence types.
 
-This prevents new violations while the remaining debt is paid down.
+No endpoint file in `src/Hani.Api` references `DbContext` or EF Core. Only
+`Program.cs` registers DbContexts as the composition root.
 
-## 7. Remediation Plan
+## 7. Completed Remediation
 
 ### Step 1 - Ads (done)
 
@@ -185,9 +187,9 @@ This prevents new violations while the remaining debt is paid down.
 - Endpoint uses `ISender` only.
 - Ratchet test added.
 
-### Step 2 - Phase 4 admin endpoints (next)
+### Step 2 - Phase 4 admin endpoints (done)
 
-Move these to application queries/read models:
+Moved to application interfaces/read models:
 
 - `AdminMarketingEndpoints`
 - `AdminNotificationEndpoints`
@@ -205,7 +207,7 @@ public interface IAdminSupportReadModel
 }
 ```
 
-### Step 3 - Financial and booking admin
+### Step 3 - Financial and booking admin (done)
 
 - `AdminBookingEndpoints`
 - `AdminFinanceEndpoints`
@@ -214,7 +216,7 @@ public interface IAdminSupportReadModel
 
 Commands must stay as commands. Only query composition moves.
 
-### Step 4 - Content, media, settings, facets
+### Step 4 - Content, media, settings, facets (done)
 
 - `ContentEntryEndpoints`
 - `MediaEndpoints`
@@ -222,25 +224,27 @@ Commands must stay as commands. Only query composition moves.
 - `HotelFacetEndpoints`
 - `AdminUsersEndpoints`
 
-### Step 5 - Audit writer boundary
+### Step 5 - Audit writer boundary (done)
 
-Move `AdminAuditWriter` from `Hani.Api` to:
+Moved `AdminAuditWriter` from `Hani.Api` to:
 
 ```text
 Identity.Application: IAdminAuditWriter
 Identity.Infrastructure: AdminAuditWriter
 ```
 
-The endpoint then depends on an application interface only.
+Endpoints now depend on `IAdminAuditWriter` from
+`Hani.Modules.Admin.Application`; the EF implementation lives in
+`Hani.Modules.Admin.Infrastructure`.
 
 ## 8. Acceptance Criteria for Debt Closure
 
 - No file under `src/Hani.Api` that maps endpoints references `DbContext` or
   `Microsoft.EntityFrameworkCore`.
-- Every admin list/detail query is an application query handled by a query
-  handler.
-- Every EF Core projection lives in an Infrastructure read model.
-- The ratchet allowlist is empty.
+- Every admin list/detail query is an application service/read model.
+- Every EF Core projection lives in `Hani.Modules.Admin.Infrastructure` or
+the owning module Infrastructure.
+- The ratchet allowlist is empty. (done)
 - Architecture tests fail if a `DbContext` returns to the API layer.
 - Endpoint unit tests use `ISender` fakes; no database is required.
 
@@ -252,3 +256,20 @@ The endpoint then depends on an application interface only.
   mobile.
 - No schema migration is required for this refactor; it is a boundary and
   code-ownership change.
+
+## 10. Final Architecture
+
+The cross-module admin surface now lives in a dedicated composition module:
+
+```text
+Hani.Modules.Admin.Application
+  service interfaces + read models + IAdminAuditWriter
+
+Hani.Modules.Admin.Infrastructure
+  AdminService partial implementation
+  AdminAuditWriter implementation
+```
+
+Module-local media operations remain in Content.Application/Infrastructure.
+No endpoint file in `src/Hani.Api` references DbContext or EF Core. The only
+DbContext registration is `Program.cs`, which is the composition root.

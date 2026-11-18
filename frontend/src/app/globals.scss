@@ -513,7 +513,19 @@ html[lang="en"] body {
   }
 }
 
+@media (max-width: 991.98px) {
+  .admin-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 @media (max-width: 767.98px) {
+  .admin-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .admin-data-table > thead > tr > th,
   .admin-data-table > tbody > tr > td {
     padding: .7rem .5rem !important;
@@ -527,6 +539,11 @@ html[lang="en"] body {
   .admin-data-table.report-table th:last-child,
   .admin-data-table.report-table td:last-child {
     width: 46%;
+  }
+
+  .admin-data-table.report-table td {
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   .admin-data-table.report-table th:nth-last-child(2),

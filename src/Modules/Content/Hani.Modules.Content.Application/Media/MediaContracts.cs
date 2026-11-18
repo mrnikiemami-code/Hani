@@ -117,6 +117,26 @@ public sealed record MediaVariantDto(
     string Url,
     bool IsCanonical);
 
+/// <summary>Media folder read model.</summary>
+public sealed record MediaFolderDto(Guid Id, string Name, Guid? ParentId);
+
+/// <summary>Media usage read model.</summary>
+public sealed record MediaUsageDto(
+    Guid Id,
+    Guid MediaAssetId,
+    string EntityType,
+    string EntityId,
+    string Field,
+    DateTimeOffset CreatedAt);
+
+/// <summary>Media audit entry.</summary>
+public sealed record MediaAuditDto(
+    Guid Id,
+    Guid MediaAssetId,
+    string Action,
+    string? Detail,
+    DateTimeOffset CreatedAt);
+
 /// <summary>
 /// Application service for the content media library.
 /// </summary>
@@ -160,4 +180,43 @@ public interface IMediaAssetService
 
     /// <summary>Deletes a media asset and its stored variants.</summary>
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>Lists media folders.</summary>
+    Task<IReadOnlyList<MediaFolderDto>> ListFoldersAsync(CancellationToken cancellationToken);
+
+    /// <summary>Creates a media folder.</summary>
+    Task<MediaFolderDto> CreateFolderAsync(
+        string name,
+        Guid? parentId,
+        CancellationToken cancellationToken);
+
+    /// <summary>Renames a media folder.</summary>
+    Task<MediaFolderDto?> RenameFolderAsync(
+        Guid id,
+        string name,
+        CancellationToken cancellationToken);
+
+    /// <summary>Deletes a media folder and detaches its assets.</summary>
+    Task DeleteFolderAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>Lists usages of one media asset.</summary>
+    Task<IReadOnlyList<MediaUsageDto>> ListUsageAsync(
+        Guid id,
+        CancellationToken cancellationToken);
+
+    /// <summary>Adds a usage row and audit entry.</summary>
+    Task<MediaUsageDto?> AddUsageAsync(
+        Guid id,
+        string entityType,
+        string entityId,
+        string field,
+        CancellationToken cancellationToken);
+
+    /// <summary>Removes a usage row.</summary>
+    Task RemoveUsageAsync(Guid id, Guid usageId, CancellationToken cancellationToken);
+
+    /// <summary>Lists audit entries for one media asset.</summary>
+    Task<IReadOnlyList<MediaAuditDto>> ListAuditAsync(
+        Guid id,
+        CancellationToken cancellationToken);
 }

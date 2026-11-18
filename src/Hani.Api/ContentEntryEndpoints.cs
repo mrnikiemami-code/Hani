@@ -1,18 +1,13 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
-using Hani.BuildingBlocks.Domain;
+using Hani.Modules.Admin.Application;
 using Hani.Modules.Content.Domain.Content;
-using Hani.Modules.Content.Domain.Media;
-using Hani.Modules.Content.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Api;
 
-/// <summary>
-/// Admin/public content CMS endpoints backed by ContentEntry.
-/// </summary>
+/// <summary>Content CMS endpoints.</summary>
 public static class ContentEntryEndpoints
 {
     /// <summary>Maps content CMS endpoints.</summary>
@@ -34,7 +29,6 @@ public static class ContentEntryEndpoints
 
         var market = app.MapGroup("/market/v1/content-entries")
             .WithTags("Marketplace.Content");
-
         market.MapGet("", ListPublishedAsync);
         market.MapGet("/{slug}", GetPublishedAsync);
 
@@ -48,342 +42,122 @@ public static class ContentEntryEndpoints
         [FromQuery] string? locale,
         [FromQuery] ContentEntryType? type,
         [FromQuery] ContentStatus? status,
-        ContentDbContext db,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
-    {
-        var normalizedPage = page <= 0 ? 1 : page;
-        var normalizedPageSize = pageSize is <= 0 or > 100 ? 10 : pageSize;
-        var query = db.ContentEntries.AsNoTracking().AsQueryable();
-        if (!string.IsNullOrWhiteSpace(locale))
-        {
-            var normalizedLocale = locale.ToLowerInvariant();
-            query = query.Where(item => item.Locale == normalizedLocale);
-        }
-        if (type is not null)
-        {
-            query = query.Where(item => item.Type == type);
-        }
-        if (status is not null)
-        {
-            query = query.Where(item => item.Status == status);
-        }
-        if (!string.IsNullOrWhiteSpace(q))
-        {
-            var term = q.Trim();
-            query = query.Where(item =>
-                EF.Functions.ILike(item.Title, $"%{term}%") ||
-                EF.Functions.ILike(item.Slug, $"%{term}%"));
-        }
-
-        var total = await query.CountAsync(cancellationToken);
-        var items = await query
-            .OrderByDescending(item => item.UpdatedAt)
-            .Skip((normalizedPage - 1) * normalizedPageSize)
-            .Take(normalizedPageSize)
-            .Select(item => new ContentEntryDto(
-                item.Id, item.Type, item.Slug, item.Locale, item.Title, item.Excerpt,
-                item.Body, item.HeroMediaId, item.HeroImageUrl, item.SeoTitle,
-                item.SeoDescription, item.Status, item.PublishedAt, item.ScheduledAt,
-                item.CreatedAt, item.UpdatedAt, item.Revisions.Count))
-            .ToArrayAsync(cancellationToken);
-        return Results.Ok(new ContentEntryListResponse(
-            items, normalizedPage, normalizedPageSize, total));
-    }
+        => Results.Ok(await entries.ListAdminAsync(
+            page,
+            pageSize,
+            q,
+            locale,
+            type,
+            status,
+            cancellationToken));
 
     private static async Task<IResult> GetAdminAsync(
         Guid id,
-        ContentDbContext db,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        var entry = await db.ContentEntries
-            .AsNoTracking()
-            .Include(item => item.Revisions)
-            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        return entry is null
-            ? Results.NotFound()
-            : Results.Ok(ToDto(entry));
+        var entry = await entries.GetAdminAsync(id, cancellationToken);
+        return entry is null ? Results.NotFound() : Results.Ok(entry);
     }
 
     private static async Task<IResult> CreateAsync(
         ContentEntryWriteRequest request,
         HttpContext context,
-        ILanguageCatalog languages,
-        ContentDbContext db,
-        IIdGenerator ids,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        if (!Enum.IsDefined(request.Type) || string.IsNullOrWhiteSpace(request.Title) ||
-            string.IsNullOrWhiteSpace(request.Slug))
+        try
         {
-            return context.ToProblem(
-                Error.Validation("HANI-CONTENT-1001", "Title, slug, and a valid type are required."));
+            return Results.Ok(await entries.CreateAsync(request, cancellationToken));
         }
-
-        var entry = ContentEntry.Create(
-            ids.NewId(),
-            request.Type,
-            request.Slug,
-            languages.Normalize(request.Locale),
-            request.Title,
-            request.Excerpt,
-            request.Body ?? string.Empty,
-            request.HeroMediaId,
-            request.HeroImageUrl,
-            request.SeoTitle,
-            request.SeoDescription);
-
-        await db.ContentEntries.AddAsync(entry, cancellationToken);
-        await SyncUsageAsync(entry, db, ids, cancellationToken);
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(ToDto(entry));
+        catch (ArgumentException exception)
+        {
+            return context.ToProblem(Error.Validation("HANI-CONTENT-1001", exception.Message));
+        }
     }
 
     private static async Task<IResult> UpdateAsync(
         Guid id,
         ContentEntryWriteRequest request,
-        HttpContext context,
-        ILanguageCatalog languages,
-        ContentDbContext db,
-        IIdGenerator ids,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        var entry = await db.ContentEntries
-            .Include(item => item.Revisions)
-            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        if (entry is null)
-        {
-            return Results.NotFound();
-        }
-
-        entry.Update(
-            request.Slug,
-            request.Title,
-            request.Excerpt,
-            request.Body ?? string.Empty,
-            request.HeroMediaId,
-            request.HeroImageUrl,
-            request.SeoTitle,
-            request.SeoDescription,
-            ids.NewId());
-        db.ContentEntryRevisions.Add(entry.Revisions.Last());
-        entry.ChangeClassification(request.Type, languages.Normalize(request.Locale));
-        await SyncUsageAsync(entry, db, ids, cancellationToken);
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(ToDto(entry));
+        var entry = await entries.UpdateAsync(id, request, cancellationToken);
+        return entry is null ? Results.NotFound() : Results.Ok(entry);
     }
 
     private static async Task<IResult> PublishAsync(
         Guid id,
-        ContentDbContext db,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        var entry = await db.ContentEntries.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        if (entry is null) return Results.NotFound();
-        entry.Publish();
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(ToDto(entry));
+        var entry = await entries.PublishEntryAsync(id, cancellationToken);
+        return entry is null ? Results.NotFound() : Results.Ok(entry);
     }
 
     private static async Task<IResult> UnpublishAsync(
         Guid id,
-        ContentDbContext db,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        var entry = await db.ContentEntries.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        if (entry is null) return Results.NotFound();
-        entry.Unpublish();
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(ToDto(entry));
+        var entry = await entries.UnpublishEntryAsync(id, cancellationToken);
+        return entry is null ? Results.NotFound() : Results.Ok(entry);
     }
 
     private static async Task<IResult> ScheduleAsync(
         Guid id,
         ScheduleContentRequest request,
         HttpContext context,
-        ContentDbContext db,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        if (request.ScheduledAt <= DateTimeOffset.UtcNow)
+        try
         {
-            return context.ToProblem(
-                Error.Validation("HANI-CONTENT-1002", "Scheduled time must be in the future."));
+            var entry = await entries.ScheduleAsync(id, request.ScheduledAt, cancellationToken);
+            return entry is null ? Results.NotFound() : Results.Ok(entry);
         }
-
-        var entry = await db.ContentEntries.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        if (entry is null) return Results.NotFound();
-        entry.Schedule(request.ScheduledAt);
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(ToDto(entry));
+        catch (ArgumentException exception)
+        {
+            return context.ToProblem(Error.Validation("HANI-CONTENT-1002", exception.Message));
+        }
     }
 
     private static async Task<IResult> DeleteAsync(
         Guid id,
-        ContentDbContext db,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        var entry = await db.ContentEntries.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        if (entry is null) return Results.NoContent();
-        db.MediaUsages.RemoveRange(
-            db.MediaUsages.Where(usage =>
-                usage.EntityType == "ContentEntry" &&
-                usage.EntityId == entry.Id.ToString()));
-        db.ContentEntries.Remove(entry);
-        await db.SaveChangesAsync(cancellationToken);
+        await entries.DeleteAsync(id, cancellationToken);
         return Results.NoContent();
     }
 
     private static async Task<IResult> ListPublishedAsync(
         [FromQuery] string? locale,
         [FromQuery] ContentEntryType? type,
-        ILanguageCatalog languages,
-        ContentDbContext db,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
-    {
-        var normalizedLocale = languages.Normalize(locale);
-        var query = db.ContentEntries
-            .AsNoTracking()
-            .Where(item => item.Locale == normalizedLocale &&
-                (item.Status == ContentStatus.Published ||
-                 (item.Status == ContentStatus.Scheduled && item.ScheduledAt <= DateTimeOffset.UtcNow)));
-        if (type is not null)
-        {
-            query = query.Where(item => item.Type == type);
-        }
-
-        var items = await query
-            .OrderByDescending(item => item.PublishedAt)
-            .Select(item => new ContentEntryDto(
-                item.Id, item.Type, item.Slug, item.Locale, item.Title, item.Excerpt,
-                item.Body, item.HeroMediaId, item.HeroImageUrl, item.SeoTitle,
-                item.SeoDescription, item.Status, item.PublishedAt, item.ScheduledAt,
-                item.CreatedAt, item.UpdatedAt, item.Revisions.Count))
-            .ToArrayAsync(cancellationToken);
-        return Results.Ok(items);
-    }
+        => Results.Ok(await entries.ListPublishedAsync(locale, type, cancellationToken));
 
     private static async Task<IResult> RestoreRevisionAsync(
         Guid id,
         Guid revisionId,
-        ContentDbContext db,
-        IIdGenerator ids,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        var entry = await db.ContentEntries
-            .Include(item => item.Revisions)
-            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        var revision = entry?.Revisions.FirstOrDefault(item => item.Id == revisionId);
-        if (entry is null || revision is null)
-        {
-            return Results.NotFound();
-        }
-
-        entry.Update(
-            entry.Slug,
-            revision.Title,
-            revision.Excerpt,
-            revision.Body,
-            revision.HeroMediaId,
-            revision.HeroImageUrl,
-            revision.SeoTitle,
-            revision.SeoDescription,
-            ids.NewId());
-        db.ContentEntryRevisions.Add(entry.Revisions.Last());
-        await SyncUsageAsync(entry, db, ids, cancellationToken);
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(ToDto(entry));
-    }
-
-    private static async Task SyncUsageAsync(
-        ContentEntry entry,
-        ContentDbContext db,
-        IIdGenerator ids,
-        CancellationToken cancellationToken)
-    {
-        var entityId = entry.Id.ToString();
-        var existing = await db.MediaUsages
-            .Where(usage => usage.EntityType == "ContentEntry" && usage.EntityId == entityId)
-            .ToArrayAsync(cancellationToken);
-        if (existing.Length > 0)
-        {
-            db.MediaUsages.RemoveRange(existing);
-        }
-
-        if (entry.HeroMediaId is { } mediaId)
-        {
-            await db.MediaUsages.AddAsync(
-                new MediaUsage(ids.NewId(), mediaId, "ContentEntry", entityId, "HeroMedia"),
-                cancellationToken);
-        }
+        var entry = await entries.RestoreRevisionAsync(id, revisionId, cancellationToken);
+        return entry is null ? Results.NotFound() : Results.Ok(entry);
     }
 
     private static async Task<IResult> GetPublishedAsync(
         string slug,
         [FromQuery] string? locale,
         [FromQuery] ContentEntryType? type,
-        ILanguageCatalog languages,
-        ContentDbContext db,
+        IContentEntryService entries,
         CancellationToken cancellationToken)
     {
-        var normalizedLocale = languages.Normalize(locale);
-        var normalizedSlug = slug.ToLowerInvariant();
-        var entry = await db.ContentEntries
-            .AsNoTracking()
-            .FirstOrDefaultAsync(item =>
-                item.Slug == normalizedSlug &&
-                item.Locale == normalizedLocale &&
-                item.Type == (type ?? ContentEntryType.Page) &&
-                (item.Status == ContentStatus.Published ||
-                 (item.Status == ContentStatus.Scheduled && item.ScheduledAt <= DateTimeOffset.UtcNow)),
-                cancellationToken);
-        return entry is null ? Results.NotFound() : Results.Ok(ToDto(entry));
+        var entry = await entries.GetPublishedAsync(slug, locale, type, cancellationToken);
+        return entry is null ? Results.NotFound() : Results.Ok(entry);
     }
-
-    private static ContentEntryDto ToDto(ContentEntry entry) => new(
-        entry.Id, entry.Type, entry.Slug, entry.Locale, entry.Title, entry.Excerpt,
-        entry.Body, entry.HeroMediaId, entry.HeroImageUrl, entry.SeoTitle,
-        entry.SeoDescription, entry.Status, entry.PublishedAt, entry.ScheduledAt,
-        entry.CreatedAt, entry.UpdatedAt, entry.Revisions.Count);
 }
-
-/// <summary>Content entry read/write model.</summary>
-public sealed record ContentEntryDto(
-    Guid Id,
-    ContentEntryType Type,
-    string Slug,
-    string Locale,
-    string Title,
-    string? Excerpt,
-    string Body,
-    Guid? HeroMediaId,
-    string? HeroImageUrl,
-    string? SeoTitle,
-    string? SeoDescription,
-    ContentStatus Status,
-    DateTimeOffset? PublishedAt,
-    DateTimeOffset? ScheduledAt,
-    DateTimeOffset CreatedAt,
-    DateTimeOffset UpdatedAt,
-    int RevisionCount);
-
-/// <summary>Content entry write request.</summary>
-/// <summary>Paged admin content entry response.</summary>
-public sealed record ContentEntryListResponse(
-    IReadOnlyList<ContentEntryDto> Items,
-    int Page,
-    int PageSize,
-    int Total);
-
-/// <summary>Schedule publication request.</summary>
-public sealed record ScheduleContentRequest(DateTimeOffset ScheduledAt);
-
-public sealed record ContentEntryWriteRequest(
-    ContentEntryType Type,
-    string Slug,
-    string Locale,
-    string Title,
-    string? Excerpt,
-    string? Body,
-    Guid? HeroMediaId,
-    string? HeroImageUrl,
-    string? SeoTitle,
-    string? SeoDescription);

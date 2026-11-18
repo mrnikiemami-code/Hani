@@ -258,7 +258,7 @@ export default async function AdminFinancePage({
             <h2 className="h5 mb-0">{t("payoutList")}</h2>
           </div>
           <div className="card-body p-0 admin-table-wrap">
-            <table className="table admin-data-table content-data-table align-middle mb-0">
+            <table className="table admin-data-table content-data-table report-table align-middle mb-0">
               <thead className="thead-light">
                 <tr>
                   <th>{t("agency")}</th>
@@ -324,7 +324,7 @@ export default async function AdminFinancePage({
             <h2 className="h5 mb-0">{table.title}</h2>
           </div>
           <div className="card-body p-0 admin-table-wrap">
-            <table className="table admin-data-table content-data-table align-middle mb-0">
+            <table className="table admin-data-table content-data-table report-table align-middle mb-0">
               <thead className="thead-light">
                 <tr>
                   {table.headers.map((header) => (
@@ -362,7 +362,7 @@ export default async function AdminFinancePage({
             <h2 className="h5 mb-0">{table.title}</h2>
           </div>
           <div className="card-body p-0 admin-table-wrap">
-            <table className="table admin-data-table content-data-table align-middle mb-0">
+            <table className="table admin-data-table content-data-table report-table align-middle mb-0">
               <thead className="thead-light">
                 <tr>
                   <th>{t("status")}</th>

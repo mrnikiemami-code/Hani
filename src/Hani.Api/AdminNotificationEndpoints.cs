@@ -1,17 +1,9 @@
-using Hani.BuildingBlocks.Application;
-using Hani.BuildingBlocks.AspNetCore;
-using Hani.Modules.Content.Domain.Growth;
-using Hani.Modules.Content.Infrastructure.Persistence;
-using Hani.Modules.Identity.Infrastructure.Persistence;
+using Hani.Modules.Admin.Application;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Api;
 
-/// <summary>
-/// Admin operational view of the notification outbox and safe manual retries.
-/// </summary>
+/// <summary>Admin notification outbox endpoints.</summary>
 public static class AdminNotificationEndpoints
 {
     /// <summary>Maps admin notification endpoints.</summary>
@@ -37,114 +29,37 @@ public static class AdminNotificationEndpoints
         [FromQuery] string? status,
         [FromQuery] string? channel,
         [FromQuery] string? q,
-        ContentDbContext content,
+        IAdminNotificationService notifications,
         CancellationToken cancellationToken)
-    {
-        var normalizedPage = page <= 0 ? 1 : page;
-        var normalizedPageSize = pageSize is <= 0 or > 100 ? 25 : pageSize;
-        var query = content.Notifications.AsNoTracking();
-        if (!string.IsNullOrWhiteSpace(status) &&
-            Enum.TryParse<NotificationStatus>(status, true, out var parsedStatus))
-        {
-            query = query.Where(item => item.Status == parsedStatus);
-        }
-
-        if (!string.IsNullOrWhiteSpace(channel) &&
-            Enum.TryParse<ContactChannel>(channel, true, out var parsedChannel))
-        {
-            query = query.Where(item => item.Channel == parsedChannel);
-        }
-
-        if (!string.IsNullOrWhiteSpace(q))
-        {
-            var term = q.Trim();
-            query = query.Where(item =>
-                item.TemplateKey.Contains(term) ||
-                item.Payload.Contains(term));
-        }
-
-        var total = await query.CountAsync(cancellationToken);
-        var items = await query
-            .OrderByDescending(item => item.CreatedAt)
-            .Skip((normalizedPage - 1) * normalizedPageSize)
-            .Take(normalizedPageSize)
-            .Select(item => new AdminNotificationDto(
-                item.Id,
-                item.UserId,
-                item.Channel.ToString(),
-                item.TemplateKey,
-                item.Payload,
-                item.Status.ToString(),
-                item.CreatedAt,
-                item.SentAt,
-                item.AttemptCount,
-                item.LastError,
-                item.NextAttemptAt))
-            .ToArrayAsync(cancellationToken);
-
-        return Results.Ok(new AdminNotificationPageDto(
-            items,
-            normalizedPage,
-            normalizedPageSize,
-            total));
-    }
+        => Results.Ok(await notifications.ListAsync(
+            page,
+            pageSize,
+            status,
+            channel,
+            q,
+            cancellationToken));
 
     private static async Task<IResult> RetryAsync(
         Guid id,
         HttpContext context,
-        ContentDbContext content,
-        IdentityDbContext identity,
-        AdminAuditWriter audit,
+        IAdminNotificationService notifications,
+        IAdminAuditWriter audit,
         CancellationToken cancellationToken)
     {
-        var notification = await content.Notifications
-            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-        if (notification is null)
+        var retried = await notifications.RetryAsync(id, cancellationToken);
+        if (!retried)
         {
-            return context.ToProblem(Error.NotFound(
-                "HANI-NOTIFICATION-4001",
-                "Notification was not found."));
+            return Results.NotFound();
         }
 
-        if (notification.Status != NotificationStatus.Failed)
-        {
-            return context.ToProblem(Error.Conflict(
-                "HANI-NOTIFICATION-4002",
-                "Only failed notifications can be retried."));
-        }
-
-        notification.Retry();
-        await content.SaveChangesAsync(cancellationToken);
-        audit.Record(
+        await audit.RecordAsync(
             context,
-            identity,
             "operations.notification.retried",
             "Notification",
             id.ToString(),
             "Failed notification requeued from the admin panel",
-            after: new { status = notification.Status.ToString(), notification.NextAttemptAt });
-        await identity.SaveChangesAsync(cancellationToken);
+            after: new { status = "Pending" },
+            cancellationToken: cancellationToken);
         return Results.Ok(true);
     }
 }
-
-/// <summary>Admin notification outbox row.</summary>
-public sealed record AdminNotificationDto(
-    Guid Id,
-    Guid? UserId,
-    string Channel,
-    string TemplateKey,
-    string Payload,
-    string Status,
-    DateTimeOffset CreatedAt,
-    DateTimeOffset? SentAt,
-    int AttemptCount,
-    string? LastError,
-    DateTimeOffset? NextAttemptAt);
-
-/// <summary>Paged notification outbox response.</summary>
-public sealed record AdminNotificationPageDto(
-    IReadOnlyList<AdminNotificationDto> Items,
-    int Page,
-    int PageSize,
-    int Total);

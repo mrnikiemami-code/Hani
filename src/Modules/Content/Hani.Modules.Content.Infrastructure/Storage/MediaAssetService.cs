@@ -2,6 +2,7 @@ using Hani.BuildingBlocks.Domain;
 using Hani.Modules.Content.Application.Media;
 using Hani.Modules.Content.Domain.Media;
 using Hani.Modules.Content.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Content.Infrastructure.Storage;
 
@@ -202,6 +203,142 @@ internal sealed class MediaAssetService(
         await repository.SaveChangesAsync(cancellationToken);
         return true;
     }
+
+
+    public async Task<IReadOnlyList<MediaFolderDto>> ListFoldersAsync(
+        CancellationToken cancellationToken)
+        => await dbContext.MediaFolders
+            .AsNoTracking()
+            .OrderBy(folder => folder.Name)
+            .Select(folder => new MediaFolderDto(folder.Id, folder.Name, folder.ParentId))
+            .ToArrayAsync(cancellationToken);
+
+    public async Task<MediaFolderDto> CreateFolderAsync(
+        string name,
+        Guid? parentId,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Folder name is required.");
+        }
+
+        var folder = MediaFolder.Create(ids.NewId(), name, parentId);
+        await dbContext.MediaFolders.AddAsync(folder, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return new MediaFolderDto(folder.Id, folder.Name, folder.ParentId);
+    }
+
+    public async Task<MediaFolderDto?> RenameFolderAsync(
+        Guid id,
+        string name,
+        CancellationToken cancellationToken)
+    {
+        var folder = await dbContext.MediaFolders
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (folder is null)
+        {
+            return null;
+        }
+
+        folder.Rename(name);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return new MediaFolderDto(folder.Id, folder.Name, folder.ParentId);
+    }
+
+    public async Task DeleteFolderAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var folder = await dbContext.MediaFolders
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (folder is null)
+        {
+            return;
+        }
+
+        await dbContext.MediaAssets
+            .Where(asset => asset.FolderId == id)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(asset => asset.FolderId, (Guid?)null),
+                cancellationToken);
+        dbContext.MediaFolders.Remove(folder);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<MediaUsageDto>> ListUsageAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+        => await dbContext.MediaUsages
+            .AsNoTracking()
+            .Where(usage => usage.MediaAssetId == id)
+            .OrderByDescending(usage => usage.CreatedAt)
+            .Select(usage => new MediaUsageDto(
+                usage.Id,
+                usage.MediaAssetId,
+                usage.EntityType,
+                usage.EntityId,
+                usage.Field,
+                usage.CreatedAt))
+            .ToArrayAsync(cancellationToken);
+
+    public async Task<MediaUsageDto?> AddUsageAsync(
+        Guid id,
+        string entityType,
+        string entityId,
+        string field,
+        CancellationToken cancellationToken)
+    {
+        var exists = await dbContext.MediaAssets
+            .AnyAsync(asset => asset.Id == id, cancellationToken);
+        if (!exists)
+        {
+            return null;
+        }
+
+        var usage = new MediaUsage(ids.NewId(), id, entityType, entityId, field);
+        await dbContext.MediaUsages.AddAsync(usage, cancellationToken);
+        AddAudit(id, "UsageAdded", $"{entityType}:{entityId}:{field}");
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return new MediaUsageDto(
+            usage.Id,
+            usage.MediaAssetId,
+            usage.EntityType,
+            usage.EntityId,
+            usage.Field,
+            usage.CreatedAt);
+    }
+
+    public async Task RemoveUsageAsync(
+        Guid id,
+        Guid usageId,
+        CancellationToken cancellationToken)
+    {
+        var usage = await dbContext.MediaUsages.FirstOrDefaultAsync(
+            item => item.Id == usageId && item.MediaAssetId == id,
+            cancellationToken);
+        if (usage is null)
+        {
+            return;
+        }
+
+        dbContext.MediaUsages.Remove(usage);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<MediaAuditDto>> ListAuditAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+        => await dbContext.MediaAuditLogs
+            .AsNoTracking()
+            .Where(item => item.MediaAssetId == id)
+            .OrderByDescending(item => item.CreatedAt)
+            .Take(100)
+            .Select(item => new MediaAuditDto(
+                item.Id,
+                item.MediaAssetId,
+                item.Action,
+                item.Detail,
+                item.CreatedAt))
+            .ToArrayAsync(cancellationToken);
 
     private MediaAssetDto Map(MediaAsset asset)
     {

@@ -15,6 +15,7 @@ using Hani.BuildingBlocks.Infrastructure.Localization;
 using Hani.BuildingBlocks.Infrastructure.Messaging;
 using Hani.BuildingBlocks.Infrastructure.Observability;
 using Hani.BuildingBlocks.Infrastructure.Tenancy;
+using Hani.Modules.Admin.Infrastructure;
 using Hani.Modules.Booking.Application.Commands.CancelOrder;
 using Hani.Modules.Booking.Application.Commands.CreateHold;
 using Hani.Modules.Booking.Application.Commands.CreateOrder;
@@ -184,6 +185,7 @@ builder.Services.AddMarketplaceInfrastructure();
 builder.Services.AddBookingInfrastructure();
 builder.Services.AddPaymentsInfrastructure();
 builder.Services.AddSettlementInfrastructure();
+builder.Services.AddAdminInfrastructure();
 builder.Services.Configure<PaymentOptions>(builder.Configuration.GetSection("Payments"));
 builder.Services.Configure<CommissionOptions>(builder.Configuration.GetSection("Commissions"));
 builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
@@ -210,7 +212,6 @@ builder.Services.AddHaniMessaging<SupplyDbContext>(builder.Configuration);
 builder.Services.AddSingleton<ICurrentTenant, CurrentTenant>();
 builder.Services.AddSingleton<IIdempotencyStore, InMemoryIdempotencyStore>();
 builder.Services.AddSingleton<IIdGenerator, Uuid7IdGenerator>();
-builder.Services.AddScoped<AdminAuditWriter>();
 
 // ---------------------------------------------------------------------------
 // CQRS: MediatR handlers + pipeline behaviors (log -> validate -> idempotency)

@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.AspNetCore;
+using Hani.Modules.Admin.Application;
 using Hani.Modules.Content.Application.Commands.Growth;
 using Hani.Modules.Content.Application.Queries.AdminAds;
 using MediatR;
@@ -46,7 +47,7 @@ public static class AdminAdsEndpoints
         AdminCreateAdSlotRequest request,
         HttpContext context,
         ISender sender,
-        AdminAuditWriter audit,
+        IAdminAuditWriter audit,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(
@@ -75,7 +76,7 @@ public static class AdminAdsEndpoints
         AdminAddAdCreativeRequest request,
         HttpContext context,
         ISender sender,
-        AdminAuditWriter audit,
+        IAdminAuditWriter audit,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(

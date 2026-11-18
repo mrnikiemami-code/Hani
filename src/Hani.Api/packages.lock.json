@@ -477,6 +477,36 @@
       "hani.contracts.supply": {
         "type": "Project"
       },
+      "hani.modules.admin.application": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Application": "[1.0.0, )",
+          "Hani.Modules.Catalog.Application": "[1.0.0, )",
+          "Hani.Modules.Catalog.Domain": "[1.0.0, )",
+          "Hani.Modules.Content.Domain": "[1.0.0, )",
+          "MediatR": "[12.5.0, )"
+        }
+      },
+      "hani.modules.admin.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Hani.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Admin.Application": "[1.0.0, )",
+          "Hani.Modules.Booking.Application": "[1.0.0, )",
+          "Hani.Modules.Booking.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Catalog.Application": "[1.0.0, )",
+          "Hani.Modules.Catalog.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Content.Application": "[1.0.0, )",
+          "Hani.Modules.Content.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Identity.Application": "[1.0.0, )",
+          "Hani.Modules.Identity.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Payments.Application": "[1.0.0, )",
+          "Hani.Modules.Payments.Infrastructure": "[1.0.0, )",
+          "Hani.Modules.Settlement.Application": "[1.0.0, )",
+          "Hani.Modules.Settlement.Infrastructure": "[1.0.0, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.15, )"
+        }
+      },
       "hani.modules.booking.application": {
         "type": "Project",
         "dependencies": {

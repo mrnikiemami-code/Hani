@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Hani.Modules.Admin.Infrastructure</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hani.Modules.Admin.Application\Hani.Modules.Admin.Application.csproj" />
+    <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Infrastructure\Hani.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Booking\Hani.Modules.Booking.Application\Hani.Modules.Booking.Application.csproj" />
+    <ProjectReference Include="..\..\Booking\Hani.Modules.Booking.Infrastructure\Hani.Modules.Booking.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Catalog\Hani.Modules.Catalog.Application\Hani.Modules.Catalog.Application.csproj" />
+    <ProjectReference Include="..\..\Catalog\Hani.Modules.Catalog.Infrastructure\Hani.Modules.Catalog.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Content\Hani.Modules.Content.Application\Hani.Modules.Content.Application.csproj" />
+    <ProjectReference Include="..\..\Content\Hani.Modules.Content.Infrastructure\Hani.Modules.Content.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Identity\Hani.Modules.Identity.Application\Hani.Modules.Identity.Application.csproj" />
+    <ProjectReference Include="..\..\Identity\Hani.Modules.Identity.Infrastructure\Hani.Modules.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Payments\Hani.Modules.Payments.Application\Hani.Modules.Payments.Application.csproj" />
+    <ProjectReference Include="..\..\Payments\Hani.Modules.Payments.Infrastructure\Hani.Modules.Payments.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Settlement\Hani.Modules.Settlement.Application\Hani.Modules.Settlement.Application.csproj" />
+    <ProjectReference Include="..\..\Settlement\Hani.Modules.Settlement.Infrastructure\Hani.Modules.Settlement.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+</Project>

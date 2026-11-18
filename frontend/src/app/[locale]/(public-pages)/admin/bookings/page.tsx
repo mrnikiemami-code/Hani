@@ -106,7 +106,7 @@ export default async function AdminBookingsPage({
           <span className="badge badge-success">{data.orderCount}</span>
         </div>
         <div className="card-body p-0 admin-table-wrap">
-          <table className="table admin-data-table content-data-table align-middle mb-0">
+          <table className="table admin-data-table content-data-table report-table align-middle mb-0">
             <thead className="thead-light">
               <tr>
                 <th>{t("number")}</th>
@@ -152,7 +152,7 @@ export default async function AdminBookingsPage({
           <span className="badge badge-warning">{data.requestCount}</span>
         </div>
         <div className="card-body p-0 admin-table-wrap">
-          <table className="table admin-data-table content-data-table align-middle mb-0">
+          <table className="table admin-data-table content-data-table report-table align-middle mb-0">
             <thead className="thead-light">
               <tr>
                 <th>{t("number")}</th>
@@ -196,7 +196,7 @@ export default async function AdminBookingsPage({
           <span className="badge badge-info">{data.inquiryCount}</span>
         </div>
         <div className="card-body p-0 admin-table-wrap">
-          <table className="table admin-data-table content-data-table align-middle mb-0">
+          <table className="table admin-data-table content-data-table report-table align-middle mb-0">
             <thead className="thead-light">
               <tr>
                 <th>{t("number")}</th>

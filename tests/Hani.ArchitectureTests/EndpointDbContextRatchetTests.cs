@@ -9,22 +9,7 @@ namespace Hani.ArchitectureTests;
 /// </summary>
 public sealed class EndpointDbContextRatchetTests
 {
-    private static readonly HashSet<string> KnownDebt = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "AdminBookingEndpoints.cs",
-        "AdminCatalogEndpoints.cs",
-        "AdminFinanceEndpoints.cs",
-        "AdminGovernanceEndpoints.cs",
-        "AdminMarketingEndpoints.cs",
-        "AdminNotificationEndpoints.cs",
-        "AdminReportEndpoints.cs",
-        "AdminSupportEndpoints.cs",
-        "AdminUsersEndpoints.cs",
-        "ContentEntryEndpoints.cs",
-        "HomeSettingsEndpoints.cs",
-        "HotelFacetEndpoints.cs",
-        "MediaEndpoints.cs"
-    };
+    private static readonly HashSet<string> KnownDebt = new(StringComparer.OrdinalIgnoreCase);
 
     [Fact]
     public void New_Endpoint_Files_Must_Not_Query_DbContext_Directly()

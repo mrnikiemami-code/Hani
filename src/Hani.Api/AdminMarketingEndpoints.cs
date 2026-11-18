@@ -1,20 +1,14 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
+using Hani.Modules.Admin.Application;
 using Hani.Modules.Content.Application.Commands.Growth;
-using Hani.Modules.Content.Domain.Growth;
-using Hani.Modules.Content.Infrastructure.Persistence;
-using Hani.Modules.Identity.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Api;
 
-/// <summary>
-/// Admin marketing campaign operations. Campaigns are localized marketing
-/// content; activation is separate from creation so drafts can be reviewed.
-/// </summary>
+/// <summary>Admin marketing campaign endpoints.</summary>
 public static class AdminMarketingEndpoints
 {
     /// <summary>Maps admin marketing endpoints.</summary>
@@ -45,64 +39,20 @@ public static class AdminMarketingEndpoints
         [FromQuery] int pageSize,
         [FromQuery] string? q,
         [FromQuery] string? status,
-        ContentDbContext content,
-        ILanguageCatalog languages,
+        IAdminMarketingService marketing,
         CancellationToken cancellationToken)
-    {
-        var normalizedPage = page <= 0 ? 1 : page;
-        var normalizedPageSize = pageSize is <= 0 or > 100 ? 20 : pageSize;
-        var query = content.Campaigns.AsNoTracking();
-        if (!string.IsNullOrWhiteSpace(q))
-        {
-            var term = q.Trim();
-            query = query.Where(item =>
-                item.Slug.Contains(term) ||
-                item.Translations.Any(translation => translation.Title.Contains(term)));
-        }
-
-        if (!string.IsNullOrWhiteSpace(status) &&
-            Enum.TryParse<CampaignStatus>(status, true, out var parsed))
-        {
-            query = query.Where(item => item.Status == parsed);
-        }
-
-        var total = await query.CountAsync(cancellationToken);
-        var items = await query
-            .OrderByDescending(item => item.CreatedAt)
-            .Skip((normalizedPage - 1) * normalizedPageSize)
-            .Take(normalizedPageSize)
-            .Select(item => new AdminCampaignDto(
-                item.Id,
-                item.Slug,
-                item.Translations
-                    .Where(translation => translation.Locale == languages.DefaultLanguage)
-                    .Select(translation => translation.Title)
-                    .FirstOrDefault() ??
-                    item.Translations.Select(translation => translation.Title).FirstOrDefault() ??
-                    item.Slug,
-                item.Status.ToString(),
-                item.StartsAt,
-                item.EndsAt,
-                item.Price,
-                item.Currency,
-                item.DiscountPercent,
-                content.CampaignRegistrations.Count(registration => registration.CampaignId == item.Id),
-                item.CreatedAt))
-            .ToArrayAsync(cancellationToken);
-
-        return Results.Ok(new AdminCampaignPageDto(
-            items,
-            normalizedPage,
-            normalizedPageSize,
-            total));
-    }
+        => Results.Ok(await marketing.ListCampaignsAsync(
+            page,
+            pageSize,
+            q,
+            status,
+            cancellationToken));
 
     private static async Task<IResult> CreateCampaignAsync(
         AdminCampaignCreateRequest request,
         HttpContext context,
         ISender sender,
-        IdentityDbContext identity,
-        AdminAuditWriter audit,
+        IAdminAuditWriter audit,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Slug) ||
@@ -139,9 +89,8 @@ public static class AdminMarketingEndpoints
             return context.ToProblem(result.Error!);
         }
 
-        audit.Record(
+        await audit.RecordAsync(
             context,
-            identity,
             "marketing.campaign.created",
             "Campaign",
             result.Value.ToString(),
@@ -154,8 +103,8 @@ public static class AdminMarketingEndpoints
                 request.Price,
                 request.Currency,
                 request.DiscountPercent
-            });
-        await identity.SaveChangesAsync(cancellationToken);
+            },
+            cancellationToken: cancellationToken);
         return Results.Created(
             $"/internal/v1/admin/marketing/campaigns/{request.Slug}",
             new AdminCampaignCreatedDto(result.Value, request.Slug));
@@ -165,8 +114,7 @@ public static class AdminMarketingEndpoints
         string slug,
         HttpContext context,
         ISender sender,
-        IdentityDbContext identity,
-        AdminAuditWriter audit,
+        IAdminAuditWriter audit,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new ActivateCampaignCommand(slug), cancellationToken);
@@ -175,39 +123,17 @@ public static class AdminMarketingEndpoints
             return context.ToProblem(result.Error!);
         }
 
-        audit.Record(
+        await audit.RecordAsync(
             context,
-            identity,
             "marketing.campaign.activated",
             "Campaign",
             slug,
             "Campaign activated from the admin panel",
-            after: new { slug, status = "Active" });
-        await identity.SaveChangesAsync(cancellationToken);
+            after: new { slug, status = "Active" },
+            cancellationToken: cancellationToken);
         return Results.Ok(result.Value);
     }
 }
-
-/// <summary>Admin campaign row.</summary>
-public sealed record AdminCampaignDto(
-    Guid Id,
-    string Slug,
-    string Title,
-    string Status,
-    DateTimeOffset StartsAt,
-    DateTimeOffset EndsAt,
-    decimal? Price,
-    string? Currency,
-    decimal? DiscountPercent,
-    int Registrations,
-    DateTimeOffset CreatedAt);
-
-/// <summary>Paged admin campaign response.</summary>
-public sealed record AdminCampaignPageDto(
-    IReadOnlyList<AdminCampaignDto> Items,
-    int Page,
-    int PageSize,
-    int Total);
 
 /// <summary>Admin campaign creation request.</summary>
 public sealed record AdminCampaignCreateRequest(
@@ -229,6 +155,3 @@ public sealed record AdminCampaignTranslationRequest(
 
 /// <summary>Campaign FAQ input.</summary>
 public sealed record AdminCampaignFaqRequest(string Question, string Answer);
-
-/// <summary>Created campaign identifier.</summary>
-public sealed record AdminCampaignCreatedDto(Guid Id, string Slug);

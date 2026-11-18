@@ -17,6 +17,8 @@
     <ProjectReference Include="..\Modules\Payments\Hani.Modules.Payments.Presentation\Hani.Modules.Payments.Presentation.csproj" />
     <ProjectReference Include="..\Modules\Settlement\Hani.Modules.Settlement.Infrastructure\Hani.Modules.Settlement.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Settlement\Hani.Modules.Settlement.Presentation\Hani.Modules.Settlement.Presentation.csproj" />
+    <ProjectReference Include="..\Modules\Admin\Hani.Modules.Admin.Application\Hani.Modules.Admin.Application.csproj" />
+    <ProjectReference Include="..\Modules\Admin\Hani.Modules.Admin.Infrastructure\Hani.Modules.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Supply\Hani.Modules.Supply.Infrastructure\Hani.Modules.Supply.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Supply\Hani.Modules.Supply.Presentation\Hani.Modules.Supply.Presentation.csproj" />
     <ProjectReference Include="..\Hani.BuildingBlocks\Hani.BuildingBlocks.AspNetCore\Hani.BuildingBlocks.AspNetCore.csproj" />

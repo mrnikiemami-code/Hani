@@ -1,17 +1,13 @@
 using System.Text.Json;
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
-using Hani.Modules.Content.Domain.Settings;
-using Hani.Modules.Content.Infrastructure.Persistence;
+using Hani.Modules.Admin.Application;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Hani.Api;
 
-/// <summary>
-/// Reads and writes homepage composition and image settings.
-/// </summary>
+/// <summary>Homepage settings endpoints.</summary>
 public static class HomeSettingsEndpoints
 {
     /// <summary>Maps public and admin homepage-settings endpoints.</summary>
@@ -40,90 +36,30 @@ public static class HomeSettingsEndpoints
     private static async Task<IResult> GetAsync(
         [FromQuery] string? key,
         [FromQuery] string? locale,
-        ILanguageCatalog languages,
-        ContentDbContext db,
+        IAdminHomeSettingsService settings,
         CancellationToken cancellationToken)
-    {
-        var normalizedKey = NormalizeKey(key);
-        var normalizedLocale = languages.Normalize(locale);
-        var entity = await db.HomePageSettings
-            .AsNoTracking()
-            .FirstOrDefaultAsync(
-                item => item.Key == normalizedKey && item.Locale == normalizedLocale,
-                cancellationToken);
-
-        return Results.Ok(ToDto(entity, normalizedKey, normalizedLocale));
-    }
+        => Results.Ok(await settings.GetAsync(key, locale, cancellationToken));
 
     private static async Task<IResult> PutAsync(
         UpdateHomePageSettingsRequest request,
         HttpContext context,
-        ILanguageCatalog languages,
-        ContentDbContext db,
+        IAdminHomeSettingsService settings,
         CancellationToken cancellationToken)
     {
-        if (request.Settings.ValueKind != JsonValueKind.Object)
+        try
         {
-            return context.ToProblem(
-                Error.Validation("HANI-HOME-1001", "Settings must be a JSON object."));
+            return Results.Ok(await settings.UpdateAsync(
+                request.Key,
+                request.Locale,
+                request.Settings,
+                cancellationToken));
         }
-
-        var json = request.Settings.GetRawText();
-        if (json.Length > 100_000)
+        catch (ArgumentException exception)
         {
-            return context.ToProblem(
-                Error.Validation("HANI-HOME-1002", "Settings must be at most 100 KB."));
+            return context.ToProblem(Error.Validation("HANI-HOME-1001", exception.Message));
         }
-
-        var key = NormalizeKey(request.Key);
-        var locale = languages.Normalize(request.Locale);
-        var entity = await db.HomePageSettings
-            .FirstOrDefaultAsync(
-                item => item.Key == key && item.Locale == locale,
-                cancellationToken);
-
-        if (entity is null)
-        {
-            entity = HomePageSettings.Create(key, locale, json);
-            await db.HomePageSettings.AddAsync(entity, cancellationToken);
-        }
-        else
-        {
-            entity.Update(json);
-        }
-
-        await db.SaveChangesAsync(cancellationToken);
-        return Results.Ok(ToDto(entity, key, locale));
     }
-
-    private static HomePageSettingsDto ToDto(
-        HomePageSettings? entity,
-        string key,
-        string locale)
-    {
-        var settings = entity is null
-            ? JsonDocument.Parse("{}").RootElement.Clone()
-            : JsonDocument.Parse(entity.SettingsJson).RootElement.Clone();
-
-        return new HomePageSettingsDto(
-            key,
-            locale,
-            settings,
-            entity?.UpdatedAt);
-    }
-
-    private static string NormalizeKey(string? key) =>
-        string.IsNullOrWhiteSpace(key) ? "default" : key.Trim().ToLowerInvariant();
-
-
 }
-
-/// <summary>Homepage settings response.</summary>
-public sealed record HomePageSettingsDto(
-    string Key,
-    string Locale,
-    JsonElement Settings,
-    DateTimeOffset? UpdatedAt);
 
 /// <summary>Homepage settings update request.</summary>
 public sealed record UpdateHomePageSettingsRequest(
