@@ -500,7 +500,7 @@ Existing `/admin/security` (OTP policy) belongs here as a subpage.
 /[locale]/admin/bookings
 /[locale]/admin/bookings/online
 /[locale]/admin/bookings/requests
-/[locale]/admin/bookings/[id]
+/[locale]/admin/bookings/orders/[id]
 /[locale]/admin/finance/transactions
 /[locale]/admin/finance/commissions
 /[locale]/admin/finance/settlements

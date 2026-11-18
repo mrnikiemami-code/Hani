@@ -1,8 +1,5 @@
 using Hani.Modules.Catalog.Domain.Hotels;
 using Hani.Modules.Catalog.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 

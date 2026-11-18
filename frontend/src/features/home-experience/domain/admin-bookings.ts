@@ -62,3 +62,82 @@ export type AdminFinance = {
     amount: number;
   }[];
 };
+
+export type AdminPayout = {
+  id: string;
+  agencyId: string;
+  periodStart: string;
+  periodEnd: string;
+  amount: number;
+  currency: string;
+  status: string;
+  createdAt: string;
+};
+
+export type AdminRefund = {
+  id: string;
+  orderId: string;
+  paymentIntentId: string | null;
+  amount: number;
+  currency: string;
+  status: string;
+  reason: string;
+  requestedAt: string;
+  processedAt: string | null;
+};
+
+export type AdminInvoice = {
+  id: string;
+  invoiceNumber: string;
+  orderId: string;
+  buyerEmail: string;
+  subtotal: number;
+  tax: number;
+  total: number;
+  currency: string;
+  status: string;
+  issuedAt: string;
+};
+
+export type AdminReconciliation = {
+  id: string;
+  provider: string;
+  periodStart: string;
+  periodEnd: string;
+  currency: string;
+  expectedAmount: number;
+  actualAmount: number;
+  difference: number;
+  status: string;
+  createdAt: string;
+};
+
+export type AdminCommission = {
+  id: string;
+  orderId: string;
+  agencyId: string;
+  productType: string;
+  grossAmount: number;
+  rate: number;
+  commissionAmount: number;
+  netAmount: number;
+  currency: string;
+  status: string;
+  createdAt: string;
+};
+
+export type AdminLedgerEntry = {
+  accountCode: string;
+  debit: number;
+  credit: number;
+  description: string;
+};
+
+export type AdminLedger = {
+  id: string;
+  referenceType: string;
+  referenceId: string;
+  currency: string;
+  createdAt: string;
+  entries: AdminLedgerEntry[];
+};

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { sessionGet } from "@/lib/hani/server-api";
 import { formatIsoDate, formatIsoInstant } from "@/lib/hani/calendar";
 import { formatMoney } from "@/lib/hani/money";
@@ -119,7 +120,11 @@ export default async function AdminBookingsPage({
             <tbody>
               {data.orders.map((order) => (
                 <tr key={order.id}>
-                  <td dir="ltr">{order.number}</td>
+                  <td dir="ltr">
+                    <Link href={`/admin/bookings/orders/${order.id}`} className="link-primary">
+                      {order.number}
+                    </Link>
+                  </td>
                   <td>{order.status}</td>
                   <td className="d-none d-md-table-cell">{order.paymentStatus}</td>
                   <td className="d-none d-sm-table-cell">
