@@ -99,6 +99,11 @@ const ADMIN_NAV: AdminNavItem[] = [
         href: "/admin/finance/approvals",
         labelKey: "approvals",
         permission: "finance.view"
+      },
+      {
+        href: "/admin/finance/settings",
+        labelKey: "financeSettings",
+        permission: "finance.view"
       }
     ]
   },

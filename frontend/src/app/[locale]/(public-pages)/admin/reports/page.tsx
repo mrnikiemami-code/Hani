@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { sessionGet } from "@/lib/hani/server-api";
-import { formatIsoInstant } from "@/lib/hani/calendar";
+import { formatIsoDate, formatIsoInstant } from "@/lib/hani/calendar";
 import { formatMoney } from "@/lib/hani/money";
 import type { AdminReportOverview } from "@/features/home-experience/domain/admin-report";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
@@ -133,6 +133,79 @@ export default async function AdminReportsPage({
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="row g-4 mb-4">
+        <div className="col-lg-6">
+          <div className="card border-0 shadow-sm h-100">
+            <div className="card-header">
+              <h2 className="h5 mb-0">{t("revenueTrend")}</h2>
+            </div>
+            <div className="card-body p-0 admin-table-wrap">
+              <table className="table admin-data-table content-data-table report-table align-middle mb-0">
+                <thead className="thead-light">
+                  <tr>
+                    <th>{t("date")}</th>
+                    <th>{t("currency")}</th>
+                    <th>{t("count")}</th>
+                    <th>{t("amount")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.revenueTrend.slice(-20).map((row) => (
+                    <tr key={`${row.date}-${row.currency}`}>
+                      <td>{formatIsoDate(row.date, locale, "short")}</td>
+                      <td>{row.currency}</td>
+                      <td>{row.count}</td>
+                      <td>{formatMoney(row.amount, row.currency, locale)}</td>
+                    </tr>
+                  ))}
+                  {data.revenueTrend.length === 0 && (
+                    <tr>
+                      <td colSpan={4} className="text-center text-gray-6 py-4">
+                        {t("empty")}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-6">
+          <div className="card border-0 shadow-sm h-100">
+            <div className="card-header">
+              <h2 className="h5 mb-0">{t("orderTrend")}</h2>
+            </div>
+            <div className="card-body p-0 admin-table-wrap">
+              <table className="table admin-data-table content-data-table report-table align-middle mb-0">
+                <thead className="thead-light">
+                  <tr>
+                    <th>{t("date")}</th>
+                    <th>{t("status")}</th>
+                    <th>{t("count")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.orderTrend.slice(-20).map((row) => (
+                    <tr key={`${row.date}-${row.status}`}>
+                      <td>{formatIsoDate(row.date, locale, "short")}</td>
+                      <td>{row.status}</td>
+                      <td>{row.count}</td>
+                    </tr>
+                  ))}
+                  {data.orderTrend.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="text-center text-gray-6 py-4">
+                        {t("empty")}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="row g-4 mb-4">

@@ -148,6 +148,45 @@ internal sealed partial class AdminService : IAdminReportService
         var usersNew = await identity.Users.AsNoTracking()
             .CountAsync(item => item.CreatedAt >= from, cancellationToken);
 
+        var revenueTrendRows = await payments.PaymentIntents
+            .AsNoTracking()
+            .Where(item =>
+                item.Status == PaymentIntentStatus.Succeeded &&
+                item.CreatedAt >= from)
+            .Select(item => new { item.CreatedAt, item.Currency, item.Amount })
+            .ToArrayAsync(cancellationToken);
+        var revenueTrend = revenueTrendRows
+            .GroupBy(item => new
+            {
+                Date = DateOnly.FromDateTime(item.CreatedAt.UtcDateTime),
+                item.Currency
+            })
+            .Select(group => new AdminDailyRevenueReportDto(
+                group.Key.Date,
+                group.Key.Currency,
+                group.Count(),
+                group.Sum(item => item.Amount)))
+            .OrderBy(item => item.Date)
+            .ThenBy(item => item.Currency)
+            .ToArray();
+
+        var orderTrendRows = await orders
+            .Select(item => new { item.CreatedAt, item.Status })
+            .ToArrayAsync(cancellationToken);
+        var orderTrend = orderTrendRows
+            .GroupBy(item => new
+            {
+                Date = DateOnly.FromDateTime(item.CreatedAt.UtcDateTime),
+                item.Status
+            })
+            .Select(group => new AdminDailyOrderReportDto(
+                group.Key.Date,
+                group.Key.Status.ToString(),
+                group.Count()))
+            .OrderBy(item => item.Date)
+            .ThenBy(item => item.Status)
+            .ToArray();
+
         return new AdminReportOverviewDto(
             periodDays,
             from,
@@ -170,6 +209,8 @@ internal sealed partial class AdminService : IAdminReportService
             campaigns,
             registrationCount,
             usersTotal,
-            usersNew);
+            usersNew,
+            revenueTrend,
+            orderTrend);
     }
 }

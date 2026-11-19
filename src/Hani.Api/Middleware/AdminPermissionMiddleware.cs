@@ -12,6 +12,7 @@ public sealed class AdminPermissionMiddleware(RequestDelegate next)
         ("/internal/v1/admin/agencies", "agency.view"),
         ("/internal/v1/admin/catalog", "catalog.view"),
         ("/internal/v1/admin/bookings", "booking.view"),
+        ("/internal/v1/admin/finance/exports", "report.export"),
         ("/internal/v1/admin/finance", "finance.view"),
         ("/internal/v1/admin/approvals", "finance.view"),
         ("/internal/v1/admin/marketing", "marketing.view"),

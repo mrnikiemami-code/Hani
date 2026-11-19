@@ -53,4 +53,15 @@ export type AdminReportOverview = {
   campaignRegistrations: number;
   usersTotal: number;
   usersNew: number;
+  revenueTrend: {
+    date: string;
+    currency: string;
+    count: number;
+    amount: number;
+  }[];
+  orderTrend: {
+    date: string;
+    status: string;
+    count: number;
+  }[];
 };

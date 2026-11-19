@@ -64,3 +64,11 @@
 
 - `internal-admin-operations-api-v1.openapi.yaml`: operational reports,
   support tickets, notification outbox, and advertising admin endpoints.
+
+## Internal Admin Finance
+
+- `internal-admin-finance-api-v1.openapi.yaml`: finance summary, payout,
+  refund, invoice, reconciliation, commission, and ledger reads; finance
+  settings; reconciliation runs; and CSV exports under `/internal/v1/admin`.
+- Finance exports require the `report.export` permission. Downloads are UTF-8
+  CSV with an explicit currency and ISO dates.

@@ -1,0 +1,176 @@
+openapi: 3.1.0
+info:
+  title: Hani Internal Admin Finance API - Draft v1
+  version: 1.0.0
+  description: Finance reads, settings, reconciliation runs, and CSV exports.
+servers:
+  - url: https://api.hani.ir/internal/v1
+    description: Production
+  - url: http://localhost:5099/internal/v1
+    description: Local
+tags:
+  - name: Admin.Finance
+paths:
+  /admin/finance/summary:
+    get:
+      tags: [Admin.Finance]
+      summary: Finance totals by payment, commission, and payout status/currency
+      responses:
+        '200': { description: Finance summary }
+  /admin/finance/payouts:
+    get:
+      tags: [Admin.Finance]
+      summary: List recent payouts
+      responses:
+        '200': { description: Payout rows }
+  /admin/finance/refunds:
+    get:
+      tags: [Admin.Finance]
+      summary: List recent refunds
+      responses:
+        '200': { description: Refund rows }
+  /admin/finance/invoices:
+    get:
+      tags: [Admin.Finance]
+      summary: List recent invoices
+      responses:
+        '200': { description: Invoice rows }
+  /admin/finance/reconciliations:
+    get:
+      tags: [Admin.Finance]
+      summary: List reconciliation records
+      responses:
+        '200': { description: Reconciliation rows }
+  /admin/finance/reconciliations/run:
+    post:
+      tags: [Admin.Finance]
+      summary: Run a provider reconciliation
+      description: Expected amount is derived from successful payment intents for the provider, period, and currency.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provider, periodStart, periodEnd, currency, actualAmount]
+              properties:
+                provider: { type: string, maxLength: 80 }
+                periodStart: { type: string, format: date }
+                periodEnd: { type: string, format: date }
+                currency: { type: string, minLength: 3, maxLength: 3 }
+                actualAmount: { type: number }
+      responses:
+        '201': { description: Reconciliation created }
+        '400': { description: Invalid period or currency }
+  /admin/finance/commissions:
+    get:
+      tags: [Admin.Finance]
+      summary: List commission entries
+      responses:
+        '200': { description: Commission rows }
+  /admin/finance/ledger:
+    get:
+      tags: [Admin.Finance]
+      summary: List double-entry ledger transactions
+      responses:
+        '200': { description: Ledger rows }
+  /admin/finance/settings:
+    get:
+      tags: [Admin.Finance]
+      summary: Read bank, currency, tax, and settlement settings
+      responses:
+        '200': { description: Finance settings }
+    put:
+      tags: [Admin.Finance]
+      summary: Replace finance settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinanceSettingsInput'
+      responses:
+        '200': { description: Updated finance settings }
+        '400': { description: Validation problem }
+  /admin/finance/exports/{dataset}:
+    get:
+      tags: [Admin.Finance]
+      summary: Download a finance dataset as CSV
+      description: Requires the `report.export` permission in addition to `finance.view`.
+      parameters:
+        - name: dataset
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [payments, refunds, invoices, reconciliations, commissions, payouts, ledger, tax]
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: UTF-8 CSV file
+          content:
+            text/csv:
+              schema: { type: string }
+        '400': { description: Unsupported dataset or invalid range }
+        '403': { description: Missing report.export permission }
+components:
+  schemas:
+    BankAccount:
+      type: object
+      required: [code, name, bankName, iban, currency, type, isActive]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        bankName: { type: string }
+        iban: { type: string }
+        currency: { type: string }
+        type: { type: string, enum: [Acquiring, Settlement] }
+        isActive: { type: boolean }
+    CurrencySetting:
+      type: object
+      required: [code, name, symbol, decimals, rounding, isActive]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        symbol: { type: string }
+        decimals: { type: integer, minimum: 0, maximum: 6 }
+        rounding: { type: string, enum: [Nearest, Up, Down, None] }
+        isActive: { type: boolean }
+        fxRate: { type: number, nullable: true }
+        fxSource: { type: string, nullable: true }
+        fxEffectiveDate: { type: string, format: date, nullable: true }
+    TaxRule:
+      type: object
+      required: [code, name, kind, ratePercent, inclusion, effectiveFrom, isActive]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        kind: { type: string }
+        ratePercent: { type: number, minimum: 0, maximum: 100 }
+        inclusion: { type: string, enum: [Included, Excluded, Exempt, NotApplicable] }
+        effectiveFrom: { type: string, format: date }
+        effectiveTo: { type: string, format: date, nullable: true }
+        isActive: { type: boolean }
+    SettlementPolicy:
+      type: object
+      required: [periodDays, minimumAmount, currency, dueDays]
+      properties:
+        periodDays: { type: integer, minimum: 1 }
+        minimumAmount: { type: number, minimum: 0 }
+        currency: { type: string }
+        dueDays: { type: integer, minimum: 0 }
+    FinanceSettingsInput:
+      type: object
+      required: [bankAccounts, currencies, taxRules, settlement]
+      properties:
+        bankAccounts:
+          type: array
+          items: { $ref: '#/components/schemas/BankAccount' }
+        currencies:
+          type: array
+          items: { $ref: '#/components/schemas/CurrencySetting' }
+        taxRules:
+          type: array
+          items: { $ref: '#/components/schemas/TaxRule' }
+        settlement: { $ref: '#/components/schemas/SettlementPolicy' }

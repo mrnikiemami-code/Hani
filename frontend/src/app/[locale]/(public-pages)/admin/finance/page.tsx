@@ -13,8 +13,10 @@ import type {
   AdminReconciliation,
   AdminRefund
 } from "@/features/home-experience/domain/admin-bookings";
+import type { AdminFinanceSettings } from "@/features/home-experience/domain/admin-finance-settings";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 import { PayoutAction } from "@/features/home-experience/ui/PayoutAction";
+import { RunReconciliationAction } from "@/features/home-experience/ui/RunReconciliationAction";
 
 export async function generateMetadata({
   params
@@ -42,7 +44,8 @@ export default async function AdminFinancePage({
     invoiceResult,
     reconciliationResult,
     commissionResult,
-    ledgerResult
+    ledgerResult,
+    settingsResult
   ] = await Promise.all([
     sessionGet<AdminFinance>("/internal/v1/admin/finance/summary"),
     sessionGet<AdminPayout[]>("/internal/v1/admin/finance/payouts"),
@@ -52,7 +55,8 @@ export default async function AdminFinancePage({
       "/internal/v1/admin/finance/reconciliations"
     ),
     sessionGet<AdminCommission[]>("/internal/v1/admin/finance/commissions"),
-    sessionGet<AdminLedger[]>("/internal/v1/admin/finance/ledger")
+    sessionGet<AdminLedger[]>("/internal/v1/admin/finance/ledger"),
+    sessionGet<AdminFinanceSettings>("/internal/v1/admin/finance/settings")
   ]);
 
   if (result.status === 401 || result.status === 403) {
@@ -85,6 +89,13 @@ export default async function AdminFinancePage({
   const reconciliationItems = reconciliationResult.data ?? [];
   const commissionItems = commissionResult.data ?? [];
   const ledgerItems = ledgerResult.data ?? [];
+  const activeCurrencies = (
+    settingsResult.data?.currencies ?? []
+  )
+    .filter((item) => item.isActive)
+    .map((item) => item.code);
+  const currencyOptions =
+    activeCurrencies.length > 0 ? activeCurrencies : ["IRR", "USD"];
 
   const extraTables = [
     {
@@ -245,10 +256,42 @@ export default async function AdminFinancePage({
           <span className="fs-14 text-gray-6">{t("refunds")}</span>
           <strong>{t("refundCount", { count: data.refundCount })}</strong>
         </div>
-        <div className="card-footer bg-white d-flex justify-content-end">
+        <div className="card-footer bg-white d-flex justify-content-end gap-2 flex-wrap">
+          <Link href="/admin/finance/settings" className="btn btn-light btn-sm">
+            {t("financeSettings")}
+          </Link>
+          <RunReconciliationAction currencies={currencyOptions} />
           <Link href="/admin/finance/approvals" className="btn btn-primary btn-sm">
             {t("approvals")}
           </Link>
+        </div>
+      </div>
+
+      <div className="card border-0 shadow-sm mb-4">
+        <div className="card-header">
+          <h2 className="h5 mb-0">{t("exports")}</h2>
+          <p className="fs-13 text-gray-6 mb-0">{t("exportsHint")}</p>
+        </div>
+        <div className="card-body d-flex flex-wrap gap-2">
+          {[
+            ["payments", "exportPayments"],
+            ["refunds", "exportRefunds"],
+            ["invoices", "exportInvoices"],
+            ["reconciliations", "exportReconciliations"],
+            ["commissions", "exportCommissions"],
+            ["payouts", "exportPayouts"],
+            ["ledger", "exportLedger"],
+            ["tax", "exportTax"]
+          ].map(([dataset, label]) => (
+            <a
+              key={dataset}
+              href={`/api/admin/finance/export/${dataset}`}
+              className="btn btn-light btn-sm"
+              download
+            >
+              {t(label)}
+            </a>
+          ))}
         </div>
       </div>
 

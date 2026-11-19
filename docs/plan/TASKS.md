@@ -345,3 +345,6 @@
 | H91-ADMIN-17 | Batch 2: tours admin | ? Done | tour list/create/publish, localized content, responsive UI |
 | H91-ADMIN-18 | Batch 3: booking decisions | ? Done | reservation request confirm/reject with audit, cancellation reason workflow, refund status list, order contact updates |
 | H91-ADMIN-19 | Batch 3: contracts/vouchers/history | ? Done | immutable contract snapshot, printable voucher, order audit history, responsive FA/EN/AR UI |
+| H91-ADMIN-20 | Batch 4: finance settings | ? Done | bank accounts, currencies/FX, tax rules, settlement policy persisted with audit |
+| H91-ADMIN-21 | Batch 4: reconciliation/exports | ? Done | expected-vs-actual reconciliation runs, CSV exports with report.export permission, approval history |
+| H91-ADMIN-22 | Batch 4: advanced BI trend | ? Done | daily revenue and order trend tables; cohort/visit funnel remains blocked by traffic data |

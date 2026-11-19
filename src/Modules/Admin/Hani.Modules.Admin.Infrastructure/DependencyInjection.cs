@@ -22,6 +22,8 @@ public static class DependencyInjection
             provider => provider.GetRequiredService<AdminService>());
         services.AddScoped<IAdminFinanceService>(
             provider => provider.GetRequiredService<AdminService>());
+        services.AddScoped<IAdminFinanceSettingsService>(
+            provider => provider.GetRequiredService<AdminService>());
         services.AddScoped<IAdminBookingService>(
             provider => provider.GetRequiredService<AdminService>());
         services.AddScoped<IAdminHomeSettingsService>(

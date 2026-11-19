@@ -19,16 +19,25 @@ export async function generateMetadata({
 }
 
 export default async function AdminApprovalsPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ status?: string }>;
 }) {
   const { locale } = await params;
+  const sp = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminFinance" });
   const tHome = await getTranslations({ locale, namespace: "adminHome" });
+  const statuses = ["Pending", "Approved", "Rejected", "All"] as const;
+  const status = statuses.includes(sp.status as (typeof statuses)[number])
+    ? (sp.status as (typeof statuses)[number])
+    : "Pending";
   const result = await sessionGet<AdminApproval[]>(
-    "/internal/v1/admin/approvals?status=Pending"
+    `/internal/v1/admin/approvals${
+      status === "All" ? "" : `?status=${status}`
+    }`
   );
 
   if (result.status === 401 || result.status === 403) {
@@ -62,10 +71,23 @@ export default async function AdminApprovalsPage({
     >
       <div className="card border-0 shadow-sm">
         <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-          <h2 className="h5 mb-0">{t("pendingApprovals")}</h2>
-          <Link href="/admin/finance" className="btn btn-light btn-sm">
-            {t("backToFinance")}
-          </Link>
+          <h2 className="h5 mb-0">{t("approvalTitle")}</h2>
+          <div className="d-flex flex-wrap gap-2">
+            {statuses.map((item) => (
+              <Link
+                key={item}
+                href={`/admin/finance/approvals?status=${item}`}
+                className={`btn btn-sm ${
+                  status === item ? "btn-primary" : "btn-light"
+                }`}
+              >
+                {t(`approvalStatus${item}`)}
+              </Link>
+            ))}
+            <Link href="/admin/finance" className="btn btn-light btn-sm">
+              {t("backToFinance")}
+            </Link>
+          </div>
         </div>
         <div className="card-body p-0 admin-table-wrap">
           <table className="table admin-data-table content-data-table report-table align-middle mb-0">
@@ -116,7 +138,17 @@ export default async function AdminApprovalsPage({
                     {approval.requestedReason}
                   </td>
                   <td className="text-end">
-                    <ApprovalActions approvalId={approval.id} />
+                    {approval.status === "Pending" ? (
+                      <ApprovalActions approvalId={approval.id} />
+                    ) : (
+                      <span className="fs-12 text-gray-6">
+                        {approval.decidedAt
+                          ? formatIsoInstant(approval.decidedAt, locale, {
+                              dateStyle: "medium"
+                            })
+                          : approval.failureReason ?? "?"}
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}

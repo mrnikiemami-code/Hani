@@ -23,7 +23,22 @@ public sealed record AdminReportOverviewDto(
     IReadOnlyList<AdminCampaignReportDto> Campaigns,
     int CampaignRegistrations,
     int UsersTotal,
-    int UsersNew);
+    int UsersNew,
+    IReadOnlyList<AdminDailyRevenueReportDto> RevenueTrend,
+    IReadOnlyList<AdminDailyOrderReportDto> OrderTrend);
+
+/// <summary>Daily successful revenue grouped by date and currency.</summary>
+public sealed record AdminDailyRevenueReportDto(
+    DateOnly Date,
+    string Currency,
+    int Count,
+    decimal Amount);
+
+/// <summary>Daily order count grouped by date and status.</summary>
+public sealed record AdminDailyOrderReportDto(
+    DateOnly Date,
+    string Status,
+    int Count);
 
 /// <summary>Amount grouped by currency.</summary>
 public sealed record AdminMoneyReportDto(string Currency, int Count, decimal Amount);

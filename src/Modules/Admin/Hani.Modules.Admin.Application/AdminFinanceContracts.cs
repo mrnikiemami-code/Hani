@@ -1,3 +1,5 @@
+using Hani.BuildingBlocks.Application;
+
 namespace Hani.Modules.Admin.Application;
 
 /// <summary>Admin finance summary.</summary>
@@ -116,4 +118,24 @@ public interface IAdminFinanceService
     Task<IReadOnlyList<AdminCommissionDto>> ListCommissionsAsync(CancellationToken cancellationToken);
     /// <summary>Lists ledger transactions.</summary>
     Task<IReadOnlyList<AdminLedgerDto>> ListLedgerAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Creates a provider reconciliation by deriving the expected amount from
+    /// successful payment intents in the period, then comparing it to the
+    /// provider-reported actual amount.
+    /// </summary>
+    Task<Result<AdminReconciliationDto>> CreateReconciliationAsync(
+        string provider,
+        DateOnly periodStart,
+        DateOnly periodEnd,
+        string currency,
+        decimal actualAmount,
+        CancellationToken cancellationToken);
+
+    /// <summary>Builds a CSV export for a supported finance dataset.</summary>
+    Task<Result<AdminExportFileDto>> ExportAsync(
+        string dataset,
+        DateOnly? from,
+        DateOnly? to,
+        CancellationToken cancellationToken);
 }

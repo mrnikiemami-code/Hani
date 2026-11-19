@@ -27,6 +27,8 @@ public static class AdminPermissions
     public const string IntegrationView = "integration.view";
     /// <summary>Reports access.</summary>
     public const string ReportView = "report.view";
+    /// <summary>Sensitive report and finance data export.</summary>
+    public const string ReportExport = "report.export";
     /// <summary>Settings access.</summary>
     public const string SettingsView = "settings.view";
     /// <summary>Audit log access.</summary>
@@ -49,6 +51,7 @@ public static class AdminPermissions
         SupportView,
         IntegrationView,
         ReportView,
+        ReportExport,
         SettingsView,
         AuditView,
         RoleManage

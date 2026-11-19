@@ -31,7 +31,7 @@ read models and operations. It exists so HTTP endpoint files never inject a
 `IContentEntryService`, `IAdminCatalogService`, `IAdminGovernanceService`,
 `IAdminChannelService`, `IAdminSupplierService`, `IAdminRoleService`,
 `IAdminPlatformSettingsService`, `IAdminTourService`, `IAdminFlightService`,
-`IAdminVisaService`, `IAdminAuditWriter`.
+`IAdminVisaService`, `IAdminFinanceSettingsService`, `IAdminAuditWriter`.
 
 ## Booking administration
 
@@ -40,3 +40,20 @@ cancellation and contact updates, contract/voucher read models, order audit
 history, and per-order refund reads. Commands that mutate booking state go
 through Booking application commands; only projections use the Booking,
 Identity, and Payments DbContexts.
+
+
+## Finance administration
+
+`IAdminFinanceService` provides finance reads, expected-vs-actual
+reconciliation runs, and CSV exports. The expected amount of a reconciliation
+is derived from successful payment intents for the selected provider, period,
+and currency; the actual amount is entered by an administrator.
+
+`IAdminFinanceSettingsService` persists bank accounts, active currencies,
+rounding and FX metadata, tax/duty rules with effective dates, and the
+settlement policy under the `finance` key in `identity.platform_settings`.
+Every update is audited with before/after JSON.
+
+Exports are available for payments, refunds, invoices, reconciliations,
+commissions, payouts, ledger, and tax. The export endpoints require the
+`report.export` permission in addition to `finance.view`.
