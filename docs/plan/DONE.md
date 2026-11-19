@@ -326,3 +326,4 @@
 | `70f0f04` | Batch 2 tours: admin tour list/create/publish, localized content, cover/destination fields, responsive UI |
 | `e2fc0af` | Batch 2 completion: flight routes/references/offers admin, visa countries/types, visa application status, product overview/nav live |
 | `556bbbb` | Batch 3 booking workflow: reservation confirm/reject with audit, real cancellation reason, order contact update, contract/voucher pages, order history and refunds, responsive FA/EN/AR UI |
+| `4074499` | Fix: admin order detail exposes current order contact while the issued contract snapshot stays immutable |
