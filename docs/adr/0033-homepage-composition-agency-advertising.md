@@ -1,6 +1,6 @@
 # ADR-0033: Homepage Composition, Agency Contracts, and Paid Placements
 
-- Status: Proposed
+- Status: Accepted (2026-11-20 — paid placements attach to `AgencyOffer`)
 - Date: 2026-11-17
 - Gate: 9.1 / commercial homepage
 
@@ -50,6 +50,11 @@ from the organic layer.
    and pricing model. `AdCreative` contains image/mobile image/title/target.
    `AdEvent` records impression/click. Sponsored placements are labelled and
    do not mutate the organic result order.
+
+   A paid/sponsored placement attaches to **`AgencyOffer`**, not
+   `TourProduct`. The offer owns the selling agency, price, and availability,
+   so payment, approval, refund, and reporting stay tied to the commercial
+   contract. The public renderer joins the offer to its product for display.
 
 6. **Billing is part of the placement lifecycle.**
    A campaign is prepaid or invoiced through the existing payments/settlement

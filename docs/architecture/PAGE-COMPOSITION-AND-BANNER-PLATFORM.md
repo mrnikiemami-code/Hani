@@ -145,6 +145,12 @@ AdSlot.Priority
 tracks impressions/clicks. Editorial banners can use the same placement model
 with `Label = null`.
 
+**Placement ownership (decided 2026-11-20):** paid and sponsored placements
+attach to `AgencyOffer`, not `TourProduct`. The offer owns price, availability,
+and the selling agency, so billing, approval, refund, and reporting stay tied
+to the commercial contract. Organic ranking remains unchanged; sponsored cards
+are selected by a separate placement query and always carry a visible label.
+
 Convention: `PageKey.SlotKey` is stable and used by both admin and frontend.
 `home.hero`, `home.between-tours`, `visa.detail.sidebar`, etc.
 
@@ -335,7 +341,16 @@ Start with Phase 0 + Phase 1, then complete home in Phase 2:
   - generic composed section renderer (`CompositionSection`)
   - composed hero title
   - generic sections appended after known home sections
+- Phase 2B (2026-11-20) home composer + curation:
+  - inline banner / text+image / CTA sections stored in home settings and
+    rendered on the public home
+  - car/cruise/bus menu defaults in the admin menu editor
+  - catalog-wide tour picker with server-side search, filters, sort,
+    pagination, cross-page selection, selection tray, and saved collections
+  - collection storage is still home-settings JSON; a dedicated curation API
+    is the next backend step
 - Still pending:
+  - backend home feed honoring selected ids, filter mode, and exclusions
   - full section content adapters for all home sections
   - banner placement UI
   - global chrome/static/listing/detail page migration

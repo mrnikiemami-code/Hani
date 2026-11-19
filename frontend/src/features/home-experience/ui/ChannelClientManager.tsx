@@ -191,7 +191,9 @@ export function ChannelClientManager({
                   <td>{client.status}</td>
                   <td className="d-none d-md-table-cell">
                     {client.lastUsedAt
-                      ? new Date(client.lastUsedAt).toLocaleDateString()
+                      ? formatIsoInstant(client.lastUsedAt, locale, {
+                          dateStyle: "medium"
+                        })
                       : "—"}
                   </td>
                   <td className="text-end">

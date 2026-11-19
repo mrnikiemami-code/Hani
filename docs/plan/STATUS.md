@@ -749,8 +749,7 @@ Phases:
 6. Detail pages and advertising
 7. Governance and rollout
 
-No implementation has started; Phase 0 and Phase 1 are the recommended first
-slice.
+Phase 1 is implemented and Phase 2 is in progress; see the status sections below.
 
 ## Page Composition Phase 1 foundation (2026-11-20)
 
@@ -782,11 +781,17 @@ Verification: backend build, frontend build, admin save/publish smoke test in FA
 
 - `/admin/home` is now a dedicated homepage manager instead of a raw settings table.
 - Header menu editor with top-level items and submenus.
-- Hero manager with 1920?900 requirement, gallery picker, title/subtitle/CTA/overlay.
+- Hero manager with 1920×900 requirement, gallery picker, title/subtitle/CTA/overlay.
 - Section list for popular tours, latest domestic/foreign tours, popular visas,
   origin cities, travelogues, and magazine with per-section rules:
   newest, rating, sponsored, manual selection, or custom rule.
-- Manual selection uses real home-feed items with thumbnails.
-- Banners/content blocks link to the page composition builder.
-- Home settings JSON persists menu, hero fields, and section rules.
-- Public header/menu and public rule-based rendering remain to be connected.
+- Manual tour selection opens a catalog-wide picker with server-side search,
+  scope/price/type filters, sorting, pagination, cross-page selection, a
+  selection tray, and saved collections.
+- Inline banner / text+image / CTA sections can be added, edited, reordered,
+  enabled/disabled, and placed after a chosen fixed home section.
+- Header menu defaults now include car, cruise, and bus services.
+- Home settings JSON persists menu, hero fields, section rules, inline
+  sections, and tour collections.
+- Public header/menu, rule-based public rendering, filter/exclusion modes,
+  and server-side collection storage remain to be connected.

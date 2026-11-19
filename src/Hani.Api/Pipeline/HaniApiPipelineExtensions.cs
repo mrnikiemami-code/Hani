@@ -1,6 +1,6 @@
 using Hani.Api.Endpoints;
-using Hani.Api.Realtime;
 using Hani.Api.Middleware;
+using Hani.Api.Realtime;
 using Hani.BuildingBlocks.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

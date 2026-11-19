@@ -1,11 +1,11 @@
 using Hani.Modules.Content.Application.Abstractions;
 using Hani.Modules.Content.Application.Media;
-using Hani.Modules.Content.Application.Support;
-using Hani.Modules.Content.Application.Queries.AdminAds;
 using Hani.Modules.Content.Application.PageComposition;
+using Hani.Modules.Content.Application.Queries.AdminAds;
+using Hani.Modules.Content.Application.Support;
 using Hani.Modules.Content.Infrastructure.Notifications;
-using Hani.Modules.Content.Infrastructure.ReadModels;
 using Hani.Modules.Content.Infrastructure.PageComposition;
+using Hani.Modules.Content.Infrastructure.ReadModels;
 using Hani.Modules.Content.Infrastructure.Repositories;
 using Hani.Modules.Content.Infrastructure.Storage;
 using Hani.Modules.Content.Infrastructure.Support;
@@ -38,36 +38,36 @@ public static class DependencyInjection
         if (string.Equals(mode, "Http", StringComparison.OrdinalIgnoreCase))
         {
             services.AddScoped<ICustomerSupportService, CustomerSupportService>();
-        services.AddScoped<IInboundSupportEmailService, InboundSupportEmailService>();
-        services.AddScoped<ISupportTicketAccessService, SupportTicketAccessService>();
-        services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
-        services.AddHostedService<SupportAttachmentRetentionService>();
-        if (configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
-        {
-            services.AddSingleton<ISupportAttachmentScanner, ClamAvSupportAttachmentScanner>();
-        }
-        else
-        {
-            services.AddSingleton<ISupportAttachmentScanner, NullSupportAttachmentScanner>();
-        }
-        services.AddScoped<INotificationSender, HttpNotificationSender>();
+            services.AddScoped<IInboundSupportEmailService, InboundSupportEmailService>();
+            services.AddScoped<ISupportTicketAccessService, SupportTicketAccessService>();
+            services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
+            services.AddHostedService<SupportAttachmentRetentionService>();
+            if (configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
+            {
+                services.AddSingleton<ISupportAttachmentScanner, ClamAvSupportAttachmentScanner>();
+            }
+            else
+            {
+                services.AddSingleton<ISupportAttachmentScanner, NullSupportAttachmentScanner>();
+            }
+            services.AddScoped<INotificationSender, HttpNotificationSender>();
         }
         else
         {
             services.AddScoped<ICustomerSupportService, CustomerSupportService>();
-        services.AddScoped<IInboundSupportEmailService, InboundSupportEmailService>();
-        services.AddScoped<ISupportTicketAccessService, SupportTicketAccessService>();
-        services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
-        services.AddHostedService<SupportAttachmentRetentionService>();
-        if (configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
-        {
-            services.AddSingleton<ISupportAttachmentScanner, ClamAvSupportAttachmentScanner>();
-        }
-        else
-        {
-            services.AddSingleton<ISupportAttachmentScanner, NullSupportAttachmentScanner>();
-        }
-        services.AddScoped<INotificationSender, LoggingNotificationSender>();
+            services.AddScoped<IInboundSupportEmailService, InboundSupportEmailService>();
+            services.AddScoped<ISupportTicketAccessService, SupportTicketAccessService>();
+            services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
+            services.AddHostedService<SupportAttachmentRetentionService>();
+            if (configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
+            {
+                services.AddSingleton<ISupportAttachmentScanner, ClamAvSupportAttachmentScanner>();
+            }
+            else
+            {
+                services.AddSingleton<ISupportAttachmentScanner, NullSupportAttachmentScanner>();
+            }
+            services.AddScoped<INotificationSender, LoggingNotificationSender>();
         }
 
         services.AddHostedService<NotificationDispatcher>();

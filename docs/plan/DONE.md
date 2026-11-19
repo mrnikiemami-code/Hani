@@ -408,3 +408,17 @@
 | D-PC-08 | Admin homepage manager | `AdminHomeManager`, `/admin/home` |
 | D-PC-09 | Menu/hero/section-rule persistence | `HomePageSettings` extended |
 | D-PC-10 | Gallery picker and size guidance | media picker modal |
+
+## Page Composition Phase 2B — Home composer & tour picker (2026-11-20)
+
+| # | Item | Artifact |
+|---|---|---|
+| D-PC-11 | Inline banner/content/CTA sections | `AdminHomeManager`, `PageSection[]` in home settings |
+| D-PC-12 | Inline section public rendering | `HomeExperienceRenderer` |
+| D-PC-13 | Car/cruise/bus menu defaults | `DEFAULT_MENU`, admin home menu editor |
+| D-PC-14 | Catalog-wide tour picker | `TourPickerDialog` |
+| D-PC-15 | Server-side search/filter/pagination | `/market/v1/search` via `searchTours` |
+| D-PC-16 | Cross-page selection + tray | `TourPickerDialog` |
+| D-PC-17 | Saved tour collections (draft JSON) | `HomePageSettings.tourCollections` |
+| D-PC-18 | FA/EN/AR picker copy | `messages/*.json` |
+| D-PC-19 | Date guard fix for channel client table | `ChannelClientManager` uses `formatIsoInstant` |

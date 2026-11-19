@@ -466,7 +466,11 @@
 
 | PC-13 | Admin homepage manager redesign | Done | menu/hero/sections UI |
 | PC-14 | Section display rules | Done | newest/rating/ad/manual/custom |
-| PC-15 | Gallery picker for hero | Done | media library, 1920?900 spec |
+| PC-15 | Gallery picker for hero | Done | media library, 1920×900 spec |
 | PC-16 | Connect public header menu | Next | render saved menu |
 | PC-17 | Apply section rules in public home | Next | algorithm and manual ids |
-| PC-18 | Banner/content extras on admin home | Next | inline banner builder |
+| PC-18 | Banner/content extras on admin home | Done | inline add/edit/reorder/delete + placement anchor |
+| PC-19 | Catalog-wide tour picker | Done | server search/filter/pagination, cross-page selection, tray |
+| PC-20 | Saved tour collections | Partial | home-settings JSON; dedicated curation API next |
+| PC-21 | Filter mode + exclusions for curated sections | Next | stored filter query and excluded ids |
+| PC-22 | Ad placement ownership | Decided | attach to `AgencyOffer` (ADR-0033) |

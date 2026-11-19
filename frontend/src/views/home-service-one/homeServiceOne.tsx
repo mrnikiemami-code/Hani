@@ -19,6 +19,7 @@ import { HaniScopeTourSection } from "@/features/home-experience/ui/HaniScopeTou
 import { HaniOriginCities } from "@/features/home-experience/ui/HaniOriginCities";
 import { HaniRecommendedVisas } from "@/features/home-experience/ui/HaniRecommendedVisas";
 import { HaniLatestContent } from "@/features/home-experience/ui/HaniLatestContent";
+import { CompositionSection } from "@/features/home-experience/ui/CompositionSection";
 import BookingDropdown from "../../components/booking-dropdown/bookingDropdown";
 import { parseTime } from '../../utils/dateFormat'
 import CircularText from '../../components/circular-text/circularText'
@@ -272,6 +273,16 @@ const guidePassenger =
   };
 
   const sections = orderedHomeSections(homeSettings);
+  const enabledSectionIds = new Set(sections.map((section) => section.id));
+  const extraSections = (homeSettings.extraSections ?? [])
+    .filter((section) => section.enabled)
+    .sort((left, right) => left.order - right.order);
+  const extraAnchor = (section: (typeof extraSections)[number]) =>
+    section.placementAfter && enabledSectionIds.has(section.placementAfter)
+      ? section.placementAfter
+      : null;
+  const extrasAfter = (anchor: HomeSectionId | null) =>
+    extraSections.filter((section) => extraAnchor(section) === anchor);
 
   return (
     <>
@@ -2895,7 +2906,15 @@ const guidePassenger =
       </section>
       {/* /Hero Section */}
       {sections.map((section) => (
-        <Fragment key={section.id}>{renderSection(section.id)}</Fragment>
+        <Fragment key={section.id}>
+          {renderSection(section.id)}
+          {extrasAfter(section.id).map((extra) => (
+            <CompositionSection key={extra.id} section={extra} />
+          ))}
+        </Fragment>
+      ))}
+      {extrasAfter(null).map((extra) => (
+        <CompositionSection key={extra.id} section={extra} />
       ))}
       <FooterSection />
 

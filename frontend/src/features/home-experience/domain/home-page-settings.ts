@@ -1,3 +1,5 @@
+import type { PageSection } from "./page-composition";
+
 export const HOME_SECTION_IDS = [
   "featured",
   "latestDomestic",
@@ -29,11 +31,31 @@ export type HomeSectionRule = {
   selectedIds: string[];
 };
 
+/**
+ * Composed home block plus its placement anchor. `placementAfter` keeps
+ * banners and content blocks between fixed home sections instead of forcing
+ * them to the bottom of the page.
+ */
+export type HomeExtraSection = PageSection & {
+  placementAfter?: HomeSectionId | null;
+};
+
 export type HomeMenuItem = {
   id: string;
   label: string;
   href: string;
   children: HomeMenuItem[];
+};
+
+/**
+ * Reusable named set of tour ids saved by an editor. Collections are stored
+ * inside home settings until the dedicated curation API lands.
+ */
+export type TourCollection = {
+  id: string;
+  name: string;
+  ids: string[];
+  updatedAt?: string;
 };
 
 export type HomePageSettings = {
@@ -45,6 +67,8 @@ export type HomePageSettings = {
   heroOverlay?: number;
   menu?: HomeMenuItem[];
   sectionRules?: Partial<Record<HomeSectionId, HomeSectionRule>>;
+  extraSections?: HomeExtraSection[];
+  tourCollections?: TourCollection[];
   sections: HomeSectionSetting[];
 };
 
@@ -105,6 +129,11 @@ export function normalizeHomePageSettings(
     heroOverlay: input?.heroOverlay ?? 30,
     menu: input?.menu ?? [],
     sectionRules: input?.sectionRules ?? {},
+    extraSections: (input?.extraSections ?? []).map((section) => ({
+      ...section,
+      placementAfter: section.placementAfter ?? null
+    })),
+    tourCollections: input?.tourCollections ?? [],
     sections
   };
 }

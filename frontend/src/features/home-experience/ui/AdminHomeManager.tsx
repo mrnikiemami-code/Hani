@@ -8,12 +8,15 @@ import { useMessageBox } from "@/components/hani/message-provider";
 import type { HomeFeed } from "../domain/home-feed";
 import type { MediaAsset } from "../domain/media";
 import {
+  type HomeExtraSection,
   type HomeMenuItem,
   type HomePageSettings,
   type HomeSectionId,
-  type HomeSectionRule
+  type HomeSectionRule,
+  type TourCollection
 } from "../domain/home-page-settings";
 import { saveHomePageSettings } from "../application/save-home-settings";
+import { TourPickerDialog } from "./TourPickerDialog";
 
 const SECTION_KEYS: Record<HomeSectionId, string> = {
   featured: "sectionFeatured",
@@ -58,6 +61,9 @@ const DEFAULT_MENU: HomeMenuItem[] = [
   { id: "visa", label: "ویزا", href: "/visa", children: [] },
   { id: "hotels", label: "هتل‌ها", href: "/hotels", children: [] },
   { id: "flights", label: "پروازها", href: "/flights", children: [] },
+  { id: "car", label: "خودرو", href: "/car/car-grid", children: [] },
+  { id: "cruise", label: "کروز", href: "/cruise/cruise-grid", children: [] },
+  { id: "bus", label: "اتوبوس", href: "/bus/bus-list", children: [] },
   { id: "blog", label: "مجله", href: "/blog", children: [] },
   { id: "contact", label: "تماس", href: "/contact", children: [] }
 ];
@@ -127,14 +133,32 @@ export function AdminHomeManager({
   const messages = useMessageBox();
   const router = useRouter();
   const [settings, setSettings] = useState(initialSettings);
-  const [menu, setMenu] = useState<HomeMenuItem[]>(
-    initialSettings.menu?.length ? initialSettings.menu : DEFAULT_MENU
-  );
+  const [menu, setMenu] = useState<HomeMenuItem[]>(() => {
+    const current = initialSettings.menu?.length
+      ? initialSettings.menu
+      : DEFAULT_MENU;
+    const ids = new Set(current.map((item) => item.id));
+    return [
+      ...current,
+      ...DEFAULT_MENU.filter(
+        (item) =>
+          ["car", "cruise", "bus"].includes(item.id) && !ids.has(item.id)
+      )
+    ];
+  });
   const [rules, setRules] = useState<Partial<Record<HomeSectionId, HomeSectionRule>>>(
     initialSettings.sectionRules ?? {}
   );
   const [expanded, setExpanded] = useState<HomeSectionId | null>(null);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryTarget, setGalleryTarget] = useState<string>("hero");
+  const [extraSections, setExtraSections] = useState<HomeExtraSection[]>(
+    initialSettings.extraSections ?? []
+  );
+  const [tourCollections, setTourCollections] = useState<TourCollection[]>(
+    initialSettings.tourCollections ?? []
+  );
+  const [pickerSection, setPickerSection] = useState<HomeSectionId | null>(null);
   const [pending, startTransition] = useTransition();
 
   const sections = useMemo(
@@ -207,6 +231,74 @@ export function AdminHomeManager({
         }))
     );
 
+  const updateExtraSection = (id: string, patch: Partial<HomeExtraSection>) =>
+    setExtraSections((current) =>
+      current.map((section) =>
+        section.id === id ? { ...section, ...patch } : section
+      )
+    );
+
+  const addExtraSection = (type: HomeExtraSection["type"]) =>
+    setExtraSections((current) => [
+      ...current,
+      {
+        id: `extra-${Date.now()}`,
+        type,
+        enabled: true,
+        order: (current.length + 1) * 10,
+        title: type === "banner" ? "بنر جدید" : "بخش جدید",
+        subtitle: "",
+        body: "",
+        mediaId: null,
+        fallbackImageUrl: "",
+        ctaLabel: "",
+        ctaHref: "",
+        sourceMode: "auto",
+        sourceIds: [],
+        placementAfter: null
+      }
+    ]);
+
+  const removeExtraSection = (id: string) =>
+    setExtraSections((current) =>
+      current
+        .filter((section) => section.id !== id)
+        .map((section, index) => ({ ...section, order: (index + 1) * 10 }))
+    );
+
+  const moveExtraSection = (index: number, direction: -1 | 1) =>
+    setExtraSections((current) => {
+      const next = [...current];
+      const target = index + direction;
+      if (target < 0 || target >= next.length) return current;
+      [next[index], next[target]] = [next[target], next[index]];
+      return next.map((section, order) => ({
+        ...section,
+        order: (order + 1) * 10
+      }));
+    });
+
+  const applyTourSelection = (section: HomeSectionId, ids: string[]) => {
+    updateRule(section, { selectedIds: ids, algorithm: "manual" });
+    setPickerSection(null);
+  };
+
+  const saveTourCollection = (name: string, ids: string[]) =>
+    setTourCollections((current) => [
+      ...current.filter((collection) => collection.name !== name),
+      {
+        id: `collection-${Date.now()}`,
+        name,
+        ids: Array.from(new Set(ids)),
+        updatedAt: new Date().toISOString()
+      }
+    ]);
+
+  const deleteTourCollection = (id: string) =>
+    setTourCollections((current) =>
+      current.filter((collection) => collection.id !== id)
+    );
+
   const addMenu = () =>
     setMenu((current) => [
       ...current,
@@ -243,7 +335,9 @@ export function AdminHomeManager({
       const result = await saveHomePageSettings(locale, {
         ...settings,
         menu,
-        sectionRules: rules
+        sectionRules: rules,
+        extraSections,
+        tourCollections
       });
       if (result.ok) {
         messages.toast({ kind: "success", message: t("saved") });
@@ -405,7 +499,10 @@ export function AdminHomeManager({
                   <button
                     type="button"
                     className="btn btn-light w-100 mt-3"
-                    onClick={() => setGalleryOpen(true)}
+                    onClick={() => {
+                      setGalleryTarget("hero");
+                      setGalleryOpen(true);
+                    }}
                   >
                     <i className="isax isax-gallery me-2" />
                     {t("chooseGallery")}
@@ -627,49 +724,72 @@ export function AdminHomeManager({
                               </p>
                             </div>
                           </div>
-                          {rule.algorithm === "manual" && items.length > 0 ? (
-                            <div className="row g-2 mt-2">
-                              {items.map((item) => (
-                                <div className="col-md-6" key={item.id}>
-                                  <label className="border rounded p-2 d-flex gap-2 align-items-center w-100">
-                                    <input
-                                      type="checkbox"
-                                      className="form-check-input mt-0"
-                                      checked={rule.selectedIds.includes(item.id)}
-                                      onChange={(event) =>
-                                        updateRule(section.id, {
-                                          selectedIds: event.target.checked
-                                            ? [...rule.selectedIds, item.id]
-                                            : rule.selectedIds.filter(
-                                                (id) => id !== item.id
-                                              )
-                                        })
-                                      }
-                                    />
-                                    {item.image ? (
-                                      <img
-                                        src={item.image}
-                                        alt=""
-                                        width={42}
-                                        height={32}
-                                        className="rounded object-fit-cover"
-                                      />
-                                    ) : null}
-                                    <span className="fs-13 text-truncate">
-                                      {item.title}
+                          {rule.algorithm === "manual" ? (
+                            <div className="mt-3">
+                              {["featured", "latestDomestic", "latestForeign"].includes(section.id) ? (
+                                <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 border rounded p-3">
+                                  <div>
+                                    <strong className="d-block fs-14">
+                                      {t("selectedTours", { count: rule.selectedIds.length })}
+                                    </strong>
+                                    <span className="fs-12 text-gray-6">
+                                      {t("pickerHint")}
                                     </span>
-                                  </label>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() => setPickerSection(section.id)}
+                                  >
+                                    <i className="isax isax-search-normal me-1" />
+                                    {t("openTourPicker")}
+                                  </button>
                                 </div>
-                              ))}
+                              ) : items.length > 0 ? (
+                                <div className="row g-2">
+                                  {items.map((item) => (
+                                    <div className="col-md-6" key={item.id}>
+                                      <label className="border rounded p-2 d-flex gap-2 align-items-center w-100">
+                                        <input
+                                          type="checkbox"
+                                          className="form-check-input mt-0"
+                                          checked={rule.selectedIds.includes(item.id)}
+                                          onChange={(event) =>
+                                            updateRule(section.id, {
+                                              selectedIds: event.target.checked
+                                                ? [...rule.selectedIds, item.id]
+                                                : rule.selectedIds.filter(
+                                                    (id) => id !== item.id
+                                                  )
+                                            })
+                                          }
+                                        />
+                                        {item.image ? (
+                                          <img
+                                            src={item.image}
+                                            alt=""
+                                            width={42}
+                                            height={32}
+                                            className="rounded object-fit-cover"
+                                          />
+                                        ) : null}
+                                        <span className="fs-13 text-truncate">
+                                          {item.title}
+                                        </span>
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="fs-13 text-gray-6 mb-0">
+                                  {section.id === "travelogues"
+                                    ? t("traveloguesEmpty")
+                                    : section.id === "magazine"
+                                      ? t("articlesEmpty")
+                                      : t("noItems")}
+                                </p>
+                              )}
                             </div>
-                          ) : rule.algorithm === "manual" ? (
-                            <p className="fs-13 text-gray-6 mt-2 mb-0">
-                              {section.id === "travelogues"
-                                ? t("traveloguesEmpty")
-                                : section.id === "magazine"
-                                  ? t("articlesEmpty")
-                                  : t("noItems")}
-                            </p>
                           ) : null}
                         </div>
                       ) : null}
@@ -681,18 +801,99 @@ export function AdminHomeManager({
           </div>
 
           <div className="card border-0 shadow-sm mt-4">
-            <div className="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
               <div>
                 <h2 className="h5 mb-1">{t("extrasTitle")}</h2>
                 <p className="fs-13 text-gray-6 mb-0">{t("extrasHint")}</p>
               </div>
-              <Link
-                href="/admin/content/pages/home"
-                className="btn btn-light"
-              >
-                <i className="isax isax-add me-1" />
-                {t("extrasAction")}
-              </Link>
+              <div className="d-flex gap-2 flex-wrap">
+                <button type="button" className="btn btn-light btn-sm" onClick={() => addExtraSection("banner")}>
+                  {t("addBanner")}
+                </button>
+                <button type="button" className="btn btn-light btn-sm" onClick={() => addExtraSection("richText")}>
+                  {t("addContent")}
+                </button>
+                <button type="button" className="btn btn-light btn-sm" onClick={() => addExtraSection("cta")}>
+                  {t("addCta")}
+                </button>
+              </div>
+            </div>
+            <div className="card-body">
+              {extraSections.length === 0 ? (
+                <p className="fs-13 text-gray-6 mb-0">{t("extrasEmpty")}</p>
+              ) : (
+                <div className="d-flex flex-column gap-3">
+                  {extraSections.map((section, index) => (
+                    <div className="border rounded p-3" key={section.id}>
+                      <div className="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <span className="badge bg-light text-gray-9">{section.type}</span>
+                        <div className="d-flex gap-1">
+                          <button type="button" className="btn btn-light btn-sm" aria-label={t("moveUp")} disabled={index === 0} onClick={() => moveExtraSection(index, -1)}><i className="isax isax-arrow-up" /></button>
+                          <button type="button" className="btn btn-light btn-sm" aria-label={t("moveDown")} disabled={index === extraSections.length - 1} onClick={() => moveExtraSection(index, 1)}><i className="isax isax-arrow-down" /></button>
+                          <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => removeExtraSection(section.id)}>{t("remove")}</button>
+                        </div>
+                      </div>
+                      <div className="row g-2">
+                        <div className="col-md-5">
+                          <input className="form-control" value={section.title} placeholder={t("fieldTitle")} onChange={(event) => updateExtraSection(section.id, { title: event.target.value })} />
+                        </div>
+                        <div className="col-md-5">
+                          <input className="form-control" value={section.fallbackImageUrl} placeholder={t("imageUrl")} dir="ltr" onChange={(event) => updateExtraSection(section.id, { fallbackImageUrl: event.target.value })} />
+                        </div>
+                        <div className="col-md-2">
+                          <button type="button" className="btn btn-light w-100" onClick={() => { setGalleryTarget(section.id); setGalleryOpen(true); }}>{t("gallery")}</button>
+                        </div>
+                        <div className="col-12">
+                          <textarea className="form-control" rows={2} value={section.body} placeholder={t("body")} onChange={(event) => updateExtraSection(section.id, { body: event.target.value })} />
+                        </div>
+                        <div className="col-md-6">
+                          <input className="form-control" value={section.ctaLabel} placeholder={t("ctaLabel")} onChange={(event) => updateExtraSection(section.id, { ctaLabel: event.target.value })} />
+                        </div>
+                        <div className="col-md-6">
+                          <input className="form-control" dir="ltr" value={section.ctaHref} placeholder={t("ctaHref")} onChange={(event) => updateExtraSection(section.id, { ctaHref: event.target.value })} />
+                        </div>
+                        <div className="col-md-6">
+                          <label className="form-label fs-12 text-gray-6">{t("placement")}</label>
+                          <select
+                            className="form-select"
+                            value={section.placementAfter ?? ""}
+                            onChange={(event) =>
+                              updateExtraSection(section.id, {
+                                placementAfter: (event.target.value || null) as HomeSectionId | null
+                              })
+                            }
+                          >
+                            <option value="">{t("placementEnd")}</option>
+                            {sections.map((known) => (
+                              <option key={known.id} value={known.id}>
+                                {t("placementAfter")} {t(SECTION_KEYS[known.id])}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="col-md-6 d-flex align-items-end">
+                          <label className="form-check mb-2">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              checked={section.enabled}
+                              onChange={(event) =>
+                                updateExtraSection(section.id, { enabled: event.target.checked })
+                              }
+                            />
+                            <span className="form-check-label fs-13">{t("visible")}</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="mt-3">
+                <Link href="/admin/content/pages/home" className="btn btn-light btn-sm">
+                  {t("extrasAction")}
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -734,6 +935,25 @@ export function AdminHomeManager({
         </div>
       </div>
 
+      {pickerSection ? (
+        <TourPickerDialog
+          locale={locale}
+          scope={
+            pickerSection === "latestDomestic"
+              ? "Domestic"
+              : pickerSection === "latestForeign"
+                ? "Foreign"
+                : undefined
+          }
+          initialSelectedIds={ruleFor(pickerSection).selectedIds}
+          collections={tourCollections}
+          onSaveCollection={saveTourCollection}
+          onDeleteCollection={deleteTourCollection}
+          onClose={() => setPickerSection(null)}
+          onApply={(ids) => applyTourSelection(pickerSection, ids)}
+        />
+      ) : null}
+
       {galleryOpen ? (
         <div className="hani-date-modal" role="dialog" aria-modal="true">
           <button
@@ -760,7 +980,14 @@ export function AdminHomeManager({
                     type="button"
                     className="border rounded p-2 w-100 text-start"
                     onClick={() => {
-                      setHero("heroImageUrl", asset.url);
+                      if (galleryTarget === "hero") {
+                        setHero("heroImageUrl", asset.url);
+                      } else {
+                        updateExtraSection(galleryTarget, {
+                          mediaId: asset.id,
+                          fallbackImageUrl: asset.url
+                        });
+                      }
                       setGalleryOpen(false);
                     }}
                   >
