@@ -1,3 +1,4 @@
+using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Admin.Application;
 using Hani.Modules.Catalog.Application.Commands.CreateHotel;
 using Hani.Modules.Catalog.Domain.Hotels;
@@ -19,6 +20,10 @@ public static class AdminCatalogEndpoints
         group.MapGet("/hotels", ListHotelsAsync)
             .WithName("Internal.ListAdminHotels")
             .Produces<PagedAdminHotelsResponse>();
+
+        group.MapPost("/hotels", CreateHotelAsync)
+            .WithName("Internal.CreateAdminHotel")
+            .Produces<HotelDto>(StatusCodes.Status201Created);
 
         group.MapGet("/hotels/{id:guid}", GetHotelAsync)
             .WithName("Internal.GetAdminHotel")
@@ -48,6 +53,32 @@ public static class AdminCatalogEndpoints
             q,
             locale,
             cancellationToken));
+
+    private static async Task<IResult> CreateHotelAsync(
+        CreateHotelRequest request,
+        HttpContext context,
+        IAdminCatalogService catalog,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await catalog.CreateAsync(ToInput(request), cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.hotel.created",
+            "Hotel",
+            result.Value!.HotelId.ToString(),
+            "Hotel created from the admin panel",
+            after: new { request.Slug, request.Stars, request.Status },
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/catalog/hotels/{result.Value.HotelId}",
+            result.Value);
+    }
 
     private static async Task<IResult> GetHotelAsync(
         Guid id,

@@ -1,13 +1,17 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMessageBox } from "@/components/hani/message-provider";
 import type {
   AdminHotelDetail,
   AdminHotelImage
 } from "../domain/admin-hotel-detail";
-import { updateAdminHotel } from "../application/admin-hotel-actions";
+import {
+  createAdminHotel,
+  updateAdminHotel
+} from "../application/admin-hotel-actions";
 
 const IMAGE_CATEGORIES = [
   "Rooms",
@@ -21,12 +25,15 @@ const IMAGE_CATEGORIES = [
 /** Hotel content editor for the phase-2 parity fields. */
 export function HotelEditor({
   initial,
-  mediaAssets
+  mediaAssets,
+  mode = "edit"
 }: {
   initial: AdminHotelDetail;
   mediaAssets: { id: string; altText: string; url: string }[];
+  mode?: "create" | "edit";
 }) {
   const t = useTranslations("adminHotelEditor");
+  const router = useRouter();
   const messages = useMessageBox();
   const [form, setForm] = useState<AdminHotelDetail>(() => ({
     ...initial,
@@ -114,7 +121,10 @@ export function HotelEditor({
 
   const save = () => {
     startTransition(async () => {
-      const result = await updateAdminHotel(form.hotelId, form);
+      const result =
+        mode === "create"
+          ? await createAdminHotel(form)
+          : await updateAdminHotel(form.hotelId, form);
       if (result.ok && result.data) {
         setForm({
           ...result.data,
@@ -126,6 +136,9 @@ export function HotelEditor({
           )
         });
         messages.toast({ kind: "success", message: t("saved") });
+        if (mode === "create") {
+          router.replace(`/admin/products/hotels/${result.data.hotelId}`);
+        }
       } else {
         messages.toast({ kind: "error", message: t("error") });
       }

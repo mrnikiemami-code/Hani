@@ -1,3 +1,4 @@
+using Hani.BuildingBlocks.Application;
 using Hani.Modules.Catalog.Application.Commands.CreateHotel;
 using Hani.Modules.Catalog.Domain.Hotels;
 
@@ -54,6 +55,9 @@ public interface IAdminCatalogService
         int pageSize,
         string? q,
         string? locale,
+        CancellationToken cancellationToken);
+    Task<Result<HotelDto>> CreateAsync(
+        AdminHotelUpdateInput input,
         CancellationToken cancellationToken);
     Task<HotelDto?> GetAsync(Guid id, CancellationToken cancellationToken);
     Task<HotelDto?> UpdateAsync(

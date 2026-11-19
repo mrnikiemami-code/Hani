@@ -1,3 +1,4 @@
+using Hani.BuildingBlocks.Application;
 using Hani.Modules.Admin.Application;
 using Hani.Modules.Catalog.Application.Commands.CreateHotel;
 using Hani.Modules.Catalog.Domain.Hotels;
@@ -64,6 +65,44 @@ internal sealed partial class AdminService : IAdminCatalogService
             normalizedPage,
             normalizedPageSize,
             total);
+    }
+
+    public async Task<Result<HotelDto>> CreateAsync(
+        AdminHotelUpdateInput input,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new CreateHotelCommand(
+                input.Slug,
+                input.DestinationId,
+                input.Stars,
+                input.Address,
+                input.Latitude,
+                input.Longitude,
+                input.Translations,
+                input.Amenities,
+                input.Images,
+                input.Rooms,
+                input.PropertyType.ToString(),
+                input.ContactPhone,
+                input.WebsiteUrl,
+                input.CheckInTime,
+                input.CheckOutTime,
+                input.SeoTitle,
+                input.SeoDescription,
+                input.Status.ToString()),
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return Result<HotelDto>.Failure(result.Error!);
+        }
+
+        var hotel = await LoadHotelAsync(result.Value, tracked: false, cancellationToken);
+        return hotel is null
+            ? Result<HotelDto>.Failure(Error.NotFound(
+                "HANI-CATALOG-4100",
+                "Created hotel was not found."))
+            : Result<HotelDto>.Success(MapHotel(hotel));
     }
 
     public async Task<HotelDto?> GetAsync(Guid id, CancellationToken cancellationToken)

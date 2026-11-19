@@ -781,7 +781,8 @@
     "paginationLabel": "Hotel pagination",
     "reset": "Clear",
     "actions": "Actions",
-    "edit": "Edit"
+    "edit": "Edit",
+    "createHotel": "New hotel"
   },
   "adminHotelEditor": {
     "title": "Edit hotel",
@@ -860,7 +861,9 @@
     "view": "View",
     "ratePlan": "Rate plan",
     "cancellationPolicy": "Cancellation policy",
-    "stopSell": "Stop sell"
+    "stopSell": "Stop sell",
+    "createTitle": "Create hotel",
+    "createSubtitle": "Create the hotel and its localized content."
   },
   "hotelDetail": {
     "bookingTitle": "Request a hotel booking",

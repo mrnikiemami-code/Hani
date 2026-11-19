@@ -47,9 +47,14 @@ export function HotelCatalogManager({
 
   return (
     <div className="card border-0 shadow-sm">
-      <div className="card-header">
-        <h2 className="h5 mb-1">{t("hotelsTitle")}</h2>
-        <p className="fs-13 text-gray-6 mb-0">{t("hotelsSubtitle")}</p>
+      <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h2 className="h5 mb-1">{t("hotelsTitle")}</h2>
+          <p className="fs-13 text-gray-6 mb-0">{t("hotelsSubtitle")}</p>
+        </div>
+        <Link href="/admin/products/hotels/new" className="btn btn-primary btn-sm">
+          {t("createHotel")}
+        </Link>
       </div>
       <div className="card-body">
         <form className="row g-2 align-items-end mb-3" onSubmit={apply}>

@@ -781,7 +781,8 @@
     "paginationLabel": "ترقيم صفحات الفنادق",
     "reset": "مسح",
     "actions": "الإجراءات",
-    "edit": "تعديل"
+    "edit": "تعديل",
+    "createHotel": "فندق جديد"
   },
   "adminHotelEditor": {
     "title": "تعديل الفندق",
@@ -860,7 +861,9 @@
     "view": "الإطلالة",
     "ratePlan": "خطة السعر",
     "cancellationPolicy": "سياسة الإلغاء",
-    "stopSell": "إيقاف البيع"
+    "stopSell": "إيقاف البيع",
+    "createTitle": "إنشاء فندق",
+    "createSubtitle": "أنشئ الفندق ومحتواه متعدد اللغات."
   },
   "hotelDetail": {
     "bookingTitle": "طلب حجز فندق",

@@ -340,3 +340,5 @@
 | H91-ADMIN-12 | Phase 5 flight ticketing | ? Blocked | requires real flight provider credentials and ticketing contract |
 | H91-ADMIN-13 | Phase 5 advanced BI | ? Partial | operational KPI reports done; exports/cohort/trend BI remains |
 | H91-ADMIN-14 | Batch 1: roles, settings, agency detail | ? Done | role-permission matrix, user role assignment, platform base settings, agency documents/contracts, UI verified |
+| H91-ADMIN-15 | Batch 2: hotel create | ? Done | admin create endpoint, create route, hotel editor create mode, responsive UI |
+| H91-ADMIN-16 | Batch 2: tours/flights/visas | ? Next | admin CRUD/publish for tours, flight routes/references, visa countries/applications |
