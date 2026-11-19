@@ -209,6 +209,23 @@ internal sealed class VisaApplicationRepository(BookingDbContext dbContext)
             .Include(application => application.Applicants)
             .FirstOrDefaultAsync(application => application.Id == id, cancellationToken);
 
+    public Task<VisaApplication?> GetByNumberAsync(
+        string applicationNumber,
+        string contact,
+        CancellationToken cancellationToken)
+    {
+        var number = applicationNumber.Trim().ToUpperInvariant();
+        var normalizedContact = contact.Trim().ToLowerInvariant();
+        return dbContext.VisaApplications
+            .Include(application => application.Documents)
+            .Include(application => application.Applicants)
+            .FirstOrDefaultAsync(
+                application => application.ApplicationNumber == number &&
+                    (application.ContactEmail == normalizedContact ||
+                     application.ContactPhone == contact.Trim()),
+                cancellationToken);
+    }
+
     public async Task<IReadOnlyList<VisaApplication>> ListAsync(
         VisaApplicationStatus? status,
         int skip,

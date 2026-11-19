@@ -385,3 +385,19 @@
 | B12-08 | Admin product edit screens | Next | GAP-15/16 | edit/publish tour, visa, flight |
 | B12-09 | Visa document uploads + tracking | Next | GAP-15/21 | upload + customer tracking |
 | B12-10 | RFQ/offer queue | Next | GAP-05/06/19 | offer/contract/deposit/final payment |
+
+## Batch 13 ? Remaining audit gaps
+
+| ID | Task | Status | DoD |
+|---|---|---|---|
+| B13-01 | Real flight metasearch storefront | Done | real routes/offers/dates/prices |
+| B13-02 | Real tour listing filters | Done | query/price/duration/type/sort |
+| B13-03 | Real visa listing filters | Done | query/price/processing |
+| B13-04 | Admin product edit screens | Done | tour/visa/flight GET+PUT |
+| B13-05 | Visa document uploads | Done | multipart PDF/JPEG/PNG |
+| B13-06 | Visa tracking | Done | number+contact lookup |
+| B13-07 | RFQ lead queue + CSV export | Done | admin bookings + export |
+| B13-08 | Agent hardcoded identity | Done | AgencyName across agent dashboard |
+| B13-09 | Real tour reviews | Done | public reviews API |
+| B13-10 | Flight inventory sync/ticketing | External | provider contract required |
+| B13-11 | RFQ saved views | Next | optional CSV exists |

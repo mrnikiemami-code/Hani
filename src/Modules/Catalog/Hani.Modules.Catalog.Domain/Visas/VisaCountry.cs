@@ -123,6 +123,62 @@ public sealed class VisaCountry : AggregateRoot<Guid>
         _types.Add(type);
         return type;
     }
+
+    /// <summary>
+    /// Updates the country code and cover image.
+    /// </summary>
+    public void UpdateBasics(string countryCode, string? coverImageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(countryCode))
+        {
+            throw new ArgumentException("Country code is required.", nameof(countryCode));
+        }
+
+        CountryCode = countryCode.Trim().ToUpperInvariant();
+        CoverImageUrl = string.IsNullOrWhiteSpace(coverImageUrl)
+            ? null
+            : coverImageUrl.Trim();
+    }
+
+    /// <summary>
+    /// Adds or updates one localized translation.
+    /// </summary>
+    public void UpsertTranslation(
+        IIdGenerator ids,
+        string locale,
+        string name,
+        string? description)
+    {
+        var existing = _translations.FirstOrDefault(item =>
+            string.Equals(item.Locale, locale, StringComparison.OrdinalIgnoreCase));
+        if (existing is null)
+        {
+            AddTranslation(ids, locale, name, description);
+            return;
+        }
+
+        existing.Update(name, description);
+    }
+
+    /// <summary>
+    /// Updates one visa type's pricing and processing details.
+    /// </summary>
+    public void UpdateType(Guid typeId, VisaTypeInput input)
+    {
+        var type = _types.FirstOrDefault(item => item.Id == typeId)
+            ?? throw new InvalidOperationException("Visa type was not found.");
+        type.Update(
+            input.Code,
+            input.EntryType,
+            input.IssuanceType,
+            input.ProcessingDaysMin,
+            input.ProcessingDaysMax,
+            input.ValidityDays,
+            input.PriceAdult,
+            input.PriceChild,
+            input.Currency,
+            input.RelatedArticleSlugs);
+    }
 }
 
 /// <summary>
@@ -154,6 +210,12 @@ public sealed class VisaCountryTranslation : Entity<Guid>
 
     /// <summary>Localized description.</summary>
     public string? Description { get; private set; }
+
+    internal void Update(string name, string? description)
+    {
+        Name = name.Trim();
+        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+    }
 }
 
 /// <summary>
@@ -256,6 +318,35 @@ public sealed class VisaType : Entity<Guid>
 
     internal void AddFaq(IIdGenerator ids, string question, string answer) =>
         _faqs.Add(new VisaFaq(ids.NewId(), Id, question, answer));
+
+    internal void Update(
+        string code,
+        string entryType,
+        string issuanceType,
+        int processingDaysMin,
+        int processingDaysMax,
+        int validityDays,
+        decimal priceAdult,
+        decimal? priceChild,
+        string currency,
+        IReadOnlyList<string>? relatedArticleSlugs)
+    {
+        Code = code.Trim();
+        EntryType = entryType.Trim();
+        IssuanceType = issuanceType.Trim();
+        ProcessingDaysMin = processingDaysMin;
+        ProcessingDaysMax = processingDaysMax;
+        ValidityDays = validityDays;
+        PriceAdult = priceAdult;
+        PriceChild = priceChild;
+        Currency = currency.Trim().ToUpperInvariant();
+        RelatedArticleSlugsRaw = relatedArticleSlugs is null || relatedArticleSlugs.Count == 0
+            ? null
+            : string.Join(',', relatedArticleSlugs
+                .Where(slug => !string.IsNullOrWhiteSpace(slug))
+                .Select(slug => slug.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase));
+    }
 }
 
 /// <summary>Required visa document.</summary>

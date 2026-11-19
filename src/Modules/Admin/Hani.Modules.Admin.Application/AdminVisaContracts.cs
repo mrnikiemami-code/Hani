@@ -64,6 +64,49 @@ public sealed record AdminVisaApplicationPageDto(
     int PageSize,
     int Total);
 
+
+/// <summary>Admin visa country detail for editing.</summary>
+public sealed record AdminVisaCountryDetailDto(
+    Guid Id,
+    string Slug,
+    string CountryCode,
+    string? CoverImageUrl,
+    IReadOnlyList<AdminVisaTranslationInput> Translations,
+    IReadOnlyList<AdminVisaTypeDto> Types);
+
+/// <summary>Admin visa type detail.</summary>
+public sealed record AdminVisaTypeDto(
+    Guid Id,
+    string Code,
+    string EntryType,
+    string IssuanceType,
+    int ProcessingDaysMin,
+    int ProcessingDaysMax,
+    int ValidityDays,
+    decimal PriceAdult,
+    decimal? PriceChild,
+    string Currency);
+
+/// <summary>Admin visa country edit input.</summary>
+public sealed record AdminVisaCountryUpdateInput(
+    string CountryCode,
+    string? CoverImageUrl,
+    IReadOnlyList<AdminVisaTranslationInput> Translations,
+    IReadOnlyList<AdminVisaTypeUpdateInput> Types);
+
+/// <summary>Admin visa type edit input.</summary>
+public sealed record AdminVisaTypeUpdateInput(
+    Guid? Id,
+    string Code,
+    string EntryType,
+    string IssuanceType,
+    int ProcessingDaysMin,
+    int ProcessingDaysMax,
+    int ValidityDays,
+    decimal PriceAdult,
+    decimal? PriceChild,
+    string Currency);
+
 /// <summary>Admin visa service.</summary>
 public interface IAdminVisaService
 {
@@ -74,6 +117,11 @@ public interface IAdminVisaService
         CancellationToken cancellationToken);
     Task<Result<Guid>> CreateCountryAsync(
         AdminVisaCountryInput input,
+        CancellationToken cancellationToken);
+    Task<AdminVisaCountryDetailDto?> GetCountryAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<bool>> UpdateCountryAsync(
+        Guid id,
+        AdminVisaCountryUpdateInput input,
         CancellationToken cancellationToken);
     Task<AdminVisaApplicationPageDto> ListApplicationsAsync(
         int page,

@@ -26,6 +26,13 @@ public sealed record CreateVisaApplicationCommand(
 public sealed record GetVisaApplicationQuery(Guid ApplicationId) : IQuery<VisaApplicationDto>;
 
 /// <summary>
+/// Query that tracks a visa application by number and contact.
+/// </summary>
+public sealed record TrackVisaApplicationQuery(
+    string ApplicationNumber,
+    string Contact) : IQuery<VisaApplicationDto>;
+
+/// <summary>
 /// Query that lists visa applications for operations.
 /// </summary>
 public sealed record ListVisaApplicationsQuery(string? Status, int Page = 1, int PageSize = 20)

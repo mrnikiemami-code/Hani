@@ -44,7 +44,11 @@ export function VisaApplicationForm({
       <div className="card-body">
         {error && (
           <div className="alert alert-danger" role="alert">
-            {error === "submit" ? t("submitError") : t("required")}
+            {error === "submit"
+              ? t("submitError")
+              : error === "upload"
+                ? t("uploadError")
+                : t("required")}
           </div>
         )}
         <div className="row g-3">
@@ -113,6 +117,21 @@ export function VisaApplicationForm({
               onChange={setTravelDate}
               ariaLabel={t("travelDate")}
             />
+          </div>
+          <div className="col-12">
+            <label className="form-label" htmlFor="visa-documents">
+              {t("upload")}
+            </label>
+            <input
+              id="visa-documents"
+              name="documentFiles"
+              type="file"
+              className="form-control"
+              accept=".pdf,.jpg,.jpeg,.png"
+              multiple
+              required
+            />
+            <p className="fs-12 text-gray-5 mb-0 mt-1">{t("uploadHint")}</p>
           </div>
           <div className="col-12">
             <label className="form-label" htmlFor="visa-notes">

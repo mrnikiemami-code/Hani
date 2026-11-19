@@ -82,7 +82,13 @@ export default async function VisaConfirmationPage({
                 <Link href="/visa" className="btn btn-light">
                   {t("backToVisas")}
                 </Link>
-                <Link href="/user/customer-visa-booking" className="btn btn-primary">
+                <Link
+                  href={`/visa/track-visa?number=${encodeURIComponent(application.applicationNumber)}&contact=${encodeURIComponent(application.contactEmail)}`}
+                  className="btn btn-primary"
+                >
+                  {t("trackApplication")}
+                </Link>
+                <Link href="/user/customer-visa-booking" className="btn btn-light">
                   {t("myVisas")}
                 </Link>
               </div>

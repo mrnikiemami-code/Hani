@@ -85,4 +85,30 @@ public sealed class TourProductTranslation : Entity<Guid>
     /// Localized required and suggested items.
     /// </summary>
     public string? RequiredItems { get; private set; }
+
+    internal void Update(
+        string title,
+        string summary,
+        string description,
+        string? seoTitle,
+        string? seoDescription,
+        string? mealsSummary,
+        string? includedServices,
+        string? excludedServices,
+        string? cancellationPolicy,
+        string? additionalInfo,
+        string? requiredItems)
+    {
+        Title = title.Trim();
+        Summary = summary.Trim();
+        Description = description.Trim();
+        SeoTitle = seoTitle?.Trim();
+        SeoDescription = seoDescription?.Trim();
+        MealsSummary = mealsSummary?.Trim();
+        IncludedServices = includedServices?.Trim();
+        ExcludedServices = excludedServices?.Trim();
+        CancellationPolicy = cancellationPolicy?.Trim();
+        AdditionalInfo = additionalInfo?.Trim();
+        RequiredItems = requiredItems?.Trim();
+    }
 }

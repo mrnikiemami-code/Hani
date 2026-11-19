@@ -51,6 +51,7 @@ public static class EndpointRegistration
         app.MapWishlistEndpoints();
         app.MapCustomerSupportEndpoints();
         app.MapInboundSupportEmailEndpoints();
+        app.MapVisaDocumentEndpoints();
     }
 
     private static void MapAdminEndpoints(IEndpointRouteBuilder app)

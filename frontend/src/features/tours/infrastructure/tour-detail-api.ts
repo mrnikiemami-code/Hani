@@ -101,3 +101,36 @@ export function localizedTranslation(
     null
   );
 }
+
+export type TourReview = {
+  reviewId: string;
+  authorDisplayName: string;
+  authorUsername: string;
+  rating: number;
+  title: string | null;
+  comment: string;
+  createdAt: string;
+  publishedAt: string | null;
+  helpfulCount: number;
+};
+
+export type TourReviewPage = {
+  items: TourReview[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+};
+
+export function getTourReviews(productId: string, locale: string) {
+  const query = new URLSearchParams({
+    targetType: "Tour",
+    targetId: productId,
+    page: "1",
+    pageSize: "10",
+    sort: "newest"
+  });
+  return apiGet<TourReviewPage>(
+    `/market/v1/reviews?${query.toString()}&locale=${encodeURIComponent(locale)}`
+  );
+}

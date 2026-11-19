@@ -70,6 +70,62 @@ internal sealed class CreateVisaApplicationCommandHandler(
                 .ToArray());
 }
 
+
+internal sealed class TrackVisaApplicationQueryHandler(IVisaApplicationRepository applications)
+    : IQueryHandler<TrackVisaApplicationQuery, VisaApplicationDto>
+{
+    public async Task<Result<VisaApplicationDto>> Handle(
+        TrackVisaApplicationQuery request,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.ApplicationNumber) ||
+            string.IsNullOrWhiteSpace(request.Contact))
+        {
+            return Result<VisaApplicationDto>.Failure(
+                Error.Validation("HANI-BOOKING-3604", "Application number and contact are required."));
+        }
+
+        var application = await applications.GetByNumberAsync(
+            request.ApplicationNumber,
+            request.Contact,
+            cancellationToken);
+
+        return application is null
+            ? Result<VisaApplicationDto>.Failure(
+                Error.NotFound("HANI-BOOKING-3602", "Visa application was not found."))
+            : Result<VisaApplicationDto>.Success(Map(application));
+    }
+
+    private static VisaApplicationDto Map(VisaApplication application)
+        => new(
+            application.Id,
+            application.ApplicationNumber,
+            application.VisaCountryId,
+            application.VisaTypeId,
+            application.ApplicantName,
+            application.PassportNo,
+            application.Nationality,
+            application.DateOfBirth,
+            application.TravelDate,
+            application.ContactEmail,
+            application.ContactPhone,
+            application.Notes,
+            application.Status.ToString(),
+            application.CreatedAt,
+            application.UpdatedAt,
+            application.RejectionReason,
+            application.Documents.Select(document => document.FileUrl).ToArray(),
+            application.PassengerCount,
+            application.Applicants
+                .Select(applicant => new VisaApplicantDto(
+                    applicant.FullName,
+                    applicant.PassportNo,
+                    applicant.Nationality,
+                    applicant.DateOfBirth,
+                    applicant.Relation))
+                .ToArray());
+}
+
 internal sealed class GetVisaApplicationQueryHandler(IVisaApplicationRepository applications)
     : IQueryHandler<GetVisaApplicationQuery, VisaApplicationDto>
 {

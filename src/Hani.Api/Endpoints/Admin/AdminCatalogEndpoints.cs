@@ -26,6 +26,14 @@ public static class AdminCatalogEndpoints
             .WithName("Internal.CreateAdminTour")
             .Produces<Guid>(StatusCodes.Status201Created);
 
+        group.MapGet("/tours/{id:guid}", GetTourAsync)
+            .WithName("Internal.GetAdminTour")
+            .Produces<AdminTourDetailDto>();
+
+        group.MapPut("/tours/{id:guid}", UpdateTourAsync)
+            .WithName("Internal.UpdateAdminTour")
+            .Produces<bool>();
+
         group.MapPost("/tours/{id:guid}/publish", PublishTourAsync)
             .WithName("Internal.PublishAdminTour")
             .Produces<bool>();
@@ -37,6 +45,14 @@ public static class AdminCatalogEndpoints
         group.MapPost("/visas", CreateVisaCountryAsync)
             .WithName("Internal.CreateAdminVisaCountry")
             .Produces<Guid>(StatusCodes.Status201Created);
+
+        group.MapGet("/visas/{id:guid}", GetVisaCountryAsync)
+            .WithName("Internal.GetAdminVisaCountry")
+            .Produces<AdminVisaCountryDetailDto>();
+
+        group.MapPut("/visas/{id:guid}", UpdateVisaCountryAsync)
+            .WithName("Internal.UpdateAdminVisaCountry")
+            .Produces<bool>();
 
         group.MapGet("/visa-applications", ListVisaApplicationsAsync)
             .WithName("Internal.ListAdminVisaApplications")
@@ -57,6 +73,14 @@ public static class AdminCatalogEndpoints
         group.MapPost("/flights/routes", CreateFlightRouteAsync)
             .WithName("Internal.CreateAdminFlightRoute")
             .Produces<Guid>(StatusCodes.Status201Created);
+
+        group.MapGet("/flights/routes/{id:guid}", GetFlightRouteAsync)
+            .WithName("Internal.GetAdminFlightRoute")
+            .Produces<AdminFlightRouteDetailDto>();
+
+        group.MapPut("/flights/routes/{id:guid}", UpdateFlightRouteAsync)
+            .WithName("Internal.UpdateAdminFlightRoute")
+            .Produces<bool>();
 
         group.MapPost("/flights/airlines", CreateFlightAirlineAsync)
             .WithName("Internal.CreateAdminFlightAirline")
@@ -328,6 +352,167 @@ public static class AdminCatalogEndpoints
         CancellationToken cancellationToken)
         => Results.Ok(await tours.ListToursAsync(page, pageSize, q, status, cancellationToken));
 
+
+    private static async Task<IResult> GetTourAsync(
+        Guid id,
+        IAdminTourService tours,
+        CancellationToken cancellationToken)
+    {
+        var tour = await tours.GetTourAsync(id, cancellationToken);
+        return tour is null ? Results.NotFound() : Results.Ok(tour);
+    }
+
+    private static async Task<IResult> UpdateTourAsync(
+        Guid id,
+        AdminTourUpdateRequest request,
+        HttpContext context,
+        IAdminTourService tours,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await tours.UpdateTourAsync(
+            id,
+            new AdminTourUpdateInput(
+                request.DurationDays,
+                request.TourType,
+                request.Scope,
+                request.Category,
+                request.TravelType,
+                request.CoverImageUrl,
+                request.Translations.Select(item => new AdminTourTranslationInput(
+                    item.Locale,
+                    item.Title,
+                    item.Summary,
+                    item.Description)).ToArray()),
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.tour.updated",
+            "TourProduct",
+            id.ToString(),
+            "Tour product updated from the admin panel",
+            after: new { request.DurationDays, request.TourType, request.Scope },
+            cancellationToken: cancellationToken);
+        return Results.Ok(result.Value);
+    }
+
+    private static async Task<IResult> GetVisaCountryAsync(
+        Guid id,
+        IAdminVisaService visas,
+        CancellationToken cancellationToken)
+    {
+        var visa = await visas.GetCountryAsync(id, cancellationToken);
+        return visa is null ? Results.NotFound() : Results.Ok(visa);
+    }
+
+    private static async Task<IResult> UpdateVisaCountryAsync(
+        Guid id,
+        AdminVisaCountryUpdateRequest request,
+        HttpContext context,
+        IAdminVisaService visas,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await visas.UpdateCountryAsync(
+            id,
+            new AdminVisaCountryUpdateInput(
+                request.CountryCode,
+                request.CoverImageUrl,
+                request.Translations.Select(item => new AdminVisaTranslationInput(
+                    item.Locale,
+                    item.Name,
+                    item.Description)).ToArray(),
+                request.Types.Select(item => new AdminVisaTypeUpdateInput(
+                    item.Id,
+                    item.Code,
+                    item.EntryType,
+                    item.IssuanceType,
+                    item.ProcessingDaysMin,
+                    item.ProcessingDaysMax,
+                    item.ValidityDays,
+                    item.PriceAdult,
+                    item.PriceChild,
+                    item.Currency)).ToArray()),
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.visa.updated",
+            "VisaCountry",
+            id.ToString(),
+            "Visa country updated from the admin panel",
+            after: new { request.CountryCode },
+            cancellationToken: cancellationToken);
+        return Results.Ok(result.Value);
+    }
+
+    private static async Task<IResult> GetFlightRouteAsync(
+        Guid id,
+        IAdminFlightService flights,
+        CancellationToken cancellationToken)
+    {
+        var route = await flights.GetRouteAsync(id, cancellationToken);
+        return route is null ? Results.NotFound() : Results.Ok(route);
+    }
+
+    private static async Task<IResult> UpdateFlightRouteAsync(
+        Guid id,
+        AdminFlightRouteRequest request,
+        HttpContext context,
+        IAdminFlightService flights,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await flights.UpdateRouteAsync(
+            id,
+            new AdminFlightRouteInput(
+                request.Slug,
+                request.OriginCode,
+                request.DestinationCode,
+                request.OriginCity,
+                request.DestinationCity,
+                request.IsActive,
+                request.Offers.Select(offer => new AdminFlightOfferInput(
+                    offer.FlightNumber,
+                    offer.AirlineCode,
+                    offer.AirlineName,
+                    offer.DepartureDate,
+                    offer.DepartureTime,
+                    offer.ArrivalTime,
+                    offer.DurationMinutes,
+                    offer.Stops,
+                    offer.Cabin,
+                    offer.BaggageAllowance,
+                    offer.Price,
+                    offer.Currency,
+                    offer.Provider,
+                    offer.DeepLink)).ToArray()),
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.flight.route.updated",
+            "FlightRoute",
+            id.ToString(),
+            "Flight route updated from the admin panel",
+            after: new { request.Slug, request.OriginCode, request.DestinationCode },
+            cancellationToken: cancellationToken);
+        return Results.Ok(result.Value);
+    }
+
     private static async Task<IResult> CreateTourAsync(
         AdminTourCreateRequest request,
         HttpContext context,
@@ -595,6 +780,36 @@ public sealed record AdminVisaTranslationRequest(
 
 /// <summary>Visa type request.</summary>
 public sealed record AdminVisaTypeRequest(
+    string Code,
+    string EntryType,
+    string IssuanceType,
+    int ProcessingDaysMin,
+    int ProcessingDaysMax,
+    int ValidityDays,
+    decimal PriceAdult,
+    decimal? PriceChild,
+    string Currency);
+
+/// <summary>Tour product edit request.</summary>
+public sealed record AdminTourUpdateRequest(
+    int DurationDays,
+    string TourType,
+    string Scope,
+    string Category,
+    string TravelType,
+    string? CoverImageUrl,
+    IReadOnlyList<AdminTourTranslationRequest> Translations);
+
+/// <summary>Visa country edit request.</summary>
+public sealed record AdminVisaCountryUpdateRequest(
+    string CountryCode,
+    string? CoverImageUrl,
+    IReadOnlyList<AdminVisaTranslationRequest> Translations,
+    IReadOnlyList<AdminVisaTypeUpdateRequest> Types);
+
+/// <summary>Visa type edit request.</summary>
+public sealed record AdminVisaTypeUpdateRequest(
+    Guid? Id,
     string Code,
     string EntryType,
     string IssuanceType,

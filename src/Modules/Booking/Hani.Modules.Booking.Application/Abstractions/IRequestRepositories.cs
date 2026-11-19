@@ -122,6 +122,14 @@ public interface IVisaApplicationRepository
     Task<VisaApplication?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Returns an application by its public number and contact email/phone.
+    /// </summary>
+    Task<VisaApplication?> GetByNumberAsync(
+        string applicationNumber,
+        string contact,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Lists applications, optionally filtered by status.
     /// </summary>
     Task<IReadOnlyList<VisaApplication>> ListAsync(

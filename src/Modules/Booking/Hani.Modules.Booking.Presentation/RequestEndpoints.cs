@@ -108,6 +108,11 @@ public static class RequestEndpoints
             .Produces<VisaApplicationDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
 
+        market.MapGet("/visa-applications/track", TrackVisaApplicationAsync)
+            .WithName("Marketplace.TrackVisaApplication")
+            .Produces<VisaApplicationDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
         market.MapGet("/visa-applications/{applicationId:guid}", GetVisaApplicationAsync)
             .WithName("Marketplace.GetVisaApplication")
             .Produces<VisaApplicationDto>()
@@ -342,6 +347,20 @@ public static class RequestEndpoints
     {
         var result = await sender.Send(
             new GetVisaApplicationQuery(applicationId),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>Tracks a visa application by number and contact.</summary>
+    private static async Task<IResult> TrackVisaApplicationAsync(
+        string number,
+        string contact,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new TrackVisaApplicationQuery(number, contact),
             cancellationToken);
         return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }

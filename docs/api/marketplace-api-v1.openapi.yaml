@@ -1679,6 +1679,48 @@ paths:
         '400': { description: Invalid application }
         default: { $ref: '#/components/responses/Problem' }
 
+  /visa-applications/track:
+    get:
+      tags: [Visa]
+      summary: Track a visa application by number and contact email/phone
+      parameters:
+        - { name: number, in: query, required: true, schema: { type: string } }
+        - { name: contact, in: query, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VisaApplication' }
+        '404': { description: Not found }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /visa-applications/documents:
+    post:
+      tags: [Visa]
+      summary: Upload a visa document (PDF, JPEG, or PNG, max 10 MB)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: { type: string, format: binary }
+      responses:
+        '200':
+          description: Uploaded document URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url: { type: string, format: uri }
+                  fileName: { type: string }
+        '400': { description: Invalid file }
+        default: { $ref: '#/components/responses/Problem' }
+
   /visa-applications/{applicationId}:
     get:
       tags: [Visa]

@@ -5,6 +5,7 @@ import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import Link from "next/link";
 import ImageWithBasePath from '../../../components/image-with-base-path';
 import DeleteModal from '../../../components/modals/deleteModal';
+import { AgencyName } from "@/features/agencies/ui/AgencyName";
 
 const AgentChat = () => {
 
@@ -515,7 +516,7 @@ const AgentChat = () => {
                                   <div className="d-flex align-items-center justify-content-end mb-1">
                                     <div>
                                       <h6 className="fs-16 fw-normal d-flex align-items-center">
-                                        Chris Foxy
+                                        <AgencyName />
                                       </h6>
                                       <div className="d-flex justify-content-end">
                                         <p className="fs-12">
@@ -761,7 +762,7 @@ const AgentChat = () => {
                                   <div className="d-flex align-items-center justify-content-end mb-1">
                                     <div>
                                       <h6 className="fs-16 fw-normal d-flex align-items-center">
-                                        Chris Foxy
+                                        <AgencyName />
                                       </h6>
                                       <div className="d-flex justify-content-end">
                                         <p className="fs-12">
@@ -1004,7 +1005,7 @@ const AgentChat = () => {
                                   <div className="d-flex align-items-center justify-content-end mb-1">
                                     <div>
                                       <h6 className="fs-16 fw-normal d-flex align-items-center">
-                                        Chris Foxy
+                                        <AgencyName />
                                       </h6>
                                       <div className="d-flex justify-content-end">
                                         <p className="fs-12">

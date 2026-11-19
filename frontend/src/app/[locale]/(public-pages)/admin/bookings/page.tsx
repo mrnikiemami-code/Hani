@@ -4,7 +4,10 @@ import { Link } from "@/i18n/navigation";
 import { sessionGet } from "@/lib/hani/server-api";
 import { formatIsoDate, formatIsoInstant } from "@/lib/hani/calendar";
 import { formatMoney } from "@/lib/hani/money";
-import type { AdminBookings } from "@/features/home-experience/domain/admin-bookings";
+import type {
+  AdminBookings,
+  AdminLeadPage
+} from "@/features/home-experience/domain/admin-bookings";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 import { ReservationRequestActions } from "@/features/home-experience/ui/ReservationRequestActions";
 
@@ -31,9 +34,12 @@ export default async function AdminBookingsPage({
   const t = await getTranslations({ locale, namespace: "adminBookings" });
   const tHome = await getTranslations({ locale, namespace: "adminHome" });
   const q = typeof sp.q === "string" ? sp.q.trim() : "";
-  const result = await sessionGet<AdminBookings>(
-    `/internal/v1/admin/bookings?page=1&pageSize=20${q ? `&q=${encodeURIComponent(q)}` : ""}`
-  );
+  const [result, leadsResult] = await Promise.all([
+    sessionGet<AdminBookings>(
+      `/internal/v1/admin/bookings?page=1&pageSize=20${q ? `&q=${encodeURIComponent(q)}` : ""}`
+    ),
+    sessionGet<AdminLeadPage>("/internal/v1/leads?page=1&pageSize=50")
+  ]);
 
   if (result.status === 401 || result.status === 403) {
     return (
@@ -53,6 +59,7 @@ export default async function AdminBookingsPage({
     );
   }
 
+  const leads = leadsResult.data?.items ?? [];
   const data = result.data ?? {
     orderCount: 0,
     requestCount: 0,
@@ -235,6 +242,59 @@ export default async function AdminBookingsPage({
               {data.inquiries.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center text-gray-6 py-4">{t("empty")}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="card border-0 shadow-sm mt-4">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <h2 className="h5 mb-0">{t("rfqQueue")}</h2>
+          <div className="d-flex align-items-center gap-2">
+            <span className="badge badge-info">{leads.length}</span>
+            <a href="/api/admin/rfq/export" className="btn btn-light btn-sm">
+              {t("exportCsv")}
+            </a>
+          </div>
+        </div>
+        <div className="card-body p-0 admin-table-wrap">
+          <table className="table admin-data-table content-data-table report-table align-middle mb-0">
+            <thead className="thead-light">
+              <tr>
+                <th>{t("number")}</th>
+                <th>{t("service")}</th>
+                <th className="d-none d-md-table-cell">{t("destination")}</th>
+                <th className="d-none d-sm-table-cell">{t("travelers")}</th>
+                <th className="d-none d-lg-table-cell">{t("contact")}</th>
+                <th>{t("status")}</th>
+                <th className="d-none d-lg-table-cell">{t("createdAt")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leads.map((lead) => (
+                <tr key={lead.leadId}>
+                  <td dir="ltr">{lead.requestNumber}</td>
+                  <td>{lead.serviceType}</td>
+                  <td className="d-none d-md-table-cell">{lead.destination ?? "?"}</td>
+                  <td className="d-none d-sm-table-cell">
+                    {lead.adults + lead.children + lead.infants}
+                  </td>
+                  <td className="d-none d-lg-table-cell">{lead.contactEmail}</td>
+                  <td>{lead.status}</td>
+                  <td className="d-none d-lg-table-cell text-nowrap">
+                    {formatIsoInstant(lead.createdAt, locale, {
+                      dateStyle: "medium"
+                    })}
+                  </td>
+                </tr>
+              ))}
+              {leads.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="text-center text-gray-6 py-4">
+                    {t("empty")}
+                  </td>
                 </tr>
               )}
             </tbody>

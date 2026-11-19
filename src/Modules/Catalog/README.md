@@ -110,3 +110,12 @@
   `AddTourCoverImage`.
 - `VisaCountry.CoverImageUrl` is exposed by visa summaries; processing-day
   min/max are derived from visa types. Migration `AddVisaCoverImage`.
+
+## Admin product editing
+
+- `GET/PUT /internal/v1/admin/catalog/tours/{id}` updates tour overview,
+  scope/category/travel type, cover, and localized content.
+- `GET/PUT /internal/v1/admin/catalog/visas/{id}` updates country content,
+  cover, and visa types/pricing/processing.
+- `GET/PUT /internal/v1/admin/catalog/flights/routes/{id}` updates route
+  metadata and replaces provider offers.

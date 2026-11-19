@@ -623,7 +623,7 @@
     "marketing": "بازاریابی",
     "support": "پشتیبانی",
     "integrations": "یکپارچه‌سازی",
-    "reports": "????????? ????????",
+    "reports": "گزارش‌ها",
     "settings": "تنظیمات و امنیت",
     "homepage": "صفحه اصلی",
     "contentPages": "صفحات محتوا",
@@ -643,7 +643,7 @@
     "ads": "تبلیغات",
     "tickets": "تیکت‌های پشتیبانی",
     "notifications": "اعلان‌ها",
-    "disputes": "??????",
+    "disputes": "اختلاف‌ها",
     "channel": "Channel API",
     "suppliers": "تأمین‌کنندگان",
     "roles": "نقش‌ها و دسترسی‌ها",
@@ -1067,7 +1067,11 @@
     "action": "رویداد",
     "actor": "کاربر",
     "details": "جزئیات",
-    "emptyHistory": "رویدادی ثبت نشده است."
+    "emptyHistory": "رویدادی ثبت نشده است.",
+    "rfqQueue": "صف درخواست و استعلام",
+    "service": "خدمت",
+    "destination": "مقصد",
+    "exportCsv": "خروجی CSV"
   },
   "adminFinance": {
     "title": "امور مالی",
@@ -1675,7 +1679,11 @@
     "required": "اسلاگ و مدت تور الزامی است.",
     "translationRequired": "حداقل یک عنوان ترجمه لازم است.",
     "cancel": "انصراف",
-    "save": "ذخیره"
+    "save": "ذخیره",
+    "edit": "ویرایش",
+    "editTitle": "ویرایش تور",
+    "editSubtitle": "محتوای تور و اطلاعات تجاری را به‌روز کنید.",
+    "updated": "تور به‌روز شد."
   },
   "adminFlights": {
     "title": "پروازها",
@@ -1705,7 +1713,12 @@
     "error": "عملیات انجام نشد.",
     "saving": "در حال ثبت",
     "save": "ذخیره",
-    "cancel": "انصراف"
+    "cancel": "انصراف",
+    "edit": "ویرایش",
+    "editRoute": "ویرایش مسیر پرواز",
+    "editSubtitle": "جزئیات مسیر و پیشنهاد فروشنده را به‌روز کنید.",
+    "updated": "مسیر پرواز به‌روز شد.",
+    "actions": "اقدامات"
   },
   "adminVisas": {
     "title": "ویزاها",
@@ -1724,8 +1737,8 @@
     "travelDate": "تاریخ سفر",
     "status": "وضعیت",
     "createdAt": "زمان ایجاد",
-    "actions": "عملیات",
-    "updated": "وضعیت به‌روز شد.",
+    "actions": "اقدامات",
+    "updated": "کشور ویزا به‌روز شد.",
     "emptyCountries": "کشوری ثبت نشده است.",
     "emptyApplications": "درخواستی ثبت نشده است.",
     "error": "عملیات انجام نشد.",
@@ -1748,7 +1761,10 @@
     "created": "کشور ویزا ایجاد شد.",
     "saving": "در حال ثبت",
     "save": "ذخیره",
-    "cancel": "انصراف"
+    "cancel": "انصراف",
+    "edit": "ویرایش",
+    "editCountry": "ویرایش کشور ویزا",
+    "editSubtitle": "محتوای کشور، قیمت و زمان پردازش را به‌روز کنید."
   },
   "supportCenter": {
     "title": "مرکز پشتیبانی",
@@ -1858,7 +1874,9 @@
     "offers": "پیشنهادهای موجود",
     "book": "رزرو این تور",
     "noOffers": "هنوز پیشنهاد تأییدشده‌ای وجود ندارد.",
-    "cancellation": "قوانین لغو"
+    "cancellation": "قوانین لغو",
+    "reviews": "نظرات",
+    "reviewCount": "{count} نظر منتشرشده"
   },
   "visaDetail": {
     "home": "خانه",
@@ -1904,7 +1922,11 @@
     "submittedAt": "زمان ثبت",
     "backToVisas": "بازگشت به ویزاها",
     "myVisas": "رزروهای ویزای من",
-    "defaultNationality": "??????"
+    "defaultNationality": "ایرانی",
+    "upload": "مدارک",
+    "uploadHint": "فایل PDF، JPEG یا PNG (حداکثر ۱۰ مگابایت برای هر فایل) آپلود کنید.",
+    "uploadError": "آپلود مدارک انجام نشد. دوباره تلاش کنید.",
+    "trackApplication": "پیگیری درخواست"
   },
   "flightSearch": {
     "title": "پروازها",
@@ -1976,5 +1998,24 @@
     "processing": "زمان پردازش",
     "maxProcessingDays": "حداکثر روز پردازش",
     "apply": "اعمال فیلترها"
+  },
+  "visaTrack": {
+    "title": "پیگیری درخواست ویزا",
+    "subtitle": "شماره درخواست و ایمیل یا تلفن ثبت‌شده را وارد کنید.",
+    "applicationNumber": "شماره درخواست",
+    "contact": "ایمیل یا تلفن",
+    "track": "پیگیری",
+    "notFound": "درخواستی با این اطلاعات پیدا نشد.",
+    "applicant": "متقاضی",
+    "passport": "پاسپورت",
+    "nationality": "تابعیت",
+    "email": "ایمیل",
+    "phone": "تلفن",
+    "travelDate": "تاریخ سفر",
+    "submittedAt": "زمان ثبت",
+    "updatedAt": "آخرین به‌روزرسانی",
+    "documents": "مدارک",
+    "document": "مدرک {number}",
+    "back": "بازگشت به ویزاها"
   }
 }

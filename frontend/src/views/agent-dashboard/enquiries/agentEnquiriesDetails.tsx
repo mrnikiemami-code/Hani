@@ -4,6 +4,7 @@ import { all_routes } from '../../../routes/all_routes';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import Link from "next/link";
 import DefaultEditor from 'react-simple-wysiwyg';
+import { AgencyName } from "@/features/agencies/ui/AgencyName";
 
 const AgentEnquiriesDetails = () => {
 
@@ -108,7 +109,7 @@ const AgentEnquiriesDetails = () => {
                                                 <tbody>
                                                     <tr>
                                                         <td>
-                                                            <h6 className="fs-14">Chris Foxy</h6>
+                                                            <h6 className="fs-14"><AgencyName /></h6>
                                                         </td>
                                                         <td>agent@example.com</td>
                                                         <td>we will check and get back.</td>

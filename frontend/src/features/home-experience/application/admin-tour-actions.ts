@@ -1,7 +1,10 @@
 "use server";
 
 import { cookies } from "next/headers";
-import type { AdminTourCreateInput } from "../domain/admin-tour";
+import type {
+  AdminTourCreateInput,
+  AdminTourUpdateInput
+} from "../domain/admin-tour";
 
 const apiBase =
   process.env.API_BASE_URL ??
@@ -34,6 +37,27 @@ export async function publishAdminTour(id: string): Promise<{ ok: boolean }> {
       method: "POST",
       cache: "no-store",
       headers: { Authorization: `Bearer ${token}` }
+    }
+  );
+  return { ok: response.ok };
+}
+
+export async function updateAdminTour(
+  id: string,
+  input: AdminTourUpdateInput
+): Promise<{ ok: boolean }> {
+  const token = (await cookies()).get("hani_access_token")?.value;
+  if (!token) return { ok: false };
+  const response = await fetch(
+    `${apiBase}/internal/v1/admin/catalog/tours/${id}`,
+    {
+      method: "PUT",
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(input)
     }
   );
   return { ok: response.ok };

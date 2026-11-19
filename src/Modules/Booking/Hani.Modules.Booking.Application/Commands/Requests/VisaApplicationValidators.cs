@@ -56,3 +56,20 @@ public sealed class UpdateVisaApplicationStatusCommandValidator
         RuleFor(command => command.ApplicationId).NotEmpty().WithErrorCode("HANI-BOOKING-3617");
     }
 }
+
+/// <summary>
+/// Validation rules for tracking a visa application.
+/// </summary>
+public sealed class TrackVisaApplicationQueryValidator
+    : AbstractValidator<TrackVisaApplicationQuery>
+{
+    public TrackVisaApplicationQueryValidator()
+    {
+        RuleFor(query => query.ApplicationNumber)
+            .NotEmpty()
+            .WithErrorCode("HANI-BOOKING-3611");
+        RuleFor(query => query.Contact)
+            .NotEmpty()
+            .WithErrorCode("HANI-BOOKING-3612");
+    }
+}

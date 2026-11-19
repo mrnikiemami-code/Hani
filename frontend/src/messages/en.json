@@ -1067,7 +1067,11 @@
     "action": "Event",
     "actor": "Actor",
     "details": "Details",
-    "emptyHistory": "No events recorded yet."
+    "emptyHistory": "No events recorded yet.",
+    "rfqQueue": "RFQ and lead queue",
+    "service": "Service",
+    "destination": "Destination",
+    "exportCsv": "Export CSV"
   },
   "adminFinance": {
     "title": "Finance",
@@ -1675,7 +1679,11 @@
     "required": "Slug and duration are required.",
     "translationRequired": "At least one translated title is required.",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "edit": "Edit",
+    "editTitle": "Edit tour",
+    "editSubtitle": "Update tour content and commercial basics.",
+    "updated": "Tour updated."
   },
   "adminFlights": {
     "title": "Flights",
@@ -1705,7 +1713,12 @@
     "error": "The operation failed.",
     "saving": "Saving",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "editRoute": "Edit flight route",
+    "editSubtitle": "Update route details and the provider offer.",
+    "updated": "Flight route updated.",
+    "actions": "Actions"
   },
   "adminVisas": {
     "title": "Visas",
@@ -1725,7 +1738,7 @@
     "status": "Status",
     "createdAt": "Created at",
     "actions": "Actions",
-    "updated": "Status updated.",
+    "updated": "Visa country updated.",
     "emptyCountries": "No visa countries recorded.",
     "emptyApplications": "No applications recorded.",
     "error": "The operation failed.",
@@ -1748,7 +1761,10 @@
     "created": "Visa country created.",
     "saving": "Saving",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "editCountry": "Edit visa country",
+    "editSubtitle": "Update country content, pricing, and processing time."
   },
   "supportCenter": {
     "title": "Support center",
@@ -1858,7 +1874,9 @@
     "offers": "Available offers",
     "book": "Book this tour",
     "noOffers": "No approved offers yet.",
-    "cancellation": "Cancellation policy"
+    "cancellation": "Cancellation policy",
+    "reviews": "Reviews",
+    "reviewCount": "{count} published reviews"
   },
   "visaDetail": {
     "home": "Home",
@@ -1904,7 +1922,11 @@
     "submittedAt": "Submitted at",
     "backToVisas": "Back to visas",
     "myVisas": "My visa bookings",
-    "defaultNationality": "Iranian"
+    "defaultNationality": "Iranian",
+    "upload": "Documents",
+    "uploadHint": "Upload PDF, JPEG, or PNG files (max 10 MB each).",
+    "uploadError": "Document upload failed. Try again.",
+    "trackApplication": "Track application"
   },
   "flightSearch": {
     "title": "Flights",
@@ -1976,5 +1998,24 @@
     "processing": "Processing time",
     "maxProcessingDays": "Maximum processing days",
     "apply": "Apply filters"
+  },
+  "visaTrack": {
+    "title": "Track visa application",
+    "subtitle": "Enter your application number and the email or phone used on the application.",
+    "applicationNumber": "Application number",
+    "contact": "Email or phone",
+    "track": "Track",
+    "notFound": "No application matched these details.",
+    "applicant": "Applicant",
+    "passport": "Passport",
+    "nationality": "Nationality",
+    "email": "Email",
+    "phone": "Phone",
+    "travelDate": "Travel date",
+    "submittedAt": "Submitted at",
+    "updatedAt": "Last update",
+    "documents": "Documents",
+    "document": "Document {number}",
+    "back": "Back to visas"
   }
 }

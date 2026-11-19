@@ -33,3 +33,51 @@ export type AdminVisaApplicationPage = {
   pageSize: number;
   total: number;
 };
+
+export type AdminVisaType = {
+  id: string;
+  code: string;
+  entryType: string;
+  issuanceType: string;
+  processingDaysMin: number;
+  processingDaysMax: number;
+  validityDays: number;
+  priceAdult: number;
+  priceChild: number | null;
+  currency: string;
+};
+
+export type AdminVisaCountryDetail = {
+  id: string;
+  slug: string;
+  countryCode: string;
+  coverImageUrl: string | null;
+  translations: Array<{
+    locale: string;
+    name: string;
+    description: string | null;
+  }>;
+  types: AdminVisaType[];
+};
+
+export type AdminVisaCountryUpdateInput = {
+  countryCode: string;
+  coverImageUrl: string | null;
+  translations: Array<{
+    locale: string;
+    name: string;
+    description: string | null;
+  }>;
+  types: Array<{
+    id: string | null;
+    code: string;
+    entryType: string;
+    issuanceType: string;
+    processingDaysMin: number;
+    processingDaysMax: number;
+    validityDays: number;
+    priceAdult: number;
+    priceChild: number | null;
+    currency: string;
+  }>;
+};

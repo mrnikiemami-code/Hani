@@ -95,6 +95,98 @@ internal sealed partial class AdminService : IAdminFlightService
                     offer.DeepLink)).ToArray()),
             cancellationToken);
 
+
+    public async Task<AdminFlightRouteDetailDto?> GetRouteAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var item = await catalog.FlightRoutes
+            .AsNoTracking()
+            .Include(route => route.Offers)
+            .FirstOrDefaultAsync(route => route.Id == id, cancellationToken);
+        if (item is null)
+        {
+            return null;
+        }
+
+        return new AdminFlightRouteDetailDto(
+            item.Id,
+            item.Slug,
+            item.OriginCode,
+            item.DestinationCode,
+            item.OriginCity,
+            item.DestinationCity,
+            item.IsActive,
+            item.Offers
+                .OrderBy(offer => offer.Price)
+                .Select(offer => new AdminFlightOfferInput(
+                    offer.FlightNumber,
+                    offer.AirlineCode,
+                    offer.AirlineName,
+                    offer.DepartureDate,
+                    offer.DepartureTime,
+                    offer.ArrivalTime,
+                    offer.DurationMinutes,
+                    offer.Stops,
+                    offer.Cabin,
+                    offer.BaggageAllowance,
+                    offer.Price,
+                    offer.Currency,
+                    offer.Provider,
+                    offer.DeepLink))
+                .ToArray());
+    }
+
+    public async Task<Result<bool>> UpdateRouteAsync(
+        Guid id,
+        AdminFlightRouteInput input,
+        CancellationToken cancellationToken)
+    {
+        if (input.Offers.Count == 0)
+        {
+            return Result<bool>.Failure(Error.Validation(
+                "HANI-FLIGHT-4001",
+                "At least one flight offer is required."));
+        }
+
+        var route = await catalog.FlightRoutes
+            .Include(item => item.Offers)
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (route is null)
+        {
+            return Result<bool>.Failure(Error.NotFound(
+                "HANI-FLIGHT-4040",
+                "Flight route was not found."));
+        }
+
+        route.Update(
+            ids,
+            input.Slug,
+            input.OriginCode,
+            input.DestinationCode,
+            input.OriginCity,
+            input.DestinationCity,
+            input.IsActive,
+            input.Offers.Select(offer => new FlightOfferInput(
+                offer.FlightNumber,
+                offer.AirlineCode,
+                offer.AirlineName,
+                offer.DepartureDate,
+                offer.DepartureTime,
+                offer.ArrivalTime,
+                offer.DurationMinutes,
+                offer.Stops,
+                offer.Cabin,
+                offer.BaggageAllowance,
+                offer.Price,
+                offer.Currency,
+                offer.Provider,
+                offer.DeepLink)).ToArray());
+
+        await catalog.SaveChangesAsync(cancellationToken);
+        return Result<bool>.Success(true);
+    }
+
     public Task<Result<Guid>> CreateAirlineAsync(
         string iata,
         string name,

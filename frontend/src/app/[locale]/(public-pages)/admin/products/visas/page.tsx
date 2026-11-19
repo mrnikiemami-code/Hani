@@ -82,6 +82,7 @@ export default async function AdminVisasPage({
                 <th>{t("countryCode")}</th>
                 <th>{t("types")}</th>
                 <th>{t("priceFrom")}</th>
+                <th className="text-end">{t("actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -99,7 +100,7 @@ export default async function AdminVisasPage({
               ))}
               {(countries.data?.items ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={4} className="text-center text-gray-6 py-4">
+                  <td colSpan={5} className="text-center text-gray-6 py-4">
                     {t("emptyCountries")}
                   </td>
                 </tr>

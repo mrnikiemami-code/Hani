@@ -133,6 +133,67 @@ public sealed class FlightRoute : AggregateRoot<Guid>
 
         return route;
     }
+
+    /// <summary>
+    /// Replaces route metadata and provider offers.
+    /// </summary>
+    public void Update(
+        IIdGenerator ids,
+        string slug,
+        string originCode,
+        string destinationCode,
+        string originCity,
+        string destinationCity,
+        bool isActive,
+        IReadOnlyList<FlightOfferInput> offers)
+    {
+        if (string.IsNullOrWhiteSpace(slug) ||
+            string.IsNullOrWhiteSpace(originCode) ||
+            string.IsNullOrWhiteSpace(destinationCode))
+        {
+            throw new ArgumentException("Slug and airport codes are required.");
+        }
+
+        if (originCode.Length != 3 || destinationCode.Length != 3)
+        {
+            throw new ArgumentException("Airport codes must be three letters.");
+        }
+
+        if (offers.Count == 0)
+        {
+            throw new ArgumentException("At least one flight offer is required.", nameof(offers));
+        }
+
+        Slug = slug.Trim().ToLowerInvariant();
+        OriginCode = originCode.Trim().ToUpperInvariant();
+        DestinationCode = destinationCode.Trim().ToUpperInvariant();
+        OriginCity = originCity.Trim();
+        DestinationCity = destinationCity.Trim();
+        IsActive = isActive;
+
+        _offers.Clear();
+        foreach (var offer in offers)
+        {
+            _offers.Add(new FlightOffer(
+                ids.NewId(),
+                Id,
+                offer.FlightNumber,
+                offer.AirlineCode,
+                offer.AirlineName,
+                offer.DepartureDate,
+                offer.DepartureTime,
+                offer.ArrivalTime,
+                offer.DurationMinutes,
+                offer.Stops,
+                offer.Cabin,
+                offer.BaggageAllowance,
+                offer.Price,
+                offer.Currency,
+                offer.Provider,
+                offer.DeepLink,
+                offer.AirlineId));
+        }
+    }
 }
 
 /// <summary>

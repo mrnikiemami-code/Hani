@@ -34,3 +34,36 @@ export type AdminTourCreateInput = {
     description: string;
   }>;
 };
+
+export type AdminTourDetail = {
+  id: string;
+  slug: string;
+  durationDays: number;
+  tourType: string;
+  scope: string;
+  category: string;
+  travelType: string;
+  coverImageUrl: string | null;
+  status: string;
+  translations: Array<{
+    locale: string;
+    title: string;
+    summary: string;
+    description: string;
+  }>;
+};
+
+export type AdminTourUpdateInput = {
+  durationDays: number;
+  tourType: string;
+  scope: string;
+  category: string;
+  travelType: string;
+  coverImageUrl: string | null;
+  translations: Array<{
+    locale: string;
+    title: string;
+    summary: string;
+    description: string;
+  }>;
+};

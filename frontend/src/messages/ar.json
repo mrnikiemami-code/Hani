@@ -623,7 +623,7 @@
     "marketing": "التسويق",
     "support": "الدعم",
     "integrations": "التكامل",
-    "reports": "?????? ?????",
+    "reports": "التقارير",
     "settings": "الإعدادات والأمان",
     "homepage": "الصفحة الرئيسية",
     "contentPages": "صفحات المحتوى",
@@ -643,7 +643,7 @@
     "ads": "الإعلانات",
     "tickets": "تذاكر الدعم",
     "notifications": "الإشعارات",
-    "disputes": "???????",
+    "disputes": "النزاعات",
     "channel": "Channel API",
     "suppliers": "الموردون",
     "roles": "الأدوار والصلاحيات",
@@ -1067,7 +1067,11 @@
     "action": "الحدث",
     "actor": "المستخدم",
     "details": "التفاصيل",
-    "emptyHistory": "لا توجد أحداث مسجلة."
+    "emptyHistory": "لا توجد أحداث مسجلة.",
+    "rfqQueue": "صف الطلبات والعروض",
+    "service": "الخدمة",
+    "destination": "الوجهة",
+    "exportCsv": "تصدير CSV"
   },
   "adminFinance": {
     "title": "الشؤون المالية",
@@ -1675,7 +1679,11 @@
     "required": "المعرف والمدة مطلوبان.",
     "translationRequired": "مطلوب عنوان مترجم واحد على الأقل.",
     "cancel": "إلغاء",
-    "save": "حفظ"
+    "save": "حفظ",
+    "edit": "تعديل",
+    "editTitle": "تعديل الجولة",
+    "editSubtitle": "حدّث محتوى الجولة والبيانات التجارية.",
+    "updated": "تم تحديث الجولة."
   },
   "adminFlights": {
     "title": "الرحلات الجوية",
@@ -1705,7 +1713,12 @@
     "error": "فشلت العملية.",
     "saving": "جارٍ الحفظ",
     "save": "حفظ",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "editRoute": "تعديل مسار الرحلة",
+    "editSubtitle": "حدّث تفاصيل المسار وعرض المزود.",
+    "updated": "تم تحديث مسار الرحلة.",
+    "actions": "الإجراءات"
   },
   "adminVisas": {
     "title": "التأشيرات",
@@ -1725,7 +1738,7 @@
     "status": "الحالة",
     "createdAt": "وقت الإنشاء",
     "actions": "الإجراءات",
-    "updated": "تم تحديث الحالة.",
+    "updated": "تم تحديث دولة التأشيرة.",
     "emptyCountries": "لا توجد دول تأشيرات.",
     "emptyApplications": "لا توجد طلبات.",
     "error": "فشلت العملية.",
@@ -1748,7 +1761,10 @@
     "created": "تم إنشاء دولة التأشيرة.",
     "saving": "جارٍ الحفظ",
     "save": "حفظ",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "editCountry": "تعديل دولة التأشيرة",
+    "editSubtitle": "حدّث محتوى الدولة والسعر ومدة المعالجة."
   },
   "supportCenter": {
     "title": "مركز الدعم",
@@ -1858,7 +1874,9 @@
     "offers": "العروض المتاحة",
     "book": "احجز هذه الجولة",
     "noOffers": "لا توجد عروض معتمدة بعد.",
-    "cancellation": "سياسة الإلغاء"
+    "cancellation": "سياسة الإلغاء",
+    "reviews": "التقييمات",
+    "reviewCount": "{count} تقييم منشور"
   },
   "visaDetail": {
     "home": "الرئيسية",
@@ -1904,7 +1922,11 @@
     "submittedAt": "وقت الإرسال",
     "backToVisas": "العودة إلى التأشيرات",
     "myVisas": "حجوزات التأشيرات",
-    "defaultNationality": "??????"
+    "defaultNationality": "إيراني",
+    "upload": "المستندات",
+    "uploadHint": "ارفع ملفات PDF أو JPEG أو PNG (10 ميجابايت كحد أقصى).",
+    "uploadError": "تعذر رفع المستندات. حاول مرة أخرى.",
+    "trackApplication": "متابعة الطلب"
   },
   "flightSearch": {
     "title": "الرحلات الجوية",
@@ -1976,5 +1998,24 @@
     "processing": "مدة المعالجة",
     "maxProcessingDays": "أقصى أيام معالجة",
     "apply": "تطبيق الفلاتر"
+  },
+  "visaTrack": {
+    "title": "متابعة طلب التأشيرة",
+    "subtitle": "أدخل رقم الطلب والبريد أو الهاتف المستخدم.",
+    "applicationNumber": "رقم الطلب",
+    "contact": "البريد أو الهاتف",
+    "track": "متابعة",
+    "notFound": "لا يوجد طلب مطابق.",
+    "applicant": "مقدم الطلب",
+    "passport": "الجواز",
+    "nationality": "الجنسية",
+    "email": "البريد",
+    "phone": "الهاتف",
+    "travelDate": "تاريخ السفر",
+    "submittedAt": "وقت الإرسال",
+    "updatedAt": "آخر تحديث",
+    "documents": "المستندات",
+    "document": "مستند {number}",
+    "back": "العودة إلى التأشيرات"
   }
 }

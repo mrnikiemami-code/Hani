@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMessageBox } from "@/components/hani/message-provider";
-import { createVisaCountry } from "../application/admin-visa-actions";
+import { createVisaCountry, updateVisaCountry } from "../application/admin-visa-actions";
+import type { AdminVisaCountryDetail } from "../domain/admin-visa";
 
 const LOCALES = [
   { code: "fa", label: "فارسی" },
@@ -12,33 +13,70 @@ const LOCALES = [
   { code: "ar", label: "العربية" }
 ] as const;
 
-/** Creates a visa country with one visa type. */
-export function VisaCountryForm() {
+/** Creates or edits a visa country with its visa types. */
+export function VisaCountryForm({
+  initial,
+  edit = false
+}: {
+  initial?: AdminVisaCountryDetail;
+  edit?: boolean;
+} = {}) {
   const t = useTranslations("adminVisas");
   const messages = useMessageBox();
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [slug, setSlug] = useState("");
-  const [countryCode, setCountryCode] = useState("");
-  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [slug, setSlug] = useState(initial?.slug ?? "");
+  const [countryCode, setCountryCode] = useState(initial?.countryCode ?? "");
+  const [coverImageUrl, setCoverImageUrl] = useState(initial?.coverImageUrl ?? "");
   const [translations, setTranslations] = useState<
     Record<string, { name: string; description: string }>
-  >({
-    fa: { name: "", description: "" },
-    en: { name: "", description: "" },
-    ar: { name: "", description: "" }
+  >(() => {
+    const base = {
+      fa: { name: "", description: "" },
+      en: { name: "", description: "" },
+      ar: { name: "", description: "" }
+    };
+    for (const item of initial?.translations ?? []) {
+      if (item.locale in base) {
+        base[item.locale as keyof typeof base] = {
+          name: item.name,
+          description: item.description ?? ""
+        };
+      }
+    }
+    return base;
   });
-  const [type, setType] = useState({
-    code: "Tourist",
-    entryType: "Single",
-    issuanceType: "Embassy",
-    processingDaysMin: "3",
-    processingDaysMax: "7",
-    validityDays: "30",
-    priceAdult: "",
-    priceChild: "",
-    currency: "IRR"
-  });
+  const [types, setTypes] = useState(
+    initial?.types.length
+      ? initial.types.map((item) => ({
+          id: item.id,
+          code: item.code,
+          entryType: item.entryType,
+          issuanceType: item.issuanceType,
+          processingDaysMin: String(item.processingDaysMin),
+          processingDaysMax: String(item.processingDaysMax),
+          validityDays: String(item.validityDays),
+          priceAdult: String(item.priceAdult),
+          priceChild: item.priceChild == null ? "" : String(item.priceChild),
+          currency: item.currency
+        }))
+      : [
+          {
+            id: null as string | null,
+            code: "Tourist",
+            entryType: "Single",
+            issuanceType: "Embassy",
+            processingDaysMin: "3",
+            processingDaysMax: "7",
+            validityDays: "30",
+            priceAdult: "",
+            priceChild: "",
+            currency: "IRR"
+          }
+        ]
+  );
+  const [typeIndex, setTypeIndex] = useState(0);
+  const type = types[typeIndex] ?? types[0];
 
   const updateTranslation = (
     locale: string,
@@ -50,12 +88,16 @@ export function VisaCountryForm() {
       [locale]: { ...current[locale], [key]: value }
     }));
 
-  const setTypeField = (key: keyof typeof type, value: string) =>
-    setType((current) => ({ ...current, [key]: value }));
+  const setTypeField = (key: keyof (typeof types)[number], value: string) =>
+    setTypes((current) =>
+      current.map((item, index) =>
+        index === typeIndex ? { ...item, [key]: value } : item
+      )
+    );
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!slug.trim() || !countryCode.trim() || !type.priceAdult.trim()) {
+    if (!edit && (!slug.trim() || !countryCode.trim() || !type.priceAdult.trim())) {
       messages.toast({ kind: "error", message: t("required") });
       return;
     }
@@ -70,7 +112,7 @@ export function VisaCountryForm() {
     }
 
     setPending(true);
-    const result = await createVisaCountry({
+    const payload = {
       slug: slug.trim(),
       countryCode: countryCode.trim().toUpperCase(),
       coverImageUrl: coverImageUrl.trim() || null,
@@ -79,39 +121,44 @@ export function VisaCountryForm() {
         name: item.name.trim(),
         description: item.description.trim() || null
       })),
-      types: [
-        {
-          code: type.code,
-          entryType: type.entryType,
-          issuanceType: type.issuanceType,
-          processingDaysMin: Number(type.processingDaysMin),
-          processingDaysMax: Number(type.processingDaysMax),
-          validityDays: Number(type.validityDays),
-          priceAdult: Number(type.priceAdult),
-          priceChild: type.priceChild.trim() ? Number(type.priceChild) : null,
-          currency: type.currency
-        }
-      ]
-    });
+      types: types.map((item) => ({
+        id: item.id,
+        code: item.code,
+        entryType: item.entryType,
+        issuanceType: item.issuanceType,
+        processingDaysMin: Number(item.processingDaysMin),
+        processingDaysMax: Number(item.processingDaysMax),
+        validityDays: Number(item.validityDays),
+        priceAdult: Number(item.priceAdult),
+        priceChild: item.priceChild.trim() ? Number(item.priceChild) : null,
+        currency: item.currency
+      }))
+    };
+    const result = edit && initial
+      ? await updateVisaCountry(initial.id, payload)
+      : await createVisaCountry(payload);
     setPending(false);
     if (!result.ok) {
       messages.toast({ kind: "error", message: t("error") });
       return;
     }
-    messages.toast({ kind: "success", message: t("created") });
+    messages.toast({
+      kind: "success",
+      message: edit ? t("updated") : t("created")
+    });
     router.push("/admin/products/visas");
   };
 
   return (
     <form className="card border-0 shadow-sm" onSubmit={submit}>
       <div className="card-header">
-        <h2 className="h5 mb-0">{t("createCountry")}</h2>
+        <h2 className="h5 mb-0">{edit ? t("editCountry") : t("createCountry")}</h2>
       </div>
       <div className="card-body">
         <div className="row g-3">
           <div className="col-md-4">
             <label className="form-label" htmlFor="visa-slug">{t("slug")}</label>
-            <input id="visa-slug" className="form-control" dir="ltr" value={slug} onChange={(e) => setSlug(e.target.value)} required />
+            <input id="visa-slug" className="form-control" dir="ltr" value={slug} onChange={(e) => setSlug(e.target.value)} required disabled={edit} />
           </div>
           <div className="col-md-2">
             <label className="form-label" htmlFor="visa-country-code">{t("countryCode")}</label>
@@ -140,6 +187,25 @@ export function VisaCountryForm() {
 
         <hr className="my-4" />
         <h3 className="h6 mb-3">{t("visaType")}</h3>
+        {types.length > 1 ? (
+          <div className="mb-3">
+            <label className="form-label" htmlFor="visa-type-index">
+              {t("visaType")}
+            </label>
+            <select
+              id="visa-type-index"
+              className="form-select"
+              value={typeIndex}
+              onChange={(e) => setTypeIndex(Number(e.target.value))}
+            >
+              {types.map((item, index) => (
+                <option key={`${item.id ?? "new"}-${index}`} value={index}>
+                  {item.code} ? {item.entryType}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
         <div className="row g-3">
           <div className="col-md-2">
             <label className="form-label" htmlFor="visa-type-code">{t("typeCode")}</label>

@@ -50,3 +50,10 @@ export function getVisaApplication(id: string) {
   );
 }
 
+export function trackVisaApplication(number: string, contact: string) {
+  const query = new URLSearchParams({ number, contact });
+  return apiGet<VisaApplication>(
+    `/market/v1/visa-applications/track?${query.toString()}`
+  );
+}
+

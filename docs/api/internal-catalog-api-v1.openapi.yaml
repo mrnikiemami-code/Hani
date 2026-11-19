@@ -46,3 +46,60 @@ paths:
       responses:
         '200': { description: Published hotel }
         '404': { description: Not found }
+
+  /internal/v1/admin/catalog/tours/{id}:
+    get:
+      tags: [Catalog]
+      summary: Get a tour product for editing
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Tour product detail }
+        '404': { description: Not found }
+    put:
+      tags: [Catalog]
+      summary: Update tour overview, content, scope, category, and cover
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated }
+        '400': { description: Invalid tour content }
+        '404': { description: Not found }
+
+  /internal/v1/admin/catalog/visas/{id}:
+    get:
+      tags: [Catalog]
+      summary: Get a visa country with translations and types
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Visa country detail }
+        '404': { description: Not found }
+    put:
+      tags: [Catalog]
+      summary: Update visa country content, types, pricing, and processing time
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated }
+        '400': { description: Invalid visa content }
+        '404': { description: Not found }
+
+  /internal/v1/admin/catalog/flights/routes/{id}:
+    get:
+      tags: [Catalog]
+      summary: Get a flight route and its provider offers
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Flight route detail }
+        '404': { description: Not found }
+    put:
+      tags: [Catalog]
+      summary: Update flight route metadata and replace provider offers
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated }
+        '400': { description: Invalid flight route }
+        '404': { description: Not found }

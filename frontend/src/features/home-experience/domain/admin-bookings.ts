@@ -37,6 +37,38 @@ export type AdminHotelInquiry = {
   createdAt: string;
 };
 
+export type AdminLead = {
+  leadId: string;
+  requestNumber: string;
+  serviceType: string;
+  destination: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  adults: number;
+  children: number;
+  infants: number;
+  budgetAmount: number | null;
+  currency: string | null;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  notes: string | null;
+  status: string;
+  matchedAgencyId: string | null;
+  createdAt: string;
+  matchedAt: string | null;
+  closedAt: string | null;
+  invitedAgencyIds: string[];
+};
+
+export type AdminLeadPage = {
+  items: AdminLead[];
+  page: number;
+  pageSize: number;
+  totalCount?: number;
+  total?: number;
+};
+
 export type AdminBookings = {
   orderCount: number;
   requestCount: number;

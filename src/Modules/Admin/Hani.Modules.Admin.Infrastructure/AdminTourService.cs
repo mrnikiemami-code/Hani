@@ -101,6 +101,93 @@ internal sealed partial class AdminService : IAdminTourService
             cancellationToken);
     }
 
+
+    public async Task<AdminTourDetailDto?> GetTourAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var item = await catalog.TourProducts
+            .AsNoTracking()
+            .Include(product => product.Translations)
+            .FirstOrDefaultAsync(product => product.Id == id, cancellationToken);
+        if (item is null)
+        {
+            return null;
+        }
+
+        return new AdminTourDetailDto(
+            item.Id,
+            item.Slug,
+            item.DurationDays,
+            item.TourType,
+            item.Scope.ToString(),
+            item.Category.ToString(),
+            item.TravelType.ToString(),
+            item.CoverImageUrl,
+            item.Status.ToString(),
+            item.Translations
+                .OrderBy(translation => translation.Locale)
+                .Select(translation => new AdminTourTranslationDto(
+                    translation.Locale,
+                    translation.Title,
+                    translation.Summary,
+                    translation.Description))
+                .ToArray());
+    }
+
+    public async Task<Result<bool>> UpdateTourAsync(
+        Guid id,
+        AdminTourUpdateInput input,
+        CancellationToken cancellationToken)
+    {
+        if (input.Translations.Count == 0)
+        {
+            return Result<bool>.Failure(Error.Validation(
+                "HANI-TOUR-4002",
+                "At least one translation is required."));
+        }
+
+        var product = await catalog.TourProducts
+            .Include(item => item.Translations)
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (product is null)
+        {
+            return Result<bool>.Failure(Error.NotFound(
+                "HANI-TOUR-4040",
+                "Tour product was not found."));
+        }
+
+        var scope = Enum.TryParse<TourScope>(input.Scope, true, out var parsedScope)
+            ? parsedScope
+            : product.Scope;
+        var category = Enum.TryParse<TourCategory>(input.Category, true, out var parsedCategory)
+            ? parsedCategory
+            : product.Category;
+        var travelType = Enum.TryParse<TravelType>(input.TravelType, true, out var parsedTravel)
+            ? parsedTravel
+            : product.TravelType;
+
+        product.UpdateBasics(
+            input.DurationDays,
+            input.TourType,
+            category,
+            travelType,
+            scope,
+            input.CoverImageUrl);
+        foreach (var translation in input.Translations)
+        {
+            product.UpsertTranslation(
+                ids,
+                translation.Locale,
+                translation.Title,
+                translation.Summary,
+                translation.Description);
+        }
+
+        await catalog.SaveChangesAsync(cancellationToken);
+        return Result<bool>.Success(true);
+    }
+
     public Task<Result<bool>> PublishTourAsync(Guid id, CancellationToken cancellationToken)
         => sender.Send(new PublishTourProductCommand(id), cancellationToken);
 }

@@ -5,6 +5,7 @@ import Sidebar from "../sidebar/sidebar";
 import ImageWithBasePath from "../../../components/image-with-base-path";
 import AgentBookingDetailsModal from "./agentBookingDetailsModal";
 import { all_routes } from "../../../routes/all_routes";
+import { AgencyName } from "@/features/agencies/ui/AgencyName";
 
 const AgentBookingDetails = () => {
   const routes = all_routes;
@@ -356,7 +357,7 @@ const AgentBookingDetails = () => {
               <div className="internal-note-box">
                 <div className="d-flex align-items-center justify-content-between mb-1 flex-wrap gap-2">
                   <strong className="fs-14 text-dark">
-                    Chris Foxy (Agent)
+                    <AgencyName /> (Agent)
                   </strong>
                   <span className="fs-12 text-gray-6">
                     16 May 2026, 09:15 AM

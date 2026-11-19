@@ -26,6 +26,27 @@ export async function createFlightRoute(input: unknown): Promise<{ ok: boolean }
   return post("/internal/v1/admin/catalog/flights/routes", input);
 }
 
+export async function updateFlightRoute(
+  id: string,
+  input: unknown
+): Promise<{ ok: boolean }> {
+  const token = (await cookies()).get("hani_access_token")?.value;
+  if (!token) return { ok: false };
+  const response = await fetch(
+    `${apiBase}/internal/v1/admin/catalog/flights/routes/${id}`,
+    {
+      method: "PUT",
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(input)
+    }
+  );
+  return { ok: response.ok };
+}
+
 export async function createAirline(iata: string, name: string): Promise<{ ok: boolean }> {
   return post("/internal/v1/admin/catalog/flights/airlines", { iata, name });
 }

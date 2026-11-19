@@ -50,6 +50,18 @@ public sealed record AdminFlightRouteInput(
     bool IsActive,
     IReadOnlyList<AdminFlightOfferInput> Offers);
 
+
+/// <summary>Admin flight route detail for editing.</summary>
+public sealed record AdminFlightRouteDetailDto(
+    Guid RouteId,
+    string Slug,
+    string OriginCode,
+    string DestinationCode,
+    string OriginCity,
+    string DestinationCity,
+    bool IsActive,
+    IReadOnlyList<AdminFlightOfferInput> Offers);
+
 /// <summary>Admin flight service.</summary>
 public interface IAdminFlightService
 {
@@ -60,6 +72,11 @@ public interface IAdminFlightService
         CancellationToken cancellationToken);
     Task<FlightReferenceDto> ListReferencesAsync(CancellationToken cancellationToken);
     Task<Result<Guid>> CreateRouteAsync(
+        AdminFlightRouteInput input,
+        CancellationToken cancellationToken);
+    Task<AdminFlightRouteDetailDto?> GetRouteAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<bool>> UpdateRouteAsync(
+        Guid id,
         AdminFlightRouteInput input,
         CancellationToken cancellationToken);
     Task<Result<Guid>> CreateAirlineAsync(

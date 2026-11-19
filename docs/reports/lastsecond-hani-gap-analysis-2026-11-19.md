@@ -132,3 +132,41 @@ Reviewed as a senior architect against:
 - Add saved views/exports for the RFQ queue and product moderation.
 - Add structured review data to real product detail pages instead of template
   reviews.
+
+## Batch 13 changes implemented
+
+1. Replaced the Hani flight storefront demo with real metasearch:
+   - `/flights` searches the flight catalog, shows real airports/routes, and
+     links to `/flights/search` and `/flights/{route}`.
+   - Results show real provider offers, airline, times, stops, baggage, price,
+     and a deep link to the seller.
+   - Verified against the seeded `IKA -> IST` offer.
+2. Wired tour and visa listing filters to real server-side search/filtering:
+   - tour query, price, duration, type, and sort;
+   - visa country query, price, and maximum processing days.
+   - Removed fake filter counters, fake sort menus, and static pagination.
+3. Added admin edit screens and backend update endpoints:
+   - `GET/PUT /internal/v1/admin/catalog/tours/{id}`
+   - `GET/PUT /internal/v1/admin/catalog/visas/{id}`
+   - `GET/PUT /internal/v1/admin/catalog/flights/routes/{id}`
+   - edit links from every product list; all updates audited.
+4. Added real visa document uploads:
+   - `POST /market/v1/visa-applications/documents` accepts PDF/JPEG/PNG up to
+     10 MB and returns a stored URL.
+   - the visa application form uploads files before submission.
+5. Added real visa tracking:
+   - `GET /market/v1/visa-applications/track?number=&contact=`
+   - a customer page at `/visa/track-visa` with status, dates, and documents.
+6. Added an admin RFQ/lead queue:
+   - `/fa/admin/bookings` now lists reservation requests and lead/RFQ rows;
+   - `/api/admin/rfq/export` exports the lead queue as CSV.
+7. Removed hardcoded agency identities from agent-dashboard modals; they now
+   read the signed-in agency from `/api/agency/me`.
+8. Added published tour reviews from the real review API to tour detail pages.
+
+## Remaining external/dependency work
+
+- Flight provider sync at the inventory level and real ticketing require a
+  contracted provider; the storefront already supports external provider
+  search fallback and deep-link ticketing.
+- Saved views for the RFQ queue are not implemented; CSV export is available.

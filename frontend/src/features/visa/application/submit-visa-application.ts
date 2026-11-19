@@ -5,6 +5,11 @@ import { routing } from "@/i18n/routing";
 import { sessionPost } from "@/lib/hani/server-api";
 import type { VisaApplication } from "../domain/visa-application";
 
+const apiBase =
+  process.env.API_BASE_URL ??
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  "http://localhost:5099";
+
 function localeOf(value: FormDataEntryValue | null): string {
   const candidate = String(value ?? "");
   return routing.locales.includes(candidate as (typeof routing.locales)[number])
@@ -25,10 +30,45 @@ export async function submitVisaApplication(formData: FormData): Promise<void> {
   const contactEmail = String(formData.get("contactEmail") ?? "").trim();
   const contactPhone = String(formData.get("contactPhone") ?? "").trim();
   const notes = String(formData.get("notes") ?? "").trim();
-  const documents = String(formData.get("documents") ?? "")
+  const documentNames = String(formData.get("documents") ?? "")
     .split("|")
     .map((item) => item.trim())
     .filter((item) => item.length > 0);
+  const files = formData
+    .getAll("documentFiles")
+    .filter((value): value is File => value instanceof File && value.size > 0);
+  const uploaded: string[] = [];
+  for (const file of files) {
+    const upload = new FormData();
+    upload.append("file", file, file.name);
+    try {
+      const response = await fetch(
+        `${apiBase}/market/v1/visa-applications/documents`,
+        { method: "POST", body: upload, cache: "no-store" }
+      );
+      if (!response.ok) {
+        redirect(
+          `/${locale}/visa/visa-application?slug=${encodeURIComponent(slug)}&error=upload`
+        );
+      }
+      const result = (await response.json()) as { url?: string };
+      if (result.url) {
+        uploaded.push(result.url);
+      }
+    } catch {
+      redirect(
+        `/${locale}/visa/visa-application?slug=${encodeURIComponent(slug)}&error=upload`
+      );
+    }
+  }
+
+  if (uploaded.length === 0 && files.length > 0) {
+    redirect(
+      `/${locale}/visa/visa-application?slug=${encodeURIComponent(slug)}&error=upload`
+    );
+  }
+
+  const documents = uploaded.length > 0 ? uploaded : documentNames;
 
   if (
     !countryId ||

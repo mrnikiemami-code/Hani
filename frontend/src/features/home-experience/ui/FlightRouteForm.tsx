@@ -6,34 +6,45 @@ import { useTranslations } from "next-intl";
 import { HaniDatePicker } from "@/components/hani/date/HaniDatePicker";
 import { useMessageBox } from "@/components/hani/message-provider";
 import type { IsoDate } from "@/lib/hani/calendar";
-import { createFlightRoute } from "../application/admin-flight-actions";
+import { createFlightRoute, updateFlightRoute } from "../application/admin-flight-actions";
+import type { AdminFlightRouteDetail } from "../domain/admin-flight";
 
-/** Creates a flight route with one provider offer. */
-export function FlightRouteForm() {
+/** Creates or edits a flight route with one provider offer. */
+export function FlightRouteForm({
+  initial,
+  edit = false
+}: {
+  initial?: AdminFlightRouteDetail;
+  edit?: boolean;
+} = {}) {
   const t = useTranslations("adminFlights");
   const messages = useMessageBox();
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [date, setDate] = useState<IsoDate | null>(null);
+  const firstOffer = initial?.offers[0];
+  const [date, setDate] = useState<IsoDate | null>(
+    (firstOffer?.departureDate as IsoDate | undefined) ?? null
+  );
+  const [isActive, setIsActive] = useState(initial?.isActive ?? true);
   const [form, setForm] = useState({
-    slug: "",
-    originCode: "",
-    destinationCode: "",
-    originCity: "",
-    destinationCity: "",
-    flightNumber: "",
-    airlineCode: "",
-    airlineName: "",
-    departureTime: "10:00",
-    arrivalTime: "12:00",
-    durationMinutes: "120",
-    stops: "0",
-    cabin: "Economy",
-    baggageAllowance: "20kg",
-    price: "",
-    currency: "IRR",
-    provider: "Mock",
-    deepLink: "https://"
+    slug: initial?.slug ?? "",
+    originCode: initial?.originCode ?? "",
+    destinationCode: initial?.destinationCode ?? "",
+    originCity: initial?.originCity ?? "",
+    destinationCity: initial?.destinationCity ?? "",
+    flightNumber: firstOffer?.flightNumber ?? "",
+    airlineCode: firstOffer?.airlineCode ?? "",
+    airlineName: firstOffer?.airlineName ?? "",
+    departureTime: firstOffer?.departureTime?.slice(0, 5) ?? "10:00",
+    arrivalTime: firstOffer?.arrivalTime?.slice(0, 5) ?? "12:00",
+    durationMinutes: String(firstOffer?.durationMinutes ?? 120),
+    stops: String(firstOffer?.stops ?? 0),
+    cabin: firstOffer?.cabin ?? "Economy",
+    baggageAllowance: firstOffer?.baggageAllowance ?? "20kg",
+    price: firstOffer ? String(firstOffer.price) : "",
+    currency: firstOffer?.currency ?? "IRR",
+    provider: firstOffer?.provider ?? "Mock",
+    deepLink: firstOffer?.deepLink ?? "https://"
   });
 
   const set = (key: keyof typeof form, value: string) =>
@@ -41,25 +52,25 @@ export function FlightRouteForm() {
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!form.slug.trim() || !date || !form.price.trim()) {
+    if (!edit && (!form.slug.trim() || !date || !form.price.trim())) {
       messages.toast({ kind: "error", message: t("required") });
       return;
     }
 
     setPending(true);
-    const result = await createFlightRoute({
+    const payload = {
       slug: form.slug.trim(),
       originCode: form.originCode.trim().toUpperCase(),
       destinationCode: form.destinationCode.trim().toUpperCase(),
       originCity: form.originCity.trim(),
       destinationCity: form.destinationCity.trim(),
-      isActive: true,
+      isActive,
       offers: [
         {
           flightNumber: form.flightNumber.trim(),
           airlineCode: form.airlineCode.trim().toUpperCase(),
           airlineName: form.airlineName.trim(),
-          departureDate: date,
+          departureDate: date ?? "",
           departureTime: form.departureTime,
           arrivalTime: form.arrivalTime,
           durationMinutes: Number(form.durationMinutes),
@@ -72,26 +83,32 @@ export function FlightRouteForm() {
           deepLink: form.deepLink.trim()
         }
       ]
-    });
+    };
+    const result = edit && initial
+      ? await updateFlightRoute(initial.routeId, payload)
+      : await createFlightRoute(payload);
     setPending(false);
     if (!result.ok) {
       messages.toast({ kind: "error", message: t("error") });
       return;
     }
-    messages.toast({ kind: "success", message: t("created") });
+    messages.toast({
+      kind: "success",
+      message: edit ? t("updated") : t("created")
+    });
     router.push("/admin/products/flights");
   };
 
   return (
     <form className="card border-0 shadow-sm" onSubmit={submit}>
       <div className="card-header">
-        <h2 className="h5 mb-0">{t("createRoute")}</h2>
+        <h2 className="h5 mb-0">{edit ? t("editRoute") : t("createRoute")}</h2>
       </div>
       <div className="card-body">
         <div className="row g-3">
           <div className="col-md-4">
             <label className="form-label" htmlFor="flight-slug">{t("slug")}</label>
-            <input id="flight-slug" className="form-control" dir="ltr" value={form.slug} onChange={(e) => set("slug", e.target.value)} required />
+            <input id="flight-slug" className="form-control" dir="ltr" value={form.slug} onChange={(e) => set("slug", e.target.value)} required disabled={edit} />
           </div>
           <div className="col-md-2">
             <label className="form-label" htmlFor="flight-origin">Origin IATA</label>

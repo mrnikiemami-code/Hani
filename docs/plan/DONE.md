@@ -347,3 +347,18 @@
 | D-B12-05 | Canonical detail links | tour/visa grid + home components | code review |
 | D-B12-06 | Agency identity | `views/agent-dashboard/sidebar/sidebar.tsx` + `/api/agency/me` | build + code review |
 | D-B12-07 | Gap report | `docs/reports/lastsecond-hani-gap-analysis-2026-11-19.md` | audit record |
+
+## Batch 13 ? Remaining audit gaps (2026-11-19)
+
+| # | Item | Artifact |
+|---|---|---|
+| D-B13-01 | Flight metasearch | `flights/page.tsx`, `flights/search/page.tsx`, `flights/[route]/page.tsx` |
+| D-B13-02 | Tour filters | `features/tours/ui/TourFilters.tsx`, `tours-api.ts` |
+| D-B13-03 | Visa filters | `features/visa/ui/VisaFilters.tsx`, `visa-grid/page.tsx` |
+| D-B13-04 | Admin edit API/UI | admin catalog endpoints + edit pages/forms |
+| D-B13-05 | Visa uploads | `VisaDocumentEndpoints.cs`, form action |
+| D-B13-06 | Visa tracking | `TrackVisaApplicationQuery`, `/visa/track-visa` |
+| D-B13-07 | RFQ queue/export | admin bookings leads table + BFF CSV route |
+| D-B13-08 | Agent identity | `AgencyName` component |
+| D-B13-09 | Tour reviews | `getTourReviews` + detail section |
+| D-B13-10 | Domain update tests | `AdminEditDomainTests.cs` |

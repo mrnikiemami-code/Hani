@@ -93,6 +93,111 @@ internal sealed partial class AdminService : IAdminVisaService
             cancellationToken);
     }
 
+
+    public async Task<AdminVisaCountryDetailDto?> GetCountryAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var item = await catalog.VisaCountries
+            .AsNoTracking()
+            .Include(country => country.Translations)
+            .Include(country => country.Types)
+            .FirstOrDefaultAsync(country => country.Id == id, cancellationToken);
+        if (item is null)
+        {
+            return null;
+        }
+
+        return new AdminVisaCountryDetailDto(
+            item.Id,
+            item.Slug,
+            item.CountryCode,
+            item.CoverImageUrl,
+            item.Translations
+                .OrderBy(translation => translation.Locale)
+                .Select(translation => new AdminVisaTranslationInput(
+                    translation.Locale,
+                    translation.Name,
+                    translation.Description))
+                .ToArray(),
+            item.Types
+                .OrderBy(type => type.Code)
+                .Select(type => new AdminVisaTypeDto(
+                    type.Id,
+                    type.Code,
+                    type.EntryType,
+                    type.IssuanceType,
+                    type.ProcessingDaysMin,
+                    type.ProcessingDaysMax,
+                    type.ValidityDays,
+                    type.PriceAdult,
+                    type.PriceChild,
+                    type.Currency))
+                .ToArray());
+    }
+
+    public async Task<Result<bool>> UpdateCountryAsync(
+        Guid id,
+        AdminVisaCountryUpdateInput input,
+        CancellationToken cancellationToken)
+    {
+        if (input.Translations.Count == 0 || input.Types.Count == 0)
+        {
+            return Result<bool>.Failure(Error.Validation(
+                "HANI-VISA-4003",
+                "At least one translation and one visa type are required."));
+        }
+
+        var country = await catalog.VisaCountries
+            .Include(item => item.Translations)
+            .Include(item => item.Types)
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (country is null)
+        {
+            return Result<bool>.Failure(Error.NotFound(
+                "HANI-VISA-4040",
+                "Visa country was not found."));
+        }
+
+        country.UpdateBasics(input.CountryCode, input.CoverImageUrl);
+        foreach (var translation in input.Translations)
+        {
+            country.UpsertTranslation(
+                ids,
+                translation.Locale,
+                translation.Name,
+                translation.Description);
+        }
+
+        foreach (var type in input.Types)
+        {
+            var payload = new VisaTypeInput(
+                type.Code,
+                type.EntryType,
+                type.IssuanceType,
+                type.ProcessingDaysMin,
+                type.ProcessingDaysMax,
+                type.ValidityDays,
+                type.PriceAdult,
+                type.PriceChild,
+                type.Currency,
+                [],
+                [],
+                []);
+            if (type.Id is { } typeId && country.Types.Any(item => item.Id == typeId))
+            {
+                country.UpdateType(typeId, payload);
+            }
+            else
+            {
+                country.AddType(ids, payload);
+            }
+        }
+
+        await catalog.SaveChangesAsync(cancellationToken);
+        return Result<bool>.Success(true);
+    }
+
     public async Task<AdminVisaApplicationPageDto> ListApplicationsAsync(
         int page,
         int pageSize,

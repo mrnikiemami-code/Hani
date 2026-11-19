@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import {
   getTourBySlug,
   getTourComparison,
+  getTourReviews,
   localizedTranslation
 } from "@/features/tours/infrastructure/tour-detail-api";
 
@@ -40,6 +41,7 @@ export default async function TourDetailPage({
   const translation = localizedTranslation(product.translations, locale);
   if (!translation) notFound();
   const comparison = await getTourComparison(product.id, locale);
+  const reviews = await getTourReviews(product.id, locale);
 
   return (
     <>
@@ -105,6 +107,36 @@ export default async function TourDetailPage({
                   )}
                 </div>
               </div>
+
+              {reviews?.items.length ? (
+                <div className="card border-0 shadow-sm mb-4">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h5 className="mb-0">{t("reviews")}</h5>
+                    <span className="fs-13 text-gray-6">
+                      {t("reviewCount", { count: reviews.totalCount })}
+                    </span>
+                  </div>
+                  <div className="card-body">
+                    {reviews.items.map((review) => (
+                      <div className="border-bottom pb-3 mb-3" key={review.reviewId}>
+                        <div className="d-flex justify-content-between align-items-start gap-2">
+                          <strong className="fs-14">{review.authorDisplayName}</strong>
+                          <span className="badge badge-soft-warning rounded-pill">
+                            {review.rating}/5
+                          </span>
+                        </div>
+                        {review.title ? (
+                          <span className="d-block fw-medium mt-1">{review.title}</span>
+                        ) : null}
+                        <p className="text-gray-6 mb-1 mt-1">{review.comment}</p>
+                        <span className="fs-12 text-gray-5">
+                          {formatIsoDate(review.createdAt, locale, "medium")}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
 
               {product.itineraryDays.length > 0 && (
                 <div className="card border-0 shadow-sm mb-4">

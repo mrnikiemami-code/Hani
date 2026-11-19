@@ -4,8 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMessageBox } from "@/components/hani/message-provider";
-import type { AdminTourCreateInput } from "../domain/admin-tour";
-import { createAdminTour } from "../application/admin-tour-actions";
+import type { AdminTourCreateInput, AdminTourDetail } from "../domain/admin-tour";
+import {
+  createAdminTour,
+  updateAdminTour
+} from "../application/admin-tour-actions";
 
 const LOCALES = [
   { code: "fa", label: "فارسی" },
@@ -13,26 +16,46 @@ const LOCALES = [
   { code: "ar", label: "العربية" }
 ] as const;
 
-/** Create a shared tour product. */
-export function TourForm() {
+/** Create or edit a shared tour product. */
+export function TourForm({
+  initial,
+  edit = false
+}: {
+  initial?: AdminTourDetail;
+  edit?: boolean;
+} = {}) {
   const t = useTranslations("adminTours");
   const messages = useMessageBox();
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [slug, setSlug] = useState("");
-  const [durationDays, setDurationDays] = useState("3");
-  const [tourType, setTourType] = useState("Cultural");
-  const [scope, setScope] = useState("Foreign");
-  const [category, setCategory] = useState("Normal");
-  const [travelType, setTravelType] = useState("Other");
-  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [slug, setSlug] = useState(initial?.slug ?? "");
+  const [durationDays, setDurationDays] = useState(
+    String(initial?.durationDays ?? 3)
+  );
+  const [tourType, setTourType] = useState(initial?.tourType ?? "Cultural");
+  const [scope, setScope] = useState(initial?.scope ?? "Foreign");
+  const [category, setCategory] = useState(initial?.category ?? "Normal");
+  const [travelType, setTravelType] = useState(initial?.travelType ?? "Other");
+  const [coverImageUrl, setCoverImageUrl] = useState(initial?.coverImageUrl ?? "");
   const [destinationIds, setDestinationIds] = useState("");
   const [translations, setTranslations] = useState<
     Record<string, { title: string; summary: string; description: string }>
-  >({
-    fa: { title: "", summary: "", description: "" },
-    en: { title: "", summary: "", description: "" },
-    ar: { title: "", summary: "", description: "" }
+  >(() => {
+    const base = {
+      fa: { title: "", summary: "", description: "" },
+      en: { title: "", summary: "", description: "" },
+      ar: { title: "", summary: "", description: "" }
+    };
+    for (const item of initial?.translations ?? []) {
+      if (item.locale in base) {
+        base[item.locale as keyof typeof base] = {
+          title: item.title,
+          summary: item.summary,
+          description: item.description
+        };
+      }
+    }
+    return base;
   });
 
   const updateTranslation = (
@@ -47,7 +70,7 @@ export function TourForm() {
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!slug.trim() || Number(durationDays) <= 0) {
+    if (!edit && (!slug.trim() || Number(durationDays) <= 0)) {
       messages.toast({ kind: "error", message: t("required") });
       return;
     }
@@ -82,26 +105,39 @@ export function TourForm() {
     };
 
     setPending(true);
-    const result = await createAdminTour(input);
+    const result = edit && initial
+      ? await updateAdminTour(initial.id, {
+          durationDays: input.durationDays,
+          tourType: input.tourType,
+          scope: input.scope,
+          category: input.category,
+          travelType: input.travelType,
+          coverImageUrl: input.coverImageUrl,
+          translations: input.translations
+        })
+      : await createAdminTour(input);
     setPending(false);
     if (!result.ok) {
       messages.toast({ kind: "error", message: t("error") });
       return;
     }
-    messages.toast({ kind: "success", message: t("created") });
+    messages.toast({
+      kind: "success",
+      message: edit ? t("updated") : t("created")
+    });
     router.push("/admin/products/tours");
   };
 
   return (
     <form className="card border-0 shadow-sm" onSubmit={submit}>
       <div className="card-header">
-        <h2 className="h5 mb-0">{t("createTitle")}</h2>
+        <h2 className="h5 mb-0">{edit ? t("editTitle") : t("createTitle")}</h2>
       </div>
       <div className="card-body">
         <div className="row g-3">
           <div className="col-md-4">
             <label className="form-label" htmlFor="tour-slug">{t("slug")}</label>
-            <input id="tour-slug" className="form-control" dir="ltr" value={slug} onChange={(e) => setSlug(e.target.value)} maxLength={180} required />
+            <input id="tour-slug" className="form-control" dir="ltr" value={slug} onChange={(e) => setSlug(e.target.value)} maxLength={180} required disabled={edit} />
           </div>
           <div className="col-md-2">
             <label className="form-label" htmlFor="tour-duration">{t("duration")}</label>
@@ -137,7 +173,7 @@ export function TourForm() {
           </div>
           <div className="col-md-3">
             <label className="form-label" htmlFor="tour-destinations">{t("destinations")}</label>
-            <input id="tour-destinations" className="form-control" dir="ltr" value={destinationIds} onChange={(e) => setDestinationIds(e.target.value)} placeholder="guid,guid" />
+            <input id="tour-destinations" className="form-control" dir="ltr" value={destinationIds} onChange={(e) => setDestinationIds(e.target.value)} placeholder="guid,guid" disabled={edit} />
           </div>
         </div>
 

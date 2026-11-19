@@ -283,6 +283,88 @@ public sealed class TourProduct : AggregateRoot<Guid>
         Touch();
     }
 
+    /// <summary>
+    /// Updates the commercial and display basics of the tour.
+    /// </summary>
+    public void UpdateBasics(
+        int durationDays,
+        string tourType,
+        TourCategory category,
+        TravelType travelType,
+        TourScope scope,
+        string? coverImageUrl)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(durationDays);
+        if (string.IsNullOrWhiteSpace(tourType))
+        {
+            throw new ArgumentException("Tour type is required.", nameof(tourType));
+        }
+
+        DurationDays = durationDays;
+        TourType = tourType.Trim();
+        Category = category;
+        TravelType = travelType;
+        Scope = scope;
+        CoverImageUrl = string.IsNullOrWhiteSpace(coverImageUrl)
+            ? null
+            : coverImageUrl.Trim();
+        Touch();
+    }
+
+    /// <summary>
+    /// Adds or updates one localized translation.
+    /// </summary>
+    public void UpsertTranslation(
+        IIdGenerator ids,
+        string locale,
+        string title,
+        string summary,
+        string description,
+        string? seoTitle = null,
+        string? seoDescription = null,
+        string? mealsSummary = null,
+        string? includedServices = null,
+        string? excludedServices = null,
+        string? cancellationPolicy = null,
+        string? additionalInfo = null,
+        string? requiredItems = null)
+    {
+        var existing = _translations.FirstOrDefault(item =>
+            string.Equals(item.Locale, locale, StringComparison.OrdinalIgnoreCase));
+        if (existing is null)
+        {
+            AddTranslation(
+                ids,
+                locale,
+                title,
+                summary,
+                description,
+                seoTitle,
+                seoDescription,
+                mealsSummary,
+                includedServices,
+                excludedServices,
+                cancellationPolicy,
+                additionalInfo,
+                requiredItems);
+            return;
+        }
+
+        existing.Update(
+            title,
+            summary,
+            description,
+            seoTitle,
+            seoDescription,
+            mealsSummary,
+            includedServices,
+            excludedServices,
+            cancellationPolicy,
+            additionalInfo,
+            requiredItems);
+        Touch();
+    }
+
     public void Publish(IIdGenerator ids)
     {
         if (_translations.Count == 0)

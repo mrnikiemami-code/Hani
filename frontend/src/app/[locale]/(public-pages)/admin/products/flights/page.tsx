@@ -82,6 +82,7 @@ export default async function AdminFlightsPage({
                 <th>{t("offers")}</th>
                 <th>{t("priceFrom")}</th>
                 <th>{t("status")}</th>
+                <th className="text-end">{t("actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -101,11 +102,19 @@ export default async function AdminFlightsPage({
                       : "—"}
                   </td>
                   <td>{route.isActive ? t("active") : t("inactive")}</td>
+                  <td className="text-end">
+                    <Link
+                      href={`/admin/products/flights/${route.routeId}`}
+                      className="btn btn-light btn-sm"
+                    >
+                      {t("edit")}
+                    </Link>
+                  </td>
                 </tr>
               ))}
               {(routes.data?.items ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={6} className="text-center text-gray-6 py-4">
+                  <td colSpan={7} className="text-center text-gray-6 py-4">
                     {t("emptyRoutes")}
                   </td>
                 </tr>

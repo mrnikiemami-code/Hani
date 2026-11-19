@@ -68,3 +68,18 @@ support quality reporting. SLA targets are derived from priority in
 Disputes are separate aggregates in the Content module. Creating or closing a
 dispute is audited by the API layer. The support report returns first-response
 and resolution averages, SLA counts, category distribution, and assignee load.
+
+## Product editing
+
+`IAdminTourService`, `IAdminVisaService`, and `IAdminFlightService` expose
+detail reads plus update operations for tour overview/content, visa country
+content/types/pricing, and flight routes with replacement provider offers.
+Updates are audited by the API layer and persist through the catalog
+aggregates; no endpoint injects a `DbContext`.
+
+## RFQ and lead queue
+
+The admin booking page also reads `/internal/v1/leads` for the RFQ queue.
+Leads remain in the Booking module; the admin surface only projects them and
+offers CSV export through the Next.js BFF. Reservation requests continue to use
+the existing confirm/reject commands.

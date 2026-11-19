@@ -666,3 +666,23 @@
 **Verification:** backend build, frontend build, tour-by-slug integration
 assertion, real visa application POST + confirmation page, agency profile
 endpoint. Open P0 items remain documented in the gap report.
+
+## Batch 13 ? All remaining audit gaps (2026-11-19)
+
+| Item | Status |
+|---|---|
+| Real flight metasearch (`/flights`, `/flights/search`, `/flights/{route}`) | Done |
+| Real tour filters (query/price/duration/type/sort) | Done |
+| Real visa filters (query/price/processing time) | Done |
+| Admin tour/visa/flight edit screens + update API | Done |
+| Visa document upload (PDF/JPEG/PNG, 10 MB) | Done |
+| Visa application tracking by number + contact | Done |
+| Admin RFQ/lead queue + CSV export | Done |
+| Agent-dashboard hardcoded identity removal | Done |
+| Real tour reviews on product detail | Done |
+| Flight provider inventory sync / real ticketing | External dependency |
+| RFQ saved views | Not implemented (CSV export available) |
+
+**Verification:** backend build, frontend build, 200 unit tests, architecture
+and integration verification, real flight search, real visa upload + tracking,
+admin tour/visa/flight update smoke tests.
