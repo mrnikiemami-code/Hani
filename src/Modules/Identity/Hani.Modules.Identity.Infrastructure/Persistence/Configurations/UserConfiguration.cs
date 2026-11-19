@@ -19,7 +19,7 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(user => user.Username).HasColumnName("username").HasMaxLength(32).IsRequired();
         builder.Property(user => user.Bio).HasColumnName("bio").HasMaxLength(1000);
         builder.Property(user => user.AvatarUrl).HasColumnName("avatar_url").HasMaxLength(500);
-        builder.Property(user => user.Role).HasColumnName("role").HasConversion<string>().HasMaxLength(32).IsRequired();
+        builder.Property(user => user.Role).HasColumnName("role").HasMaxLength(64).IsRequired();
         builder.Property(user => user.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
         builder.Property(user => user.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(user => user.UpdatedAt).HasColumnName("updated_at").IsRequired();

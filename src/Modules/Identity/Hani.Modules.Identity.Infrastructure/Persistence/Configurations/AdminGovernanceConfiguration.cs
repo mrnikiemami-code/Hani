@@ -100,3 +100,18 @@ internal sealed class PlatformSettingsConfiguration : IEntityTypeConfiguration<P
         builder.HasIndex(item => item.Key).IsUnique().HasDatabaseName("ux_platform_settings_key");
     }
 }
+
+internal sealed class RoleDefinitionConfiguration : IEntityTypeConfiguration<RoleDefinition>
+{
+    public void Configure(EntityTypeBuilder<RoleDefinition> builder)
+    {
+        builder.ToTable("role_definitions");
+        builder.HasKey(item => item.Id);
+        builder.Property(item => item.Id).HasColumnName("id");
+        builder.Property(item => item.Name).HasColumnName("name").HasMaxLength(64).IsRequired();
+        builder.Property(item => item.DisplayName).HasColumnName("display_name").HasMaxLength(120).IsRequired();
+        builder.Property(item => item.IsSystem).HasColumnName("is_system").IsRequired();
+        builder.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
+        builder.HasIndex(item => item.Name).IsUnique().HasDatabaseName("ux_role_definitions_name");
+    }
+}

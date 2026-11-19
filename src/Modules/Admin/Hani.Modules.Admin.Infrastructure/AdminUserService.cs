@@ -29,9 +29,9 @@ internal sealed partial class AdminService : IAdminUserService
                 (user.Email != null && user.Email.Contains(term)));
         }
 
-        if (Enum.TryParse<UserRole>(role, true, out var parsedRole))
+        if (!string.IsNullOrWhiteSpace(role))
         {
-            query = query.Where(user => user.Role == parsedRole);
+            query = query.Where(user => user.Role == role);
         }
 
         if (Enum.TryParse<UserStatus>(status, true, out var parsedStatus))

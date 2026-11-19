@@ -12,6 +12,12 @@ public static class AdminSettingsEndpoints
     /// <summary>Maps platform settings endpoints.</summary>
     public static IEndpointRouteBuilder MapAdminSettingsEndpoints(this IEndpointRouteBuilder app)
     {
+        app.MapGet("/market/v1/platform-settings", GetPublicAsync)
+            .WithTags("Marketplace.Settings")
+            .AllowAnonymous()
+            .WithName("Marketplace.GetPlatformSettings")
+            .Produces<AdminPlatformSettingsDto>();
+
         var group = app.MapGroup("/internal/v1/admin/platform-settings")
             .WithTags("Internal.Admin.Settings")
             .RequireAuthorization("Admin");
@@ -26,6 +32,11 @@ public static class AdminSettingsEndpoints
 
         return app;
     }
+
+    private static async Task<IResult> GetPublicAsync(
+        IAdminPlatformSettingsService settings,
+        CancellationToken cancellationToken)
+        => Results.Ok(await settings.GetAsync(cancellationToken));
 
     private static async Task<IResult> GetAsync(
         IAdminPlatformSettingsService settings,

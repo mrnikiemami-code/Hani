@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import ImageWithBasePath from '../image-with-base-path'
-import { all_routes } from '../../routes/all_routes'
+import { all_routes } from '../../routes/all_routes';
+import { usePlatformSettings } from '../../features/platform/ui/use-platform-settings';
 
 const Footer = () => {
 
-  const routes = all_routes
+  const routes = all_routes;
+  const platform = usePlatformSettings();
 
   return (
     <>
@@ -172,7 +174,7 @@ const Footer = () => {
                       </span>
                       <div className="ms-2">
                         <p className="mb-1">Customer Support</p>
-                        <p className="fw-medium text-dark">+1 56589 54598</p>
+                        <p className="fw-medium text-dark">{platform.supportPhone || "+1 56589 54598"}</p>
                       </div>
                     </div>
                     <div className="d-flex align-items-center justify-content-center justify-content-sm-start mb-3">
@@ -181,7 +183,7 @@ const Footer = () => {
                       </span>
                       <div className="ms-2">
                         <p className="mb-1">Drop Us an Email</p>
-                        <p className="fw-medium text-dark">info@example.com</p>
+                        <p className="fw-medium text-dark">{platform.supportEmail}</p>
                       </div>
                     </div>
                   </div>

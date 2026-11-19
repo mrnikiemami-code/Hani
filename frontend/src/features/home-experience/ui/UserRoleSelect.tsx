@@ -9,10 +9,12 @@ import { changeUserRole } from "../application/admin-role-actions";
 /** Inline role assignment for the admin user directory. */
 export function UserRoleSelect({
   userId,
-  role
+  role,
+  roles
 }: {
   userId: string;
   role: string;
+  roles: Array<{ role: string; displayName: string }>;
 }) {
   const t = useTranslations("adminUsers");
   const messages = useMessageBox();
@@ -42,9 +44,9 @@ export function UserRoleSelect({
       onChange={(event) => change(event.target.value)}
       aria-label={t("role")}
     >
-      {["Customer", "Author", "AgencyStaff", "Admin"].map((item) => (
-        <option value={item} key={item}>
-          {t(`role${item}`)}
+      {roles.map((item) => (
+        <option value={item.role} key={item.role}>
+          {item.displayName}
         </option>
       ))}
     </select>

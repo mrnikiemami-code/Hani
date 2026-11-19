@@ -1,4 +1,4 @@
-namespace Hani.Modules.Admin.Application;
+namespace Hani.Modules.Identity.Application.Security;
 
 /// <summary>Stable permission catalog for the 12 admin sections.</summary>
 public static class AdminPermissions

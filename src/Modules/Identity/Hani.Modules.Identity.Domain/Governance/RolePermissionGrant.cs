@@ -3,8 +3,8 @@ using Hani.BuildingBlocks.Domain;
 namespace Hani.Modules.Identity.Domain.Governance;
 
 /// <summary>
-/// One permission granted to an administrative role. Role names map to
-/// <c>UserRole</c>; permissions are stable codes from the admin catalog.
+/// One permission granted to an administrative role. Roles may be built-in
+/// or custom; permissions are stable codes from the admin catalog.
 /// </summary>
 public sealed class RolePermissionGrant : AggregateRoot<Guid>
 {

@@ -1412,7 +1412,15 @@
     "roleAdmin": "مدیر ارشد",
     "roleAgencyStaff": "کارمند آژانس",
     "roleCustomer": "مشتری",
-    "roleAuthor": "نویسنده"
+    "roleAuthor": "نویسنده",
+    "createTitle": "نقش سفارشی",
+    "roleName": "نام نقش",
+    "displayName": "نام نمایشی",
+    "create": "ساخت نقش",
+    "created": "نقش ساخته شد.",
+    "delete": "حذف",
+    "deleteConfirm": "این نقش حذف شود؟",
+    "deleted": "نقش حذف شد."
   },
   "adminSettings": {
     "title": "تنظیمات پایه پلتفرم",

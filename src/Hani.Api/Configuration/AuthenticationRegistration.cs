@@ -63,7 +63,9 @@ public static class AuthenticationRegistration
             options.AddPolicy("User", policy => policy.RequireAuthenticatedUser());
             options.AddPolicy("Admin", policy => policy
                 .RequireAuthenticatedUser()
-                .RequireRole("Admin"));
+                .RequireAssertion(context =>
+                    context.User.IsInRole("Admin") ||
+                    context.User.HasClaim("permission", "dashboard.view")));
 
             options.AddPolicy("Channel", policy => policy
                 .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)

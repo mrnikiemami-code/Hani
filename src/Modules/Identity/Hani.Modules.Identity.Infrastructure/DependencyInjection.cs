@@ -36,7 +36,7 @@ public static class DependencyInjection
         // the deployment needs shared rate-limit state across API instances.
         services.AddSingleton<IOtpSecurityState, InMemoryOtpSecurityState>();
         services.AddSingleton<IOtpSender, LogOtpSender>();
-        services.AddSingleton<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddSingleton<IChannelTokenService, ChannelTokenService>();
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
         services.AddScoped<IAgencyReadService, AgencyReadService>();

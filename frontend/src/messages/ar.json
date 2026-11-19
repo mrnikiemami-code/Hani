@@ -1412,7 +1412,15 @@
     "roleAdmin": "المدير الأعلى",
     "roleAgencyStaff": "موظف الوكالة",
     "roleCustomer": "العميل",
-    "roleAuthor": "الكاتب"
+    "roleAuthor": "الكاتب",
+    "createTitle": "دور مخصص",
+    "roleName": "اسم الدور",
+    "displayName": "الاسم المعروض",
+    "create": "إنشاء الدور",
+    "created": "تم إنشاء الدور.",
+    "delete": "حذف",
+    "deleteConfirm": "هل يتم حذف هذا الدور؟",
+    "deleted": "تم حذف الدور."
   },
   "adminSettings": {
     "title": "إعدادات المنصة الأساسية",

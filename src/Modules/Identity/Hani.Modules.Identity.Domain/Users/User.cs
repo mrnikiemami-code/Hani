@@ -28,7 +28,7 @@ public sealed class User : AggregateRoot<Guid>
         Username = username;
         CreatedAt = createdAt;
         UpdatedAt = createdAt;
-        Role = UserRole.Customer;
+        Role = "Customer";
         Status = UserStatus.Pending;
     }
 
@@ -70,7 +70,7 @@ public sealed class User : AggregateRoot<Guid>
     /// <summary>
     /// Authorization role.
     /// </summary>
-    public UserRole Role { get; private set; }
+    public string Role { get; private set; } = "Customer";
 
     /// <summary>
     /// Lifecycle state.
@@ -186,9 +186,14 @@ public sealed class User : AggregateRoot<Guid>
     /// Marks the user active after a successful OTP verification.
     /// </summary>
     /// <summary>Changes the user's authorization role.</summary>
-    public void ChangeRole(UserRole role)
+    public void ChangeRole(string role)
     {
-        Role = role;
+        if (string.IsNullOrWhiteSpace(role))
+        {
+            throw new ArgumentException("Role is required.", nameof(role));
+        }
+
+        Role = role.Trim();
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 

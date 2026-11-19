@@ -1,4 +1,5 @@
 using Hani.Api.Endpoints;
+using Hani.Api.Middleware;
 using Hani.BuildingBlocks.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -30,6 +31,7 @@ public static class HaniApiPipelineExtensions
         app.UseStatusCodePages(WriteProblemDetailsAsync);
         app.UseRateLimiter();
         app.UseAuthorization();
+        app.UseMiddleware<AdminPermissionMiddleware>();
         MapHealthEndpoints(app);
         app.MapHaniEndpoints();
         return app;

@@ -39,3 +39,24 @@ export async function changeUserRole(
 ): Promise<{ ok: boolean }> {
   return send("POST", `/internal/v1/admin/users/${userId}/role`, { role });
 }
+
+export async function createAdminRole(
+  name: string,
+  displayName: string
+): Promise<{ ok: boolean }> {
+  return send("POST", "/internal/v1/admin/roles", { name, displayName });
+}
+
+export async function deleteAdminRole(role: string): Promise<{ ok: boolean }> {
+  const token = (await cookies()).get("hani_access_token")?.value;
+  if (!token) return { ok: false };
+  const response = await fetch(
+    `${apiBase}/internal/v1/admin/roles/${encodeURIComponent(role)}`,
+    {
+      method: "DELETE",
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}` }
+    }
+  );
+  return { ok: response.ok };
+}

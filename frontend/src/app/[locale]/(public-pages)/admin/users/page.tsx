@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { sessionGet } from "@/lib/hani/server-api";
 import type { AdminUserListResponse } from "@/features/home-experience/domain/admin-user";
+import type { AdminRoles } from "@/features/home-experience/domain/admin-role";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 import { UserManager } from "@/features/home-experience/ui/UserManager";
 
@@ -52,9 +53,10 @@ export default async function AdminUsersPage({
   if (role) query.set("role", role);
   if (status) query.set("status", status);
 
-  const result = await sessionGet<AdminUserListResponse>(
-    `/internal/v1/admin/users?${query}`
-  );
+  const [result, rolesResult] = await Promise.all([
+    sessionGet<AdminUserListResponse>(`/internal/v1/admin/users?${query}`),
+    sessionGet<AdminRoles>("/internal/v1/admin/roles")
+  ]);
 
   if (result.status === 401 || result.status === 403) {
     return (
@@ -94,6 +96,7 @@ export default async function AdminUsersPage({
           }
         }
         filters={{ q, role, status }}
+        roles={rolesResult.data?.roles ?? []}
       />
     </AdminPageShell>
   );

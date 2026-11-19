@@ -15,9 +15,21 @@ public static class AdminRolesEndpoints
             .RequireAuthorization("Admin")
             .Produces<AdminRolesDto>();
 
+        app.MapPost("/internal/v1/admin/roles", CreateAsync)
+            .WithTags("Internal.Admin.Roles")
+            .WithName("Internal.CreateAdminRole")
+            .RequireAuthorization("Admin")
+            .Produces<AdminRoleDto>();
+
         app.MapPut("/internal/v1/admin/roles/{role}", SaveAsync)
             .WithTags("Internal.Admin.Roles")
             .WithName("Internal.SaveAdminRole")
+            .RequireAuthorization("Admin")
+            .Produces<bool>();
+
+        app.MapDelete("/internal/v1/admin/roles/{role}", DeleteAsync)
+            .WithTags("Internal.Admin.Roles")
+            .WithName("Internal.DeleteAdminRole")
             .RequireAuthorization("Admin")
             .Produces<bool>();
 
@@ -34,6 +46,58 @@ public static class AdminRolesEndpoints
         IAdminRoleService roles,
         CancellationToken cancellationToken)
         => Results.Ok(await roles.ListAsync(cancellationToken));
+
+    private static async Task<IResult> CreateAsync(
+        AdminRoleCreateRequest request,
+        HttpContext context,
+        IAdminRoleService roles,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await roles.CreateRoleAsync(
+            request.Name,
+            request.DisplayName,
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "settings.role.created",
+            "Role",
+            result.Value!.Role,
+            "Custom role created from the admin panel",
+            after: result.Value,
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/roles/{result.Value.Role}",
+            result.Value);
+    }
+
+    private static async Task<IResult> DeleteAsync(
+        string role,
+        HttpContext context,
+        IAdminRoleService roles,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await roles.DeleteRoleAsync(role, cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "settings.role.deleted",
+            "Role",
+            role,
+            "Custom role deleted from the admin panel",
+            cancellationToken: cancellationToken);
+        return Results.Ok(result.Value);
+    }
 
     private static async Task<IResult> SaveAsync(
         string role,
@@ -91,6 +155,9 @@ public static class AdminRolesEndpoints
         return Results.Ok(result.Value);
     }
 }
+
+/// <summary>Custom role creation request.</summary>
+public sealed record AdminRoleCreateRequest(string Name, string DisplayName);
 
 /// <summary>Role permission update request.</summary>
 public sealed record AdminRoleWriteRequest(IReadOnlyList<string> Permissions);

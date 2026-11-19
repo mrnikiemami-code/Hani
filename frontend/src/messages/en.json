@@ -1412,7 +1412,15 @@
     "roleAdmin": "Super Admin",
     "roleAgencyStaff": "Agency staff",
     "roleCustomer": "Customer",
-    "roleAuthor": "Author"
+    "roleAuthor": "Author",
+    "createTitle": "Custom role",
+    "roleName": "Role name",
+    "displayName": "Display name",
+    "create": "Create role",
+    "created": "Role created.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this role?",
+    "deleted": "Role deleted."
   },
   "adminSettings": {
     "title": "Platform base settings",

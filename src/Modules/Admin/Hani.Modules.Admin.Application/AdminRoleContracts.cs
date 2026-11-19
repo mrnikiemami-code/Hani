@@ -5,6 +5,8 @@ namespace Hani.Modules.Admin.Application;
 /// <summary>Role permissions row.</summary>
 public sealed record AdminRoleDto(
     string Role,
+    string DisplayName,
+    bool IsSystem,
     IReadOnlyList<string> Permissions);
 
 /// <summary>Role and permission catalog.</summary>
@@ -25,6 +27,13 @@ public interface IAdminRoleService
         CancellationToken cancellationToken);
     Task<Result<bool>> ChangeUserRoleAsync(
         Guid userId,
+        string role,
+        CancellationToken cancellationToken);
+    Task<Result<AdminRoleDto>> CreateRoleAsync(
+        string name,
+        string displayName,
+        CancellationToken cancellationToken);
+    Task<Result<bool>> DeleteRoleAsync(
         string role,
         CancellationToken cancellationToken);
 }

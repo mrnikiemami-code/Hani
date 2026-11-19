@@ -3,7 +3,10 @@ using System.Security.Cryptography;
 using System.Text;
 using Hani.Modules.Identity.Application;
 using Hani.Modules.Identity.Application.Abstractions;
+using Hani.Modules.Identity.Application.Security;
 using Hani.Modules.Identity.Domain.Users;
+using Hani.Modules.Identity.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +16,9 @@ namespace Hani.Modules.Identity.Infrastructure.Security;
 /// <summary>
 /// Issues signed JWT access tokens and opaque refresh tokens.
 /// </summary>
-internal sealed class JwtTokenService(IOptions<JwtOptions> options) : IJwtTokenService
+internal sealed class JwtTokenService(
+    IOptions<JwtOptions> options,
+    IdentityDbContext identity) : IJwtTokenService
 {
     public JwtAccessToken CreateAccessToken(User user, DateTimeOffset now)
     {
@@ -27,14 +32,25 @@ internal sealed class JwtTokenService(IOptions<JwtOptions> options) : IJwtTokenS
         }
 
         var expiresAt = now.AddMinutes(configuration.AccessTokenMinutes);
-        var claims = new[]
+        var permissions = identity.RolePermissionGrants
+            .AsNoTracking()
+            .Where(item => item.Role == user.Role)
+            .Select(item => item.Permission)
+            .ToArray();
+        if (permissions.Length == 0 && user.Role == "Admin")
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
-            new Claim(ClaimTypes.Name, user.DisplayName),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim("user_id", user.Id.ToString())
+            permissions = AdminPermissions.All.ToArray();
+        }
+
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.UniqueName, user.Username),
+            new(ClaimTypes.Name, user.DisplayName),
+            new(ClaimTypes.Role, user.Role),
+            new("user_id", user.Id.ToString())
         };
+        claims.AddRange(permissions.Select(permission => new Claim("permission", permission)));
 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(configuration.SigningKey));

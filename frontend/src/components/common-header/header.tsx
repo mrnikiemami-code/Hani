@@ -8,12 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDataTheme } from "../../redux/slices/themeSettingSlice";
 import { all_routes } from "../../routes/all_routes";
 import LoginModal from "../modals/loginModal";
+import { usePlatformSettings } from "../../features/platform/ui/use-platform-settings";
 import RegisterModal from "../modals/registerModal";
 import ForgotPasswordModal from "../modals/forgotPassword";
 import { useScrollLock } from '../../hooks/useScrollLock'
 import ChangePasswordModal from "../modals/changePassword";
 
 const Header = () => {
+  const platform = usePlatformSettings();
   const t = useTranslations("common");
   const [scrolled, setScrolled] = useState(false);
   const [isResponsive, setIsResponsive] = useState(false);
@@ -2223,12 +2225,12 @@ const Header = () => {
               <div className="d-flex align-items-center justify-content-between flex-wrap">
                 <p className="d-flex align-items-center fw-medium fs-14 mb-2">
                   <i className="isax isax-call5 me-2" />
-                  Toll Free : +1 56565 56594
+                  Toll Free : {platform.supportPhone || "+1 56565 56594"}
                 </p>
                 <div className="d-flex align-items-center">
                   <p className="mb-2 me-3 d-flex align-items-center fw-medium fs-14">
                     <i className="isax isax-message-text-15 me-2" />
-                    Email : info@example.com
+                    Email : {platform.supportEmail}
                   </p>
                   <div className="dropdown flag-dropdown mb-2 me-3">
                     <Link
@@ -2331,11 +2333,11 @@ const Header = () => {
                 <div className="d-flex align-items-center flex-wrap">
                   <p className="d-flex align-items-center fs-14 mb-2 me-3 ">
                     <i className="isax isax-call5 me-2" />
-                    Toll Free : +1 56565 56594
+                    Toll Free : {platform.supportPhone || "+1 56565 56594"}
                   </p>
                   <p className="mb-2 d-flex align-items-center fs-14">
                     <i className="isax isax-message-text-15 me-2" />
-                    Email : info@example.com
+                    Email : {platform.supportEmail}
                   </p>
                 </div>
                 <div className="d-flex align-items-center">
@@ -2432,11 +2434,11 @@ const Header = () => {
                 <div className="d-flex align-items-center flex-wrap">
                   <p className="d-flex align-items-center fs-14 mb-2 me-3 ">
                     <i className="isax isax-call5 me-2" />
-                    Toll Free : +1 56565 56594
+                    Toll Free : {platform.supportPhone || "+1 56565 56594"}
                   </p>
                   <p className="mb-2 d-flex align-items-center fs-14">
                     <i className="isax isax-message-text-15 me-2" />
-                    Email : info@example.com
+                    Email : {platform.supportEmail}
                   </p>
                 </div>
                 <div className="navbar-logo mb-2">
@@ -2598,11 +2600,11 @@ const Header = () => {
                 <div className="d-flex align-items-center flex-wrap">
                   <p className="d-flex align-items-center fs-14 mb-0 me-3 ">
                     <i className="isax isax-call5 me-2" />
-                    Toll Free : +1 56565 56594
+                    Toll Free : {platform.supportPhone || "+1 56565 56594"}
                   </p>
                   <p className="mb-0 d-flex align-items-center fs-14">
                     <i className="isax isax-message-text-15 me-2" />
-                    Email : info@example.com
+                    Email : {platform.supportEmail}
                   </p>
                 </div>
               </div>

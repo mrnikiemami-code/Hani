@@ -14,7 +14,7 @@ internal static class UserMappings
             user.Username,
             user.Bio,
             user.AvatarUrl,
-            user.Role.ToString(),
+            user.Role,
             user.Status.ToString(),
             user.CreatedAt,
             user.LastLoginAt);

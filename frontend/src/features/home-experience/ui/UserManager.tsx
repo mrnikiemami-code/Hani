@@ -21,11 +21,13 @@ const pageItems = (page: number, totalPages: number): Array<number | "ellipsis">
 export function UserManager({
   locale,
   initial,
-  filters
+  filters,
+  roles
 }: {
   locale: string;
   initial: AdminUserListResponse;
   filters: { q: string; role: string; status: string };
+  roles: Array<{ role: string; displayName: string }>;
 }) {
   const t = useTranslations("adminUsers");
   const router = useRouter();
@@ -162,7 +164,11 @@ export function UserManager({
                     </span>
                   </td>
                   <td className="d-none d-md-table-cell">
-                    <UserRoleSelect userId={user.id} role={user.role} />
+                    <UserRoleSelect
+                      userId={user.id}
+                      role={user.role}
+                      roles={roles}
+                    />
                   </td>
                   <td>
                     <span className="badge rounded-pill badge-secondary">

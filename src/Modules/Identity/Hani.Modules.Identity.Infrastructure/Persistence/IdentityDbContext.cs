@@ -48,6 +48,8 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
 
     public DbSet<RolePermissionGrant> RolePermissionGrants => Set<RolePermissionGrant>();
 
+    public DbSet<RoleDefinition> RoleDefinitions => Set<RoleDefinition>();
+
     public DbSet<PlatformSettings> PlatformSettings => Set<PlatformSettings>();
 
     /// <summary>
