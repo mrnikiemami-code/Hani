@@ -68,14 +68,12 @@
         }
         .card-header{
             background-color: rgba(variables.$white, 0.20);
-            backdrop-filter: blur(12px);
             border-radius: 10px;
             border: 1px solid rgba(variables.$white,0.30) !important;
             margin-bottom: 8px;
         }
         .card-body{
             background-color: rgba(variables.$white, 0.20);
-            backdrop-filter: blur(12px);
             border-radius: 10px;
             border: 1px solid rgba(variables.$white,0.50) !important;
             .form-info{
@@ -576,7 +574,6 @@
     .why-choose-item{
         padding: 20px;
         background-color: rgba(variables.$white, 0.30);
-        backdrop-filter: blur(44px);
         border-radius: 10px;
         border: 1px solid rgba(variables.$white,0.30);
         text-align: center;
@@ -664,8 +661,7 @@
         }
         .article-content{
             background-color: rgba(variables.$white, 0.30);
-            backdrop-filter: blur(44px);
-            border-radius: 10px;
+                border-radius: 10px;
             padding: 20px;
             position: absolute;
             bottom: 0;

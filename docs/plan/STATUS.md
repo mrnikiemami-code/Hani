@@ -721,3 +721,10 @@ formatting, vulnerability scan, and manual checks.
 | Mobile LCP reduction | 17.4s ? 9.7s (further work) |
 
 Report: `docs/reports/phase7-seo-performance-audit-2026-11-19.md`.
+
+### Phase 7 follow-up
+
+- Sitemap and robots revalidate hourly.
+- Hero backdrop filters/fixed background removed.
+- `scripts/lighthouse-audit.ps1` added with mobile/desktop budgets.
+- Mobile LCP: 9.7s ? 8.6s; accessibility 100.

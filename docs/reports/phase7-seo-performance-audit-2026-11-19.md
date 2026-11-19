@@ -68,3 +68,13 @@ The canonical/hreflang tags themselves are correct.
   routes use nonce CSP and are not affected.
 - Add Lighthouse CI budgets for home, tour detail, visa detail, and flight
   search to prevent regressions.
+
+## Follow-up slice
+
+- Added hourly revalidation to `sitemap.xml` and `robots.txt` so new tours,
+  visas, and hotels appear without a rebuild.
+- Removed expensive hero `backdrop-filter` effects and fixed background
+  attachment from the home hero to reduce paint cost.
+- Added `scripts/lighthouse-audit.ps1` with mobile/desktop budgets for home,
+  tours, tour detail, visa detail, and flights.
+- Mobile LCP improved further from 9.7 s to **8.6 s**; desktop remains 87.

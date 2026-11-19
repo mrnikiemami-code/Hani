@@ -384,3 +384,7 @@
 | D-P7-05 | Canonical/hreflang | tour/visa detail and visa listing metadata |
 | D-P7-06 | Structured data | `TourDetailStructuredData`, `VisaStructuredData` |
 | D-P7-07 | Robots private routes | `frontend/src/app/robots.ts` |
+
+| D-P7-08 | Sitemap/robots revalidation | `frontend/src/app/sitemap.ts`, `robots.ts` |
+| D-P7-09 | Lighthouse budgets | `scripts/lighthouse-audit.ps1` |
+| D-P7-10 | Hero paint optimization | `_home-08.scss` |

@@ -425,3 +425,7 @@
 | P7-07 | Structured data | Done | Tour/Offer/Service/FAQ/Breadcrumb |
 | P7-08 | Robots private routes | Done | user/admin/agent/checkout/visa |
 | P7-09 | Mobile LCP budget | In progress | legacy hero/HTML budget |
+
+| P7-10 | Sitemap/robots revalidation | Done | hourly refresh |
+| P7-11 | Lighthouse CI budgets | Done | `scripts/lighthouse-audit.ps1` |
+| P7-12 | Hero paint optimization | Done | backdrop/fixed background removed |

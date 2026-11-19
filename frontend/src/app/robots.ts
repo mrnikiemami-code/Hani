@@ -1,3 +1,5 @@
+export const revalidate = 3600;
+
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/hani/site";
 
