@@ -8,49 +8,57 @@
 
 .hero-sec-eight{
     position: relative;
-    padding: 40px 0 40px;
-    background-image: url(#{img.$img-base}assets/img/banner/banner-05.jpg);
+    padding: 72px 0 96px;
+    background: linear-gradient(135deg, #1b2f4a 0%, #2d4b68 52%, #cf3425 140%);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    height: 846px;
+    min-height: 720px;
     display: flex;
     align-items: center;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
     z-index: 1;
-    @media (min-width: 992px) {
-        padding-bottom: 150px;
-    }
     @include mixins.respond-below(md){
-        height: auto;
-        padding-top: 45%;
-    }
-     @include mixins.respond-below(sm){
-        padding-top: 47%;
+        min-height: auto;
+        padding: 56px 0 64px;
     }
     &::after{
       position: absolute;
       content: '';
-      background-image: url(#{img.$img-base}assets/img/banner/banner-bg-05.png);
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center;
-        top: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,.16), transparent 42%),
+        radial-gradient(circle at 80% 10%, rgba(207,52,37,.28), transparent 38%);
+      top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: -1;
+      pointer-events: none;
     }
-    .animate-text{
-        font-size: 16.5vw;
+    .hero-sec-content{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .hero-copy{
+        position: relative;
+        z-index: 2;
+        text-align: center;
         color: variables.$white;
-        text-transform: uppercase;
-        z-index: -2;
-        position: absolute;
-        top: 100px;
-        left: 50%;
-        transform: translateX(-50%);
+        margin-bottom: 28px;
+        max-width: 760px;
+    }
+    .hero-title{
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        line-height: 1.15;
+        font-weight: 700;
+        color: variables.$white;
+        margin-bottom: 12px;
+    }
+    .hero-subtitle{
+        font-size: clamp(.95rem, 1.6vw, 1.15rem);
+        color: rgba(variables.$white, .84);
+        margin-bottom: 0;
     }
     .banner-form{
         background-color: transparent !important;
