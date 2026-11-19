@@ -155,7 +155,9 @@
     "hotelsFound": "تم العثور على {count} فندق",
     "tourTypesTitle": "اختر نوع الجولة",
     "tourTypeFilterHint": "تصفية حسب هذا النوع",
-    "noVisas": "لا توجد تأشيرات."
+    "noVisas": "لا توجد تأشيرات.",
+    "visas": "التأشيرات",
+    "visaScopeDescription": "قارن أنواع التأشيرات ومدة المعالجة والمستندات والأسعار."
   },
   "meta": {
     "title": "هاني — سفر ذكي",

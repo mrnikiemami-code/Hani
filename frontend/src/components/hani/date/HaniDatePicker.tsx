@@ -126,6 +126,7 @@ export function HaniDatePicker({
       <input
         id={id}
         type="text"
+        role="combobox"
         className={className}
         value={displayed}
         data-iso-value={currentValue ?? ""}

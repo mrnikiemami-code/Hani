@@ -13,7 +13,6 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
     height: 846px;
     display: flex;
     align-items: center;
@@ -37,8 +36,7 @@
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
-      background-attachment: fixed;
-      top: 0;
+        top: 0;
       left: 0;
       width: 100%;
       height: 100%;
@@ -369,7 +367,7 @@
     &::after{
         content: '';
         position: absolute;
-        background-image: url(#{img.$img-base}assets/img/bg/recommended-bg.png);
+        background-image: url(#{img.$img-base}assets/img/bg/recommended-bg.webp);
         background-size: cover;
         background-repeat: no-repeat;
         z-index: -1;

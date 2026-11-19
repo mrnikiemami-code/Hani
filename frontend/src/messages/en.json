@@ -155,7 +155,9 @@
     "hotelsFound": "{count} hotels found",
     "tourTypesTitle": "Choose a tour type",
     "tourTypeFilterHint": "Filter by this type",
-    "noVisas": "No visas found."
+    "noVisas": "No visas found.",
+    "visas": "Visas",
+    "visaScopeDescription": "Compare visa types, processing time, documents, and prices for your destination."
   },
   "meta": {
     "title": "Hani — Smart travel",

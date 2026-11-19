@@ -703,3 +703,21 @@ admin tour/visa/flight update smoke tests.
 
 **Verification:** build, 200 unit tests, architecture, integration, migration,
 formatting, vulnerability scan, and manual checks.
+
+## Phase 7 ? SEO, Performance & Launch Readiness (2026-11-19)
+
+| Item | Status |
+|---|---|
+| Lighthouse baseline and production audit | Done |
+| A11y tablist/footer/date-picker fixes | Done |
+| Icon and font subsetting | Done |
+| Remove render-blocking Google Fonts import | Done |
+| Tour/visa/hotel sitemap coverage | Done |
+| Canonical/hreflang for tour/visa detail | Done |
+| Tour/visa JSON-LD (`TouristTrip`, `Offer`, `Service`, `FAQPage`) | Done |
+| Robots private-route disallow | Done |
+| Mobile Lighthouse accessibility | 100 |
+| Desktop performance | 87 |
+| Mobile LCP reduction | 17.4s ? 9.7s (further work) |
+
+Report: `docs/reports/phase7-seo-performance-audit-2026-11-19.md`.

@@ -39,10 +39,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       routing.locales.map(async (locale) => {
         const result = await apiGet<{
           items: { slug: string }[];
-        }>(`/market/v1/hotels?page=1&pageSize=100&locale=${locale}`);
+        }>(`/market/v1/hotels?page=1&pageSize=50&locale=${locale}`);
         return (result?.items ?? []).map((hotel) => ({
           locale,
           slug: hotel.slug
+        }));
+      })
+    )
+  ).flat();
+
+  const tourRoutes = (
+    await Promise.all(
+      routing.locales.map(async (locale) => {
+        const result = await apiGet<{
+          items: { slug: string }[];
+        }>(`/market/v1/search?locale=${locale}&page=1&pageSize=50&sort=newest`);
+        return (result?.items ?? []).map((tour) => ({
+          locale,
+          slug: tour.slug
+        }));
+      })
+    )
+  ).flat();
+
+  const visaRoutes = (
+    await Promise.all(
+      routing.locales.map(async (locale) => {
+        const result = await apiGet<{ slug: string }[]>(
+          `/market/v1/visas?locale=${locale}`
+        );
+        return (result ?? []).map((visa) => ({
+          locale,
+          slug: visa.slug
         }));
       })
     )
@@ -80,6 +108,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...hotelRoutes.map((hotel) => ({
       url: absoluteUrl(`/${hotel.locale}/hotel/${hotel.slug}`),
+      changeFrequency: "weekly" as const,
+      priority: 0.8
+    })),
+    ...tourRoutes.map((tour) => ({
+      url: absoluteUrl(`/${tour.locale}/tours/${tour.slug}`),
+      changeFrequency: "weekly" as const,
+      priority: 0.8
+    })),
+    ...visaRoutes.map((visa) => ({
+      url: absoluteUrl(`/${visa.locale}/visa/${visa.slug}`),
       changeFrequency: "weekly" as const,
       priority: 0.8
     }))

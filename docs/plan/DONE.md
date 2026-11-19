@@ -372,3 +372,15 @@
 | D-B12S-03 | Frontend headers | `frontend/next.config.ts` |
 | D-B12S-04 | Regression tests | `HardeningEndpointsTests` |
 | D-B12S-05 | Review report | `docs/reports/security-observability-review-2026-11-19.md` |
+
+## Phase 7 ? SEO, Performance & Launch Readiness (2026-11-19)
+
+| # | Item | Artifact |
+|---|---|---|
+| D-P7-01 | Lighthouse audit | `docs/reports/phase7-seo-performance-audit-2026-11-19.md` |
+| D-P7-02 | A11y fixes | home search, footer, date pickers |
+| D-P7-03 | Font subsets | `iconsax-subset.woff2`, `tabler-icons-subset.woff2`, `fa-*-subset.woff2` |
+| D-P7-04 | Sitemap coverage | `frontend/src/app/sitemap.ts` |
+| D-P7-05 | Canonical/hreflang | tour/visa detail and visa listing metadata |
+| D-P7-06 | Structured data | `TourDetailStructuredData`, `VisaStructuredData` |
+| D-P7-07 | Robots private routes | `frontend/src/app/robots.ts` |

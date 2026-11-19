@@ -54,7 +54,10 @@ export function HaniScopeTourSection({
                         tour.coverImageUrl ??
                         `assets/img/destination/destination-${54 + index}.jpg`
                       }
-                      loading="lazy" className="img-fluid"
+                      width={400}
+                      height={260}
+                      loading="lazy"
+                      className="img-fluid"
                       alt={tour.title}
                     />
                   </Link>

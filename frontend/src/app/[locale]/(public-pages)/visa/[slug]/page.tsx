@@ -5,6 +5,9 @@ import Breadcrumb from "@/components/breadcrumb/breadcrumb";
 import { Link } from "@/i18n/navigation";
 import { formatMoney } from "@/lib/hani/money";
 import { getVisaBySlug } from "@/features/visa/infrastructure/visa-detail-api";
+import { routing } from "@/i18n/routing";
+import { VisaStructuredData } from "@/features/visa/ui/VisaStructuredData";
+import { absoluteUrl } from "@/lib/hani/site";
 
 export async function generateMetadata({
   params
@@ -16,6 +19,17 @@ export async function generateMetadata({
   return {
     title: visa ? `${visa.name} | Hani` : "Hani",
     description: visa?.description ?? undefined,
+    alternates: visa
+      ? {
+          canonical: absoluteUrl(`/${locale}/visa/${visa.slug}`),
+          languages: Object.fromEntries(
+            routing.locales.map((item) => [
+              item,
+              absoluteUrl(`/${item}/visa/${visa.slug}`)
+            ])
+          )
+        }
+      : undefined,
     robots: { index: true, follow: true }
   };
 }
@@ -34,6 +48,18 @@ export default async function VisaDetailPage({
 
   return (
     <>
+      <VisaStructuredData
+        locale={locale}
+        slug={visa.slug}
+        name={visa.name}
+        description={visa.description}
+        types={visa.types.map((type) => ({
+          code: type.code,
+          priceAdult: type.priceAdult,
+          currency: type.currency,
+          faqs: type.faqs
+        }))}
+      />
       <Breadcrumb
         title={visa.name}
         breadcrumbs={[

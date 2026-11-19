@@ -4,6 +4,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { formatIsoDate } from "@/lib/hani/calendar";
 import { formatMoney } from "@/lib/hani/money";
 import Breadcrumb from "@/components/breadcrumb/breadcrumb";
+import { routing } from "@/i18n/routing";
+import { TourDetailStructuredData } from "@/features/tours/ui/TourDetailStructuredData";
+import { absoluteUrl } from "@/lib/hani/site";
 import { Link } from "@/i18n/navigation";
 import {
   getTourBySlug,
@@ -24,7 +27,18 @@ export async function generateMetadata({
   return {
     title: translation?.seoTitle ?? translation?.title ?? "Hani",
     description: translation?.seoDescription ?? translation?.summary ?? undefined,
-    robots: { index: false, follow: true }
+    alternates: product
+      ? {
+          canonical: absoluteUrl(`/${locale}/tours/${product.slug}`),
+          languages: Object.fromEntries(
+            routing.locales.map((item) => [
+              item,
+              absoluteUrl(`/${item}/tours/${product.slug}`)
+            ])
+          )
+        }
+      : undefined,
+    robots: { index: true, follow: true }
   };
 }
 
@@ -45,6 +59,19 @@ export default async function TourDetailPage({
 
   return (
     <>
+      <TourDetailStructuredData
+        locale={locale}
+        slug={product.slug}
+        title={translation.title}
+        summary={translation.summary}
+        description={translation.description}
+        coverImageUrl={product.coverImageUrl}
+        durationDays={product.durationDays}
+        offers={(comparison?.offers ?? []).map((offer) => ({
+          price: offer.minPrice,
+          currency: offer.currency
+        }))}
+      />
       <Breadcrumb
         title={translation.title}
         breadcrumbs={[

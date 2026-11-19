@@ -155,7 +155,9 @@
     "hotelsFound": "{count} هتل پیدا شد",
     "tourTypesTitle": "نوع تور را انتخاب کنید",
     "tourTypeFilterHint": "فیلتر بر اساس این نوع",
-    "noVisas": "ویزایی پیدا نشد."
+    "noVisas": "ویزایی پیدا نشد.",
+    "visas": "ویزاها",
+    "visaScopeDescription": "انواع ویزا، زمان پردازش، مدارک و قیمت مقصد خود را مقایسه کنید."
   },
   "meta": {
     "title": "هانی — سفر هوشمند",

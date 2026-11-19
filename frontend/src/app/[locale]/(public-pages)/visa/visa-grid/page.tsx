@@ -1,10 +1,30 @@
-import { getPageMetadata } from "@/config/metadata";
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import { absoluteUrl } from "@/lib/hani/site";
 import { searchVisas } from "@/features/visa/infrastructure/visa-api";
 import type { VisaFilterValues } from "@/features/visa/ui/VisaFilters";
 import VisaGridClient from "./visaGridClient";
 
-export const generateMetadata = () => getPageMetadata("Visa Grid");
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "common" });
+  return {
+    title: t("visas"),
+    description: t("visaScopeDescription"),
+    alternates: {
+      canonical: absoluteUrl(`/${locale}/visa`),
+      languages: Object.fromEntries(
+        routing.locales.map((item) => [item, absoluteUrl(`/${item}/visa`)])
+      )
+    },
+    robots: { index: true, follow: true }
+  };
+}
 
 function numberValue(value: string | undefined): number | undefined {
   const parsed = Number(value);

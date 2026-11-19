@@ -15,10 +15,10 @@ import templateAr from "../../messages/template.ar.json";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../style/css/animate.css";
-import "@tabler/icons-webfont/dist/tabler-icons.css";
-import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+import "../../style/fonts/tabler-icons/tabler-icons.css";
+import "../../style/css/fontawesome-subset.css";
 import "../../style/css/iconsax.css";
+import "../../style/css/font-subsets.css";
 import "swiper/css/bundle";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";

@@ -142,41 +142,45 @@ const FooterSection = () => {
           <div className="col-md-4">
             <p className="text-white mb-0">
               Copyright © 2026{" "}
-              <Link href="#" className="fw-medium">
+              <Link href="#" className="fw-medium d-inline-flex align-items-center py-1">
                 DreamsTour
               </Link>
             </p>
           </div>
           <div className="col-md-4">
             <div className="footer-bottom-links d-flex align-items-center justify-content-center gap-3">
-              <Link href="#">Legal Notice</Link>
-              <Link href="#">Privacy Policy</Link>
+              <Link href="#" className="d-inline-flex align-items-center py-1">
+                Legal Notice
+              </Link>
+              <Link href="#" className="d-inline-flex align-items-center py-1">
+                Privacy Policy
+              </Link>
             </div>
           </div>
           <div className="col-md-4">
             <ul className="social-icon">
               <li>
-                <Link href="#">
+                <Link href="#" aria-label="Facebook">
                   <i className="fa-brands fa-facebook" />
                 </Link>
               </li>
               <li>
-                <Link href="#">
+                <Link href="#" aria-label="X">
                   <i className="fa-brands fa-x-twitter" />
                 </Link>
               </li>
               <li>
-                <Link href="#">
+                <Link href="#" aria-label="Instagram">
                   <i className="fa-brands fa-instagram" />
                 </Link>
               </li>
               <li>
-                <Link href="#">
+                <Link href="#" aria-label="LinkedIn">
                   <i className="fa-brands fa-linkedin" />
                 </Link>
               </li>
               <li>
-                <Link href="#">
+                <Link href="#" aria-label="Pinterest">
                   <i className="fa-brands fa-pinterest" />
                 </Link>
               </li>

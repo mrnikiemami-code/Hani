@@ -7,7 +7,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/market/", "/internal/"]
+        disallow: [
+          "/api/",
+          "/market/",
+          "/internal/",
+          "/*/user/",
+          "/*/admin/",
+          "/*/agent/",
+          "/*/checkout/",
+          "/*/visa/visa-application",
+          "/*/visa/track-visa"
+        ]
       }
     ],
     sitemap: absoluteUrl("/sitemap.xml"),

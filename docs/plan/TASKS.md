@@ -411,3 +411,17 @@
 | B12S-03 | Frontend CSP/security headers | Done | CSP/HSTS/COOP/CORP |
 | B12S-04 | Security regression tests | Done | headers + no-store |
 | B12S-05 | Security/observability report | Done | findings and evidence |
+
+## Phase 7 ? SEO, Performance & Launch Readiness
+
+| ID | Task | Status | DoD |
+|---|---|---|---|
+| P7-01 | Lighthouse audit | Done | mobile/desktop baseline |
+| P7-02 | Accessibility fixes | Done | mobile a11y 100 |
+| P7-03 | Font subsetting | Done | iconsax/tabler/FA subsets |
+| P7-04 | Remove Google Fonts import | Done | FCP 1.2s mobile |
+| P7-05 | Sitemap coverage | Done | tours/hotels/visas included |
+| P7-06 | Canonical/hreflang | Done | tour/visa/list pages |
+| P7-07 | Structured data | Done | Tour/Offer/Service/FAQ/Breadcrumb |
+| P7-08 | Robots private routes | Done | user/admin/agent/checkout/visa |
+| P7-09 | Mobile LCP budget | In progress | legacy hero/HTML budget |

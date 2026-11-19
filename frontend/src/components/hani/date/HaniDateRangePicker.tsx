@@ -190,6 +190,7 @@ export function HaniDateRangePicker({
         ) : null}
         <input
           type="text"
+          role="combobox"
           className={className}
           value={startText}
           data-iso-start={currentValue?.start ?? ""}
@@ -217,6 +218,7 @@ export function HaniDateRangePicker({
         ) : null}
         <input
           type="text"
+          role="combobox"
           className={className}
           value={endText}
           data-iso-end={currentValue?.end ?? ""}

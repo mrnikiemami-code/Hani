@@ -307,10 +307,8 @@ const guidePassenger =
                   data-wow-delay="1.5"
                 >
                   <div className="card-header">
-                    <ul className="nav">
-                      <li>
-                        <Link
-                          href="#"
+                    <div className="nav" role="tablist" aria-label={t("heroTitle")}>
+                      <Link role="tab"                           href="#"
                           className="nav-link "
                           data-bs-toggle="tab"
                           data-bs-target="#flight"
@@ -318,10 +316,7 @@ const guidePassenger =
                           <i className="isax isax-airplane5 me-2" />
                           Flights
                         </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="#"
+                      <Link role="tab"                           href="#"
                           className="nav-link"
                           data-bs-toggle="tab"
                           data-bs-target="#Hotels"
@@ -329,10 +324,7 @@ const guidePassenger =
                           <i className="isax isax-buildings5 me-2" />
                           Hotels
                         </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="#"
+                      <Link role="tab"                           href="#"
                           className="nav-link"
                           data-bs-toggle="tab"
                           data-bs-target="#Cars"
@@ -340,10 +332,7 @@ const guidePassenger =
                           <i className="isax isax-car5 me-2" />
                           Cars
                         </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="#"
+                      <Link role="tab"                           href="#"
                           className="nav-link"
                           data-bs-toggle="tab"
                           data-bs-target="#Cruise"
@@ -351,10 +340,7 @@ const guidePassenger =
                           <i className="isax isax-ship5 me-2" />
                           Cruise
                         </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="#"
+                      <Link role="tab"                           href="#"
                           className="nav-link active"
                           data-bs-toggle="tab"
                           data-bs-target="#Tour"
@@ -362,10 +348,7 @@ const guidePassenger =
                           <i className="isax isax-camera5 me-2" />
                           Tour
                         </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="#"
+                      <Link role="tab"                           href="#"
                           className="nav-link"
                           data-bs-toggle="tab"
                           data-bs-target="#Bus"
@@ -373,10 +356,7 @@ const guidePassenger =
                           <i className="isax isax-bus5 me-2" />
                           Bus
                         </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="#"
+                      <Link role="tab"                           href="#"
                           className="nav-link"
                           data-bs-toggle="tab"
                           data-bs-target="#Activity"
@@ -384,10 +364,7 @@ const guidePassenger =
                           <i className="isax isax-calendar5 me-2" />
                           Activity
                         </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="#"
+                      <Link role="tab"                           href="#"
                           className="nav-link"
                           data-bs-toggle="tab"
                           data-bs-target="#Visa"
@@ -395,10 +372,7 @@ const guidePassenger =
                           <i className="isax isax-document5 me-2" />
                           Visa
                         </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="#"
+                      <Link role="tab"                           href="#"
                           className="nav-link"
                           data-bs-toggle="tab"
                           data-bs-target="#Guide"
@@ -406,8 +380,7 @@ const guidePassenger =
                           <i className="isax isax-user-octagon me-2" />
                           Guide
                         </Link>
-                      </li>
-                    </ul>
+                    </div>
                   </div>
                   <div className="card-body">
                     <div>
