@@ -1,5 +1,6 @@
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Admin.Application;
+using Hani.Modules.Catalog.Application.Commands.CreateFlightReference;
 using Hani.Modules.Catalog.Application.Commands.CreateHotel;
 using Hani.Modules.Catalog.Domain.Hotels;
 using Hani.Modules.Catalog.Presentation;
@@ -28,6 +29,42 @@ public static class AdminCatalogEndpoints
         group.MapPost("/tours/{id:guid}/publish", PublishTourAsync)
             .WithName("Internal.PublishAdminTour")
             .Produces<bool>();
+
+        group.MapGet("/visas", ListVisaCountriesAsync)
+            .WithName("Internal.ListAdminVisaCountries")
+            .Produces<AdminVisaCountryPageDto>();
+
+        group.MapPost("/visas", CreateVisaCountryAsync)
+            .WithName("Internal.CreateAdminVisaCountry")
+            .Produces<Guid>(StatusCodes.Status201Created);
+
+        group.MapGet("/visa-applications", ListVisaApplicationsAsync)
+            .WithName("Internal.ListAdminVisaApplications")
+            .Produces<AdminVisaApplicationPageDto>();
+
+        group.MapPost("/visa-applications/{id:guid}/status", UpdateVisaApplicationStatusAsync)
+            .WithName("Internal.UpdateAdminVisaApplicationStatus")
+            .Produces<bool>();
+
+        group.MapGet("/flights/routes", ListFlightRoutesAsync)
+            .WithName("Internal.ListAdminFlightRoutes")
+            .Produces<AdminFlightPageDto>();
+
+        group.MapGet("/flights/references", ListFlightReferencesAsync)
+            .WithName("Internal.ListAdminFlightReferences")
+            .Produces<FlightReferenceDto>();
+
+        group.MapPost("/flights/routes", CreateFlightRouteAsync)
+            .WithName("Internal.CreateAdminFlightRoute")
+            .Produces<Guid>(StatusCodes.Status201Created);
+
+        group.MapPost("/flights/airlines", CreateFlightAirlineAsync)
+            .WithName("Internal.CreateAdminFlightAirline")
+            .Produces<Guid>(StatusCodes.Status201Created);
+
+        group.MapPost("/flights/airports", CreateFlightAirportAsync)
+            .WithName("Internal.CreateAdminFlightAirport")
+            .Produces<Guid>(StatusCodes.Status201Created);
 
         group.MapGet("/hotels", ListHotelsAsync)
             .WithName("Internal.ListAdminHotels")
@@ -65,6 +102,222 @@ public static class AdminCatalogEndpoints
             q,
             locale,
             cancellationToken));
+
+    private static async Task<IResult> ListVisaCountriesAsync(
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        [FromQuery] string? q,
+        IAdminVisaService visas,
+        CancellationToken cancellationToken)
+        => Results.Ok(await visas.ListCountriesAsync(page, pageSize, q, cancellationToken));
+
+    private static async Task<IResult> CreateVisaCountryAsync(
+        AdminVisaCountryRequest request,
+        HttpContext context,
+        IAdminVisaService visas,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await visas.CreateCountryAsync(
+            new AdminVisaCountryInput(
+                request.Slug,
+                request.CountryCode,
+                request.CoverImageUrl,
+                request.Translations.Select(item => new AdminVisaTranslationInput(
+                    item.Locale,
+                    item.Name,
+                    item.Description)).ToArray(),
+                request.Types.Select(item => new AdminVisaTypeInput(
+                    item.Code,
+                    item.EntryType,
+                    item.IssuanceType,
+                    item.ProcessingDaysMin,
+                    item.ProcessingDaysMax,
+                    item.ValidityDays,
+                    item.PriceAdult,
+                    item.PriceChild,
+                    item.Currency)).ToArray()),
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.visa.country.created",
+            "VisaCountry",
+            result.Value.ToString(),
+            "Visa country created from the admin panel",
+            after: new { request.Slug, request.CountryCode },
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/catalog/visas/{result.Value}",
+            result.Value);
+    }
+
+    private static async Task<IResult> ListVisaApplicationsAsync(
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        [FromQuery] string? status,
+        IAdminVisaService visas,
+        CancellationToken cancellationToken)
+        => Results.Ok(await visas.ListApplicationsAsync(
+            page,
+            pageSize,
+            status,
+            cancellationToken));
+
+    private static async Task<IResult> UpdateVisaApplicationStatusAsync(
+        Guid id,
+        AdminVisaApplicationStatusRequest request,
+        HttpContext context,
+        IAdminVisaService visas,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await visas.UpdateApplicationStatusAsync(
+            id,
+            request.Status,
+            request.RejectionReason,
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.visa.application.status_changed",
+            "VisaApplication",
+            id.ToString(),
+            "Visa application status changed from the admin panel",
+            after: new { request.Status },
+            cancellationToken: cancellationToken);
+        return Results.Ok(result.Value);
+    }
+
+    private static async Task<IResult> ListFlightRoutesAsync(
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        [FromQuery] string? q,
+        IAdminFlightService flights,
+        CancellationToken cancellationToken)
+        => Results.Ok(await flights.ListRoutesAsync(page, pageSize, q, cancellationToken));
+
+    private static async Task<IResult> ListFlightReferencesAsync(
+        IAdminFlightService flights,
+        CancellationToken cancellationToken)
+        => Results.Ok(await flights.ListReferencesAsync(cancellationToken));
+
+    private static async Task<IResult> CreateFlightRouteAsync(
+        AdminFlightRouteRequest request,
+        HttpContext context,
+        IAdminFlightService flights,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await flights.CreateRouteAsync(
+            new AdminFlightRouteInput(
+                request.Slug,
+                request.OriginCode,
+                request.DestinationCode,
+                request.OriginCity,
+                request.DestinationCity,
+                request.IsActive,
+                request.Offers.Select(offer => new AdminFlightOfferInput(
+                    offer.FlightNumber,
+                    offer.AirlineCode,
+                    offer.AirlineName,
+                    offer.DepartureDate,
+                    offer.DepartureTime,
+                    offer.ArrivalTime,
+                    offer.DurationMinutes,
+                    offer.Stops,
+                    offer.Cabin,
+                    offer.BaggageAllowance,
+                    offer.Price,
+                    offer.Currency,
+                    offer.Provider,
+                    offer.DeepLink)).ToArray()),
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.flight.route.created",
+            "FlightRoute",
+            result.Value.ToString(),
+            "Flight route created from the admin panel",
+            after: new { request.Slug, request.OriginCode, request.DestinationCode },
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/catalog/flights/routes/{result.Value}",
+            result.Value);
+    }
+
+    private static async Task<IResult> CreateFlightAirlineAsync(
+        AdminAirlineRequest request,
+        HttpContext context,
+        IAdminFlightService flights,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await flights.CreateAirlineAsync(
+            request.Iata,
+            request.Name,
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.flight.airline.created",
+            "Airline",
+            result.Value.ToString(),
+            "Airline created from the admin panel",
+            after: request,
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/catalog/flights/airlines/{result.Value}",
+            result.Value);
+    }
+
+    private static async Task<IResult> CreateFlightAirportAsync(
+        AdminAirportRequest request,
+        HttpContext context,
+        IAdminFlightService flights,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await flights.CreateAirportAsync(
+            request.Iata,
+            request.Name,
+            request.City,
+            request.CountryCode,
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.flight.airport.created",
+            "Airport",
+            result.Value.ToString(),
+            "Airport created from the admin panel",
+            after: request,
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/catalog/flights/airports/{result.Value}",
+            result.Value);
+    }
 
     private static async Task<IResult> ListToursAsync(
         [FromQuery] int page,
@@ -286,3 +539,73 @@ public sealed record AdminTourTranslationRequest(
     string Title,
     string Summary,
     string Description);
+
+
+/// <summary>Flight route creation request.</summary>
+public sealed record AdminFlightRouteRequest(
+    string Slug,
+    string OriginCode,
+    string DestinationCode,
+    string OriginCity,
+    string DestinationCity,
+    bool IsActive,
+    IReadOnlyList<AdminFlightOfferRequest> Offers);
+
+/// <summary>Flight offer creation request.</summary>
+public sealed record AdminFlightOfferRequest(
+    string FlightNumber,
+    string AirlineCode,
+    string AirlineName,
+    DateOnly DepartureDate,
+    TimeOnly DepartureTime,
+    TimeOnly ArrivalTime,
+    int DurationMinutes,
+    int Stops,
+    string Cabin,
+    string BaggageAllowance,
+    decimal Price,
+    string Currency,
+    string Provider,
+    string DeepLink);
+
+/// <summary>Airline creation request.</summary>
+public sealed record AdminAirlineRequest(string Iata, string Name);
+
+/// <summary>Airport creation request.</summary>
+public sealed record AdminAirportRequest(
+    string Iata,
+    string Name,
+    string City,
+    string CountryCode);
+
+
+/// <summary>Visa country creation request.</summary>
+public sealed record AdminVisaCountryRequest(
+    string Slug,
+    string CountryCode,
+    string? CoverImageUrl,
+    IReadOnlyList<AdminVisaTranslationRequest> Translations,
+    IReadOnlyList<AdminVisaTypeRequest> Types);
+
+/// <summary>Visa translation request.</summary>
+public sealed record AdminVisaTranslationRequest(
+    string Locale,
+    string Name,
+    string? Description);
+
+/// <summary>Visa type request.</summary>
+public sealed record AdminVisaTypeRequest(
+    string Code,
+    string EntryType,
+    string IssuanceType,
+    int ProcessingDaysMin,
+    int ProcessingDaysMax,
+    int ValidityDays,
+    decimal PriceAdult,
+    decimal? PriceChild,
+    string Currency);
+
+/// <summary>Visa application status request.</summary>
+public sealed record AdminVisaApplicationStatusRequest(
+    string Status,
+    string? RejectionReason);

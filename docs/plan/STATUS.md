@@ -618,3 +618,4 @@
 - Admin Batch 1 follow-up: custom roles are persisted in `identity.role_definitions` and assignable to users; JWT carries `permission` claims and `AdminPermissionMiddleware` enforces section permissions. Platform settings are exposed publicly through `/market/v1/platform-settings` and wired into the public header/footer.
 - Admin Batch 2 started: hotel creation endpoint and `/admin/products/hotels/new` route using the existing hotel editor in create mode; list page links to create. Tours/flights/visas remain.
 - Admin Batch 2 tours: shared tour list/create/publish, localized content, cover image, destination ids, responsive UI, and product overview link.
+- Admin Batch 2 completion: hotel creation, tour list/create/publish, flight route/reference admin and route creation with provider offers, visa country/type creation, visa application list and status transitions, all with responsive FA/EN/AR UI.

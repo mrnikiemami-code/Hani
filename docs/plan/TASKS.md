@@ -341,5 +341,5 @@
 | H91-ADMIN-13 | Phase 5 advanced BI | ? Partial | operational KPI reports done; exports/cohort/trend BI remains |
 | H91-ADMIN-14 | Batch 1: roles, settings, agency detail | ? Done | role-permission matrix, user role assignment, platform base settings, agency documents/contracts, UI verified |
 | H91-ADMIN-15 | Batch 2: hotel create | ? Done | admin create endpoint, create route, hotel editor create mode, responsive UI |
-| H91-ADMIN-16 | Batch 2: tours/flights/visas | ? Next | admin CRUD/publish for tours, flight routes/references, visa countries/applications |
+| H91-ADMIN-16 | Batch 2: tours/flights/visas | ? Done | tours create/publish, flight routes/references/offers, visa countries/types, application status |
 | H91-ADMIN-17 | Batch 2: tours admin | ? Done | tour list/create/publish, localized content, responsive UI |

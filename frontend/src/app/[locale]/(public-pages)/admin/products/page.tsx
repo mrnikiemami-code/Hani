@@ -65,20 +65,20 @@ export default async function AdminProductsPage({
       live: true
     },
     {
-      href: undefined,
+      href: "/admin/products/flights",
       title: t("flights"),
       hint: t("flightsHint"),
       count: null,
       icon: "isax isax-airplane",
-      live: false
+      live: true
     },
     {
-      href: undefined,
+      href: "/admin/products/visas",
       title: t("visas"),
       hint: t("visasHint"),
       count: null,
       icon: "isax isax-passport",
-      live: false
+      live: true
     }
   ];
 

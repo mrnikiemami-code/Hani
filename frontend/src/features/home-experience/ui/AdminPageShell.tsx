@@ -65,14 +65,14 @@ const ADMIN_NAV: AdminNavItem[] = [
         permission: "catalog.view"
       },
       {
+        href: "/admin/products/flights",
         labelKey: "flights",
-        permission: "catalog.view",
-        enabled: false
+        permission: "catalog.view"
       },
       {
+        href: "/admin/products/visas",
         labelKey: "visas",
-        permission: "catalog.view",
-        enabled: false
+        permission: "catalog.view"
       }
     ]
   },
