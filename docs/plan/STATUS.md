@@ -686,3 +686,20 @@ endpoint. Open P0 items remain documented in the gap report.
 **Verification:** backend build, frontend build, 200 unit tests, architecture
 and integration verification, real flight search, real visa upload + tracking,
 admin tour/visa/flight update smoke tests.
+
+## Batch 12S ? Security Review & Observability (2026-11-19)
+
+| Item | Status |
+|---|---|
+| Distributed Redis rate limiter with atomic INCR/PEXPIRE | Done |
+| Production guard requires Redis limiter | Done |
+| Redis limiter fallback on outage | Done |
+| Frontend CSP + browser hardening headers | Done |
+| API security-header regression tests | Done |
+| Internal/auth no-store regression test | Done |
+| Security/observability review report | Done |
+| Manual 429 Redis limiter smoke test | Passed |
+| Manual production-header smoke test | Passed |
+
+**Verification:** build, 200 unit tests, architecture, integration, migration,
+formatting, vulnerability scan, and manual checks.

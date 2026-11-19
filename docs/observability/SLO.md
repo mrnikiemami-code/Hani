@@ -55,3 +55,12 @@ The first search load run intentionally hit the per-IP limiter at the default
 600 requests/minute and produced 429s. The limit is now configurable through
 `RateLimiting:PermitLimit`; the capacity run used 10,000/minute and completed
 without failures.
+
+## Batch 12 security/observability follow-up
+
+- The API rate limiter can run on Redis so limits are shared across nodes.
+  Redis is a `/health/ready` dependency when configured.
+- Rate-limit rejections remain HTTP 429 and are visible through the standard
+  HTTP server metrics/status attributes.
+- The Next.js frontend emits CSP and browser hardening headers in production.
+- Review evidence: `docs/reports/security-observability-review-2026-11-19.md`.

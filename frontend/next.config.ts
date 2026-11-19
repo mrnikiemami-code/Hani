@@ -15,8 +15,30 @@ if (!fs.existsSync(imgBaseFile) || fs.readFileSync(imgBaseFile, "utf8") !== imgB
   fs.writeFileSync(imgBaseFile, imgBaseContent);
 }
 
+const apiOrigin =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5099";
+const apiWsOrigin = apiOrigin.replace(/^http/, "ws");
+const isProduction = process.env.NODE_ENV === "production";
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "img-src 'self' data: blob: https: " + apiOrigin,
+  "font-src 'self' data: https:",
+  "style-src 'self' 'unsafe-inline' https:",
+  "script-src 'self' 'unsafe-inline'" + (isProduction ? "" : " 'unsafe-eval'"),
+  `connect-src 'self' ${apiOrigin} ${apiWsOrigin} https: wss:`,
+  isProduction ? "upgrade-insecure-requests" : ""
+]
+  .filter(Boolean)
+  .join("; ");
+
 const nextConfig: NextConfig = {
   basePath,
+  poweredByHeader: false,
+  reactStrictMode: true,
   experimental: {
     serverActions: {
       bodySizeLimit: "20mb"
@@ -30,6 +52,38 @@ const nextConfig: NextConfig = {
       { source: "/:locale(fa|en|ar)/flight/flight-grid", destination: "/:locale/flights", permanent: false },
       { source: "/:locale(fa|en|ar)/blog/blog-grid", destination: "/:locale/blog", permanent: false },
       { source: "/:locale(fa|en|ar)/pages/about-us", destination: "/:locale/pages/aboutus", permanent: false }
+    ];
+  },
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin"
+          },
+          {
+            key: "Permissions-Policy",
+            value:
+              "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+          },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Resource-Policy", value: "same-site" },
+          { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
+          { key: "Content-Security-Policy", value: contentSecurityPolicy },
+          ...(isProduction
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=31536000; includeSubDomains; preload"
+                }
+              ]
+            : [])
+        ]
+      }
     ];
   }
 };

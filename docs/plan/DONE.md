@@ -362,3 +362,13 @@
 | D-B13-08 | Agent identity | `AgencyName` component |
 | D-B13-09 | Tour reviews | `getTourReviews` + detail section |
 | D-B13-10 | Domain update tests | `AdminEditDomainTests.cs` |
+
+## Batch 12S ? Security Review & Observability (2026-11-19)
+
+| # | Item | Artifact |
+|---|---|---|
+| D-B12S-01 | Redis rate limiter | `RedisFixedWindowRateLimiter.cs` |
+| D-B12S-02 | Limiter config/guard | `RateLimitingOptions`, `ProductionConfigurationGuard` |
+| D-B12S-03 | Frontend headers | `frontend/next.config.ts` |
+| D-B12S-04 | Regression tests | `HardeningEndpointsTests` |
+| D-B12S-05 | Review report | `docs/reports/security-observability-review-2026-11-19.md` |

@@ -116,6 +116,14 @@ public static class ProductionConfigurationGuard
             errors.Add("Messaging:Outbox:Enabled must be true in Production.");
         }
 
+        if (!string.Equals(
+                configuration["RateLimiting:Provider"],
+                "Redis",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            errors.Add("RateLimiting:Provider must be Redis in Production.");
+        }
+
         var notificationMode = configuration["Notifications:Mode"] ?? "Log";
         if (!string.Equals(notificationMode, "Http", StringComparison.OrdinalIgnoreCase) &&
             !configuration.GetValue<bool>("Notifications:AllowLogInProduction"))

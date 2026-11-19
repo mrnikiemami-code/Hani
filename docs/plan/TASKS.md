@@ -401,3 +401,13 @@
 | B13-09 | Real tour reviews | Done | public reviews API |
 | B13-10 | Flight inventory sync/ticketing | External | provider contract required |
 | B13-11 | RFQ saved views | Next | optional CSV exists |
+
+## Batch 12S ? Security Review & Observability
+
+| ID | Task | Status | DoD |
+|---|---|---|---|
+| B12S-01 | Redis distributed rate limiter | Done | shared atomic counters |
+| B12S-02 | Production limiter guard | Done | Redis required in prod |
+| B12S-03 | Frontend CSP/security headers | Done | CSP/HSTS/COOP/CORP |
+| B12S-04 | Security regression tests | Done | headers + no-store |
+| B12S-05 | Security/observability report | Done | findings and evidence |

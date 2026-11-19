@@ -48,6 +48,28 @@ public sealed class HardeningEndpointsTests(PostgresFixture fixture)
         response.Headers.GetValues("X-Frame-Options").Single().ShouldBe("DENY");
         response.Headers.GetValues("Content-Security-Policy").Single()
             .ShouldBe("default-src 'none'; frame-ancestors 'none'");
+        response.Headers.GetValues("Referrer-Policy").Single()
+            .ShouldBe("no-referrer");
+        response.Headers.GetValues("Permissions-Policy").Single()
+            .ShouldBe("camera=(), microphone=(), geolocation=()");
+        response.Headers.GetValues("Cross-Origin-Opener-Policy").Single()
+            .ShouldBe("same-origin");
+        response.Headers.GetValues("Cross-Origin-Resource-Policy").Single()
+            .ShouldBe("same-site");
+        response.Headers.GetValues("X-Permitted-Cross-Domain-Policies").Single()
+            .ShouldBe("none");
+    }
+
+    [Fact]
+    public async Task Internal_And_Auth_Routes_Should_Not_Be_Cached()
+    {
+        using var client = fixture.Factory.CreateClient();
+
+        var response = await client.GetAsync("/internal/v1/security/otp");
+
+        response.Headers.CacheControl!.NoStore.ShouldBeTrue();
+        response.Headers.CacheControl!.NoCache.ShouldBeTrue();
+        response.Headers.Pragma.Single().ToString().ShouldBe("no-cache");
     }
 
     [Fact]
