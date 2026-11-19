@@ -286,6 +286,22 @@ const Sidebar = () => {
                             </li>
                             <li>
                                 <Link
+                                    href={routes.supportCenter}
+                                    className={`d-flex align-items-center ${location.pathname.includes('/user/support') && !location.pathname.includes('disputes') ? 'active' : ''}`}
+                                >
+                                    <i className="isax isax-message-question5" /> Support
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href={routes.supportDisputes}
+                                    className={`d-flex align-items-center ${location.pathname.includes('/user/support/disputes') ? 'active' : ''}`}
+                                >
+                                    <i className="isax isax-shield-cross5" /> Disputes
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
                                     href={routes.profileSettings}
                                     className={`d-flex align-items-center ${location.pathname.includes('settings') ? 'active' : ''}`}
                                 >

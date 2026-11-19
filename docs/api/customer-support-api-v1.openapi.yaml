@@ -1,0 +1,113 @@
+openapi: 3.1.0
+info:
+  title: Hani Customer Support Portal API - Draft v1
+  version: 1.0.0
+  description: Authenticated customer ticket, reply, and dispute endpoints.
+servers:
+  - url: https://api.hani.ir/market/v1
+    description: Production
+  - url: http://localhost:5099/market/v1
+    description: Local
+tags:
+  - name: Marketplace.Support
+paths:
+  /support/tickets:
+    get:
+      tags: [Marketplace.Support]
+      summary: List tickets owned by the signed-in customer
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: status, in: query, schema: { type: string, enum: [Open, InProgress, WaitingCustomer, Resolved, Closed] } }
+        - { name: q, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Paged customer tickets }
+        '401': { description: Authentication required }
+  /support/tickets/{id}:
+    get:
+      tags: [Marketplace.Support]
+      summary: Get one owned ticket with customer-visible messages and disputes
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Ticket detail }
+        '404': { description: Ticket not found or not owned by the customer }
+  /support/tickets/{id}/messages:
+    post:
+      tags: [Marketplace.Support]
+      summary: Add a customer reply to an owned ticket
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [body]
+              properties:
+                body: { type: string, maxLength: 5000 }
+      responses:
+        '200': { description: Updated ticket detail }
+        '404': { description: Ticket not found or not owned by the customer }
+  /support/disputes:
+    get:
+      tags: [Marketplace.Support]
+      summary: List disputes opened on owned tickets
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: status, in: query, schema: { type: string, enum: [Open, Investigating, AwaitingCustomer, Resolved, Rejected] } }
+      responses:
+        '200': { description: Paged customer disputes }
+  /support/disputes/{id}:
+    get:
+      tags: [Marketplace.Support]
+      summary: Get one owned dispute
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Dispute detail }
+        '404': { description: Dispute not found or not owned by the customer }
+  /support/tickets/{id}/disputes:
+    post:
+      tags: [Marketplace.Support]
+      summary: Open a dispute on an owned ticket
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, description]
+              properties:
+                orderId: { type: string, format: uuid, nullable: true }
+                type: { type: string, enum: [Refund, Cancellation, ServiceQuality, Pricing, NoShow, Other] }
+                amount: { type: number, nullable: true, minimum: 0 }
+                currency: { type: string, nullable: true, minLength: 3, maxLength: 3 }
+                description: { type: string }
+                evidenceUrl: { type: string, nullable: true }
+      responses:
+        '201': { description: Dispute created }
+        '400': { description: Validation problem }
+        '404': { description: Ticket not found or not owned by the customer }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -78,3 +78,9 @@
 - `internal-admin-support-api-v1.openapi.yaml`: support ticket threads, SLA
   metadata, assignment, disputes, and the support quality report under
   `/internal/v1/admin/support`.
+
+## Customer Support Portal
+
+- `customer-support-api-v1.openapi.yaml`: authenticated customer ticket list,
+  detail, reply, dispute list, dispute detail, and dispute creation under
+  `/market/v1/support`.

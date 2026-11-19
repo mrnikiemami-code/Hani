@@ -356,3 +356,6 @@
 | H91-OPS-03 | Batch 6: provider adapters | ? Done | HTTP PSP checkout/refund/webhook adapter, notification mode and idempotent HTTP delivery |
 | H91-OPS-04 | Batch 6: backup and release runbook | ? Done | checksummed backup/restore scripts, production checklist, DR updates |
 | H91-OPS-05 | Batch 6: load/readiness smoke | ? Done | k6 readiness + search scenario with thresholds |
+| H91-PORTAL-01 | Batch 7: customer ticket portal | ? Done | authenticated list/detail/reply with owner checks and hidden internal notes |
+| H91-PORTAL-02 | Batch 7: customer disputes | ? Done | list/detail/open dispute from owned ticket with customer UI |
+| H91-PORTAL-03 | Batch 7: support notifications and UX | ? Done | customer/admin reply and dispute notifications, sidebar links, responsive FA/EN/AR UI |

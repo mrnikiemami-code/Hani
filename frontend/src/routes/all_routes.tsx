@@ -158,6 +158,8 @@ export const all_routes = {
     travelVoucher: "/user/travel-voucher",
     customerCancellationRefunds: "/user/customer-cancellation-refunds",
     customerInvoices: "/user/customer-invoices",
+    supportCenter: "/user/support",
+    supportDisputes: "/user/support/disputes",
 
 
     payment: "/user/payment",

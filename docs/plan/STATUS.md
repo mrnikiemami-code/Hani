@@ -631,3 +631,6 @@
 - Batch 6 health and security: `/health/live`, `/health`, and `/health/ready` return JSON with Postgres, storage, payment configuration, and Redis readiness; internal/auth responses are `no-store`; CORP and cross-domain policy headers were added.
 - Batch 6 providers: generic HTTPS PSP checkout/refund/HMAC-webhook adapter selected by `Payments:Provider`; notification delivery supports Log/HTTP modes with a named HttpClient, idempotency headers, timeouts, and outbox retry.
 - Batch 6 operations: checksummed backup and validated restore scripts, production checklist, DR runbook updates, and a k6 readiness/search load smoke.
+- Batch 7 customer support portal: authenticated ticket list/detail/reply endpoints and UI under `/user/support`, with strict owner checks and internal notes excluded from customer payloads.
+- Batch 7 customer disputes: own-dispute list/detail and open-dispute workflow from an owned ticket, with customer-facing status/resolution UI.
+- Batch 7 support notifications: admin replies and dispute status changes notify the customer; customer replies and disputes notify the assigned admin. Responsive FA/EN/AR portal verified on desktop, tablet, and mobile.

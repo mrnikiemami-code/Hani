@@ -143,3 +143,15 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 - Failed provider responses throw so the outbox retries with exponential
   backoff (5 attempts). Production startup requires `Mode=Http` unless
   `AllowLogInProduction` is explicitly set.
+
+## Customer support portal (2026-11-19)
+
+- `ICustomerSupportService` provides authenticated customer ticket reads,
+  replies, and dispute creation under `/market/v1/support`.
+- Customers only see tickets where `user_id` matches their JWT; internal notes
+  are removed from customer DTOs.
+- Customer replies create an email notification for the assigned admin when one
+  exists. Admin replies and dispute status changes create customer notifications
+  in the outbox.
+- UI routes: `/user/support`, `/user/support/{id}`, `/user/support/new`, and
+  `/user/support/disputes`.

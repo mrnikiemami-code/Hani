@@ -49,6 +49,7 @@ public static class EndpointRegistration
         app.MapHotelFacetEndpoints();
         app.MapLastsecondParityEndpoints();
         app.MapWishlistEndpoints();
+        app.MapCustomerSupportEndpoints();
     }
 
     private static void MapAdminEndpoints(IEndpointRouteBuilder app)

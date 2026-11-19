@@ -1,10 +1,12 @@
 using Hani.Modules.Content.Application.Abstractions;
 using Hani.Modules.Content.Application.Media;
+using Hani.Modules.Content.Application.Support;
 using Hani.Modules.Content.Application.Queries.AdminAds;
 using Hani.Modules.Content.Infrastructure.Notifications;
 using Hani.Modules.Content.Infrastructure.ReadModels;
 using Hani.Modules.Content.Infrastructure.Repositories;
 using Hani.Modules.Content.Infrastructure.Storage;
+using Hani.Modules.Content.Infrastructure.Support;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,11 +34,13 @@ public static class DependencyInjection
         var mode = configuration["Notifications:Mode"] ?? "Log";
         if (string.Equals(mode, "Http", StringComparison.OrdinalIgnoreCase))
         {
-            services.AddScoped<INotificationSender, HttpNotificationSender>();
+            services.AddScoped<ICustomerSupportService, CustomerSupportService>();
+        services.AddScoped<INotificationSender, HttpNotificationSender>();
         }
         else
         {
-            services.AddScoped<INotificationSender, LoggingNotificationSender>();
+            services.AddScoped<ICustomerSupportService, CustomerSupportService>();
+        services.AddScoped<INotificationSender, LoggingNotificationSender>();
         }
 
         services.AddHostedService<NotificationDispatcher>();

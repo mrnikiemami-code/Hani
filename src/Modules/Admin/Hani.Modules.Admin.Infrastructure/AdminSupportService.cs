@@ -1,5 +1,7 @@
+using System.Text.Json;
 using Hani.BuildingBlocks.Application;
 using Hani.Modules.Admin.Application;
+using Hani.Modules.Content.Domain.Growth;
 using Hani.Modules.Content.Domain.Support;
 using Microsoft.EntityFrameworkCore;
 
@@ -164,6 +166,20 @@ internal sealed partial class AdminService : IAdminSupportService
         }
 
         ticket.AddMessage(ids, SupportAuthorType.Admin, actorUserId, body, isInternal);
+        if (!isInternal)
+        {
+            AddNotification(
+                ticket.UserId,
+                "support.ticket.replied",
+                new
+                {
+                    ticket.Id,
+                    ticket.TicketNumber,
+                    ticket.Subject,
+                    ticket.Status
+                });
+        }
+
         await content.SaveChangesAsync(cancellationToken);
         var assigneeNames = await LoadAssigneeNamesAsync(
             [ticket.AssignedTo],
@@ -296,6 +312,18 @@ internal sealed partial class AdminService : IAdminSupportService
                 input.EvidenceUrl,
                 actorUserId);
             content.SupportDisputes.Add(dispute);
+            AddNotification(
+                ticket.UserId,
+                "support.dispute.opened",
+                new
+                {
+                    ticket.Id,
+                    ticket.TicketNumber,
+                    disputeId = dispute.Id,
+                    dispute.Type,
+                    dispute.Amount,
+                    dispute.Currency
+                });
             await content.SaveChangesAsync(cancellationToken);
             return Result<AdminSupportDisputeDto>.Success(
                 ToDisputeDto(dispute, ticket.TicketNumber));
@@ -330,14 +358,25 @@ internal sealed partial class AdminService : IAdminSupportService
         try
         {
             dispute.SetStatus(parsedStatus, actorUserId, input.Resolution);
-            await content.SaveChangesAsync(cancellationToken);
-            var ticketNumber = await content.SupportTickets
+            var ticket = await content.SupportTickets
                 .AsNoTracking()
                 .Where(item => item.Id == dispute.TicketId)
-                .Select(item => item.TicketNumber)
+                .Select(item => new { item.UserId, item.TicketNumber })
                 .FirstOrDefaultAsync(cancellationToken);
+            AddNotification(
+                ticket?.UserId,
+                "support.dispute.updated",
+                new
+                {
+                    dispute.TicketId,
+                    ticket?.TicketNumber,
+                    disputeId = dispute.Id,
+                    dispute.Status,
+                    dispute.Resolution
+                });
+            await content.SaveChangesAsync(cancellationToken);
             return Result<AdminSupportDisputeDto>.Success(
-                ToDisputeDto(dispute, ticketNumber ?? string.Empty));
+                ToDisputeDto(dispute, ticket?.TicketNumber ?? string.Empty));
         }
         catch (ArgumentException exception)
         {
@@ -527,6 +566,21 @@ internal sealed partial class AdminService : IAdminSupportService
             .Select(message => (DateTimeOffset?)message.CreatedAt)
             .ToArray();
         return responses.Length == 0 ? null : responses.Min();
+    }
+
+    private void AddNotification(Guid? userId, string templateKey, object payload)
+    {
+        if (userId is null)
+        {
+            return;
+        }
+
+        content.Notifications.Add(Notification.Create(
+            ids,
+            userId,
+            ContactChannel.Email,
+            templateKey,
+            JsonSerializer.Serialize(payload)));
     }
 
     private static AdminSupportDisputeDto ToDisputeDto(
