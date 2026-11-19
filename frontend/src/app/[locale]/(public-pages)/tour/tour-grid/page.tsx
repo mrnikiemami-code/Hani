@@ -1,15 +1,6 @@
-import { buildTourGridMetadata, TourGridPage } from "./TourGridPage";
-import type { TourScopeValue } from "@/features/tours/domain/tour-search";
+import { redirect } from "next/navigation";
 
-function resolveScope(value: string | undefined): TourScopeValue | undefined {
-  return value === "domestic"
-    ? "Domestic"
-    : value === "foreign"
-      ? "Foreign"
-      : undefined;
-}
-
-export async function generateMetadata({
+export default async function LegacyTourGridPage({
   params,
   searchParams
 }: {
@@ -18,25 +9,11 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const query = await searchParams;
-  return buildTourGridMetadata(locale, resolveScope(query.scope));
-}
-
-export default async function Page({
-  params,
-  searchParams
-}: {
-  params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string; scope?: string }>;
-}) {
-  const { locale } = await params;
-  const query = await searchParams;
-  const page = Math.max(1, Number(query.page ?? "1"));
-
-  return (
-    <TourGridPage
-      locale={locale}
-      page={page}
-      scope={resolveScope(query.scope)}
-    />
-  );
+  const scope =
+    query.scope === "domestic"
+      ? "?scope=domestic"
+      : query.scope === "foreign"
+        ? "?scope=foreign"
+        : "";
+  redirect(`/${locale}/tours${scope}`);
 }

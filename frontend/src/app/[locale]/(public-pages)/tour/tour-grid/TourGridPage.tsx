@@ -3,7 +3,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { absoluteUrl } from "@/lib/hani/site";
 import { searchTours } from "@/features/tours/infrastructure/tours-api";
-import type { TourScopeValue } from "@/features/tours/domain/tour-search";
+import type {
+  TourScopeValue,
+  TourSearchFilters
+} from "@/features/tours/domain/tour-search";
 import TourGridClient from "./tourGridClient";
 import { TourListStructuredData } from "@/features/tours/ui/TourListStructuredData";
 
@@ -12,7 +15,12 @@ export async function buildTourGridMetadata(
   scope?: TourScopeValue
 ): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "common" });
-  const query = scope === "Domestic" ? "?scope=domestic" : scope === "Foreign" ? "?scope=foreign" : "";
+  const query =
+    scope === "Domestic"
+      ? "?scope=domestic"
+      : scope === "Foreign"
+        ? "?scope=foreign"
+        : "";
   const canonical = absoluteUrl(`/${locale}/tours${query}`);
   const languages = Object.fromEntries(
     routing.locales.map((item) => [item, absoluteUrl(`/${item}/tours${query}`)])
@@ -48,22 +56,22 @@ export async function buildTourGridMetadata(
 export async function TourGridPage({
   locale,
   page,
-  scope,
-  originSlug
+  filters,
+  tourTypes
 }: {
   locale: string;
   page: number;
-  scope?: TourScopeValue;
-  originSlug?: string;
+  filters: TourSearchFilters;
+  tourTypes: string[];
 }) {
   setRequestLocale(locale);
-  const result = await searchTours(locale, page, 9, scope, originSlug);
+  const result = await searchTours(locale, page, 9, filters);
 
   return (
     <>
       <TourListStructuredData
         locale={locale}
-        scope={scope}
+        scope={filters.scope}
         tours={result.items}
       />
       <TourGridClient
@@ -71,7 +79,8 @@ export async function TourGridPage({
         totalCount={result.totalCount}
         page={result.page}
         locale={locale}
-        scope={scope}
+        filters={filters}
+        tourTypes={tourTypes}
       />
     </>
   );

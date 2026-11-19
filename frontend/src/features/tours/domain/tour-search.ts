@@ -1,5 +1,17 @@
 export type TourScopeValue = "Domestic" | "Foreign";
 
+export type TourSearchFilters = {
+  scope?: TourScopeValue;
+  originSlug?: string;
+  q?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minDuration?: number;
+  maxDuration?: number;
+  tourType?: string;
+  sort?: string;
+};
+
 export type TourSearchItem = {
   productId: string;
   slug: string;

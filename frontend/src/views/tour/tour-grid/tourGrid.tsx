@@ -1,15 +1,16 @@
 "use client";
 import { useState } from 'react'
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb'
-import FliterSidebar from './filterSidebar';
 import ImageWithBasePath from '../../../components/image-with-base-path';
 import Link from "next/link";
 import { all_routes } from '../../../routes/all_routes';
 import AppSwiper from '../../../components/app-swiper'
 import type {
     TourScopeValue,
+    TourSearchFilters,
     TourSearchItem,
 } from "@/features/tours/domain/tour-search";
+import { TourFilters } from "@/features/tours/ui/TourFilters";
 import { Link as LocaleLink } from "@/i18n/navigation";
 import { formatMoney } from "@/lib/hani/money";
 import { formatIsoDate } from "@/lib/hani/calendar";
@@ -22,6 +23,8 @@ const TourGrid = ({
     page,
     locale,
     scope,
+    filters = {},
+    tourTypes = [],
     isLoading,
     onScopeSelect,
 }: {
@@ -30,6 +33,8 @@ const TourGrid = ({
     page?: number;
     locale?: string;
     scope?: TourScopeValue;
+    filters?: TourSearchFilters;
+    tourTypes?: string[];
     isLoading?: boolean;
     onScopeSelect?: (scope?: TourScopeValue) => void;
 }) => {
@@ -134,120 +139,48 @@ const TourGrid = ({
                         <TourSearch/>
                         {/* /Tour Search */}
                         {/* Tour Types */}
-                        <div className="mb-2">
-                            <div className="mb-3">
-                                <h3 className="h5 mb-2">Choose type of Tours you are interested</h3>
-                            </div>
-                            <div className="row">
-                                <div className="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                                    <div className="d-flex align-items-center hotel-type-item mb-3">
-                                        <Link href={routes.tourGrid} className="avatar avatar-lg">
-                                            <ImageWithBasePath
-                                                src="assets/img/tours/tours-01.jpg"
-                                                className="rounded-circle"
-                                                alt="img"
-                                            />
-                                        </Link>
-                                        <div className="ms-2">
-                                            <div className="fs-16 fw-medium">
-                                                <Link href={routes.tourGrid}>Ecotourism</Link>
-                                            </div>
-                                            <p className="fs-14">216 Hotels</p>
-                                        </div>
-                                    </div>
+                        {tourTypes.length > 0 ? (
+                            <div className="mb-2">
+                                <div className="mb-3">
+                                    <h3 className="h5 mb-2">{t("tourTypesTitle")}</h3>
                                 </div>
-                                <div className="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                                    <div className="d-flex align-items-center hotel-type-item mb-3">
-                                        <Link href={routes.tourGrid} className="avatar avatar-lg">
-                                            <ImageWithBasePath
-                                                src="assets/img/tours/tours-02.jpg"
-                                                className="rounded-circle"
-                                                alt="img"
-                                            />
-                                        </Link>
-                                        <div className="ms-2">
-                                            <div className="fs-16 fw-medium">
-                                                <Link href={routes.tourGrid}>Adventure Tour</Link>
+                                <div className="row">
+                                    {tourTypes.slice(0, 6).map((type, index) => (
+                                        <div className="col-xxl-2 col-lg-3 col-md-4 col-sm-6" key={type}>
+                                            <div className="d-flex align-items-center hotel-type-item mb-3">
+                                                <LocaleLink
+                                                    href={`/tours?tourType=${encodeURIComponent(type)}`}
+                                                    className="avatar avatar-lg"
+                                                >
+                                                    <ImageWithBasePath
+                                                        src={`assets/img/tours/tours-0${(index % 6) + 1}.jpg`}
+                                                        className="rounded-circle"
+                                                        alt={type}
+                                                    />
+                                                </LocaleLink>
+                                                <div className="ms-2">
+                                                    <div className="fs-16 fw-medium">
+                                                        <LocaleLink href={`/tours?tourType=${encodeURIComponent(type)}`}>
+                                                            {type}
+                                                        </LocaleLink>
+                                                    </div>
+                                                    <p className="fs-14 mb-0">{t("tourTypeFilterHint")}</p>
+                                                </div>
                                             </div>
-                                            <p className="fs-14">569 tours</p>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                                    <div className="d-flex align-items-center hotel-type-item mb-3">
-                                        <Link href={routes.tourGrid} className="avatar avatar-lg">
-                                            <ImageWithBasePath
-                                                src="assets/img/tours/tours-03.jpg"
-                                                className="rounded-circle"
-                                                alt="img"
-                                            />
-                                        </Link>
-                                        <div className="ms-2">
-                                            <div className="fs-16 fw-medium">
-                                                <Link href={routes.tourGrid}>Group Tours</Link>
-                                            </div>
-                                            <p className="fs-14">129 tours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                                    <div className="d-flex align-items-center hotel-type-item mb-3">
-                                        <Link href={routes.tourGrid} className="avatar avatar-lg">
-                                            <ImageWithBasePath
-                                                src="assets/img/tours/tours-04.jpg"
-                                                className="rounded-circle"
-                                                alt="img"
-                                            />
-                                        </Link>
-                                        <div className="ms-2">
-                                            <div className="fs-16 fw-medium">
-                                                <Link href={routes.tourGrid}>Beach Tours</Link>
-                                            </div>
-                                            <p className="fs-14">600 tours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                                    <div className="d-flex align-items-center hotel-type-item mb-3">
-                                        <Link href={routes.tourGrid} className="avatar avatar-lg">
-                                            <ImageWithBasePath
-                                                src="assets/img/tours/tours-05.jpg"
-                                                className="rounded-circle"
-                                                alt="img"
-                                            />
-                                        </Link>
-                                        <div className="ms-2">
-                                            <div className="fs-16 fw-medium">
-                                                <Link href={routes.tourGrid}>Historical Tours</Link>
-                                            </div>
-                                            <p className="fs-14">200 tours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                                    <div className="d-flex align-items-center hotel-type-item mb-3">
-                                        <Link href={routes.tourGrid} className="avatar avatar-lg">
-                                            <ImageWithBasePath
-                                                src="assets/img/tours/tours-06.jpg"
-                                                className="rounded-circle"
-                                                alt="img"
-                                            />
-                                        </Link>
-                                        <div className="ms-2">
-                                            <div className="fs-16 fw-medium">
-                                                <Link href={routes.tourGrid}>Summer Trip</Link>
-                                            </div>
-                                            <p className="fs-14">200 tours</p>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
-                        </div>
+                        ) : null}
                         {/* /Tour Types */}
                         <div className="row">
                             {/* Sidebar */}
                             <div className="col-xl-3 col-lg-4 theiaStickySidebar">
-                                <FliterSidebar />
+                                <TourFilters
+                                    locale={locale ?? "fa"}
+                                    filters={filters}
+                                    tourTypes={tourTypes}
+                                />
                             </div>
                             {/* /Sidebar */}
                             <div className="col-xl-9 col-lg-8 theiaStickySidebar">
@@ -279,118 +212,7 @@ const TourGrid = ({
                                                 <i className="isax isax-map-1" />
                                             </Link>
                                         </div>
-                                        <div className="dropdown mb-3">
-                                            <Link
-                                                href="#"
-                                                className="dropdown-toggle py-2"
-                                                data-bs-toggle="dropdown"
-
-                                            >
-                                                <span className="fw-medium text-gray-9">Sort By : </span>
-                                                Recommended
-                                            </Link>
-                                            <div className="dropdown-menu dropdown-sm">
-                                                <form action={routes.tourGrid}>
-                                                    <div className="fw-medium fs-16 mb-3">Sort By</div>
-                                                    <div className="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input
-                                                            className="form-check-input ms-0 mt-0"
-                                                            name="recommend"
-                                                            type="checkbox"
-                                                            id="recommend1"
-                                                            defaultChecked
-                                                        />
-                                                        <label
-                                                            className="form-check-label ms-2"
-                                                            htmlFor="recommend1"
-                                                        >
-                                                            Recommended
-                                                        </label>
-                                                    </div>
-                                                    <div className="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input
-                                                            className="form-check-input ms-0 mt-0"
-                                                            name="recommend"
-                                                            type="checkbox"
-                                                            id="recommend2"
-                                                        />
-                                                        <label
-                                                            className="form-check-label ms-2"
-                                                            htmlFor="recommend2"
-                                                        >
-                                                            Price: low to high
-                                                        </label>
-                                                    </div>
-                                                    <div className="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input
-                                                            className="form-check-input ms-0 mt-0"
-                                                            name="recommend"
-                                                            type="checkbox"
-                                                            id="recommend3"
-                                                        />
-                                                        <label
-                                                            className="form-check-label ms-2"
-                                                            htmlFor="recommend3"
-                                                        >
-                                                            Price: high to low
-                                                        </label>
-                                                    </div>
-                                                    <div className="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input
-                                                            className="form-check-input ms-0 mt-0"
-                                                            name="recommend"
-                                                            type="checkbox"
-                                                            id="recommend4"
-                                                        />
-                                                        <label
-                                                            className="form-check-label ms-2"
-                                                            htmlFor="recommend4"
-                                                        >
-                                                            Newest
-                                                        </label>
-                                                    </div>
-                                                    <div className="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input
-                                                            className="form-check-input ms-0 mt-0"
-                                                            name="recommend"
-                                                            type="checkbox"
-                                                            id="recommend5"
-                                                        />
-                                                        <label
-                                                            className="form-check-label ms-2"
-                                                            htmlFor="recommend5"
-                                                        >
-                                                            Ratings
-                                                        </label>
-                                                    </div>
-                                                    <div className="form-check d-flex align-items-center ps-0 mb-0">
-                                                        <input
-                                                            className="form-check-input ms-0 mt-0"
-                                                            name="recommend"
-                                                            type="checkbox"
-                                                            id="recommend6"
-                                                        />
-                                                        <label
-                                                            className="form-check-label ms-2"
-                                                            htmlFor="recommend6"
-                                                        >
-                                                            Reviews
-                                                        </label>
-                                                    </div>
-                                                    <div className="d-flex align-items-center justify-content-end border-top pt-3 mt-3">
-                                                        <Link
-                                                            href="#"
-                                                            className="btn btn-light btn-sm me-2"
-                                                        >
-                                                            Reset
-                                                        </Link>
-                                                        <button type="submit" className="btn btn-primary btn-sm">
-                                                            Apply
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                                        <div className="mb-3" />
                                     </div>
                                 </div>
                                 <div className="bg-info br-10 p-3 pb-2 mb-4">
@@ -509,59 +331,7 @@ const TourGrid = ({
                                         </div>
                                     )}
                                 </div>
-                                {/* Pagination */}
-                                <nav className="pagination-nav">
-                                    <ul className="pagination justify-content-center">
-                                        <li className="page-item disabled">
-                                            <Link
-                                                className="page-link"
-                                                href="#"
-                                                aria-label="Previous"
-                                            >
-                                                <span aria-hidden="true">
-                                                    <i className="fa-solid fa-chevron-left" />
-                                                </span>
-                                            </Link>
-                                        </li>
-                                        <li className="page-item">
-                                            <Link className="page-link" href="#">
-                                                1
-                                            </Link>
-                                        </li>
-                                        <li className="page-item">
-                                            <Link className="page-link" href="#">
-                                                2
-                                            </Link>
-                                        </li>
-                                        <li className="page-item">
-                                            <Link className="page-link" href="#">
-                                                3
-                                            </Link>
-                                        </li>
-                                        <li className="page-item active">
-                                            <Link className="page-link" href="#">
-                                                4
-                                            </Link>
-                                        </li>
-                                        <li className="page-item">
-                                            <Link className="page-link" href="#">
-                                                5
-                                            </Link>
-                                        </li>
-                                        <li className="page-item">
-                                            <Link
-                                                className="page-link"
-                                                href="#"
-                                                aria-label="Next"
-                                            >
-                                                <span aria-hidden="true">
-                                                    <i className="fa-solid fa-chevron-right" />
-                                                </span>
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </nav>
-                                {/* /Pagination */}
+
                             </div>
                         </div>
                     </div>

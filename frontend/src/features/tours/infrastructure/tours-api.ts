@@ -1,7 +1,7 @@
 import { apiGet } from "@/lib/hani/api";
 import type {
   PagedResult,
-  TourScopeValue,
+  TourSearchFilters,
   TourSearchItem
 } from "../domain/tour-search";
 
@@ -9,22 +9,38 @@ export async function searchTours(
   locale: string,
   page = 1,
   pageSize = 9,
-  scope?: TourScopeValue,
-  originSlug?: string
+  filters: TourSearchFilters = {}
 ): Promise<PagedResult<TourSearchItem>> {
   const query = new URLSearchParams({
     locale,
     page: String(page),
     pageSize: String(pageSize),
-    sort: "newest"
+    sort: filters.sort ?? "newest"
   });
 
-  if (scope) {
-    query.set("scope", scope);
+  if (filters.scope) {
+    query.set("scope", filters.scope);
   }
-
-  if (originSlug) {
-    query.set("originSlug", originSlug);
+  if (filters.originSlug) {
+    query.set("originSlug", filters.originSlug);
+  }
+  if (filters.q) {
+    query.set("q", filters.q);
+  }
+  if (filters.minPrice !== undefined) {
+    query.set("minPrice", String(filters.minPrice));
+  }
+  if (filters.maxPrice !== undefined) {
+    query.set("maxPrice", String(filters.maxPrice));
+  }
+  if (filters.minDuration !== undefined) {
+    query.set("minDuration", String(filters.minDuration));
+  }
+  if (filters.maxDuration !== undefined) {
+    query.set("maxDuration", String(filters.maxDuration));
+  }
+  if (filters.tourType) {
+    query.set("tourType", filters.tourType);
   }
 
   const result = await apiGet<PagedResult<TourSearchItem>>(
@@ -32,7 +48,7 @@ export async function searchTours(
   );
 
   const items = (result?.items ?? []).filter(
-    (item) => !item.title.includes("?") && !item.title.includes("�")
+    (item) => !item.title.includes("?") && !item.title.includes("�??")
   );
 
   return (

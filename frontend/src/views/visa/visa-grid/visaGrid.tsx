@@ -4,7 +4,7 @@ import Breadcrumb from "../../../components/breadcrumb/breadcrumb";
 import ImageWithBasePath from "../../../components/image-with-base-path";
 import { all_routes } from "../../../routes/all_routes";
 import VisaSearch from "../visaSearch";
-import VisaFilter from "../visaFilter";
+import { VisaFilters, type VisaFilterValues } from "@/features/visa/ui/VisaFilters";
 import { useState } from "react";
 import type { VisaSearchItem } from "@/features/visa/domain/visa-search";
 import { formatMoney } from "@/lib/hani/money";
@@ -14,9 +14,11 @@ import { useTranslations } from "next-intl";
 const VisaGrid = ({
   visas = [],
   locale,
+  filters = {},
 }: {
   visas?: VisaSearchItem[];
   locale?: string;
+  filters?: VisaFilterValues;
 }) => {
   const routes = all_routes;
   const t = useTranslations("common");
@@ -60,7 +62,7 @@ const VisaGrid = ({
           {/* /Tour Search */}
           <div className="row">
             {/* Sidebar */}
-            <VisaFilter />
+            <VisaFilters locale={locale ?? "fa"} filters={filters} />
             {/* /Sidebar */}
             <div className="col-xl-9 col-lg-8 theiaStickySidebar">
               <div className="d-flex align-items-center justify-content-between flex-wrap">
@@ -76,115 +78,6 @@ const VisaGrid = ({
                     <Link href={routes.visaList} className="list-icon me-2">
                       <i className="isax isax-firstline" />
                     </Link>
-                  </div>
-                  <div className="dropdown mb-3">
-                    <Link
-                      href="#"
-                      className="dropdown-toggle py-2"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <span className="fw-medium text-gray-9">Sort By : </span>
-                      Recommended
-                    </Link>
-                    <div className="dropdown-menu dropdown-sm">
-                      <form>
-                        <h6 className="fw-medium fs-16 mb-3">Sort By</h6>
-                        <div className="form-check d-flex align-items-center ps-0 mb-2">
-                          <input
-                            className="form-check-input ms-0 mt-0"
-                            name="recommend"
-                            type="checkbox"
-                            id="recommend1"
-                            defaultChecked
-                          />
-                          <label
-                            className="form-check-label ms-2"
-                            htmlFor="recommend1"
-                          >
-                            Recommended
-                          </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center ps-0 mb-2">
-                          <input
-                            className="form-check-input ms-0 mt-0"
-                            name="recommend"
-                            type="checkbox"
-                            id="recommend2"
-                          />
-                          <label
-                            className="form-check-label ms-2"
-                            htmlFor="recommend2"
-                          >
-                            Price: low to high
-                          </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center ps-0 mb-2">
-                          <input
-                            className="form-check-input ms-0 mt-0"
-                            name="recommend"
-                            type="checkbox"
-                            id="recommend3"
-                          />
-                          <label
-                            className="form-check-label ms-2"
-                            htmlFor="recommend3"
-                          >
-                            Price: high to low
-                          </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center ps-0 mb-2">
-                          <input
-                            className="form-check-input ms-0 mt-0"
-                            name="recommend"
-                            type="checkbox"
-                            id="recommend4"
-                          />
-                          <label
-                            className="form-check-label ms-2"
-                            htmlFor="recommend4"
-                          >
-                            Newest
-                          </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center ps-0 mb-2">
-                          <input
-                            className="form-check-input ms-0 mt-0"
-                            name="recommend"
-                            type="checkbox"
-                            id="recommend5"
-                          />
-                          <label
-                            className="form-check-label ms-2"
-                            htmlFor="recommend5"
-                          >
-                            Ratings
-                          </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center ps-0 mb-0">
-                          <input
-                            className="form-check-input ms-0 mt-0"
-                            name="recommend"
-                            type="checkbox"
-                            id="recommend6"
-                          />
-                          <label
-                            className="form-check-label ms-2"
-                            htmlFor="recommend6"
-                          >
-                            Reviews
-                          </label>
-                        </div>
-                        <div className="d-flex align-items-center justify-content-end border-top pt-3 mt-3">
-                          <Link href="#" className="btn btn-light btn-sm me-2">
-                            Reset
-                          </Link>
-                          <button type="submit" className="btn btn-primary btn-sm">
-                            Apply
-                          </button>
-                        </div>
-                      </form>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -265,55 +158,11 @@ const VisaGrid = ({
                 })}
                 {visas.length === 0 && (
                   <div className="col-12">
-                    <p className="text-center text-gray-6">No visas found.</p>
+                    <p className="text-center text-gray-6">{t("noVisas")}</p>
                   </div>
                 )}
               </div>
-              {/* Pagination */}
-              <nav className="pagination-nav">
-                <ul className="pagination justify-content-center">
-                  <li className="page-item disabled">
-                    <Link className="page-link" href="#" aria-label="Previous">
-                      <span aria-hidden="true">
-                        <i className="fa-solid fa-chevron-left" />
-                      </span>
-                    </Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link" href="#">
-                      1
-                    </Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link" href="#">
-                      2
-                    </Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link" href="#">
-                      3
-                    </Link>
-                  </li>
-                  <li className="page-item active">
-                    <Link className="page-link" href="#">
-                      4
-                    </Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link" href="#">
-                      5
-                    </Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link" href="#" aria-label="Next">
-                      <span aria-hidden="true">
-                        <i className="fa-solid fa-chevron-right" />
-                      </span>
-                    </Link>
-                  </li>
-                </ul>
-              </nav>
-              {/* /Pagination */}
+
             </div>
           </div>
         </div>
