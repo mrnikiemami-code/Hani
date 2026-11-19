@@ -17,6 +17,18 @@ public static class AdminCatalogEndpoints
             .WithTags("Internal.Admin.Catalog")
             .RequireAuthorization("Admin");
 
+        group.MapGet("/tours", ListToursAsync)
+            .WithName("Internal.ListAdminTours")
+            .Produces<AdminTourPageDto>();
+
+        group.MapPost("/tours", CreateTourAsync)
+            .WithName("Internal.CreateAdminTour")
+            .Produces<Guid>(StatusCodes.Status201Created);
+
+        group.MapPost("/tours/{id:guid}/publish", PublishTourAsync)
+            .WithName("Internal.PublishAdminTour")
+            .Produces<bool>();
+
         group.MapGet("/hotels", ListHotelsAsync)
             .WithName("Internal.ListAdminHotels")
             .Produces<PagedAdminHotelsResponse>();
@@ -53,6 +65,79 @@ public static class AdminCatalogEndpoints
             q,
             locale,
             cancellationToken));
+
+    private static async Task<IResult> ListToursAsync(
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        [FromQuery] string? q,
+        [FromQuery] string? status,
+        IAdminTourService tours,
+        CancellationToken cancellationToken)
+        => Results.Ok(await tours.ListToursAsync(page, pageSize, q, status, cancellationToken));
+
+    private static async Task<IResult> CreateTourAsync(
+        AdminTourCreateRequest request,
+        HttpContext context,
+        IAdminTourService tours,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await tours.CreateAsync(
+            new AdminTourCreateInput(
+                request.Slug,
+                request.DurationDays,
+                request.TourType,
+                request.Scope,
+                request.Category,
+                request.TravelType,
+                request.CoverImageUrl,
+                request.DestinationIds,
+                request.Translations.Select(item => new AdminTourTranslationInput(
+                    item.Locale,
+                    item.Title,
+                    item.Summary,
+                    item.Description)).ToArray()),
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.tour.created",
+            "TourProduct",
+            result.Value.ToString(),
+            "Tour product created from the admin panel",
+            after: new { request.Slug, request.DurationDays, request.TourType },
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/catalog/tours/{result.Value}",
+            result.Value);
+    }
+
+    private static async Task<IResult> PublishTourAsync(
+        Guid id,
+        HttpContext context,
+        IAdminTourService tours,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        var result = await tours.PublishTourAsync(id, cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "catalog.tour.published",
+            "TourProduct",
+            id.ToString(),
+            "Tour product published from the admin panel",
+            cancellationToken: cancellationToken);
+        return Results.Ok(result.Value);
+    }
 
     private static async Task<IResult> CreateHotelAsync(
         CreateHotelRequest request,
@@ -181,3 +266,23 @@ public static class AdminCatalogEndpoints
             request.SeoDescription);
     }
 }
+
+
+/// <summary>Tour product creation request.</summary>
+public sealed record AdminTourCreateRequest(
+    string Slug,
+    int DurationDays,
+    string TourType,
+    string Scope,
+    string Category,
+    string TravelType,
+    string? CoverImageUrl,
+    IReadOnlyList<Guid> DestinationIds,
+    IReadOnlyList<AdminTourTranslationRequest> Translations);
+
+/// <summary>Localized tour translation request.</summary>
+public sealed record AdminTourTranslationRequest(
+    string Locale,
+    string Title,
+    string Summary,
+    string Description);

@@ -57,12 +57,12 @@ export default async function AdminProductsPage({
       live: true
     },
     {
-      href: undefined,
+      href: "/admin/products/tours",
       title: t("tours"),
       hint: t("toursHint"),
       count: null,
       icon: "isax isax-map",
-      live: false
+      live: true
     },
     {
       href: undefined,

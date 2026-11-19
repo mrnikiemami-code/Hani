@@ -43,6 +43,8 @@ public static class DependencyInjection
             provider => provider.GetRequiredService<AdminService>());
         services.AddScoped<IAdminPlatformSettingsService>(
             provider => provider.GetRequiredService<AdminService>());
+        services.AddScoped<IAdminTourService>(
+            provider => provider.GetRequiredService<AdminService>());
         return services;
     }
 }

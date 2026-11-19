@@ -60,9 +60,9 @@ const ADMIN_NAV: AdminNavItem[] = [
         permission: "catalog.view"
       },
       {
+        href: "/admin/products/tours",
         labelKey: "tours",
-        permission: "catalog.view",
-        enabled: false
+        permission: "catalog.view"
       },
       {
         labelKey: "flights",
