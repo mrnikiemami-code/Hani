@@ -324,3 +324,4 @@
 | `534df2b` | Admin RBAC follow-up: custom roles/role_definitions, permission claims + section middleware, public platform settings wired to header/footer |
 | `c554db1` | Batch 2 start: admin hotel creation endpoint, create route, hotel editor create mode, responsive UI |
 | `70f0f04` | Batch 2 tours: admin tour list/create/publish, localized content, cover/destination fields, responsive UI |
+| `e2fc0af` | Batch 2 completion: flight routes/references/offers admin, visa countries/types, visa application status, product overview/nav live |
