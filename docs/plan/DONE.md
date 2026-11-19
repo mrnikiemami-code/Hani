@@ -321,3 +321,4 @@
 | `7f0cc03` | Phase 5 channel administration: API client create/list/revoke, one-time secret, plans, white-label domain, webhook, audit, responsive UI |
 | `f62e672` | Phase 5 supplier integration: offer moderation, approve/reject with audit, supplier.write API scope, responsive admin UI |
 | `138632e` | Admin Batch 1: dynamic role-permission matrix, user role assignment, platform base settings, agency detail/documents/contracts, responsive UI |
+| `534df2b` | Admin RBAC follow-up: custom roles/role_definitions, permission claims + section middleware, public platform settings wired to header/footer |
