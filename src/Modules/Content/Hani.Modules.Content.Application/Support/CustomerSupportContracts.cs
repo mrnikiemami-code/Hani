@@ -11,6 +11,7 @@ public sealed record CustomerSupportTicketRowDto(
     string Status,
     string Priority,
     int MessageCount,
+    int UnreadCount,
     DateTimeOffset CreatedAt,
     DateTimeOffset LastMessageAt);
 
@@ -26,7 +27,8 @@ public sealed record CustomerSupportMessageDto(
     Guid Id,
     string AuthorType,
     string Body,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    IReadOnlyList<SupportAttachmentDto> Attachments);
 
 /// <summary>Customer support ticket detail.</summary>
 public sealed record CustomerSupportTicketDetailDto(
@@ -39,6 +41,7 @@ public sealed record CustomerSupportTicketDetailDto(
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
     DateTimeOffset LastMessageAt,
+    int UnreadCount,
     IReadOnlyList<CustomerSupportMessageDto> Messages,
     IReadOnlyList<CustomerSupportDisputeDto> Disputes);
 
@@ -97,6 +100,7 @@ public interface ICustomerSupportService
         Guid userId,
         Guid id,
         string body,
+        IReadOnlyList<Guid>? attachmentIds,
         CancellationToken cancellationToken);
 
     /// <summary>Lists disputes opened on tickets owned by one customer.</summary>
@@ -118,5 +122,21 @@ public interface ICustomerSupportService
     Task<CustomerSupportDisputeDto?> GetDisputeAsync(
         Guid userId,
         Guid id,
+        CancellationToken cancellationToken);
+
+    /// <summary>Uploads a private attachment to an owned ticket.</summary>
+    Task<Result<SupportAttachmentDto>> UploadAttachmentAsync(
+        Guid userId,
+        Guid ticketId,
+        string fileName,
+        string contentType,
+        long sizeBytes,
+        Stream content,
+        CancellationToken cancellationToken);
+
+    /// <summary>Downloads an attachment that belongs to an owned ticket.</summary>
+    Task<SupportAttachmentDownloadDto?> DownloadAttachmentAsync(
+        Guid userId,
+        Guid attachmentId,
         CancellationToken cancellationToken);
 }

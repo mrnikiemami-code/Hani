@@ -5,6 +5,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Hani.BuildingBlocks\Hani.BuildingBlocks.Application\Hani.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\Content\Hani.Modules.Content.Domain\Hani.Modules.Content.Domain.csproj" />
+    <ProjectReference Include="..\..\Content\Hani.Modules.Content.Application\Hani.Modules.Content.Application.csproj" />
     <ProjectReference Include="..\..\Catalog\Hani.Modules.Catalog.Application\Hani.Modules.Catalog.Application.csproj" />
     <ProjectReference Include="..\..\Catalog\Hani.Modules.Catalog.Domain\Hani.Modules.Catalog.Domain.csproj" />
     <ProjectReference Include="..\..\Identity\Hani.Modules.Identity.Application\Hani.Modules.Identity.Application.csproj" />

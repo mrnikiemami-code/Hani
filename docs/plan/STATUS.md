@@ -634,3 +634,5 @@
 - Batch 7 customer support portal: authenticated ticket list/detail/reply endpoints and UI under `/user/support`, with strict owner checks and internal notes excluded from customer payloads.
 - Batch 7 customer disputes: own-dispute list/detail and open-dispute workflow from an owned ticket, with customer-facing status/resolution UI.
 - Batch 7 support notifications: admin replies and dispute status changes notify the customer; customer replies and disputes notify the assigned admin. Responsive FA/EN/AR portal verified on desktop, tablet, and mobile.
+- Batch 8 support attachments: private attachment storage with 10 MB and type limits, pending-to-message linking, customer/admin upload and authenticated download, and internal-note attachment isolation.
+- Batch 8 messaging parity: customer and admin unread counters driven by read timestamps, unread badges in both ticket lists, attachment links in threads, and deepLink fields in support notification payloads. Responsive FA/EN/AR UI verified.

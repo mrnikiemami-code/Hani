@@ -53,9 +53,45 @@ paths:
               required: [body]
               properties:
                 body: { type: string, maxLength: 5000 }
+                attachmentIds:
+                  type: array
+                  items: { type: string, format: uuid }
       responses:
         '200': { description: Updated ticket detail }
         '404': { description: Ticket not found or not owned by the customer }
+  /support/tickets/{id}/attachments:
+    post:
+      tags: [Marketplace.Support]
+      summary: Upload a private attachment to an owned ticket
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201': { description: Pending attachment metadata }
+        '400': { description: Unsupported type or size }
+  /support/attachments/{id}:
+    get:
+      tags: [Marketplace.Support]
+      summary: Download an attachment from an owned non-internal message
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Private file stream }
+        '404': { description: Attachment not found or not visible to the customer }
   /support/disputes:
     get:
       tags: [Marketplace.Support]

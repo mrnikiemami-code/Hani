@@ -10,6 +10,7 @@ export type SupportTicketRow = {
   assignedTo: string | null;
   assignedToName: string | null;
   messageCount: number;
+  unreadCount: number;
   createdAt: string;
   lastMessageAt: string;
   slaDueAt: string;
@@ -24,6 +25,16 @@ export type SupportTicketPage = {
   total: number;
 };
 
+export type SupportAttachment = {
+  id: string;
+  ticketId: string;
+  messageId: string | null;
+  fileName: string;
+  contentType: string;
+  sizeBytes: number;
+  createdAt: string;
+};
+
 export type SupportMessage = {
   id: string;
   authorType: string;
@@ -31,6 +42,7 @@ export type SupportMessage = {
   body: string;
   isInternal: boolean;
   createdAt: string;
+  attachments: SupportAttachment[];
 };
 
 export type SupportTicketDetail = {
@@ -48,6 +60,7 @@ export type SupportTicketDetail = {
   createdAt: string;
   updatedAt: string;
   lastMessageAt: string;
+  unreadCount: number;
   messages: SupportMessage[];
   slaDueAt: string;
   firstResponseAt: string | null;

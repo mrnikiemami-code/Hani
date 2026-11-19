@@ -1160,6 +1160,62 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.ToTable("home_page_settings", "content");
                 });
 
+            modelBuilder.Entity("Hani.Modules.Content.Domain.Support.SupportAttachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("file_name");
+
+                    b.Property<Guid?>("MessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("message_id");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("size_bytes");
+
+                    b.Property<string>("StorageKey")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("storage_key");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ticket_id");
+
+                    b.Property<Guid>("UploadedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("uploaded_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MessageId")
+                        .HasDatabaseName("ix_support_attachments_message");
+
+                    b.HasIndex("TicketId")
+                        .HasDatabaseName("ix_support_attachments_ticket");
+
+                    b.ToTable("support_attachments", "content");
+                });
+
             modelBuilder.Entity("Hani.Modules.Content.Domain.Support.SupportDispute", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1248,6 +1304,10 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTimeOffset?>("AdminLastReadAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("admin_last_read_at");
+
                     b.Property<Guid?>("AssignedTo")
                         .HasColumnType("uuid")
                         .HasColumnName("assigned_to");
@@ -1278,6 +1338,10 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset?>("CustomerLastReadAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("customer_last_read_at");
 
                     b.Property<DateTimeOffset>("LastMessageAt")
                         .HasColumnType("timestamp with time zone")

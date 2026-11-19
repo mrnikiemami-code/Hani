@@ -106,6 +106,12 @@ public sealed class SupportTicket : AggregateRoot<Guid>
     /// <summary>Time of the latest message.</summary>
     public DateTimeOffset LastMessageAt { get; private set; }
 
+    /// <summary>Last time the customer opened the ticket.</summary>
+    public DateTimeOffset? CustomerLastReadAt { get; private set; }
+
+    /// <summary>Last time an administrator opened the ticket.</summary>
+    public DateTimeOffset? AdminLastReadAt { get; private set; }
+
     /// <summary>Message thread.</summary>
     public IReadOnlyCollection<SupportMessage> Messages => _messages;
 
@@ -214,6 +220,18 @@ public sealed class SupportTicket : AggregateRoot<Guid>
     {
         AssignedTo = assignedTo;
         UpdatedAt = now ?? DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Marks the customer thread as read.</summary>
+    public void MarkCustomerRead(DateTimeOffset? now = null)
+    {
+        CustomerLastReadAt = now ?? DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Marks the administrator thread as read.</summary>
+    public void MarkAdminRead(DateTimeOffset? now = null)
+    {
+        AdminLastReadAt = now ?? DateTimeOffset.UtcNow;
     }
 }
 

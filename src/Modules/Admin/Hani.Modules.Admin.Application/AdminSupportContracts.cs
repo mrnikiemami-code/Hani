@@ -1,4 +1,5 @@
 using Hani.BuildingBlocks.Application;
+using Hani.Modules.Content.Application.Support;
 
 namespace Hani.Modules.Admin.Application;
 
@@ -14,6 +15,7 @@ public sealed record AdminSupportTicketRowDto(
     string Status,
     Guid? AssignedTo,
     int MessageCount,
+    int UnreadCount,
     DateTimeOffset CreatedAt,
     DateTimeOffset LastMessageAt,
     string? AssignedToName,
@@ -35,7 +37,8 @@ public sealed record AdminSupportMessageDto(
     Guid? AuthorUserId,
     string Body,
     bool IsInternal,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    IReadOnlyList<SupportAttachmentDto> Attachments);
 
 /// <summary>Support ticket detail.</summary>
 public sealed record AdminSupportTicketDetailDto(
@@ -53,6 +56,7 @@ public sealed record AdminSupportTicketDetailDto(
     DateTimeOffset UpdatedAt,
     DateTimeOffset LastMessageAt,
     IReadOnlyList<AdminSupportMessageDto> Messages,
+    int UnreadCount,
     string? AssignedToName,
     DateTimeOffset SlaDueAt,
     DateTimeOffset? FirstResponseAt,
@@ -170,6 +174,7 @@ public interface IAdminSupportService
         Guid actorUserId,
         string body,
         bool isInternal,
+        IReadOnlyList<Guid>? attachmentIds,
         CancellationToken cancellationToken);
 
     /// <summary>Updates status, priority, and assignee.</summary>
@@ -206,5 +211,20 @@ public interface IAdminSupportService
     /// <summary>Returns support quality, SLA, category, and assignee metrics.</summary>
     Task<AdminSupportReportDto> GetReportAsync(
         int days,
+        CancellationToken cancellationToken);
+
+    /// <summary>Uploads a private attachment to a ticket.</summary>
+    Task<Result<SupportAttachmentDto>> UploadAttachmentAsync(
+        Guid ticketId,
+        Guid actorUserId,
+        string fileName,
+        string contentType,
+        long sizeBytes,
+        Stream content,
+        CancellationToken cancellationToken);
+
+    /// <summary>Downloads any support attachment for an administrator.</summary>
+    Task<SupportAttachmentDownloadDto?> DownloadAttachmentAsync(
+        Guid attachmentId,
         CancellationToken cancellationToken);
 }

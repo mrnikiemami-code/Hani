@@ -11,7 +11,8 @@ namespace Hani.Modules.Content.Infrastructure.Support;
 
 internal sealed class CustomerSupportService(
     ContentDbContext dbContext,
-    IIdGenerator ids) : ICustomerSupportService
+    IIdGenerator ids,
+    ISupportAttachmentStorage attachmentStorage) : ICustomerSupportService
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
@@ -55,6 +56,11 @@ internal sealed class CustomerSupportService(
                 item.Status.ToString(),
                 item.Priority.ToString(),
                 item.Messages.Count(message => !message.IsInternal),
+                item.Messages.Count(message =>
+                    message.AuthorType == SupportAuthorType.Admin &&
+                    !message.IsInternal &&
+                    (item.CustomerLastReadAt == null ||
+                        message.CreatedAt > item.CustomerLastReadAt)),
                 item.CreatedAt,
                 item.LastMessageAt))
             .ToArrayAsync(cancellationToken);
@@ -71,7 +77,6 @@ internal sealed class CustomerSupportService(
         CancellationToken cancellationToken)
     {
         var ticket = await dbContext.SupportTickets
-            .AsNoTracking()
             .Include(item => item.Messages)
             .FirstOrDefaultAsync(
                 item => item.Id == id && item.UserId == userId,
@@ -81,14 +86,18 @@ internal sealed class CustomerSupportService(
             return null;
         }
 
+        ticket.MarkCustomerRead();
+        await dbContext.SaveChangesAsync(cancellationToken);
         var disputes = await LoadTicketDisputesAsync(id, cancellationToken);
-        return ToDetail(ticket, disputes);
+        var attachments = await LoadAttachmentsAsync(id, cancellationToken);
+        return ToDetail(ticket, disputes, attachments);
     }
 
     public async Task<Result<CustomerSupportTicketDetailDto>> ReplyAsync(
         Guid userId,
         Guid id,
         string body,
+        IReadOnlyList<Guid>? attachmentIds,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(body))
@@ -108,7 +117,40 @@ internal sealed class CustomerSupportService(
                 Error.NotFound("HANI-SUPPORT-4302", "Support ticket was not found."));
         }
 
-        ticket.AddMessage(ids, SupportAuthorType.Customer, userId, body, false);
+        var message = ticket.AddMessage(
+            ids,
+            SupportAuthorType.Customer,
+            userId,
+            body,
+            false);
+        var requestedAttachments = attachmentIds?
+            .Where(item => item != Guid.Empty)
+            .Distinct()
+            .ToArray() ?? [];
+        if (requestedAttachments.Length > 0)
+        {
+            var attachments = await dbContext.SupportAttachments
+                .Where(item =>
+                    requestedAttachments.Contains(item.Id) &&
+                    item.TicketId == id &&
+                    item.MessageId == null &&
+                    item.UploadedBy == userId)
+                .ToArrayAsync(cancellationToken);
+            if (attachments.Length != requestedAttachments.Length)
+            {
+                return Result<CustomerSupportTicketDetailDto>.Failure(
+                    Error.Validation(
+                        "HANI-SUPPORT-4307",
+                        "One or more attachments are invalid."));
+            }
+
+            foreach (var attachment in attachments)
+            {
+                attachment.AttachToMessage(message.Id);
+            }
+        }
+
+        ticket.MarkCustomerRead();
         AddNotification(
             ticket.AssignedTo,
             "support.ticket.customer_replied",
@@ -117,12 +159,14 @@ internal sealed class CustomerSupportService(
                 ticket.Id,
                 ticket.TicketNumber,
                 ticket.Subject,
-                ticket.Status
+                ticket.Status,
+                deepLink = $"/admin/support/tickets/{ticket.Id}"
             });
         await dbContext.SaveChangesAsync(cancellationToken);
         var disputes = await LoadTicketDisputesAsync(id, cancellationToken);
+        var loadedAttachments = await LoadAttachmentsAsync(id, cancellationToken);
         return Result<CustomerSupportTicketDetailDto>.Success(
-            ToDetail(ticket, disputes));
+            ToDetail(ticket, disputes, loadedAttachments));
     }
 
     public async Task<CustomerSupportDisputePageDto> ListDisputesAsync(
@@ -217,7 +261,8 @@ internal sealed class CustomerSupportService(
                     disputeId = dispute.Id,
                     dispute.Type,
                     dispute.Amount,
-                    dispute.Currency
+                    dispute.Currency,
+                    deepLink = $"/admin/support/tickets/{ticket.Id}"
                 });
             await dbContext.SaveChangesAsync(cancellationToken);
             return Result<CustomerSupportDisputeDto>.Success(
@@ -228,6 +273,121 @@ internal sealed class CustomerSupportService(
             return Result<CustomerSupportDisputeDto>.Failure(
                 Error.Validation("HANI-SUPPORT-4304", exception.Message));
         }
+    }
+
+    public async Task<Result<SupportAttachmentDto>> UploadAttachmentAsync(
+        Guid userId,
+        Guid ticketId,
+        string fileName,
+        string contentType,
+        long sizeBytes,
+        Stream content,
+        CancellationToken cancellationToken)
+    {
+        var ticket = await dbContext.SupportTickets
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                item => item.Id == ticketId && item.UserId == userId,
+                cancellationToken);
+        if (ticket is null)
+        {
+            return Result<SupportAttachmentDto>.Failure(
+                Error.NotFound("HANI-SUPPORT-4302", "Support ticket was not found."));
+        }
+
+        if (sizeBytes is <= 0 or > SupportAttachmentRules.MaxBytes)
+        {
+            return Result<SupportAttachmentDto>.Failure(
+                Error.Validation(
+                    "HANI-SUPPORT-4308",
+                    "Attachment size must be between 1 byte and 10 MB."));
+        }
+
+        var normalizedType = contentType.Trim().ToLowerInvariant();
+        if (!SupportAttachmentRules.TryGetExtension(normalizedType, out var extension))
+        {
+            return Result<SupportAttachmentDto>.Failure(
+                Error.Validation(
+                    "HANI-SUPPORT-4309",
+                    "Only JPEG, PNG, WebP, PDF, and text files are allowed."));
+        }
+
+        var attachmentId = ids.NewId();
+        var storageKey = SupportAttachmentRules.StorageKey(
+            ticketId,
+            attachmentId,
+            extension);
+        try
+        {
+            await attachmentStorage.SaveAsync(
+                storageKey,
+                content,
+                cancellationToken);
+            var attachment = SupportAttachment.Create(
+                ids,
+                ticketId,
+                SupportAttachmentRules.SafeFileName(fileName),
+                normalizedType,
+                sizeBytes,
+                storageKey,
+                userId);
+            dbContext.SupportAttachments.Add(attachment);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            return Result<SupportAttachmentDto>.Success(ToAttachmentDto(attachment));
+        }
+        catch (ArgumentException exception)
+        {
+            await attachmentStorage.DeleteAsync(storageKey, cancellationToken);
+            return Result<SupportAttachmentDto>.Failure(
+                Error.Validation("HANI-SUPPORT-4310", exception.Message));
+        }
+        catch
+        {
+            await attachmentStorage.DeleteAsync(storageKey, cancellationToken);
+            throw;
+        }
+    }
+
+    public async Task<SupportAttachmentDownloadDto?> DownloadAttachmentAsync(
+        Guid userId,
+        Guid attachmentId,
+        CancellationToken cancellationToken)
+    {
+        var attachment = await dbContext.SupportAttachments
+            .AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == attachmentId, cancellationToken);
+        if (attachment is null || attachment.MessageId is not { } messageId)
+        {
+            return null;
+        }
+
+        var ownsTicket = await dbContext.SupportTickets
+            .AsNoTracking()
+            .AnyAsync(
+                item => item.Id == attachment.TicketId && item.UserId == userId,
+                cancellationToken);
+        if (!ownsTicket)
+        {
+            return null;
+        }
+
+        var message = await dbContext.SupportTickets
+            .AsNoTracking()
+            .Where(item => item.Id == attachment.TicketId)
+            .SelectMany(item => item.Messages)
+            .FirstOrDefaultAsync(item => item.Id == messageId, cancellationToken);
+        if (message is null || message.IsInternal)
+        {
+            return null;
+        }
+
+        var stream = await attachmentStorage.OpenReadAsync(
+            attachment.StorageKey,
+            cancellationToken);
+        return new SupportAttachmentDownloadDto(
+            attachment.FileName,
+            attachment.ContentType,
+            stream);
     }
 
     public async Task<CustomerSupportDisputeDto?> GetDisputeAsync(
@@ -266,6 +426,34 @@ internal sealed class CustomerSupportService(
             .ToArray();
     }
 
+    private async Task<IReadOnlyList<SupportAttachmentDto>> LoadAttachmentsAsync(
+        Guid ticketId,
+        CancellationToken cancellationToken)
+        => await dbContext.SupportAttachments
+            .AsNoTracking()
+            .Where(item => item.TicketId == ticketId && item.MessageId != null)
+            .OrderBy(item => item.CreatedAt)
+            .Select(item => new SupportAttachmentDto(
+                item.Id,
+                item.TicketId,
+                item.MessageId,
+                item.FileName,
+                item.ContentType,
+                item.SizeBytes,
+                item.CreatedAt))
+            .ToArrayAsync(cancellationToken);
+
+    private static SupportAttachmentDto ToAttachmentDto(
+        SupportAttachment attachment)
+        => new(
+            attachment.Id,
+            attachment.TicketId,
+            attachment.MessageId,
+            attachment.FileName,
+            attachment.ContentType,
+            attachment.SizeBytes,
+            attachment.CreatedAt);
+
     private void AddNotification(Guid? userId, string templateKey, object payload)
     {
         if (userId is null)
@@ -283,7 +471,8 @@ internal sealed class CustomerSupportService(
 
     private static CustomerSupportTicketDetailDto ToDetail(
         SupportTicket ticket,
-        IReadOnlyList<CustomerSupportDisputeDto> disputes)
+        IReadOnlyList<CustomerSupportDisputeDto> disputes,
+        IReadOnlyList<SupportAttachmentDto> attachments)
         => new(
             ticket.Id,
             ticket.TicketNumber,
@@ -294,6 +483,7 @@ internal sealed class CustomerSupportService(
             ticket.CreatedAt,
             ticket.UpdatedAt,
             ticket.LastMessageAt,
+            0,
             ticket.Messages
                 .Where(message => !message.IsInternal)
                 .OrderBy(message => message.CreatedAt)
@@ -301,7 +491,10 @@ internal sealed class CustomerSupportService(
                     message.Id,
                     message.AuthorType.ToString(),
                     message.Body,
-                    message.CreatedAt))
+                    message.CreatedAt,
+                    attachments
+                        .Where(attachment => attachment.MessageId == message.Id)
+                        .ToArray()))
                 .ToArray(),
             disputes);
 

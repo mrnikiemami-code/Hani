@@ -359,3 +359,5 @@
 | H91-PORTAL-01 | Batch 7: customer ticket portal | ? Done | authenticated list/detail/reply with owner checks and hidden internal notes |
 | H91-PORTAL-02 | Batch 7: customer disputes | ? Done | list/detail/open dispute from owned ticket with customer UI |
 | H91-PORTAL-03 | Batch 7: support notifications and UX | ? Done | customer/admin reply and dispute notifications, sidebar links, responsive FA/EN/AR UI |
+| H91-PORTAL-04 | Batch 8: support attachments | ? Done | private upload/download, type/size validation, internal-note isolation, customer/admin file UI |
+| H91-PORTAL-05 | Batch 8: unread and deep links | ? Done | customer/admin read state, unread badges, support notification deepLink payloads |

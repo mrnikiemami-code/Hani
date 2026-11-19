@@ -53,6 +53,31 @@ paths:
         - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
       responses:
         '200': { description: Updated ticket }
+  /admin/support/tickets/{id}/attachments:
+    post:
+      tags: [Admin.Support]
+      summary: Upload a private attachment to a ticket
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: { type: string, format: binary }
+      responses:
+        '201': { description: Pending attachment metadata }
+  /admin/support/attachments/{id}:
+    get:
+      tags: [Admin.Support]
+      summary: Download any support attachment
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Private file stream }
   /admin/support/disputes:
     get:
       tags: [Admin.Support]

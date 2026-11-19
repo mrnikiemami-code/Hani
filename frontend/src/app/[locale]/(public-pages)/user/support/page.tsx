@@ -112,6 +112,11 @@ export default async function CustomerSupportPage({
                       >
                         {ticket.subject}
                       </Link>
+                      {ticket.unreadCount > 0 && (
+                        <span className="badge badge-danger rounded-pill ms-2">
+                          {ticket.unreadCount}
+                        </span>
+                      )}
                     </td>
                     <td className="fs-14 d-none d-md-table-cell">
                       {ticket.category}

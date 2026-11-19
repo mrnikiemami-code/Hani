@@ -1433,7 +1433,11 @@
     "slaBreakdown": "تفکیک SLA",
     "byCategory": "بر اساس دسته",
     "byAssignee": "بر اساس مسئول",
-    "count": "تعداد"
+    "count": "تعداد",
+    "attachments": "پیوست‌ها",
+    "attachmentHint": "JPEG، PNG، WebP، PDF یا TXT تا ۱۰ مگابایت.",
+    "attachmentTooLarge": "حجم هر پیوست حداکثر ۱۰ مگابایت است.",
+    "attachmentError": "آپلود پیوست انجام نشد."
   },
   "adminNotifications": {
     "title": "اعلان‌ها",
@@ -1818,6 +1822,10 @@
     "disputeStatusInvestigating": "در حال بررسی",
     "disputeStatusAwaitingCustomer": "در انتظار شما",
     "disputeStatusResolved": "حل‌شده",
-    "disputeStatusRejected": "ردشده"
+    "disputeStatusRejected": "ردشده",
+    "attachments": "پیوست‌ها",
+    "attachmentHint": "JPEG، PNG، WebP، PDF یا TXT تا ۱۰ مگابایت.",
+    "attachmentTooLarge": "حجم هر پیوست حداکثر ۱۰ مگابایت است.",
+    "attachmentError": "آپلود پیوست انجام نشد."
   }
 }

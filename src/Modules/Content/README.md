@@ -155,3 +155,16 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
   in the outbox.
 - UI routes: `/user/support`, `/user/support/{id}`, `/user/support/new`, and
   `/user/support/disputes`.
+
+## Support attachments and read state (2026-11-19)
+
+- `SupportAttachment` stores private ticket files in `content.support_attachments`
+  and on disk under `Support:Attachments:RootPath` (never a public URL).
+- Allowed types: JPEG, PNG, WebP, PDF, and plain text; maximum 10 MB.
+- Customers can upload/download only attachments on their own tickets and only
+  from non-internal messages. Administrators can download any attachment.
+- `SupportTicket.CustomerLastReadAt` and `AdminLastReadAt` drive unread badges
+  and are updated when the corresponding side opens the ticket.
+- Outbox payloads for support notifications include a `deepLink` to the
+  customer or admin ticket route.
+- Migration: `AddSupportAttachmentsAndReadState`.

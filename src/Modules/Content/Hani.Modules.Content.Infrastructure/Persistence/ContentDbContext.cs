@@ -37,6 +37,7 @@ public sealed class ContentDbContext(DbContextOptions<ContentDbContext> options)
     public DbSet<ContentEntryRevision> ContentEntryRevisions => Set<ContentEntryRevision>();
     public DbSet<SupportTicket> SupportTickets => Set<SupportTicket>();
     public DbSet<SupportDispute> SupportDisputes => Set<SupportDispute>();
+    public DbSet<SupportAttachment> SupportAttachments => Set<SupportAttachment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

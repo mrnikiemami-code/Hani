@@ -1433,7 +1433,11 @@
     "slaBreakdown": "تفصيل SLA",
     "byCategory": "حسب الفئة",
     "byAssignee": "حسب المسؤول",
-    "count": "العدد"
+    "count": "العدد",
+    "attachments": "المرفقات",
+    "attachmentHint": "JPEG أو PNG أو WebP أو PDF أو TXT حتى 10 ميغابايت.",
+    "attachmentTooLarge": "يجب ألا يتجاوز حجم كل مرفق 10 ميغابايت.",
+    "attachmentError": "تعذر رفع المرفق."
   },
   "adminNotifications": {
     "title": "الإشعارات",
@@ -1818,6 +1822,10 @@
     "disputeStatusInvestigating": "قيد التحقيق",
     "disputeStatusAwaitingCustomer": "بانتظارك",
     "disputeStatusResolved": "محلولة",
-    "disputeStatusRejected": "مرفوضة"
+    "disputeStatusRejected": "مرفوضة",
+    "attachments": "المرفقات",
+    "attachmentHint": "JPEG أو PNG أو WebP أو PDF أو TXT حتى 10 ميغابايت.",
+    "attachmentTooLarge": "يجب ألا يتجاوز حجم كل مرفق 10 ميغابايت.",
+    "attachmentError": "تعذر رفع المرفق."
   }
 }

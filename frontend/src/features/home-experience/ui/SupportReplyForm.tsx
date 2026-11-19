@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMessageBox } from "@/components/hani/message-provider";
-import { replySupportTicket } from "../application/admin-support-actions";
+import {
+  replySupportTicket,
+  uploadSupportAttachment
+} from "../application/admin-support-actions";
 
 /** Adds an admin reply or an internal note to a support ticket. */
 export function SupportReplyForm({ id }: { id: string }) {
@@ -14,6 +17,8 @@ export function SupportReplyForm({ id }: { id: string }) {
   const [pending, setPending] = useState(false);
   const [body, setBody] = useState("");
   const [isInternal, setIsInternal] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,8 +27,32 @@ export function SupportReplyForm({ id }: { id: string }) {
       return;
     }
 
+    const tooLarge = files.find((file) => file.size > 10 * 1024 * 1024);
+    if (tooLarge) {
+      messages.toast({ kind: "error", message: t("attachmentTooLarge") });
+      return;
+    }
+
     setPending(true);
-    const result = await replySupportTicket(id, body.trim(), isInternal);
+    const attachmentIds: string[] = [];
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file, file.name);
+      const upload = await uploadSupportAttachment(id, formData);
+      if (!upload.ok || !upload.id) {
+        setPending(false);
+        messages.toast({ kind: "error", message: t("attachmentError") });
+        return;
+      }
+      attachmentIds.push(upload.id);
+    }
+
+    const result = await replySupportTicket(
+      id,
+      body.trim(),
+      isInternal,
+      attachmentIds
+    );
     setPending(false);
     if (!result.ok) {
       messages.toast({ kind: "error", message: t("error") });
@@ -32,6 +61,8 @@ export function SupportReplyForm({ id }: { id: string }) {
 
     setBody("");
     setIsInternal(false);
+    setFiles([]);
+    if (fileInput.current) fileInput.current.value = "";
     messages.toast({ kind: "success", message: t("replyAdded") });
     router.refresh();
   };
@@ -51,7 +82,24 @@ export function SupportReplyForm({ id }: { id: string }) {
           placeholder={t("replyPlaceholder")}
           required
         />
-        <div className="form-check">
+        <div className="mt-3">
+          <label className="form-label" htmlFor="admin-support-files">
+            {t("attachments")}
+          </label>
+          <input
+            ref={fileInput}
+            id="admin-support-files"
+            type="file"
+            className="form-control"
+            multiple
+            accept=".jpg,.jpeg,.png,.webp,.pdf,.txt"
+            onChange={(event) =>
+              setFiles(Array.from(event.target.files ?? []))
+            }
+          />
+          <span className="fs-12 text-gray-6">{t("attachmentHint")}</span>
+        </div>
+        <div className="form-check mt-3">
           <input
             id="support-internal-note"
             className="form-check-input"

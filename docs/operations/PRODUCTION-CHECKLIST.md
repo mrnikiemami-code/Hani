@@ -55,3 +55,11 @@ single-node defaults (`ProductionConfigurationGuard`).
 - Roll back the application before reverting a migration unless the migration
   is explicitly backward compatible.
 - Restore from the latest verified dump or PITR point if data was corrupted.
+
+## Attachment storage
+
+- `Support:Attachments:RootPath` must point at a persistent private volume.
+- Back up the private attachment directory together with PostgreSQL; the
+  database stores only metadata.
+- Do not expose the attachment root through `wwwroot`, a static file server, or
+  a public CDN. Downloads are authenticated API streams only.

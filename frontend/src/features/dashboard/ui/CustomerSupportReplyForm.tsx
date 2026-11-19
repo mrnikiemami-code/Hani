@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMessageBox } from "@/components/hani/message-provider";
-import { replyMySupportTicket } from "../application/customer-support-actions";
+import {
+  replyMySupportTicket,
+  uploadMySupportAttachment
+} from "../application/customer-support-actions";
 
 /** Customer reply form for one support ticket. */
 export function CustomerSupportReplyForm({ id }: { id: string }) {
@@ -13,6 +16,8 @@ export function CustomerSupportReplyForm({ id }: { id: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [body, setBody] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,8 +26,27 @@ export function CustomerSupportReplyForm({ id }: { id: string }) {
       return;
     }
 
+    const tooLarge = files.find((file) => file.size > 10 * 1024 * 1024);
+    if (tooLarge) {
+      messages.toast({ kind: "error", message: t("attachmentTooLarge") });
+      return;
+    }
+
     setPending(true);
-    const result = await replyMySupportTicket(id, body.trim());
+    const attachmentIds: string[] = [];
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file, file.name);
+      const upload = await uploadMySupportAttachment(id, formData);
+      if (!upload.ok || !upload.id) {
+        setPending(false);
+        messages.toast({ kind: "error", message: t("attachmentError") });
+        return;
+      }
+      attachmentIds.push(upload.id);
+    }
+
+    const result = await replyMySupportTicket(id, body.trim(), attachmentIds);
     setPending(false);
     if (!result.ok) {
       messages.toast({ kind: "error", message: t("error") });
@@ -30,6 +54,8 @@ export function CustomerSupportReplyForm({ id }: { id: string }) {
     }
 
     setBody("");
+    setFiles([]);
+    if (fileInput.current) fileInput.current.value = "";
     messages.toast({ kind: "success", message: t("replyAdded") });
     router.refresh();
   };
@@ -49,6 +75,25 @@ export function CustomerSupportReplyForm({ id }: { id: string }) {
           placeholder={t("replyPlaceholder")}
           required
         />
+        <div className="mt-3">
+          <label className="form-label" htmlFor="customer-support-files">
+            {t("attachments")}
+          </label>
+          <input
+            ref={fileInput}
+            id="customer-support-files"
+            type="file"
+            className="form-control"
+            multiple
+            accept=".jpg,.jpeg,.png,.webp,.pdf,.txt"
+            onChange={(event) =>
+              setFiles(Array.from(event.target.files ?? []))
+            }
+          />
+          <span className="fs-12 text-gray-6">
+            {t("attachmentHint")}
+          </span>
+        </div>
       </div>
       <div className="card-footer bg-white d-flex justify-content-end">
         <button type="submit" className="btn btn-primary" disabled={pending}>

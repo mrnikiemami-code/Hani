@@ -29,6 +29,14 @@ public static class CustomerSupportEndpoints
             .WithName("Marketplace.ReplyMySupportTicket")
             .Produces<CustomerSupportTicketDetailDto>();
 
+        group.MapPost("/tickets/{id:guid}/attachments", UploadAttachmentAsync)
+            .WithName("Marketplace.UploadMySupportAttachment")
+            .DisableAntiforgery()
+            .Produces<SupportAttachmentDto>(StatusCodes.Status201Created);
+
+        group.MapGet("/attachments/{id:guid}", DownloadAttachmentAsync)
+            .WithName("Marketplace.DownloadMySupportAttachment");
+
         group.MapGet("/disputes", ListDisputesAsync)
             .WithName("Marketplace.ListMySupportDisputes")
             .Produces<CustomerSupportDisputePageDto>();
@@ -101,10 +109,65 @@ public static class CustomerSupportEndpoints
             userId,
             id,
             request.Body,
+            request.AttachmentIds,
             cancellationToken);
         return result.IsSuccess
             ? Results.Ok(result.Value)
             : context.ToProblem(result.Error!);
+    }
+
+    private static async Task<IResult> UploadAttachmentAsync(
+        Guid id,
+        IFormFile file,
+        HttpContext context,
+        ICustomerSupportService support,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return Unauthorized(context);
+        }
+
+        await using var stream = file.OpenReadStream();
+        var result = await support.UploadAttachmentAsync(
+            userId,
+            id,
+            file.FileName,
+            file.ContentType,
+            file.Length,
+            stream,
+            cancellationToken);
+        return result.IsSuccess
+            ? Results.Created(
+                $"/market/v1/support/attachments/{result.Value!.Id}",
+                result.Value)
+            : context.ToProblem(result.Error!);
+    }
+
+    private static async Task<IResult> DownloadAttachmentAsync(
+        Guid id,
+        HttpContext context,
+        ICustomerSupportService support,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return Unauthorized(context);
+        }
+
+        var attachment = await support.DownloadAttachmentAsync(
+            userId,
+            id,
+            cancellationToken);
+        return attachment is null
+            ? context.ToProblem(Error.NotFound(
+                "HANI-SUPPORT-4311",
+                "Support attachment was not found."))
+            : Results.File(
+                attachment.Content,
+                attachment.ContentType,
+                attachment.FileName,
+                enableRangeProcessing: true);
     }
 
     private static async Task<IResult> ListDisputesAsync(
@@ -192,7 +255,9 @@ public static class CustomerSupportEndpoints
 }
 
 /// <summary>Customer support reply request.</summary>
-public sealed record CustomerSupportReplyRequest(string Body);
+public sealed record CustomerSupportReplyRequest(
+    string Body,
+    IReadOnlyList<Guid>? AttachmentIds = null);
 
 /// <summary>Customer support dispute request.</summary>
 public sealed record CustomerSupportDisputeRequest(

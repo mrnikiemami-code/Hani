@@ -1,4 +1,5 @@
 using Hani.Modules.Catalog.Infrastructure.Providers;
+using Hani.Modules.Content.Infrastructure.Storage;
 using Hani.Modules.Identity.Application;
 using Hani.Modules.Marketplace.Application;
 using Hani.Modules.Payments.Application;
@@ -25,6 +26,8 @@ public static class OptionsRegistration
             configuration.GetSection("Storage"));
         services.Configure<Hani.Modules.Content.Infrastructure.Storage.ContentMediaStorageOptions>(
             configuration.GetSection("Storage"));
+        services.Configure<SupportAttachmentOptions>(
+            configuration.GetSection("Support:Attachments"));
         services.Configure<FlightProviderOptions>(configuration.GetSection("FlightProvider"));
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
         services.Configure<OtpOptions>(configuration.GetSection("Otp"));

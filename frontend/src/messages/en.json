@@ -1433,7 +1433,11 @@
     "slaBreakdown": "SLA breakdown",
     "byCategory": "By category",
     "byAssignee": "By assignee",
-    "count": "Count"
+    "count": "Count",
+    "attachments": "Attachments",
+    "attachmentHint": "JPEG, PNG, WebP, PDF, or TXT up to 10 MB.",
+    "attachmentTooLarge": "Each attachment must be at most 10 MB.",
+    "attachmentError": "The attachment could not be uploaded."
   },
   "adminNotifications": {
     "title": "Notifications",
@@ -1818,6 +1822,10 @@
     "disputeStatusInvestigating": "Investigating",
     "disputeStatusAwaitingCustomer": "Waiting for you",
     "disputeStatusResolved": "Resolved",
-    "disputeStatusRejected": "Rejected"
+    "disputeStatusRejected": "Rejected",
+    "attachments": "Attachments",
+    "attachmentHint": "JPEG, PNG, WebP, PDF, or TXT up to 10 MB.",
+    "attachmentTooLarge": "Each attachment must be at most 10 MB.",
+    "attachmentError": "The attachment could not be uploaded."
   }
 }

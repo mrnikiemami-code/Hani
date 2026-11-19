@@ -62,6 +62,16 @@
           "Hani.BuildingBlocks.Domain": "[1.0.0, )"
         }
       },
+      "hani.modules.content.application": {
+        "type": "Project",
+        "dependencies": {
+          "FluentValidation": "[12.2.0, )",
+          "Hani.BuildingBlocks.Application": "[1.0.0, )",
+          "Hani.Modules.Content.Domain": "[1.0.0, )",
+          "MediatR": "[12.5.0, )",
+          "Microsoft.Extensions.Options": "[10.0.15, )"
+        }
+      },
       "hani.modules.content.domain": {
         "type": "Project",
         "dependencies": {

@@ -40,9 +40,33 @@ export async function createMySupportTicket(input: {
 
 export async function replyMySupportTicket(
   id: string,
-  body: string
+  body: string,
+  attachmentIds: string[] = []
 ): Promise<{ ok: boolean }> {
-  return post(`/market/v1/support/tickets/${id}/messages`, { body });
+  return post(`/market/v1/support/tickets/${id}/messages`, {
+    body,
+    attachmentIds
+  });
+}
+
+export async function uploadMySupportAttachment(
+  ticketId: string,
+  formData: FormData
+): Promise<{ ok: boolean; id?: string }> {
+  const token = (await cookies()).get("hani_access_token")?.value;
+  if (!token) return { ok: false };
+  const response = await fetch(
+    `${apiBase}/market/v1/support/tickets/${ticketId}/attachments`,
+    {
+      method: "POST",
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    }
+  );
+  if (!response.ok) return { ok: false };
+  const data = (await response.json()) as { id?: string };
+  return { ok: true, id: data.id };
 }
 
 export async function createMySupportDispute(

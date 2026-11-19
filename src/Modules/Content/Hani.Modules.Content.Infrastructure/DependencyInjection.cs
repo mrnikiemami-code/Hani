@@ -35,11 +35,13 @@ public static class DependencyInjection
         if (string.Equals(mode, "Http", StringComparison.OrdinalIgnoreCase))
         {
             services.AddScoped<ICustomerSupportService, CustomerSupportService>();
+        services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
         services.AddScoped<INotificationSender, HttpNotificationSender>();
         }
         else
         {
             services.AddScoped<ICustomerSupportService, CustomerSupportService>();
+        services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
         services.AddScoped<INotificationSender, LoggingNotificationSender>();
         }
 

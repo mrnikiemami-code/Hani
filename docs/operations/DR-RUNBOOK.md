@@ -83,3 +83,11 @@ prints the table count.
 See `docs/operations/PRODUCTION-CHECKLIST.md`. A Production host refuses to start
 when development secrets, Mock payments, Memory cache, InMemory messaging, or a
 wildcard `AllowedHosts` are still configured.
+
+## Support attachment storage
+
+Ticket and dispute attachments are stored privately under
+`Support:Attachments:RootPath` (default `support-attachments`). The database
+stores metadata only. Back up this directory with the database backup and
+restore both together; a database-only restore leaves attachment links broken.
+Never serve this directory through static files or a public CDN.

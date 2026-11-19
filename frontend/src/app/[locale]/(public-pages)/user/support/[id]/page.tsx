@@ -113,6 +113,21 @@ export default async function CustomerSupportDetailPage({
                 </span>
               </div>
               <p className="mb-0 fs-14 text-break">{message.body}</p>
+              {message.attachments.length > 0 && (
+                <div className="d-flex flex-wrap gap-2 mt-2">
+                  {message.attachments.map((attachment) => (
+                    <a
+                      key={attachment.id}
+                      href={`/api/support/attachments/${attachment.id}`}
+                      className="btn btn-sm btn-light"
+                      download
+                    >
+                      <i className="isax isax-document-download me-1" />
+                      {attachment.fileName}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

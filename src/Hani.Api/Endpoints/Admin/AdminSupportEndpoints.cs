@@ -1,6 +1,7 @@
 using Hani.BuildingBlocks.Application;
 using Hani.BuildingBlocks.AspNetCore;
 using Hani.Modules.Admin.Application;
+using Hani.Modules.Content.Application.Support;
 using Microsoft.AspNetCore.Mvc;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
@@ -40,6 +41,18 @@ public static class AdminSupportEndpoints
             .WithName("Internal.ReplyAdminSupportTicket")
             .RequireAuthorization("Admin")
             .Produces<AdminSupportTicketDetailDto>();
+
+        app.MapPost("/internal/v1/admin/support/tickets/{id:guid}/attachments", UploadAttachmentAsync)
+            .WithTags("Internal.Admin.Support")
+            .WithName("Internal.UploadAdminSupportAttachment")
+            .RequireAuthorization("Admin")
+            .DisableAntiforgery()
+            .Produces<SupportAttachmentDto>(StatusCodes.Status201Created);
+
+        app.MapGet("/internal/v1/admin/support/attachments/{id:guid}", DownloadAttachmentAsync)
+            .WithTags("Internal.Admin.Support")
+            .WithName("Internal.DownloadAdminSupportAttachment")
+            .RequireAuthorization("Admin");
 
         app.MapPost("/internal/v1/admin/support/tickets/{id:guid}/update", UpdateAsync)
             .WithTags("Internal.Admin.Support")
@@ -200,6 +213,7 @@ public static class AdminSupportEndpoints
             actor.UserId,
             request.Body,
             request.IsInternal,
+            request.AttachmentIds,
             cancellationToken);
         if (ticket is null)
         {
@@ -319,6 +333,68 @@ public static class AdminSupportEndpoints
         CancellationToken cancellationToken)
         => Results.Ok(await support.GetReportAsync(days, cancellationToken));
 
+    private static async Task<IResult> UploadAttachmentAsync(
+        Guid id,
+        IFormFile file,
+        HttpContext context,
+        IAdminSupportService support,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        if (!AdminActorContextFactory.TryCreate(context, out var actor))
+        {
+            return context.ToProblem(Error.Unauthorized(
+                "HANI-SUPPORT-4003",
+                "An authenticated administrator is required."));
+        }
+
+        await using var stream = file.OpenReadStream();
+        var result = await support.UploadAttachmentAsync(
+            id,
+            actor.UserId,
+            file.FileName,
+            file.ContentType,
+            file.Length,
+            stream,
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "support.attachment.uploaded",
+            "SupportAttachment",
+            result.Value!.Id.ToString(),
+            "Support attachment uploaded from the admin panel",
+            after: new { result.Value.FileName, result.Value.SizeBytes },
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/support/attachments/{result.Value.Id}",
+            result.Value);
+    }
+
+    private static async Task<IResult> DownloadAttachmentAsync(
+        Guid id,
+        HttpContext context,
+        IAdminSupportService support,
+        CancellationToken cancellationToken)
+    {
+        var attachment = await support.DownloadAttachmentAsync(
+            id,
+            cancellationToken);
+        return attachment is null
+            ? context.ToProblem(Error.NotFound(
+                "HANI-SUPPORT-4311",
+                "Support attachment was not found."))
+            : Results.File(
+                attachment.Content,
+                attachment.ContentType,
+                attachment.FileName,
+                enableRangeProcessing: true);
+    }
+
     private static async Task<IResult> UpdateAsync(
         Guid id,
         AdminSupportUpdateRequest request,
@@ -378,7 +454,10 @@ public sealed record AdminCreateSupportTicketRequest(
     string Priority = "Normal");
 
 /// <summary>Admin support reply request.</summary>
-public sealed record AdminSupportReplyRequest(string Body, bool IsInternal = false);
+public sealed record AdminSupportReplyRequest(
+    string Body,
+    bool IsInternal = false,
+    IReadOnlyList<Guid>? AttachmentIds = null);
 
 /// <summary>Admin support update request.</summary>
 public sealed record AdminSupportUpdateRequest(

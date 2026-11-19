@@ -1,8 +1,10 @@
 using System.Text.Json;
 using Hani.BuildingBlocks.Application;
 using Hani.Modules.Admin.Application;
+using Hani.Modules.Content.Application.Support;
 using Hani.Modules.Content.Domain.Growth;
 using Hani.Modules.Content.Domain.Support;
+using Hani.Modules.Content.Infrastructure.Support;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Admin.Infrastructure;
@@ -87,6 +89,10 @@ internal sealed partial class AdminService : IAdminSupportService
                 item.Status.ToString(),
                 item.AssignedTo,
                 item.Messages.Count,
+                item.Messages.Count(message =>
+                    message.AuthorType == SupportAuthorType.Customer &&
+                    (item.AdminLastReadAt == null ||
+                        message.CreatedAt > item.AdminLastReadAt)),
                 item.CreatedAt,
                 item.LastMessageAt,
                 item.AssignedTo is { } assigned &&
@@ -109,7 +115,6 @@ internal sealed partial class AdminService : IAdminSupportService
         CancellationToken cancellationToken)
     {
         var ticket = await content.SupportTickets
-            .AsNoTracking()
             .Include(item => item.Messages)
             .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
         if (ticket is null)
@@ -117,15 +122,19 @@ internal sealed partial class AdminService : IAdminSupportService
             return null;
         }
 
+        ticket.MarkAdminRead();
+        await content.SaveChangesAsync(cancellationToken);
         var assigneeNames = await LoadAssigneeNamesAsync(
             [ticket.AssignedTo],
             cancellationToken);
+        var attachments = await LoadAttachmentsAsync(id, cancellationToken);
         return ToSupportDetail(
             ticket,
             ticket.AssignedTo is { } assigned &&
             assigneeNames.TryGetValue(assigned, out var name)
                 ? name
-                : null);
+                : null,
+            attachments);
     }
 
     public async Task<SupportTicketCreatedDto> CreateAsync(
@@ -155,6 +164,7 @@ internal sealed partial class AdminService : IAdminSupportService
         Guid actorUserId,
         string body,
         bool isInternal,
+        IReadOnlyList<Guid>? attachmentIds,
         CancellationToken cancellationToken)
     {
         var ticket = await content.SupportTickets
@@ -165,7 +175,36 @@ internal sealed partial class AdminService : IAdminSupportService
             return null;
         }
 
-        ticket.AddMessage(ids, SupportAuthorType.Admin, actorUserId, body, isInternal);
+        var message = ticket.AddMessage(
+            ids,
+            SupportAuthorType.Admin,
+            actorUserId,
+            body,
+            isInternal);
+        var requestedAttachments = attachmentIds?
+            .Where(item => item != Guid.Empty)
+            .Distinct()
+            .ToArray() ?? [];
+        if (requestedAttachments.Length > 0)
+        {
+            var attachments = await content.SupportAttachments
+                .Where(item =>
+                    requestedAttachments.Contains(item.Id) &&
+                    item.TicketId == id &&
+                    item.MessageId == null)
+                .ToArrayAsync(cancellationToken);
+            if (attachments.Length != requestedAttachments.Length)
+            {
+                return null;
+            }
+
+            foreach (var attachment in attachments)
+            {
+                attachment.AttachToMessage(message.Id);
+            }
+        }
+
+        ticket.MarkAdminRead();
         if (!isInternal)
         {
             AddNotification(
@@ -176,7 +215,8 @@ internal sealed partial class AdminService : IAdminSupportService
                     ticket.Id,
                     ticket.TicketNumber,
                     ticket.Subject,
-                    ticket.Status
+                    ticket.Status,
+                    deepLink = $"/user/support/{ticket.Id}"
                 });
         }
 
@@ -184,12 +224,14 @@ internal sealed partial class AdminService : IAdminSupportService
         var assigneeNames = await LoadAssigneeNamesAsync(
             [ticket.AssignedTo],
             cancellationToken);
+        var loadedAttachments = await LoadAttachmentsAsync(id, cancellationToken);
         return ToSupportDetail(
             ticket,
             ticket.AssignedTo is { } assigned &&
             assigneeNames.TryGetValue(assigned, out var name)
                 ? name
-                : null);
+                : null,
+            loadedAttachments);
     }
 
     public async Task<AdminSupportTicketDetailDto?> UpdateAsync(
@@ -216,16 +258,19 @@ internal sealed partial class AdminService : IAdminSupportService
         ticket.SetStatus(parsedStatus);
         ticket.SetPriority(parsedPriority);
         ticket.Assign(assignedTo);
+        ticket.MarkAdminRead();
         await content.SaveChangesAsync(cancellationToken);
         var assigneeNames = await LoadAssigneeNamesAsync(
             [ticket.AssignedTo],
             cancellationToken);
+        var attachments = await LoadAttachmentsAsync(id, cancellationToken);
         return ToSupportDetail(
             ticket,
             ticket.AssignedTo is { } assigned &&
             assigneeNames.TryGetValue(assigned, out var name)
                 ? name
-                : null);
+                : null,
+            attachments);
     }
 
     public async Task<AdminSupportDisputePageDto> ListDisputesAsync(
@@ -322,7 +367,8 @@ internal sealed partial class AdminService : IAdminSupportService
                     disputeId = dispute.Id,
                     dispute.Type,
                     dispute.Amount,
-                    dispute.Currency
+                    dispute.Currency,
+                    deepLink = $"/user/support/{ticket.Id}"
                 });
             await content.SaveChangesAsync(cancellationToken);
             return Result<AdminSupportDisputeDto>.Success(
@@ -372,7 +418,8 @@ internal sealed partial class AdminService : IAdminSupportService
                     ticket?.TicketNumber,
                     disputeId = dispute.Id,
                     dispute.Status,
-                    dispute.Resolution
+                    dispute.Resolution,
+                    deepLink = $"/user/support/{dispute.TicketId}"
                 });
             await content.SaveChangesAsync(cancellationToken);
             return Result<AdminSupportDisputeDto>.Success(
@@ -388,6 +435,98 @@ internal sealed partial class AdminService : IAdminSupportService
             return Result<AdminSupportDisputeDto>.Failure(
                 Error.Conflict("HANI-SUPPORT-4207", exception.Message));
         }
+    }
+
+    public async Task<Result<SupportAttachmentDto>> UploadAttachmentAsync(
+        Guid ticketId,
+        Guid actorUserId,
+        string fileName,
+        string contentType,
+        long sizeBytes,
+        Stream stream,
+        CancellationToken cancellationToken)
+    {
+        var ticketExists = await content.SupportTickets
+            .AsNoTracking()
+            .AnyAsync(item => item.Id == ticketId, cancellationToken);
+        if (!ticketExists)
+        {
+            return Result<SupportAttachmentDto>.Failure(
+                Error.NotFound("HANI-SUPPORT-4201", "Support ticket was not found."));
+        }
+
+        if (sizeBytes is <= 0 or > SupportAttachmentRules.MaxBytes)
+        {
+            return Result<SupportAttachmentDto>.Failure(
+                Error.Validation(
+                    "HANI-SUPPORT-4308",
+                    "Attachment size must be between 1 byte and 10 MB."));
+        }
+
+        var normalizedType = contentType.Trim().ToLowerInvariant();
+        if (!SupportAttachmentRules.TryGetExtension(normalizedType, out var extension))
+        {
+            return Result<SupportAttachmentDto>.Failure(
+                Error.Validation(
+                    "HANI-SUPPORT-4309",
+                    "Only JPEG, PNG, WebP, PDF, and text files are allowed."));
+        }
+
+        var attachmentId = ids.NewId();
+        var storageKey = SupportAttachmentRules.StorageKey(
+            ticketId,
+            attachmentId,
+            extension);
+        try
+        {
+            await supportAttachments.SaveAsync(
+                storageKey,
+                stream,
+                cancellationToken);
+            var attachment = SupportAttachment.Create(
+                ids,
+                ticketId,
+                SupportAttachmentRules.SafeFileName(fileName),
+                normalizedType,
+                sizeBytes,
+                storageKey,
+                actorUserId);
+            content.SupportAttachments.Add(attachment);
+            await content.SaveChangesAsync(cancellationToken);
+            return Result<SupportAttachmentDto>.Success(ToAttachmentDto(attachment));
+        }
+        catch (ArgumentException exception)
+        {
+            await supportAttachments.DeleteAsync(storageKey, cancellationToken);
+            return Result<SupportAttachmentDto>.Failure(
+                Error.Validation("HANI-SUPPORT-4310", exception.Message));
+        }
+        catch
+        {
+            await supportAttachments.DeleteAsync(storageKey, cancellationToken);
+            throw;
+        }
+    }
+
+    public async Task<SupportAttachmentDownloadDto?> DownloadAttachmentAsync(
+        Guid attachmentId,
+        CancellationToken cancellationToken)
+    {
+        var attachment = await content.SupportAttachments
+            .AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == attachmentId, cancellationToken);
+        if (attachment is null)
+        {
+            return null;
+        }
+
+        var stream = await supportAttachments.OpenReadAsync(
+            attachment.StorageKey,
+            cancellationToken);
+        return new SupportAttachmentDownloadDto(
+            attachment.FileName,
+            attachment.ContentType,
+            stream);
     }
 
     public async Task<AdminSupportReportDto> GetReportAsync(
@@ -515,9 +654,38 @@ internal sealed partial class AdminService : IAdminSupportService
             .ToDictionaryAsync(item => item.Id, item => item.Name, cancellationToken);
     }
 
+    private async Task<IReadOnlyList<SupportAttachmentDto>> LoadAttachmentsAsync(
+        Guid ticketId,
+        CancellationToken cancellationToken)
+        => await content.SupportAttachments
+            .AsNoTracking()
+            .Where(item => item.TicketId == ticketId && item.MessageId != null)
+            .OrderBy(item => item.CreatedAt)
+            .Select(item => new SupportAttachmentDto(
+                item.Id,
+                item.TicketId,
+                item.MessageId,
+                item.FileName,
+                item.ContentType,
+                item.SizeBytes,
+                item.CreatedAt))
+            .ToArrayAsync(cancellationToken);
+
+    private static SupportAttachmentDto ToAttachmentDto(
+        SupportAttachment attachment)
+        => new(
+            attachment.Id,
+            attachment.TicketId,
+            attachment.MessageId,
+            attachment.FileName,
+            attachment.ContentType,
+            attachment.SizeBytes,
+            attachment.CreatedAt);
+
     private static AdminSupportTicketDetailDto ToSupportDetail(
         SupportTicket ticket,
-        string? assignedToName)
+        string? assignedToName,
+        IReadOnlyList<SupportAttachmentDto> attachments)
     {
         var firstResponse = FirstResponseAt(ticket);
         var dueAt = AdminSupportSlaPolicy.DueAt(
@@ -545,8 +713,12 @@ internal sealed partial class AdminService : IAdminSupportService
                     message.AuthorUserId,
                     message.Body,
                     message.IsInternal,
-                    message.CreatedAt))
+                    message.CreatedAt,
+                    attachments
+                        .Where(attachment => attachment.MessageId == message.Id)
+                        .ToArray()))
                 .ToArray(),
+            0,
             assignedToName,
             dueAt,
             firstResponse,

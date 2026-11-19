@@ -32,6 +32,8 @@ internal sealed class SupportTicketConfiguration : IEntityTypeConfiguration<Supp
         builder.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(item => item.UpdatedAt).HasColumnName("updated_at").IsRequired();
         builder.Property(item => item.LastMessageAt).HasColumnName("last_message_at").IsRequired();
+        builder.Property(item => item.CustomerLastReadAt).HasColumnName("customer_last_read_at");
+        builder.Property(item => item.AdminLastReadAt).HasColumnName("admin_last_read_at");
         builder.HasIndex(item => item.TicketNumber).IsUnique()
             .HasDatabaseName("ux_support_tickets_number");
         builder.HasIndex(item => new { item.Status, item.Priority })
@@ -55,6 +57,31 @@ internal sealed class SupportTicketConfiguration : IEntityTypeConfiguration<Supp
                 .HasDatabaseName("ix_support_messages_ticket_time");
             messages.UsePropertyAccessMode(PropertyAccessMode.Field);
         });
+    }
+}
+
+internal sealed class SupportAttachmentConfiguration : IEntityTypeConfiguration<SupportAttachment>
+{
+    public void Configure(EntityTypeBuilder<SupportAttachment> builder)
+    {
+        builder.ToTable("support_attachments");
+        builder.HasKey(item => item.Id);
+        builder.Property(item => item.Id).HasColumnName("id");
+        builder.Property(item => item.TicketId).HasColumnName("ticket_id").IsRequired();
+        builder.Property(item => item.MessageId).HasColumnName("message_id");
+        builder.Property(item => item.FileName).HasColumnName("file_name")
+            .HasMaxLength(255).IsRequired();
+        builder.Property(item => item.ContentType).HasColumnName("content_type")
+            .HasMaxLength(120).IsRequired();
+        builder.Property(item => item.SizeBytes).HasColumnName("size_bytes").IsRequired();
+        builder.Property(item => item.StorageKey).HasColumnName("storage_key")
+            .HasMaxLength(500).IsRequired();
+        builder.Property(item => item.UploadedBy).HasColumnName("uploaded_by").IsRequired();
+        builder.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
+        builder.HasIndex(item => item.TicketId)
+            .HasDatabaseName("ix_support_attachments_ticket");
+        builder.HasIndex(item => item.MessageId)
+            .HasDatabaseName("ix_support_attachments_message");
     }
 }
 

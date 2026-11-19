@@ -8,6 +8,7 @@ export type CustomerSupportTicketRow = {
   status: string;
   priority: string;
   messageCount: number;
+  unreadCount: number;
   createdAt: string;
   lastMessageAt: string;
 };
@@ -19,11 +20,22 @@ export type CustomerSupportTicketPage = {
   total: number;
 };
 
+export type CustomerSupportAttachment = {
+  id: string;
+  ticketId: string;
+  messageId: string | null;
+  fileName: string;
+  contentType: string;
+  sizeBytes: number;
+  createdAt: string;
+};
+
 export type CustomerSupportMessage = {
   id: string;
   authorType: string;
   body: string;
   createdAt: string;
+  attachments: CustomerSupportAttachment[];
 };
 
 export type CustomerSupportDispute = {
@@ -52,6 +64,7 @@ export type CustomerSupportTicketDetail = {
   createdAt: string;
   updatedAt: string;
   lastMessageAt: string;
+  unreadCount: number;
   messages: CustomerSupportMessage[];
   disputes: CustomerSupportDispute[];
 };

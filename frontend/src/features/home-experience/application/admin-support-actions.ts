@@ -51,12 +51,34 @@ export async function createSupportTicket(
 export async function replySupportTicket(
   id: string,
   body: string,
-  isInternal: boolean
+  isInternal: boolean,
+  attachmentIds: string[] = []
 ): Promise<{ ok: boolean }> {
   return post(`/internal/v1/admin/support/tickets/${id}/messages`, {
     body,
-    isInternal
+    isInternal,
+    attachmentIds
   });
+}
+
+export async function uploadSupportAttachment(
+  ticketId: string,
+  formData: FormData
+): Promise<{ ok: boolean; id?: string }> {
+  const token = (await cookies()).get("hani_access_token")?.value;
+  if (!token) return { ok: false };
+  const response = await fetch(
+    `${apiBase}/internal/v1/admin/support/tickets/${ticketId}/attachments`,
+    {
+      method: "POST",
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    }
+  );
+  if (!response.ok) return { ok: false };
+  const data = (await response.json()) as { id?: string };
+  return { ok: true, id: data.id };
 }
 
 export async function updateSupportTicket(
