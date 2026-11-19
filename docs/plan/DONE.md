@@ -323,3 +323,4 @@
 | `138632e` | Admin Batch 1: dynamic role-permission matrix, user role assignment, platform base settings, agency detail/documents/contracts, responsive UI |
 | `534df2b` | Admin RBAC follow-up: custom roles/role_definitions, permission claims + section middleware, public platform settings wired to header/footer |
 | `c554db1` | Batch 2 start: admin hotel creation endpoint, create route, hotel editor create mode, responsive UI |
+| `70f0f04` | Batch 2 tours: admin tour list/create/publish, localized content, cover/destination fields, responsive UI |
