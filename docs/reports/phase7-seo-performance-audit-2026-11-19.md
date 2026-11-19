@@ -89,15 +89,3 @@ The canonical/hreflang tags themselves are correct.
   remains dominated by the legacy hero paint (~9.6 s in Lighthouse mobile).
 - Final tree leaves the desktop Lighthouse performance at 87 and accessibility
   at 100; SEO remains correct for the production canonical host.
-
-## Hero redesign (review candidate)
-
-- Replaced the giant decorative H1 (behind the hero) with a normal visible H1
-  and subtitle.
-- Replaced the hero background image with a brand gradient and removed the
-  heavy overlay/filter effects.
-- Conditional hero tabs render only the active booking form.
-- This is a visual change and can be reverted with `git revert` to the previous
-  commit if it does not match the template direction.
-- New mobile Lighthouse: performance ~69-75 (LCP still noisy in Lighthouse
-  mobile), accessibility 100; desktop performance 87, desktop LCP 2.4s.

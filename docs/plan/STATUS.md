@@ -734,9 +734,3 @@ Report: `docs/reports/phase7-seo-performance-audit-2026-11-19.md`.
 - Home hero renders only the active booking tab instead of all nine forms.
 - Tab switching verified in FA.
 - Mobile LCP remains ~9.6s due the legacy hero paint; desktop performance 87.
-
-### Phase 7 hero redesign review
-
-- Visible H1 + subtitle, gradient hero, no heavy overlay/backdrop filters.
-- Conditional booking tabs verified in FA.
-- Revert with `git revert <commit>` if the visual direction is rejected.

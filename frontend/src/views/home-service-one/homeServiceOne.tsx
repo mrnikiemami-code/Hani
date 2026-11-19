@@ -281,11 +281,8 @@ const guidePassenger =
             : undefined
         }
       >
-        <div className="container hero-sec-content">
-          <div className="hero-copy">
-            <h1 className="hero-title">{t("heroTitle")}</h1>
-            <p className="hero-subtitle">{t("heroSubtitle")}</p>
-          </div>
+        <div className="container">
+          <h1 className="animate-text">{t("heroTitle")}</h1>
           <div
             className="animate-button"
           >
