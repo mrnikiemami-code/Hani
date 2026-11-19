@@ -322,3 +322,4 @@
 | `f62e672` | Phase 5 supplier integration: offer moderation, approve/reject with audit, supplier.write API scope, responsive admin UI |
 | `138632e` | Admin Batch 1: dynamic role-permission matrix, user role assignment, platform base settings, agency detail/documents/contracts, responsive UI |
 | `534df2b` | Admin RBAC follow-up: custom roles/role_definitions, permission claims + section middleware, public platform settings wired to header/footer |
+| `c554db1` | Batch 2 start: admin hotel creation endpoint, create route, hotel editor create mode, responsive UI |
