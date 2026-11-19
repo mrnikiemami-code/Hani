@@ -9,6 +9,8 @@ import {
 } from "@/features/home-experience/application/resolve-home-experience";
 import { getHomeFeed } from "@/features/home-experience/infrastructure/home-api";
 import { getHomePageSettings } from "@/features/home-experience/infrastructure/home-settings-api";
+import { getPublishedPageComposition } from "@/features/home-experience/infrastructure/page-composition-api";
+import { HOME_SECTION_IDS } from "@/features/home-experience/domain/home-page-settings";
 import { HomeExperienceRenderer } from "@/features/home-experience/ui/HomeExperienceRenderer";
 import { getMyPreferences } from "@/features/preferences/infrastructure/preferences-api";
 import { HomeStructuredData } from "@/features/home-experience/ui/HomeStructuredData";
@@ -73,7 +75,32 @@ export default async function HomePage({
     cookie: cookieStore.get(HOME_EXPERIENCE_COOKIE)?.value
   });
   const homeFeed = await getHomeFeed(locale, tourScope);
-  const homeSettings = await getHomePageSettings(locale);
+  const storedHomeSettings = await getHomePageSettings(locale);
+  const composition = await getPublishedPageComposition("home", locale);
+  const knownSections = new Set<string>(HOME_SECTION_IDS);
+  const composedSections = (composition?.data.sections ?? [])
+    .filter((section) => knownSections.has(section.id))
+    .map((section) => ({
+      id: section.id as (typeof HOME_SECTION_IDS)[number],
+      enabled: section.enabled,
+      order: section.order,
+      imageUrl: section.fallbackImageUrl
+    }));
+  const homeSettings =
+    composition && composedSections.length > 0
+      ? {
+          ...storedHomeSettings,
+          heroImageUrl:
+            composition.data.hero.fallbackImageUrl ||
+            storedHomeSettings.heroImageUrl,
+          sections: storedHomeSettings.sections.map((section) => {
+            const composed = composedSections.find(
+              (item) => item.id === section.id
+            );
+            return composed ?? section;
+          })
+        }
+      : storedHomeSettings;
 
   const heroImage = homeSettings.heroImageUrl
     ? homeSettings.heroImageUrl.startsWith("http")

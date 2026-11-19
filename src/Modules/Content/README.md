@@ -201,3 +201,19 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
   concurrent inbound email deliveries from creating duplicate messages.
 - A duplicate-key race is recovered by clearing the EF change tracker and
   returning the existing ticket with `duplicate=true`.
+
+## Page composition foundation
+
+Phase 1 of the page-composition platform stores ordered page sections and SEO
+metadata in the existing localized page-settings JSON rows under the
+`page:<pageKey>` draft key and `page:<pageKey>:published` published key.
+
+- Public read: `GET /market/v1/pages/{pageKey}?locale=fa`
+- Admin list: `GET /internal/v1/page-compositions?locale=fa`
+- Admin draft/save: `PUT /internal/v1/page-compositions/{pageKey}?locale=fa`
+- Admin publish: `POST /internal/v1/page-compositions/{pageKey}/publish?locale=fa`
+
+Supported page keys are defined by `PageCompositionCatalog`. The public home
+page already uses a published `home` composition for hero fallback image and
+known home-section order/visibility; the generic section renderer and full home
+content editor are the next phase.

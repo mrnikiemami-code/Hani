@@ -120,6 +120,11 @@ const ADMIN_NAV: AdminNavItem[] = [
         permission: "content.view"
       },
       {
+        href: "/admin/content/pages",
+        labelKey: "pages",
+        permission: "content.view"
+      },
+      {
         href: "/admin/content",
         labelKey: "contentPages",
         permission: "content.view"

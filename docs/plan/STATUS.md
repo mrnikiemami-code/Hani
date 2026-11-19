@@ -751,3 +751,21 @@ Phases:
 
 No implementation has started; Phase 0 and Phase 1 are the recommended first
 slice.
+
+## Page Composition Phase 1 foundation (2026-11-20)
+
+| Item | Status |
+|---|---|
+| Page key catalog | Done |
+| Draft/published page composition storage | Done |
+| Public published composition endpoint | Done |
+| Admin list/save/publish endpoints | Done |
+| Admin website-pages list | Done |
+| Admin page builder shell | Done |
+| Media picker + fallback image fields | Done |
+| Home published composition fallback integration | Done |
+| Generic section renderer for all section types | Next (Phase 2) |
+| Banners page/slot placement UI | Next (Phase 5) |
+| Preview links and revision restore | Next (Phase 6) |
+
+Verification: backend build, frontend build, admin save/publish smoke test in FA.

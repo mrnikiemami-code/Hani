@@ -46,6 +46,7 @@ public static class EndpointRegistration
     {
         app.MapDashboardEndpoints();
         app.MapHomeSettingsEndpoints();
+        app.MapPageCompositionEndpoints();
         app.MapHotelFacetEndpoints();
         app.MapLastsecondParityEndpoints();
         app.MapWishlistEndpoints();

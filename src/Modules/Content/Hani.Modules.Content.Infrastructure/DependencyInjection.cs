@@ -2,8 +2,10 @@ using Hani.Modules.Content.Application.Abstractions;
 using Hani.Modules.Content.Application.Media;
 using Hani.Modules.Content.Application.Support;
 using Hani.Modules.Content.Application.Queries.AdminAds;
+using Hani.Modules.Content.Application.PageComposition;
 using Hani.Modules.Content.Infrastructure.Notifications;
 using Hani.Modules.Content.Infrastructure.ReadModels;
+using Hani.Modules.Content.Infrastructure.PageComposition;
 using Hani.Modules.Content.Infrastructure.Repositories;
 using Hani.Modules.Content.Infrastructure.Storage;
 using Hani.Modules.Content.Infrastructure.Support;
@@ -25,6 +27,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddScoped<IContentRepository, ContentRepository>();
+        services.AddScoped<IPageCompositionService, PageCompositionService>();
         services.AddScoped<IAdminAdsReadModel, AdminAdsReadModel>();
         services.AddScoped<IMediaAssetRepository, MediaAssetRepository>();
         services.AddSingleton<IContentMediaStorage, LocalContentMediaStorage>();

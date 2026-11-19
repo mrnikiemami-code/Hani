@@ -391,3 +391,13 @@
 
 | D-P7-11 | Conditional hero tabs | `homeServiceOne.tsx` |
 | D-P7-12 | Tab switching check | FA browser verification |
+
+## Page Composition Phase 1 foundation (2026-11-20)
+
+| # | Item | Artifact |
+|---|---|---|
+| D-PC-01 | Composition contracts/service | `PageCompositionContracts`, `PageCompositionService` |
+| D-PC-02 | Composition endpoints | `/market/v1/pages/{pageKey}`, `/internal/v1/page-compositions` |
+| D-PC-03 | Admin pages list | `/admin/content/pages` |
+| D-PC-04 | Page builder shell | `/admin/content/pages/[pageKey]` |
+| D-PC-05 | Home composition integration | `page.tsx` published composition fallback |

@@ -445,3 +445,16 @@
 | PC-05 | Listing compositions | Planned | tours/visas/hotels/flights |
 | PC-06 | Detail compositions + banners | Planned | tour/visa/hotel + ad placement |
 | PC-07 | Governance and rollout | Planned | preview, audit, cache, SEO/Lighthouse |
+
+## Page Composition Phase 1 foundation
+
+| ID | Task | Status | DoD |
+|---|---|---|---|
+| PC-01 | Page key catalog | Done | known page keys |
+| PC-02 | Draft/published composition service | Done | save/publish/read |
+| PC-03 | Public/admin endpoints | Done | page composition API |
+| PC-04 | Admin pages list | Done | status + edit links |
+| PC-05 | Page builder shell | Done | hero/sections/SEO/media |
+| PC-06 | Home composition fallback | Done | published home sections/hero |
+| PC-07 | Generic section renderer | Next | render all section types |
+| PC-08 | Banner placement UI | Next | page/slot/locale/device |

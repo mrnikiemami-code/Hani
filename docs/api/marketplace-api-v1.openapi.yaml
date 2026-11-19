@@ -3462,3 +3462,26 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
+  /pages/{pageKey}:
+    get:
+      tags: [Content]
+      summary: Read the published composition for a public page
+      parameters:
+        - { name: pageKey, in: path, required: true, schema: { type: string } }
+        - { name: locale, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: Published page composition
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageKey: { type: string }
+                  locale: { type: string }
+                  status: { type: string }
+                  data: { type: object }
+                  publishedAt: { type: string, format: date-time, nullable: true }
+        '404': { description: Not published }
+        default: { $ref: '#/components/responses/Problem' }
+
