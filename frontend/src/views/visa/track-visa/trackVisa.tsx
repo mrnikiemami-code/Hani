@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Breadcrumb from "../../../components/breadcrumb/breadcrumb";
 import { all_routes } from "../../../routes/all_routes";
+import { AgencyName } from "@/features/agencies/ui/AgencyName";
 
 const TrackVisa = () => {
   const routes = all_routes;
@@ -125,7 +126,7 @@ const TrackVisa = () => {
                   <div className="row align-items-center justify-content-between gap-3 mb-4">
                     <div className="col-lg-3">
                       <div className="fs-14 text-dark fw-medium">Name</div>
-                      <p>Chris Foxy</p>
+                      <p><AgencyName /></p>
                     </div>
                     <div className="col-lg-3">
                       <div className="fs-14 text-dark fw-medium">Visa Type</div>

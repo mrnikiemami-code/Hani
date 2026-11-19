@@ -3,6 +3,7 @@
 import Link from "next/link";
 import ImageWithBasePath from '../../../../components/image-with-base-path'
 import { all_routes } from '../../../../routes/all_routes'
+import { AgencyName } from "@/features/agencies/ui/AgencyName";
 
 const UserFlightBookingModal = () => {
 
@@ -132,7 +133,7 @@ const UserFlightBookingModal = () => {
                                         <div className="row gy-3">
                                             <div className="col-lg-3">
                                                 <h6 className="fs-14">Name</h6>
-                                                <p className="text-gray-6 fs-16 ">Chris Foxy</p>
+                                                <p className="text-gray-6 fs-16 "><AgencyName /></p>
                                             </div>
                                             <div className="col-lg-3">
                                                 <h6 className="fs-14">Email</h6>
@@ -324,7 +325,7 @@ const UserFlightBookingModal = () => {
                                         <div className="row gy-3">
                                             <div className="col-lg-3">
                                                 <h6 className="fs-14">Name</h6>
-                                                <p className="text-gray-6 fs-16 ">Chris Foxy</p>
+                                                <p className="text-gray-6 fs-16 "><AgencyName /></p>
                                             </div>
                                             <div className="col-lg-3">
                                                 <h6 className="fs-14">Email</h6>
@@ -516,7 +517,7 @@ const UserFlightBookingModal = () => {
                                         <div className="row gy-3">
                                             <div className="col-lg-3">
                                                 <h6 className="fs-14">Name</h6>
-                                                <p className="text-gray-6 fs-16 ">Chris Foxy</p>
+                                                <p className="text-gray-6 fs-16 "><AgencyName /></p>
                                             </div>
                                             <div className="col-lg-3">
                                                 <h6 className="fs-14">Email</h6>
@@ -703,7 +704,7 @@ const UserFlightBookingModal = () => {
                                         <div className="row">
                                             <div className="col-lg-3">
                                                 <h6 className="fs-14">Name</h6>
-                                                <p className="text-gray-6 fs-16 ">Chris Foxy</p>
+                                                <p className="text-gray-6 fs-16 "><AgencyName /></p>
                                             </div>
                                             <div className="col-lg-3">
                                                 <h6 className="fs-14">Email</h6>

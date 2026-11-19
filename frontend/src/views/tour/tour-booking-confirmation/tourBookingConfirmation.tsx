@@ -4,6 +4,7 @@ import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import Link from "next/link";
 import ImageWithBasePath from '../../../components/image-with-base-path';
 import { all_routes } from '../../../routes/all_routes';
+import { AgencyName } from "@/features/agencies/ui/AgencyName";
 
 const TourBookingConfirmation = () => {
 
@@ -141,7 +142,7 @@ const TourBookingConfirmation = () => {
                                             <div className="row g-3">
                                                 <div className="col-lg-3">
                                                     <h6 className="fs-14 mb-1">Name</h6>
-                                                    <p className="fs-16 text-gray-6">Chris Foxy</p>
+                                                    <p className="fs-16 text-gray-6"><AgencyName /></p>
                                                 </div>
                                                 <div className="col-lg-3">
                                                     <h6 className="fs-14 mb-1">Email</h6>
