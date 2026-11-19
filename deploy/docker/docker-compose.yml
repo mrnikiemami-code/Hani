@@ -60,6 +60,20 @@ services:
     volumes:
       - hani-seq-data:/data
 
+  clamav:
+    image: clamav/clamav:stable
+    container_name: hani-clamav
+    profiles: [ "security" ]
+    ports:
+      - "3310:3310"
+    volumes:
+      - hani-clamav-data:/var/lib/clamav
+    healthcheck:
+      test: ["CMD-SHELL", "clamdcheck.sh || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
     container_name: hani-otel-collector
@@ -75,3 +89,4 @@ volumes:
   hani-redis-data:
   hani-rabbitmq-data:
   hani-seq-data:
+  hani-clamav-data:

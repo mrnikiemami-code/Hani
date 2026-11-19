@@ -20,6 +20,9 @@ public sealed class SupportAttachmentOptions
 
     /// <summary>ClamAV scan timeout in seconds.</summary>
     public int ClamAvTimeoutSeconds { get; set; } = 15;
+
+    /// <summary>Hours before an unlinked pending upload is purged.</summary>
+    public int PendingRetentionHours { get; set; } = 24;
 }
 
 internal sealed class LocalSupportAttachmentStorage(

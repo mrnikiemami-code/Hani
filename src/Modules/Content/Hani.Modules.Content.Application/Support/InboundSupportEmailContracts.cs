@@ -12,7 +12,8 @@ public sealed record InboundSupportEmailInput(
 public sealed record InboundSupportEmailResult(
     Guid TicketId,
     string TicketNumber,
-    bool Appended);
+    bool Appended,
+    bool Duplicate);
 
 /// <summary>Service that maps trusted inbound email into support tickets.</summary>
 public interface IInboundSupportEmailService

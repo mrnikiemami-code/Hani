@@ -1844,11 +1844,19 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                                 .HasColumnType("boolean")
                                 .HasColumnName("is_internal");
 
+                            b1.Property<string>("ProviderMessageId")
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("provider_message_id");
+
                             b1.Property<Guid>("TicketId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("ticket_id");
 
                             b1.HasKey("Id");
+
+                            b1.HasIndex("ProviderMessageId")
+                                .HasDatabaseName("ix_support_messages_provider_id");
 
                             b1.HasIndex("TicketId", "CreatedAt")
                                 .HasDatabaseName("ix_support_messages_ticket_time");

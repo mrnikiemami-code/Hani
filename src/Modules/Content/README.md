@@ -183,3 +183,14 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
   a new `Email` category ticket is created.
 - Support ticket numbers now use the random suffix of the UUID to avoid
   rapid-creation collisions.
+
+## Real-time support and retention (2026-11-19)
+
+- SignalR hub `/hubs/support` pushes `SupportMessageAdded` and
+  `SupportDisputeUpdated` events to owner/agent ticket groups.
+- Inbound email deduplicates by `ProviderMessageId`; a repeated provider message
+  returns the original ticket with `duplicate=true`.
+- Pending unlinked attachments older than
+  `Support:Attachments:PendingRetentionHours` are purged by a background service
+  together with their private thumbnails.
+- CORS for the browser hub is configured through `Cors:AllowedOrigins`.

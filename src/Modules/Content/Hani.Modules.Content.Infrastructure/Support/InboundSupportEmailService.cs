@@ -39,6 +39,27 @@ internal sealed partial class InboundSupportEmailService(
             body = body[..20_000];
         }
 
+        var providerMessageId = string.IsNullOrWhiteSpace(input.ProviderMessageId)
+            ? null
+            : input.ProviderMessageId.Trim();
+        if (providerMessageId is not null)
+        {
+            var existing = await (
+                    from message in dbContext.SupportTickets.SelectMany(ticket => ticket.Messages)
+                    join ticket in dbContext.SupportTickets on message.TicketId equals ticket.Id
+                    where message.ProviderMessageId == providerMessageId
+                    select new { ticket.Id, ticket.TicketNumber })
+                .FirstOrDefaultAsync(cancellationToken);
+            if (existing is not null)
+            {
+                return new InboundSupportEmailResult(
+                    existing.Id,
+                    existing.TicketNumber,
+                    Appended: true,
+                    Duplicate: true);
+            }
+        }
+
         var match = TicketPattern.Match(input.Subject);
         if (match.Success)
         {
@@ -55,7 +76,8 @@ internal sealed partial class InboundSupportEmailService(
                     SupportAuthorType.Customer,
                     ticket.UserId,
                     body,
-                    false);
+                    false,
+                    providerMessageId: providerMessageId);
                 if (ticket.AssignedTo is { } assigned)
                 {
                     dbContext.Notifications.Add(Notification.Create(
@@ -77,7 +99,8 @@ internal sealed partial class InboundSupportEmailService(
                 return new InboundSupportEmailResult(
                     ticket.Id,
                     ticket.TicketNumber,
-                    Appended: true);
+                    Appended: true,
+                    Duplicate: false);
             }
         }
 
@@ -93,13 +116,15 @@ internal sealed partial class InboundSupportEmailService(
             input.Subject.Trim(),
             "Email",
             body,
-            SupportTicketPriority.Normal);
+            SupportTicketPriority.Normal,
+            providerMessageId: providerMessageId);
         dbContext.SupportTickets.Add(created);
         await dbContext.SaveChangesAsync(cancellationToken);
         return new InboundSupportEmailResult(
             created.Id,
             created.TicketNumber,
-            Appended: false);
+            Appended: false,
+            Duplicate: false);
     }
 
     [GeneratedRegex(@"SUP-[0-9A-F]{8,}", RegexOptions.IgnoreCase | RegexOptions.Compiled)]

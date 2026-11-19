@@ -29,6 +29,7 @@ internal sealed partial class AdminService(
     ContentDbContext content,
     ISupportAttachmentStorage supportAttachments,
     ISupportAttachmentScanner supportAttachmentScanner,
+    ISupportRealtimeNotifier supportRealtime,
     ILogger<AdminService> logger,
     IIdGenerator ids,
     ILanguageCatalog languages,

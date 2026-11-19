@@ -44,3 +44,15 @@ The local compose file is not a production manifest. Production requires:
 
 The API fails fast when these production requirements are missing. See
 `docs/operations/PRODUCTION-CHECKLIST.md`.
+
+## Optional ClamAV scanner
+
+Support attachment scanning is enabled with the `security` compose profile:
+
+```powershell
+docker compose -f deploy/docker/docker-compose.yml --profile security up -d
+```
+
+Set `Support:Attachments:ClamAvEnabled=true` and point `ClamAvHost`/`ClamAvPort`
+at `localhost:3310`. ClamAV startup and signature download can take several
+minutes on first boot.

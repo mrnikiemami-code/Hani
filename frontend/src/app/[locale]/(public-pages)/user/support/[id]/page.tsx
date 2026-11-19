@@ -43,7 +43,7 @@ export default async function CustomerSupportDetailPage({
       subtitle={ticket.subject}
       active={t("title")}
     >
-      <SupportAutoRefresh />
+      <SupportAutoRefresh ticketId={ticket.id} />
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <Link href="/user/support" className="btn btn-light btn-sm">
           {t("back")}

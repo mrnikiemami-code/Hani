@@ -1,4 +1,5 @@
 using Hani.Api.Endpoints;
+using Hani.Api.Realtime;
 using Hani.Api.Middleware;
 using Hani.BuildingBlocks.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics;
@@ -26,6 +27,7 @@ public static class HaniApiPipelineExtensions
 
         app.UseRequestLocalization();
         app.UseStaticFiles();
+        app.UseCors("hani");
         app.UseAuthentication();
         app.UseMiddleware<TenantMiddleware>();
         app.UseStatusCodePages(WriteProblemDetailsAsync);
@@ -33,6 +35,7 @@ public static class HaniApiPipelineExtensions
         app.UseAuthorization();
         app.UseMiddleware<AdminPermissionMiddleware>();
         MapHealthEndpoints(app);
+        app.MapHub<SupportHub>("/hubs/support");
         app.MapHaniEndpoints();
         return app;
     }

@@ -1,3 +1,6 @@
+using Hani.Api.Realtime;
+using Hani.Modules.Content.Application.Support;
+
 namespace Hani.Api.Configuration;
 
 /// <summary>Single composition entry point for the API host.</summary>
@@ -17,6 +20,9 @@ public static class HaniApiBuilderExtensions
         builder.Services.AddHaniCrossCutting(builder.Configuration);
         builder.Services.AddHaniCqrs();
         builder.Services.AddHaniValidators();
+        builder.Services.AddHaniCors(builder.Configuration);
+        builder.Services.AddSignalR();
+        builder.Services.AddSingleton<ISupportRealtimeNotifier, SignalRSupportRealtimeNotifier>();
         builder.Services.AddHaniAuthentication(builder.Configuration);
         builder.Services.AddHaniLocalization(builder.Configuration);
         builder.Services.AddHaniHealthAndRateLimiting(builder.Configuration);

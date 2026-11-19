@@ -126,7 +126,8 @@ public sealed class SupportTicket : AggregateRoot<Guid>
         string category,
         string message,
         SupportTicketPriority priority = SupportTicketPriority.Normal,
-        DateTimeOffset? now = null)
+        DateTimeOffset? now = null,
+        string? providerMessageId = null)
     {
         if (string.IsNullOrWhiteSpace(contactName) ||
             string.IsNullOrWhiteSpace(contactEmail) ||
@@ -158,7 +159,8 @@ public sealed class SupportTicket : AggregateRoot<Guid>
             userId,
             message.Trim(),
             false,
-            createdAt));
+            createdAt,
+            providerMessageId));
         return ticket;
     }
 
@@ -169,7 +171,8 @@ public sealed class SupportTicket : AggregateRoot<Guid>
         Guid? authorUserId,
         string body,
         bool isInternal = false,
-        DateTimeOffset? now = null)
+        DateTimeOffset? now = null,
+        string? providerMessageId = null)
     {
         if (string.IsNullOrWhiteSpace(body))
         {
@@ -184,7 +187,8 @@ public sealed class SupportTicket : AggregateRoot<Guid>
             authorUserId,
             body.Trim(),
             isInternal,
-            createdAt);
+            createdAt,
+            providerMessageId);
         _messages.Add(message);
         LastMessageAt = createdAt;
         UpdatedAt = createdAt;
@@ -249,7 +253,8 @@ public sealed class SupportMessage : Entity<Guid>
         Guid? authorUserId,
         string body,
         bool isInternal,
-        DateTimeOffset createdAt) : base(id)
+        DateTimeOffset createdAt,
+        string? providerMessageId = null) : base(id)
     {
         TicketId = ticketId;
         AuthorType = authorType;
@@ -257,6 +262,9 @@ public sealed class SupportMessage : Entity<Guid>
         Body = body;
         IsInternal = isInternal;
         CreatedAt = createdAt;
+        ProviderMessageId = string.IsNullOrWhiteSpace(providerMessageId)
+            ? null
+            : providerMessageId.Trim();
     }
 
     /// <summary>Parent ticket.</summary>
@@ -276,4 +284,7 @@ public sealed class SupportMessage : Entity<Guid>
 
     /// <summary>Creation time.</summary>
     public DateTimeOffset CreatedAt { get; private set; }
+
+    /// <summary>Optional inbound provider message id used for deduplication.</summary>
+    public string? ProviderMessageId { get; private set; }
 }

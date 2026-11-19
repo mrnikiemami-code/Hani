@@ -72,3 +72,14 @@ single-node defaults (`ProductionConfigurationGuard`).
 - If inbound email is enabled, `Support:InboundEmail:Secret` must be a unique
   production secret; the provider must sign
   `timestamp + "." + rawBody` with HMAC-SHA256.
+
+## Real-time support
+
+- `Cors:AllowedOrigins` must list explicit frontend HTTPS origins and must not
+  contain `*` or `http://localhost:3000`.
+- `NEXT_PUBLIC_API_BASE_URL` must point at the public API origin so the browser
+  can reach `/hubs/support`.
+- The auth cookie must be readable by the API origin (same parent domain or a
+  reverse proxy), otherwise the SignalR hub falls back to polling.
+- Optional ClamAV: run `deploy/docker/docker-compose.yml` with
+  `--profile security` and keep `Support:Attachments:ClamAvEnabled=true`.

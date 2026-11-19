@@ -223,6 +223,12 @@ internal sealed partial class AdminService : IAdminSupportService
         }
 
         await content.SaveChangesAsync(cancellationToken);
+        await supportRealtime.MessageAddedAsync(
+            id,
+            message.Id,
+            "Admin",
+            isInternal,
+            cancellationToken);
         var assigneeNames = await LoadAssigneeNamesAsync(
             [ticket.AssignedTo],
             cancellationToken);
@@ -424,6 +430,11 @@ internal sealed partial class AdminService : IAdminSupportService
                     deepLink = $"/user/support/{dispute.TicketId}"
                 });
             await content.SaveChangesAsync(cancellationToken);
+            await supportRealtime.DisputeUpdatedAsync(
+                dispute.TicketId,
+                dispute.Id,
+                dispute.Status.ToString(),
+                cancellationToken);
             return Result<AdminSupportDisputeDto>.Success(
                 ToDisputeDto(dispute, ticket?.TicketNumber ?? string.Empty));
         }

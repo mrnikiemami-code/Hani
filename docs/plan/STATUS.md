@@ -639,3 +639,5 @@
 - Batch 9 attachment security: ClamAV INSTREAM scanner port, infected-upload rejection, production scan requirement, 10/minute upload rate limiting, and private 320px WebP thumbnails.
 - Batch 9 support latency/UX: customer and support last-read receipts, 20-second visible-tab thread refresh, and admin quick-reply templates.
 - Batch 9 inbound email: HMAC-signed email webhook appends to a ticket referenced by `SUP-` number or creates a new Email-category ticket; ticket numbers now use UUID random suffixes to prevent rapid-creation collisions.
+- Batch 10 real-time support: authenticated SignalR hub at `/hubs/support`, owner/support-agent ticket groups, message and dispute events, and a 60-second polling fallback in the customer/admin ticket pages.
+- Batch 10 provider operations: inbound email deduplication by `ProviderMessageId`, pending upload retention purge, credential CORS policy, and an optional ClamAV compose profile.

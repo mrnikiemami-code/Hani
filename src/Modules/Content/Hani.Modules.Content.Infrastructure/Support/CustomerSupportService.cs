@@ -16,6 +16,7 @@ internal sealed class CustomerSupportService(
     IIdGenerator ids,
     ISupportAttachmentStorage attachmentStorage,
     ISupportAttachmentScanner attachmentScanner,
+    ISupportRealtimeNotifier realtime,
     ILogger<CustomerSupportService> logger) : ICustomerSupportService
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
@@ -167,6 +168,12 @@ internal sealed class CustomerSupportService(
                 deepLink = $"/admin/support/tickets/{ticket.Id}"
             });
         await dbContext.SaveChangesAsync(cancellationToken);
+        await realtime.MessageAddedAsync(
+            id,
+            message.Id,
+            "Customer",
+            false,
+            cancellationToken);
         var disputes = await LoadTicketDisputesAsync(id, cancellationToken);
         var loadedAttachments = await LoadAttachmentsAsync(id, cancellationToken);
         return Result<CustomerSupportTicketDetailDto>.Success(
@@ -269,6 +276,11 @@ internal sealed class CustomerSupportService(
                     deepLink = $"/admin/support/tickets/{ticket.Id}"
                 });
             await dbContext.SaveChangesAsync(cancellationToken);
+            await realtime.DisputeUpdatedAsync(
+                ticketId,
+                dispute.Id,
+                dispute.Status.ToString(),
+                cancellationToken);
             return Result<CustomerSupportDisputeDto>.Success(
                 ToDisputeDto(dispute, ticket.TicketNumber));
         }

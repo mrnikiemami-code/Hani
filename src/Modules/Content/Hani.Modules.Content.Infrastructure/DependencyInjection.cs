@@ -36,7 +36,9 @@ public static class DependencyInjection
         {
             services.AddScoped<ICustomerSupportService, CustomerSupportService>();
         services.AddScoped<IInboundSupportEmailService, InboundSupportEmailService>();
+        services.AddScoped<ISupportTicketAccessService, SupportTicketAccessService>();
         services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
+        services.AddHostedService<SupportAttachmentRetentionService>();
         if (configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
         {
             services.AddSingleton<ISupportAttachmentScanner, ClamAvSupportAttachmentScanner>();
@@ -51,7 +53,9 @@ public static class DependencyInjection
         {
             services.AddScoped<ICustomerSupportService, CustomerSupportService>();
         services.AddScoped<IInboundSupportEmailService, InboundSupportEmailService>();
+        services.AddScoped<ISupportTicketAccessService, SupportTicketAccessService>();
         services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
+        services.AddHostedService<SupportAttachmentRetentionService>();
         if (configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
         {
             services.AddSingleton<ISupportAttachmentScanner, ClamAvSupportAttachmentScanner>();

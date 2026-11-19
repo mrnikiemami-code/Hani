@@ -51,6 +51,22 @@ public static class AuthenticationRegistration
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(30)
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.HttpContext.Request.Path.StartsWithSegments(
+                                "/hubs/support") &&
+                            context.Request.Cookies.TryGetValue(
+                                "hani_access_token",
+                                out var token))
+                        {
+                            context.Token = token;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
         services.AddAuthorization(options =>

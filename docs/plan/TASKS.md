@@ -364,3 +364,6 @@
 | H91-PORTAL-06 | Batch 9: attachment security | ? Done | ClamAV scanner port, quarantine rejection, production requirement, upload rate limit, WebP thumbnails |
 | H91-PORTAL-07 | Batch 9: read receipts and live refresh | ? Done | customer/support last-read display, 20s visible-tab thread refresh, admin quick replies |
 | H91-PORTAL-08 | Batch 9: inbound email-to-ticket | ? Done | HMAC webhook, append-by-ticket-number, new email tickets, provider secret guard |
+| H91-OPS-06 | Batch 10: real-time support | ? Done | authenticated SignalR hub, owner/agent groups, message/dispute events, polling fallback |
+| H91-OPS-07 | Batch 10: provider dedup and retention | ? Done | ProviderMessageId dedup, pending attachment retention service |
+| H91-OPS-08 | Batch 10: CORS/SignalR operations | ? Done | credential CORS origins, production guard, ClamAV security compose profile, realtime runbook |

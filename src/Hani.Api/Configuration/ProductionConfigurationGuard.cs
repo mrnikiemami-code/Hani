@@ -78,6 +78,15 @@ public static class ProductionConfigurationGuard
             errors.Add("AllowedHosts must list explicit production hosts.");
         }
 
+        var corsOrigins = configuration
+            .GetSection("Cors:AllowedOrigins")
+            .Get<string[]>() ?? [];
+        if (corsOrigins.Length == 0 ||
+            corsOrigins.Any(origin => origin == "*" || origin == "http://localhost:3000"))
+        {
+            errors.Add("Cors:AllowedOrigins must list explicit production frontend origins.");
+        }
+
         if (!string.Equals(
                 configuration["Cache:Provider"],
                 "Redis",
