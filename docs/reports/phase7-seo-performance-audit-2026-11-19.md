@@ -78,3 +78,14 @@ The canonical/hreflang tags themselves are correct.
 - Added `scripts/lighthouse-audit.ps1` with mobile/desktop budgets for home,
   tours, tour detail, visa detail, and flights.
 - Mobile LCP improved further from 9.7 s to **8.6 s**; desktop remains 87.
+
+## Final home DOM reduction
+
+- The legacy home hero rendered all nine booking tab forms in the initial DOM.
+  Only the active tab is now rendered; switching tabs mounts the selected form.
+- Verified the tab switching behavior in FA: choosing `??? ??` mounts the hotel
+  form and removes the tour form.
+- This reduces the initial home DOM and hydration work, but the mobile LCP
+  remains dominated by the legacy hero paint (~9.6 s in Lighthouse mobile).
+- Final tree leaves the desktop Lighthouse performance at 87 and accessibility
+  at 100; SEO remains correct for the production canonical host.

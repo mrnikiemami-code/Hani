@@ -388,3 +388,6 @@
 | D-P7-08 | Sitemap/robots revalidation | `frontend/src/app/sitemap.ts`, `robots.ts` |
 | D-P7-09 | Lighthouse budgets | `scripts/lighthouse-audit.ps1` |
 | D-P7-10 | Hero paint optimization | `_home-08.scss` |
+
+| D-P7-11 | Conditional hero tabs | `homeServiceOne.tsx` |
+| D-P7-12 | Tab switching check | FA browser verification |

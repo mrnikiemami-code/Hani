@@ -728,3 +728,9 @@ Report: `docs/reports/phase7-seo-performance-audit-2026-11-19.md`.
 - Hero backdrop filters/fixed background removed.
 - `scripts/lighthouse-audit.ps1` added with mobile/desktop budgets.
 - Mobile LCP: 9.7s ? 8.6s; accessibility 100.
+
+### Phase 7 DOM reduction
+
+- Home hero renders only the active booking tab instead of all nine forms.
+- Tab switching verified in FA.
+- Mobile LCP remains ~9.6s due the legacy hero paint; desktop performance 87.

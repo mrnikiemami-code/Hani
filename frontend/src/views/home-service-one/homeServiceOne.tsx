@@ -91,6 +91,9 @@ const HomeServiceOne = ({
   const videoUrl = "https://youtu.be/NSAOrGb9orM";
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+  const [activeTab, setActiveTab] = useState<
+    "flight" | "Hotels" | "Cars" | "Cruise" | "Tour" | "Bus" | "Activity" | "Visa" | "Guide"
+  >("Tour");
 
 
 const [formData, setFormData] = useState<BookingState>({
@@ -308,74 +311,65 @@ const guidePassenger =
                 >
                   <div className="card-header">
                     <div className="nav" role="tablist" aria-label={t("heroTitle")}>
-                      <Link role="tab"                           href="#"
-                          className="nav-link "
-                          data-bs-toggle="tab"
-                          data-bs-target="#flight"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "flight"} onClick={(event) => { event.preventDefault(); setActiveTab("flight"); }} className={`nav-link ${activeTab === "flight" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-airplane5 me-2" />
                           Flights
                         </Link>
-                      <Link role="tab"                           href="#"
-                          className="nav-link"
-                          data-bs-toggle="tab"
-                          data-bs-target="#Hotels"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "Hotels"} onClick={(event) => { event.preventDefault(); setActiveTab("Hotels"); }} className={`nav-link ${activeTab === "Hotels" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-buildings5 me-2" />
                           Hotels
                         </Link>
-                      <Link role="tab"                           href="#"
-                          className="nav-link"
-                          data-bs-toggle="tab"
-                          data-bs-target="#Cars"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "Cars"} onClick={(event) => { event.preventDefault(); setActiveTab("Cars"); }} className={`nav-link ${activeTab === "Cars" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-car5 me-2" />
                           Cars
                         </Link>
-                      <Link role="tab"                           href="#"
-                          className="nav-link"
-                          data-bs-toggle="tab"
-                          data-bs-target="#Cruise"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "Cruise"} onClick={(event) => { event.preventDefault(); setActiveTab("Cruise"); }} className={`nav-link ${activeTab === "Cruise" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-ship5 me-2" />
                           Cruise
                         </Link>
-                      <Link role="tab"                           href="#"
-                          className="nav-link active"
-                          data-bs-toggle="tab"
-                          data-bs-target="#Tour"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "Tour"} onClick={(event) => { event.preventDefault(); setActiveTab("Tour"); }} className={`nav-link ${activeTab === "Tour" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-camera5 me-2" />
                           Tour
                         </Link>
-                      <Link role="tab"                           href="#"
-                          className="nav-link"
-                          data-bs-toggle="tab"
-                          data-bs-target="#Bus"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "Bus"} onClick={(event) => { event.preventDefault(); setActiveTab("Bus"); }} className={`nav-link ${activeTab === "Bus" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-bus5 me-2" />
                           Bus
                         </Link>
-                      <Link role="tab"                           href="#"
-                          className="nav-link"
-                          data-bs-toggle="tab"
-                          data-bs-target="#Activity"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "Activity"} onClick={(event) => { event.preventDefault(); setActiveTab("Activity"); }} className={`nav-link ${activeTab === "Activity" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-calendar5 me-2" />
                           Activity
                         </Link>
-                      <Link role="tab"                           href="#"
-                          className="nav-link"
-                          data-bs-toggle="tab"
-                          data-bs-target="#Visa"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "Visa"} onClick={(event) => { event.preventDefault(); setActiveTab("Visa"); }} className={`nav-link ${activeTab === "Visa" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-document5 me-2" />
                           Visa
                         </Link>
-                      <Link role="tab"                           href="#"
-                          className="nav-link"
-                          data-bs-toggle="tab"
-                          data-bs-target="#Guide"
+                      <Link role="tab" href="#"
+                          aria-selected={activeTab === "Guide"} onClick={(event) => { event.preventDefault(); setActiveTab("Guide"); }} className={`nav-link ${activeTab === "Guide" ? "active" : ""}`}
+
                         >
                           <i className="isax isax-user-octagon me-2" />
                           Guide
@@ -385,7 +379,8 @@ const guidePassenger =
                   <div className="card-body">
                     <div>
                       <div className="tab-content">
-                        <div className="tab-pane fade" id="flight">
+                        {activeTab === "flight" && (
+<div className="tab-pane fade active show" id="flight">
                           <form>
                             <div className="d-flex align-items-center justify-content-between flex-wrap mb-2">
                               <div className="d-flex align-items-center">
@@ -787,7 +782,9 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade" id="Hotels">
+                            )}
+{activeTab === "Hotels" && (
+<div className="tab-pane fade active show" id="Hotels">
                               <form>
                                 <div className="fw-medium fs-16 mb-2 text-center text-white">
                                   Book Hotel - Villas, Apartments &amp; more.
@@ -814,7 +811,7 @@ const guidePassenger =
                                         ]}
                                       />
                                       </div>
-                                      
+
                                     </div>
 
                                     <CommonDateRange
@@ -1078,7 +1075,9 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade" id="Cars">
+                            )}
+{activeTab === "Cars" && (
+<div className="tab-pane fade active show" id="Cars">
                               <form>
                                 <div className="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                   <div className="d-flex align-items-center flex-wrap">
@@ -1334,7 +1333,9 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade" id="Cruise">
+                            )}
+{activeTab === "Cruise" && (
+<div className="tab-pane fade active show" id="Cruise">
                               <form>
                                 <div className="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                   <div className="fw-medium fs-16 mb-2 text-white">
@@ -1539,10 +1540,14 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade active show" id="Tour">
+                            )}
+{activeTab === "Tour" && (
+<div className="tab-pane fade active show" id="Tour">
                               <HaniHomeTourSearch />
                             </div>
-                            <div className="tab-pane fade" id="Bus">
+                            )}
+{activeTab === "Bus" && (
+<div className="tab-pane fade active show" id="Bus">
                               <form action="#">
                                 <div className="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                   <div className="d-flex align-items-center">
@@ -2011,7 +2016,9 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade" id="Activity">
+                            )}
+{activeTab === "Activity" && (
+<div className="tab-pane fade active show" id="Activity">
                               <form action="#">
                                 <div className="fw-medium fs-16 mb-2 text-center text-white">
                                   Book Adventure Activity.
@@ -2058,7 +2065,7 @@ const guidePassenger =
     { value: "SkyDive"}
                                         ]}
                                       />
-                                     
+
                                       </div>
                                     </div>
                                     <CommonDateRange
@@ -2300,7 +2307,9 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade" id="Visa">
+                            )}
+{activeTab === "Visa" && (
+<div className="tab-pane fade active show" id="Visa">
                               <form action="#">
                                 <div className="fw-medium fs-16 mb-2 text-center text-white">
                                   Check Eligibility
@@ -2347,7 +2356,7 @@ const guidePassenger =
     { value: "GroupTravel Visa"}
                                         ]}
                                       />
-                                       
+
                                       </div>
                                     </div>
                                     <div className="form-item booking-dropdown dropdown">
@@ -2369,7 +2378,7 @@ const guidePassenger =
     { value: "Germany"}
                                         ]}
                                       />
-                                       
+
                                       </div>
                                     </div>
                                     <div className="form-item dropdown">
@@ -2602,7 +2611,9 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
-                            <div className="tab-pane fade" id="Guide">
+                            )}
+{activeTab === "Guide" && (
+<div className="tab-pane fade active show" id="Guide">
                               <form action="#">
                                 <div className="d-lg-flex">
                                   <div className="d-flex  form-info">
@@ -2625,7 +2636,7 @@ const guidePassenger =
     { value: "Orlando", subValue: "USA" }
                                         ]}
                                       />
-                                       
+
                                       </div>
                                     </div>
                                     <CommonDateRange
@@ -2866,6 +2877,8 @@ const guidePassenger =
                                 </div>
                               </form>
                             </div>
+                            )}
+
                         </div>
                       </div>
                     </div>

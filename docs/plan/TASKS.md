@@ -429,3 +429,6 @@
 | P7-10 | Sitemap/robots revalidation | Done | hourly refresh |
 | P7-11 | Lighthouse CI budgets | Done | `scripts/lighthouse-audit.ps1` |
 | P7-12 | Hero paint optimization | Done | backdrop/fixed background removed |
+
+| P7-13 | Conditional hero tab rendering | Done | only active pane in DOM |
+| P7-14 | Tab switching verification | Done | FA hotel/tour pane switch |
