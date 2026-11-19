@@ -6,8 +6,14 @@ import { sessionGet } from "@/lib/hani/server-api";
 import { formatIsoDate, formatIsoInstant } from "@/lib/hani/calendar";
 import { formatMoney } from "@/lib/hani/money";
 import type { AdminOrderDetail, AdminOrderPayment } from "@/features/home-experience/domain/admin-order-detail";
+import type {
+  AdminOrderContract,
+  AdminOrderHistory,
+  AdminOrderRefund
+} from "@/features/home-experience/domain/admin-order-extras";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 import { OrderActions } from "@/features/home-experience/ui/OrderActions";
+import { OrderContactEditor } from "@/features/home-experience/ui/OrderContactEditor";
 import { RefundPaymentAction } from "@/features/home-experience/ui/RefundPaymentAction";
 
 export async function generateMetadata({
@@ -29,12 +35,22 @@ export default async function AdminOrderPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminBookings" });
   const tHome = await getTranslations({ locale, namespace: "adminHome" });
-  const [result, paymentsResult] = await Promise.all([
-    sessionGet<AdminOrderDetail>(`/internal/v1/admin/bookings/orders/${id}`),
-    sessionGet<AdminOrderPayment[]>(
-      `/internal/v1/admin/bookings/orders/${id}/payments`
-    )
-  ]);
+  const [result, paymentsResult, historyResult, refundsResult, contractResult] =
+    await Promise.all([
+      sessionGet<AdminOrderDetail>(`/internal/v1/admin/bookings/orders/${id}`),
+      sessionGet<AdminOrderPayment[]>(
+        `/internal/v1/admin/bookings/orders/${id}/payments`
+      ),
+      sessionGet<AdminOrderHistory>(
+        `/internal/v1/admin/bookings/orders/${id}/history?page=1&pageSize=50`
+      ),
+      sessionGet<AdminOrderRefund[]>(
+        `/internal/v1/admin/bookings/orders/${id}/refunds`
+      ),
+      sessionGet<AdminOrderContract>(
+        `/internal/v1/admin/bookings/orders/${id}/contract`
+      )
+    ]);
 
   if (result.status === 401 || result.status === 403) {
     return (
@@ -54,6 +70,9 @@ export default async function AdminOrderPage({
   if (result.status === 404 || !result.data) notFound();
   const order = result.data;
   const payments = paymentsResult.data ?? [];
+  const history = historyResult.data?.items ?? [];
+  const refunds = refundsResult.data ?? [];
+  const contract = contractResult.data;
 
   return (
     <AdminPageShell
@@ -71,10 +90,28 @@ export default async function AdminOrderPage({
               {order.status} · {order.paymentStatus}
             </p>
           </div>
-          <div className="d-flex gap-2">
+          <div className="d-flex flex-wrap gap-2">
             <Link href="/admin/bookings" className="btn btn-light btn-sm">
               {t("back")}
             </Link>
+            <Link
+              href={`/admin/bookings/orders/${order.orderId}/contract`}
+              className="btn btn-light btn-sm"
+            >
+              {t("contract")}
+            </Link>
+            <Link
+              href={`/admin/bookings/orders/${order.orderId}/voucher`}
+              className="btn btn-light btn-sm"
+            >
+              {t("voucher")}
+            </Link>
+            <OrderContactEditor
+              orderId={order.orderId}
+              contactEmail={contract?.contactEmail ?? ""}
+              contactPhone={contract?.contactPhone ?? null}
+              closed={order.status === "Cancelled"}
+            />
             <OrderActions
               orderId={order.orderId}
               disabled={order.status === "Cancelled"}
@@ -180,6 +217,110 @@ export default async function AdminOrderPage({
           </div>
         </div>
       )}
+
+      {refunds.length > 0 && (
+        <div className="card border-0 shadow-sm mb-4">
+          <div className="card-header">
+            <h2 className="h5 mb-0">{t("refunds")}</h2>
+          </div>
+          <div className="card-body p-0 admin-table-wrap">
+            <table className="table admin-data-table content-data-table align-middle mb-0">
+              <thead className="thead-light">
+                <tr>
+                  <th>{t("amount")}</th>
+                  <th>{t("status")}</th>
+                  <th>{t("reason")}</th>
+                  <th>{t("requestedAt")}</th>
+                  <th className="d-none d-md-table-cell">{t("processedAt")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {refunds.map((refund) => (
+                  <tr key={refund.id}>
+                    <td>{formatMoney(refund.amount, refund.currency, locale)}</td>
+                    <td>{refund.status}</td>
+                    <td className="text-break">{refund.reason}</td>
+                    <td className="text-nowrap">
+                      {formatIsoInstant(refund.requestedAt, locale, {
+                        dateStyle: "medium"
+                      })}
+                    </td>
+                    <td className="d-none d-md-table-cell text-nowrap">
+                      {refund.processedAt
+                        ? formatIsoInstant(refund.processedAt, locale, {
+                            dateStyle: "medium"
+                          })
+                        : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      <div className="card border-0 shadow-sm mb-4">
+        <div className="card-header">
+          <h2 className="h5 mb-0">{t("history")}</h2>
+        </div>
+        <div className="card-body p-0 admin-table-wrap">
+          <table className="table admin-data-table content-data-table align-middle mb-0">
+            <thead className="thead-light">
+              <tr>
+                <th>{t("occurredAt")}</th>
+                <th>{t("action")}</th>
+                <th>{t("reason")}</th>
+                <th className="d-none d-md-table-cell">{t("actor")}</th>
+                <th className="d-none d-lg-table-cell">{t("details")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.map((entry) => (
+                <tr key={entry.id}>
+                  <td className="text-nowrap">
+                    {formatIsoInstant(entry.occurredAt, locale, {
+                      dateStyle: "medium",
+                      timeStyle: "short"
+                    })}
+                  </td>
+                  <td dir="ltr">{entry.action}</td>
+                  <td className="text-break">{entry.reason || "—"}</td>
+                  <td className="d-none d-md-table-cell">
+                    {entry.actorMobile ?? entry.actorRole}
+                  </td>
+                  <td className="d-none d-lg-table-cell">
+                    {entry.beforeJson || entry.afterJson ? (
+                      <details>
+                        <summary className="fs-12">{t("details")}</summary>
+                        {entry.beforeJson && (
+                          <pre className="fs-11 bg-light p-2 mb-2 text-break" dir="ltr">
+                            {entry.beforeJson}
+                          </pre>
+                        )}
+                        {entry.afterJson && (
+                          <pre className="fs-11 bg-light p-2 mb-0 text-break" dir="ltr">
+                            {entry.afterJson}
+                          </pre>
+                        )}
+                      </details>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {history.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="text-center text-gray-6 py-4">
+                    {t("emptyHistory")}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <div className="card border-0 shadow-sm">
         <div className="card-header">

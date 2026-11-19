@@ -94,6 +94,45 @@ public sealed class OrderTests
     }
 
     [Fact]
+    public void UpdateContact_Should_Change_Contact_Without_Changing_Contract()
+    {
+        var quote = CreateQuote();
+        quote.MarkHeld();
+        var hold = Hold.Create(TestIds.Generator, quote.Id, quote.DepartureId, quote.Seats);
+        var order = Order.Create(
+            TestIds.Generator,
+            hold,
+            quote,
+            "traveler@example.com",
+            null,
+            CreateTravelers());
+        var contractEmail = order.Contract.ContactEmail;
+
+        order.UpdateContact("  NEW.Contact@Example.com ", "+98 912 000 0000");
+
+        order.ContactEmail.ShouldBe("new.contact@example.com");
+        order.ContactPhone.ShouldBe("+98 912 000 0000");
+        order.Contract.ContactEmail.ShouldBe(contractEmail);
+    }
+
+    [Fact]
+    public void UpdateContact_Should_Reject_Invalid_Email()
+    {
+        var quote = CreateQuote();
+        quote.MarkHeld();
+        var hold = Hold.Create(TestIds.Generator, quote.Id, quote.DepartureId, quote.Seats);
+        var order = Order.Create(
+            TestIds.Generator,
+            hold,
+            quote,
+            "traveler@example.com",
+            null,
+            CreateTravelers());
+
+        Should.Throw<ArgumentException>(() => order.UpdateContact("not-an-email", null));
+    }
+
+    [Fact]
     public void Create_Should_Preserve_MultiCurrency_Pricing_Snapshot()
     {
         var pricing = new PricingSnapshot(

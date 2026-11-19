@@ -28,5 +28,15 @@ read models and operations. It exists so HTTP endpoint files never inject a
 `IAdminReportService`, `IAdminUserService`, `IHotelFacetService`,
 `IAdminMarketingService`, `IAdminNotificationService`, `IAdminFinanceService`,
 `IAdminBookingService`, `IAdminHomeSettingsService`, `IAdminSupportService`,
-`IContentEntryService`, `IAdminCatalogService`, `IAdminGovernanceService`, `IAdminChannelService`, `IAdminSupplierService`, `IAdminRoleService`, `IAdminPlatformSettingsService`,
-`IAdminAuditWriter`.
+`IContentEntryService`, `IAdminCatalogService`, `IAdminGovernanceService`,
+`IAdminChannelService`, `IAdminSupplierService`, `IAdminRoleService`,
+`IAdminPlatformSettingsService`, `IAdminTourService`, `IAdminFlightService`,
+`IAdminVisaService`, `IAdminAuditWriter`.
+
+## Booking administration
+
+`IAdminBookingService` composes reservation-request decisions, order
+cancellation and contact updates, contract/voucher read models, order audit
+history, and per-order refund reads. Commands that mutate booking state go
+through Booking application commands; only projections use the Booking,
+Identity, and Payments DbContexts.

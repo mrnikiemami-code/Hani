@@ -1,4 +1,7 @@
+using Hani.BuildingBlocks.Application;
 using Hani.Modules.Admin.Application;
+using Hani.Modules.Booking.Application.Commands.Requests;
+using Hani.Modules.Booking.Application.Commands.UpdateOrderContact;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Admin.Infrastructure;
@@ -105,4 +108,213 @@ internal sealed partial class AdminService : IAdminBookingService
                 item.Provider,
                 item.CreatedAt))
             .ToArrayAsync(cancellationToken);
+
+    public async Task<AdminContractDto?> GetContractAsync(
+        Guid orderId,
+        CancellationToken cancellationToken)
+    {
+        var order = await LoadOrderContractAsync(orderId, cancellationToken);
+        if (order is null)
+        {
+            return null;
+        }
+
+        var contract = order.Contract;
+        return new AdminContractDto(
+            contract.Id,
+            contract.ContractNumber,
+            order.Id,
+            order.OrderNumber,
+            order.Status.ToString(),
+            contract.IssuedAt,
+            contract.QuoteId,
+            contract.HoldId,
+            contract.AgencyId,
+            contract.AgencyOfferId,
+            contract.DepartureId,
+            contract.RoomType,
+            contract.Adults,
+            contract.Children,
+            contract.Infants,
+            contract.Seats,
+            contract.UnitPrice,
+            contract.Total,
+            contract.Currency,
+            contract.ContactEmail,
+            contract.ContactPhone,
+            contract.Travelers
+                .OrderBy(item => item.FullName)
+                .Select(item => new AdminContractTravelerDto(
+                    item.Id,
+                    item.FullName,
+                    item.Type.ToString(),
+                    item.DateOfBirth))
+                .ToArray(),
+            contract.Lines
+                .Select(item => new AdminContractLineDto(
+                    item.Id,
+                    item.Description,
+                    item.Quantity,
+                    item.UnitPrice,
+                    item.Total,
+                    item.Currency))
+                .ToArray(),
+            order.CancelledAt,
+            order.CancellationReason);
+    }
+
+    public async Task<AdminVoucherDto?> GetVoucherAsync(
+        Guid orderId,
+        CancellationToken cancellationToken)
+    {
+        var order = await LoadOrderContractAsync(orderId, cancellationToken);
+        if (order is null)
+        {
+            return null;
+        }
+
+        var contract = order.Contract;
+        return new AdminVoucherDto(
+            $"VCH-{order.OrderNumber}",
+            order.Id,
+            order.OrderNumber,
+            contract.ContractNumber,
+            order.Status.ToString(),
+            order.PaymentStatus.ToString(),
+            contract.IssuedAt,
+            order.PaymentDueAt,
+            order.AgencyId,
+            order.DepartureId,
+            order.RoomType,
+            order.Adults,
+            order.Children,
+            order.Infants,
+            order.Total,
+            order.Currency,
+            order.ContactEmail,
+            order.ContactPhone,
+            contract.Travelers
+                .OrderBy(item => item.FullName)
+                .Select(item => new AdminContractTravelerDto(
+                    item.Id,
+                    item.FullName,
+                    item.Type.ToString(),
+                    item.DateOfBirth))
+                .ToArray(),
+            contract.Lines
+                .Select(item => new AdminContractLineDto(
+                    item.Id,
+                    item.Description,
+                    item.Quantity,
+                    item.UnitPrice,
+                    item.Total,
+                    item.Currency))
+                .ToArray(),
+            order.CancelledAt,
+            order.CancellationReason);
+    }
+
+    public async Task<AdminOrderHistoryDto> ListHistoryAsync(
+        Guid orderId,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken)
+    {
+        var normalizedPage = page <= 0 ? 1 : page;
+        var normalizedPageSize = pageSize is <= 0 or > 100 ? 25 : pageSize;
+        var entityId = orderId.ToString();
+        var query = identity.AdminAuditEvents
+            .AsNoTracking()
+            .Where(item =>
+                item.EntityType == "Order" &&
+                item.EntityId == entityId);
+
+        var total = await query.CountAsync(cancellationToken);
+        var items = await query
+            .OrderByDescending(item => item.OccurredAt)
+            .Skip((normalizedPage - 1) * normalizedPageSize)
+            .Take(normalizedPageSize)
+            .Select(item => new AdminOrderHistoryEntryDto(
+                item.Id,
+                item.OccurredAt,
+                item.Action,
+                item.Reason,
+                item.ActorRole,
+                item.ActorUserId == null
+                    ? null
+                    : identity.Users
+                        .Where(user => user.Id == item.ActorUserId)
+                        .Select(user => user.Mobile)
+                        .FirstOrDefault(),
+                item.BeforeJson,
+                item.AfterJson))
+            .ToArrayAsync(cancellationToken);
+
+        return new AdminOrderHistoryDto(items, total, normalizedPage, normalizedPageSize);
+    }
+
+    public async Task<IReadOnlyList<AdminRefundDto>> ListRefundsAsync(
+        Guid orderId,
+        CancellationToken cancellationToken)
+        => await payments.Refunds
+            .AsNoTracking()
+            .Where(item => item.OrderId == orderId)
+            .OrderByDescending(item => item.RequestedAt)
+            .Select(item => new AdminRefundDto(
+                item.Id,
+                item.OrderId,
+                item.PaymentIntentId,
+                item.Amount,
+                item.Currency,
+                item.Status.ToString(),
+                item.Reason,
+                item.RequestedAt,
+                item.ProcessedAt))
+            .ToArrayAsync(cancellationToken);
+
+    public Task<Result<bool>> ConfirmRequestAsync(
+        Guid requestId,
+        string? note,
+        CancellationToken cancellationToken)
+        => sender.Send(
+            new ConfirmReservationRequestCommand(requestId, note),
+            cancellationToken);
+
+    public Task<Result<bool>> RejectRequestAsync(
+        Guid requestId,
+        string reason,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+            return Task.FromResult(Result<bool>.Failure(
+                Error.Validation(
+                    "HANI-ADMIN-BOOKING-4001",
+                    "A rejection reason is required.")));
+        }
+
+        return sender.Send(
+            new RejectReservationRequestCommand(requestId, reason.Trim()),
+            cancellationToken);
+    }
+
+    public Task<Result<bool>> UpdateContactAsync(
+        Guid orderId,
+        string contactEmail,
+        string? contactPhone,
+        CancellationToken cancellationToken)
+        => sender.Send(
+            new UpdateOrderContactCommand(orderId, contactEmail, contactPhone),
+            cancellationToken);
+
+    private Task<Hani.Modules.Booking.Domain.Orders.Order?> LoadOrderContractAsync(
+        Guid orderId,
+        CancellationToken cancellationToken)
+        => booking.Orders
+            .AsNoTracking()
+            .Include(item => item.Contract)
+                .ThenInclude(contract => contract.Travelers)
+            .Include(item => item.Contract)
+                .ThenInclude(contract => contract.Lines)
+            .FirstOrDefaultAsync(item => item.Id == orderId, cancellationToken);
 }

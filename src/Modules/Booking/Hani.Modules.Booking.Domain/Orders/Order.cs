@@ -392,6 +392,34 @@ public sealed class Order : AggregateRoot<Guid>
     }
 
     /// <summary>
+    /// Updates the non-commercial contact details for the order. Commercial terms,
+    /// the issued contract snapshot, and payment obligations stay immutable.
+    /// </summary>
+    public void UpdateContact(string email, string? phone)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new ArgumentException("Contact email is required.", nameof(email));
+        }
+
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+        if (!normalizedEmail.Contains('@', StringComparison.Ordinal) ||
+            normalizedEmail.Length > 320)
+        {
+            throw new ArgumentException("Contact email is invalid.", nameof(email));
+        }
+
+        var normalizedPhone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim();
+        if (normalizedPhone is { Length: > 40 })
+        {
+            throw new ArgumentException("Contact phone is too long.", nameof(phone));
+        }
+
+        ContactEmail = normalizedEmail;
+        ContactPhone = normalizedPhone;
+    }
+
+    /// <summary>
     /// Marks the order paid and settles every outstanding obligation.
     /// </summary>
     public void MarkPaid()

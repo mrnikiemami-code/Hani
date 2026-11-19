@@ -6,6 +6,7 @@ import { formatIsoDate, formatIsoInstant } from "@/lib/hani/calendar";
 import { formatMoney } from "@/lib/hani/money";
 import type { AdminBookings } from "@/features/home-experience/domain/admin-bookings";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
+import { ReservationRequestActions } from "@/features/home-experience/ui/ReservationRequestActions";
 
 export async function generateMetadata({
   params
@@ -161,6 +162,7 @@ export default async function AdminBookingsPage({
                 <th className="d-none d-lg-table-cell">{t("contact")}</th>
                 <th className="d-none d-lg-table-cell">{t("createdAt")}</th>
                 <th className="d-none d-md-table-cell">{t("due")}</th>
+                <th className="text-end">{t("actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -178,11 +180,18 @@ export default async function AdminBookingsPage({
                   <td className="d-none d-md-table-cell text-nowrap">
                     {formatIsoInstant(request.expiresAt, locale, { dateStyle: "medium" })}
                   </td>
+                  <td className="text-end">
+                    {request.status === "PendingAgencyReview" ? (
+                      <ReservationRequestActions requestId={request.id} />
+                    ) : (
+                      <span className="text-gray-6">—</span>
+                    )}
+                  </td>
                 </tr>
               ))}
               {data.requests.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="text-center text-gray-6 py-4">{t("empty")}</td>
+                  <td colSpan={7} className="text-center text-gray-6 py-4">{t("empty")}</td>
                 </tr>
               )}
             </tbody>

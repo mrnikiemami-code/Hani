@@ -29,6 +29,31 @@ export async function cancelAdminOrder(
   return post(`/internal/v1/admin/bookings/orders/${id}/cancel`, { reason });
 }
 
+export async function updateAdminOrderContact(
+  id: string,
+  contactEmail: string,
+  contactPhone: string | null
+): Promise<{ ok: boolean }> {
+  return post(`/internal/v1/admin/bookings/orders/${id}/contact`, {
+    contactEmail,
+    contactPhone
+  });
+}
+
+export async function confirmAdminReservation(
+  id: string,
+  note: string | null
+): Promise<{ ok: boolean }> {
+  return post(`/internal/v1/admin/bookings/requests/${id}/confirm`, { note });
+}
+
+export async function rejectAdminReservation(
+  id: string,
+  reason: string
+): Promise<{ ok: boolean }> {
+  return post(`/internal/v1/admin/bookings/requests/${id}/reject`, { reason });
+}
+
 export async function refundAdminOrder(
   orderId: string,
   paymentIntentId: string,

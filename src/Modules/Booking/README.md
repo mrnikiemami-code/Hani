@@ -114,3 +114,20 @@ Departure (Supply)
 - Job خودکار انقضای Quote/Hold هنوز اضافه نشده؛ Expiry در خواندن/استفاده بررسی می‌شود.
 - پرداخت و تغییر وضعیت Order به Paid در `TC-028` اضافه می‌شود.
 - تراکنش بین Booking و Supply با compensation است، نه Saga کامل.
+
+## Admin order workflow
+
+- `GET /internal/v1/admin/bookings` returns orders, reservation requests, and
+  hotel inquiries for the admin panel.
+- `POST /internal/v1/admin/bookings/requests/{id}/confirm` and
+  `/reject` move a pending reservation request through the domain workflow.
+- `POST /internal/v1/admin/bookings/orders/{id}/cancel` cancels the order and
+  releases reserved seats.
+- `POST /internal/v1/admin/bookings/orders/{id}/contact` updates non-commercial
+  contact details only. The issued contract and pricing stay immutable.
+- `GET /internal/v1/admin/bookings/orders/{id}/contract` returns the immutable
+  contract snapshot; `/voucher` returns a printable voucher derived from it.
+- `GET /internal/v1/admin/bookings/orders/{id}/history` reads the append-only
+  admin audit trail for the order; `/refunds` reads its refund requests.
+- Every admin mutation is written to `identity.admin_audit_events` by the API
+  layer after the domain command succeeds.

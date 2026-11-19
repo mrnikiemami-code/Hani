@@ -343,3 +343,5 @@
 | H91-ADMIN-15 | Batch 2: hotel create | ? Done | admin create endpoint, create route, hotel editor create mode, responsive UI |
 | H91-ADMIN-16 | Batch 2: tours/flights/visas | ? Done | tours create/publish, flight routes/references/offers, visa countries/types, application status |
 | H91-ADMIN-17 | Batch 2: tours admin | ? Done | tour list/create/publish, localized content, responsive UI |
+| H91-ADMIN-18 | Batch 3: booking decisions | ? Done | reservation request confirm/reject with audit, cancellation reason workflow, refund status list, order contact updates |
+| H91-ADMIN-19 | Batch 3: contracts/vouchers/history | ? Done | immutable contract snapshot, printable voucher, order audit history, responsive FA/EN/AR UI |

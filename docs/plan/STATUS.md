@@ -619,3 +619,5 @@
 - Admin Batch 2 started: hotel creation endpoint and `/admin/products/hotels/new` route using the existing hotel editor in create mode; list page links to create. Tours/flights/visas remain.
 - Admin Batch 2 tours: shared tour list/create/publish, localized content, cover image, destination ids, responsive UI, and product overview link.
 - Admin Batch 2 completion: hotel creation, tour list/create/publish, flight route/reference admin and route creation with provider offers, visa country/type creation, visa application list and status transitions, all with responsive FA/EN/AR UI.
+- Admin Batch 3 booking decisions: reservation requests can be confirmed or rejected from the bookings list with an audited note/reason; order cancellation now captures a real reason; refund requests and statuses are visible per order.
+- Admin Batch 3 contracts and history: immutable contract snapshot and printable voucher pages, per-order audit history, refund list, and non-commercial contact editing that leaves contract/pricing immutable. Responsive FA/EN/AR UI verified.
