@@ -329,3 +329,4 @@
 | `4074499` | Fix: admin order detail exposes current order contact while the issued contract snapshot stays immutable |
 | `ea53d64` | Batch 4 finance: persisted bank/currency/tax/settlement settings, reconciliation runs, CSV exports with report.export, approval history filters, daily revenue/order BI trends, responsive FA/EN/AR UI |
 | `be2e60e` | Batch 5 support: priority SLA states, real assignee selection, dispute aggregate/workflow/UI, support quality report, migration, responsive FA/EN/AR UI |
+| `32e9348` | Batch 6 hardening: production config guard, JSON readiness checks, generic HTTPS PSP adapter, notification HTTP mode/idempotency, security headers, backup/restore scripts, production checklist, k6 readiness load |
