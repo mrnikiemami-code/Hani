@@ -334,3 +334,4 @@
 | `bbeb89c` | Batch 8 support attachments: private upload/download, 10 MB/type limits, message linking, internal-note isolation, unread counters, deep-link notifications, responsive FA/EN/AR UI |
 | `9b41476` | Batch 9 support security: ClamAV scan port, 10/min upload limit, private WebP thumbnails, read receipts, quick replies/auto-refresh, HMAC inbound email-to-ticket, collision-safe ticket numbers |
 | `3e9a3d3` | Batch 10 real-time support: SignalR ticket groups/events, cookie-authenticated hub, CORS, inbound email dedup, pending attachment retention, optional ClamAV compose profile |
+| `cea1f8e` | Batch 11 provider parity: SignalR Redis backplane with cross-instance test, unique provider message dedup, ClamAV protocol rejection test, HTTP email provider delivery smoke, support load test |
