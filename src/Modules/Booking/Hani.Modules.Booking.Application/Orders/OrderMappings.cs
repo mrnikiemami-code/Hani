@@ -24,6 +24,8 @@ internal static class OrderMappings
             order.UnitPrice,
             order.Total,
             order.Currency,
+            order.ContactEmail,
+            order.ContactPhone,
             order.Status.ToString(),
             order.PaymentStatus.ToString(),
             order.CreatedAt,

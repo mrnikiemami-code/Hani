@@ -14,6 +14,8 @@ export type AdminOrderDetail = {
   unitPrice: number;
   total: number;
   currency: string;
+  contactEmail: string;
+  contactPhone: string | null;
   status: string;
   paymentStatus: string;
   createdAt: string;

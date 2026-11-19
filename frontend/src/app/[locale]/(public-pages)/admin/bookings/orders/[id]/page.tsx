@@ -7,7 +7,6 @@ import { formatIsoDate, formatIsoInstant } from "@/lib/hani/calendar";
 import { formatMoney } from "@/lib/hani/money";
 import type { AdminOrderDetail, AdminOrderPayment } from "@/features/home-experience/domain/admin-order-detail";
 import type {
-  AdminOrderContract,
   AdminOrderHistory,
   AdminOrderRefund
 } from "@/features/home-experience/domain/admin-order-extras";
@@ -35,7 +34,7 @@ export default async function AdminOrderPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminBookings" });
   const tHome = await getTranslations({ locale, namespace: "adminHome" });
-  const [result, paymentsResult, historyResult, refundsResult, contractResult] =
+  const [result, paymentsResult, historyResult, refundsResult] =
     await Promise.all([
       sessionGet<AdminOrderDetail>(`/internal/v1/admin/bookings/orders/${id}`),
       sessionGet<AdminOrderPayment[]>(
@@ -46,9 +45,6 @@ export default async function AdminOrderPage({
       ),
       sessionGet<AdminOrderRefund[]>(
         `/internal/v1/admin/bookings/orders/${id}/refunds`
-      ),
-      sessionGet<AdminOrderContract>(
-        `/internal/v1/admin/bookings/orders/${id}/contract`
       )
     ]);
 
@@ -72,7 +68,6 @@ export default async function AdminOrderPage({
   const payments = paymentsResult.data ?? [];
   const history = historyResult.data?.items ?? [];
   const refunds = refundsResult.data ?? [];
-  const contract = contractResult.data;
 
   return (
     <AdminPageShell
@@ -108,8 +103,8 @@ export default async function AdminOrderPage({
             </Link>
             <OrderContactEditor
               orderId={order.orderId}
-              contactEmail={contract?.contactEmail ?? ""}
-              contactPhone={contract?.contactPhone ?? null}
+              contactEmail={order.contactEmail}
+              contactPhone={order.contactPhone}
               closed={order.status === "Cancelled"}
             />
             <OrderActions

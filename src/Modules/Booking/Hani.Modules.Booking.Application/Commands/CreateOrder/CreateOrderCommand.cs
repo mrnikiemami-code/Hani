@@ -43,6 +43,8 @@ public sealed record OrderDto(
     decimal UnitPrice,
     decimal Total,
     string Currency,
+    string ContactEmail,
+    string? ContactPhone,
     string Status,
     string PaymentStatus,
     DateTimeOffset CreatedAt,
