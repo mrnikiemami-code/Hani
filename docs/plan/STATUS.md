@@ -734,3 +734,20 @@ Report: `docs/reports/phase7-seo-performance-audit-2026-11-19.md`.
 - Home hero renders only the active booking tab instead of all nine forms.
 - Tab switching verified in FA.
 - Mobile LCP remains ~9.6s due the legacy hero paint; desktop performance 87.
+
+## Next major phase ? Page Composition & Banners (planned)
+
+Planning document: `docs/architecture/PAGE-COMPOSITION-AND-BANNER-PLATFORM.md`.
+
+Phases:
+
+1. Inventory and contracts
+2. Composition foundation
+3. Home completion
+4. Global chrome and static pages
+5. Listing pages
+6. Detail pages and advertising
+7. Governance and rollout
+
+No implementation has started; Phase 0 and Phase 1 are the recommended first
+slice.

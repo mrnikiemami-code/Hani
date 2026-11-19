@@ -432,3 +432,16 @@
 
 | P7-13 | Conditional hero tab rendering | Done | only active pane in DOM |
 | P7-14 | Tab switching verification | Done | FA hotel/tour pane switch |
+
+## Planned ? Page Composition & Banner Platform
+
+| ID | Task | Status | DoD |
+|---|---|---|---|
+| PC-00 | Page/image inventory and contracts | Planned | page keys, image slots, schemas |
+| PC-01 | PageComposition aggregate and API | Planned | draft/publish, validation, migration |
+| PC-02 | Admin page builder shell | Planned | page list, sections, media picker |
+| PC-03 | Home completion | Planned | every home image/section editable |
+| PC-04 | Global chrome/static pages | Planned | header/footer/about/contact/legal |
+| PC-05 | Listing compositions | Planned | tours/visas/hotels/flights |
+| PC-06 | Detail compositions + banners | Planned | tour/visa/hotel + ad placement |
+| PC-07 | Governance and rollout | Planned | preview, audit, cache, SEO/Lighthouse |
