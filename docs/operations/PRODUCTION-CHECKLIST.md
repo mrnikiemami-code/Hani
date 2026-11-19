@@ -83,3 +83,13 @@ single-node defaults (`ProductionConfigurationGuard`).
   reverse proxy), otherwise the SignalR hub falls back to polling.
 - Optional ClamAV: run `deploy/docker/docker-compose.yml` with
   `--profile security` and keep `Support:Attachments:ClamAvEnabled=true`.
+
+## Multi-instance API
+
+- `Realtime:Backplane=Redis` is required in Production.
+- All instances must share the same Redis, PostgreSQL, and message transport.
+- The browser must reach every instance through the same HTTPS origin.
+- Inbound email uses a unique filtered index on `provider_message_id`; duplicate
+  provider deliveries return the original ticket.
+- Support pending attachment retention runs on every instance but deletes by
+  primary key idempotently.

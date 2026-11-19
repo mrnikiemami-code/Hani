@@ -56,7 +56,9 @@ internal sealed class SupportTicketConfiguration : IEntityTypeConfiguration<Supp
             messages.Property(item => item.ProviderMessageId).HasColumnName("provider_message_id")
                 .HasMaxLength(200);
             messages.HasIndex(item => item.ProviderMessageId)
-                .HasDatabaseName("ix_support_messages_provider_id");
+                .IsUnique()
+                .HasFilter("provider_message_id IS NOT NULL")
+                .HasDatabaseName("ux_support_messages_provider_id");
             messages.HasIndex(item => new { item.TicketId, item.CreatedAt })
                 .HasDatabaseName("ix_support_messages_ticket_time");
             messages.UsePropertyAccessMode(PropertyAccessMode.Field);

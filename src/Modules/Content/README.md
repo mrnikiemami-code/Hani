@@ -194,3 +194,10 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
   `Support:Attachments:PendingRetentionHours` are purged by a background service
   together with their private thumbnails.
 - CORS for the browser hub is configured through `Cors:AllowedOrigins`.
+
+## Provider dedup index (2026-11-19)
+
+- A unique filtered index on `support_messages.provider_message_id` prevents
+  concurrent inbound email deliveries from creating duplicate messages.
+- A duplicate-key race is recovered by clearing the EF change tracker and
+  returning the existing ticket with `duplicate=true`.

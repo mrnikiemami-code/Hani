@@ -1856,7 +1856,9 @@ namespace Hani.Modules.Content.Infrastructure.Persistence.Migrations
                             b1.HasKey("Id");
 
                             b1.HasIndex("ProviderMessageId")
-                                .HasDatabaseName("ix_support_messages_provider_id");
+                                .IsUnique()
+                                .HasDatabaseName("ux_support_messages_provider_id")
+                                .HasFilter("provider_message_id IS NOT NULL");
 
                             b1.HasIndex("TicketId", "CreatedAt")
                                 .HasDatabaseName("ix_support_messages_ticket_time");

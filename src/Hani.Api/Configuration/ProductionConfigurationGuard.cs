@@ -88,6 +88,14 @@ public static class ProductionConfigurationGuard
         }
 
         if (!string.Equals(
+                configuration["Realtime:Backplane"],
+                "Redis",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            errors.Add("Realtime:Backplane must be Redis in Production.");
+        }
+
+        if (!string.Equals(
                 configuration["Cache:Provider"],
                 "Redis",
                 StringComparison.OrdinalIgnoreCase))

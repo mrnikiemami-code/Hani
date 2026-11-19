@@ -6,6 +6,7 @@ using Hani.Modules.Content.Domain.Growth;
 using Hani.Modules.Content.Domain.Support;
 using Hani.Modules.Content.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Hani.Modules.Content.Infrastructure.Support;
 
@@ -44,19 +45,12 @@ internal sealed partial class InboundSupportEmailService(
             : input.ProviderMessageId.Trim();
         if (providerMessageId is not null)
         {
-            var existing = await (
-                    from message in dbContext.SupportTickets.SelectMany(ticket => ticket.Messages)
-                    join ticket in dbContext.SupportTickets on message.TicketId equals ticket.Id
-                    where message.ProviderMessageId == providerMessageId
-                    select new { ticket.Id, ticket.TicketNumber })
-                .FirstOrDefaultAsync(cancellationToken);
+            var existing = await FindDuplicateAsync(
+                providerMessageId,
+                cancellationToken);
             if (existing is not null)
             {
-                return new InboundSupportEmailResult(
-                    existing.Id,
-                    existing.TicketNumber,
-                    Appended: true,
-                    Duplicate: true);
+                return existing;
             }
         }
 
@@ -95,7 +89,26 @@ internal sealed partial class InboundSupportEmailService(
                         })));
                 }
 
-                await dbContext.SaveChangesAsync(cancellationToken);
+                try
+                {
+                    await dbContext.SaveChangesAsync(cancellationToken);
+                }
+                catch (DbUpdateException exception) when (
+                    providerMessageId is not null &&
+                    exception.InnerException is PostgresException { SqlState: "23505" })
+                {
+                    dbContext.ChangeTracker.Clear();
+                    var duplicate = await FindDuplicateAsync(
+                        providerMessageId,
+                        cancellationToken);
+                    if (duplicate is not null)
+                    {
+                        return duplicate;
+                    }
+
+                    throw;
+                }
+
                 return new InboundSupportEmailResult(
                     ticket.Id,
                     ticket.TicketNumber,
@@ -119,12 +132,50 @@ internal sealed partial class InboundSupportEmailService(
             SupportTicketPriority.Normal,
             providerMessageId: providerMessageId);
         dbContext.SupportTickets.Add(created);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException exception) when (
+            providerMessageId is not null &&
+            exception.InnerException is PostgresException { SqlState: "23505" })
+        {
+            dbContext.ChangeTracker.Clear();
+            var duplicate = await FindDuplicateAsync(
+                providerMessageId,
+                cancellationToken);
+            if (duplicate is not null)
+            {
+                return duplicate;
+            }
+
+            throw;
+        }
+
         return new InboundSupportEmailResult(
             created.Id,
             created.TicketNumber,
             Appended: false,
             Duplicate: false);
+    }
+
+    private async Task<InboundSupportEmailResult?> FindDuplicateAsync(
+        string providerMessageId,
+        CancellationToken cancellationToken)
+    {
+        var existing = await (
+                from message in dbContext.SupportTickets.SelectMany(ticket => ticket.Messages)
+                join ticket in dbContext.SupportTickets on message.TicketId equals ticket.Id
+                where message.ProviderMessageId == providerMessageId
+                select new { ticket.Id, ticket.TicketNumber })
+            .FirstOrDefaultAsync(cancellationToken);
+        return existing is null
+            ? null
+            : new InboundSupportEmailResult(
+                existing.Id,
+                existing.TicketNumber,
+                Appended: true,
+                Duplicate: true);
     }
 
     [GeneratedRegex(@"SUP-[0-9A-F]{8,}", RegexOptions.IgnoreCase | RegexOptions.Compiled)]

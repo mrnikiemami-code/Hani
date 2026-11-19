@@ -339,12 +339,15 @@ internal sealed class CustomerSupportService(
                 storageKey,
                 content,
                 cancellationToken);
-            await using var scanStream = await attachmentStorage.OpenReadAsync(
+            SupportAttachmentScanResult scan;
+            await using (var scanStream = await attachmentStorage.OpenReadAsync(
                 storageKey,
-                cancellationToken);
-            var scan = await attachmentScanner.ScanAsync(
-                scanStream,
-                cancellationToken);
+                cancellationToken))
+            {
+                scan = await attachmentScanner.ScanAsync(
+                    scanStream,
+                    cancellationToken);
+            }
             if (scan.ScannerAvailable && !scan.IsClean)
             {
                 await attachmentStorage.DeleteAsync(storageKey, cancellationToken);

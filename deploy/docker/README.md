@@ -56,3 +56,15 @@ docker compose -f deploy/docker/docker-compose.yml --profile security up -d
 Set `Support:Attachments:ClamAvEnabled=true` and point `ClamAvHost`/`ClamAvPort`
 at `localhost:3310`. ClamAV startup and signature download can take several
 minutes on first boot.
+
+## Multi-instance / backplane
+
+For more than one API instance, set:
+
+```
+Realtime__Backplane=Redis
+Realtime__Redis__Configuration=localhost:6380
+```
+
+All instances must share the same Redis and PostgreSQL. ClamAV can be enabled
+with the `security` profile; startup and signature download can take minutes.

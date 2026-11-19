@@ -641,3 +641,5 @@
 - Batch 9 inbound email: HMAC-signed email webhook appends to a ticket referenced by `SUP-` number or creates a new Email-category ticket; ticket numbers now use UUID random suffixes to prevent rapid-creation collisions.
 - Batch 10 real-time support: authenticated SignalR hub at `/hubs/support`, owner/support-agent ticket groups, message and dispute events, and a 60-second polling fallback in the customer/admin ticket pages.
 - Batch 10 provider operations: inbound email deduplication by `ProviderMessageId`, pending upload retention purge, credential CORS policy, and an optional ClamAV compose profile.
+- Batch 11 SignalR scale-out: Redis backplane configuration and production guard; cross-instance delivery verified with two API instances and a client connected to the second instance.
+- Batch 11 provider hardening: unique filtered `provider_message_id` index with duplicate-key recovery, HTTP email provider smoke including idempotency headers/auth, and ClamAV protocol rejection tested against a local INSTREAM test daemon.

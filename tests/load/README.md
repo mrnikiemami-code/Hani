@@ -42,3 +42,15 @@ docker run --rm -i --add-host=host.docker.internal:host-gateway `
   -e BASE_URL=http://host.docker.internal:5099 `
   grafana/k6 run - < tests/load/k6/health-load.js
 ```
+
+## Support portal load
+
+`support-load.js` exercises the authenticated customer ticket list and
+`/health/ready` together. Provide a short-lived customer token:
+
+```powershell
+docker run --rm -i --add-host=host.docker.internal:host-gateway `
+  -e BASE_URL=http://host.docker.internal:5099 `
+  -e ACCESS_TOKEN=<customer-jwt> `
+  grafana/k6 run - < tests/load/k6/support-load.js
+```

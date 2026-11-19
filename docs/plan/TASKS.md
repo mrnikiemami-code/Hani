@@ -367,3 +367,6 @@
 | H91-OPS-06 | Batch 10: real-time support | ? Done | authenticated SignalR hub, owner/agent groups, message/dispute events, polling fallback |
 | H91-OPS-07 | Batch 10: provider dedup and retention | ? Done | ProviderMessageId dedup, pending attachment retention service |
 | H91-OPS-08 | Batch 10: CORS/SignalR operations | ? Done | credential CORS origins, production guard, ClamAV security compose profile, realtime runbook |
+| H91-OPS-09 | Batch 11: SignalR scale-out | ? Done | Redis backplane, production requirement, two-instance cross-node delivery test |
+| H91-OPS-10 | Batch 11: race-safe provider dedup | ? Done | unique filtered index plus duplicate-key recovery |
+| H91-OPS-11 | Batch 11: provider/scan smoke | ? Done | ClamAV protocol rejection test, HTTP email provider delivery smoke, multi-instance runbook |

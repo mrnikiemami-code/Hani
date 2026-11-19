@@ -21,7 +21,16 @@ public static class HaniApiBuilderExtensions
         builder.Services.AddHaniCqrs();
         builder.Services.AddHaniValidators();
         builder.Services.AddHaniCors(builder.Configuration);
-        builder.Services.AddSignalR();
+        var signalR = builder.Services.AddSignalR();
+        var backplane = builder.Configuration["Realtime:Backplane"] ?? "Memory";
+        if (string.Equals(backplane, "Redis", StringComparison.OrdinalIgnoreCase))
+        {
+            var redisConfiguration = builder.Configuration["Realtime:Redis:Configuration"]
+                ?? builder.Configuration["Cache:Redis:Configuration"]
+                ?? "localhost:6380";
+            signalR.AddStackExchangeRedis(redisConfiguration);
+        }
+
         builder.Services.AddSingleton<ISupportRealtimeNotifier, SignalRSupportRealtimeNotifier>();
         builder.Services.AddHaniAuthentication(builder.Configuration);
         builder.Services.AddHaniLocalization(builder.Configuration);

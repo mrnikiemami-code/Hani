@@ -31,3 +31,13 @@ when the hub is unavailable.
   for example `https://api.hani.ir`.
 - The browser cookie must be shared by the frontend and API origins in
   production, or the auth cookie must use a common parent domain.
+
+## Multi-instance scale-out
+
+- Set `Realtime:Backplane=Redis` and `Realtime:Redis:Configuration` (or the
+  shared `Cache:Redis:Configuration`) on every API instance.
+- Production startup fails unless the Redis backplane is configured.
+- Verified locally with two API instances: a client connected to instance B
+  received a customer message written through instance A.
+- A Redis outage prevents cross-instance hub delivery; the frontend polling
+  fallback still refreshes the authorized thread.

@@ -496,12 +496,15 @@ internal sealed partial class AdminService : IAdminSupportService
                 storageKey,
                 stream,
                 cancellationToken);
-            await using var scanStream = await supportAttachments.OpenReadAsync(
+            SupportAttachmentScanResult scan;
+            await using (var scanStream = await supportAttachments.OpenReadAsync(
                 storageKey,
-                cancellationToken);
-            var scan = await supportAttachmentScanner.ScanAsync(
-                scanStream,
-                cancellationToken);
+                cancellationToken))
+            {
+                scan = await supportAttachmentScanner.ScanAsync(
+                    scanStream,
+                    cancellationToken);
+            }
             if (scan.ScannerAvailable && !scan.IsClean)
             {
                 await supportAttachments.DeleteAsync(storageKey, cancellationToken);
