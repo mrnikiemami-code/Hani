@@ -42,6 +42,7 @@ public sealed record CustomerSupportTicketDetailDto(
     DateTimeOffset UpdatedAt,
     DateTimeOffset LastMessageAt,
     int UnreadCount,
+    DateTimeOffset? SupportLastReadAt,
     IReadOnlyList<CustomerSupportMessageDto> Messages,
     IReadOnlyList<CustomerSupportDisputeDto> Disputes);
 
@@ -136,6 +137,12 @@ public interface ICustomerSupportService
 
     /// <summary>Downloads an attachment that belongs to an owned ticket.</summary>
     Task<SupportAttachmentDownloadDto?> DownloadAttachmentAsync(
+        Guid userId,
+        Guid attachmentId,
+        CancellationToken cancellationToken);
+
+    /// <summary>Downloads the generated thumbnail for an owned attachment.</summary>
+    Task<SupportAttachmentDownloadDto?> DownloadThumbnailAsync(
         Guid userId,
         Guid attachmentId,
         CancellationToken cancellationToken);

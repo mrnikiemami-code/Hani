@@ -361,3 +361,6 @@
 | H91-PORTAL-03 | Batch 7: support notifications and UX | ? Done | customer/admin reply and dispute notifications, sidebar links, responsive FA/EN/AR UI |
 | H91-PORTAL-04 | Batch 8: support attachments | ? Done | private upload/download, type/size validation, internal-note isolation, customer/admin file UI |
 | H91-PORTAL-05 | Batch 8: unread and deep links | ? Done | customer/admin read state, unread badges, support notification deepLink payloads |
+| H91-PORTAL-06 | Batch 9: attachment security | ? Done | ClamAV scanner port, quarantine rejection, production requirement, upload rate limit, WebP thumbnails |
+| H91-PORTAL-07 | Batch 9: read receipts and live refresh | ? Done | customer/support last-read display, 20s visible-tab thread refresh, admin quick replies |
+| H91-PORTAL-08 | Batch 9: inbound email-to-ticket | ? Done | HMAC webhook, append-by-ticket-number, new email tickets, provider secret guard |

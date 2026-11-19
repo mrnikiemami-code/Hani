@@ -467,5 +467,5 @@ public sealed class Order : AggregateRoot<Guid>
     }
 
     private static string CreateNumber(string prefix, Guid id)
-        => $"{prefix}-{id.ToString("N")[..12].ToUpperInvariant()}";
+        => $"{prefix}-{id.ToString("N")[^12..].ToUpperInvariant()}";
 }

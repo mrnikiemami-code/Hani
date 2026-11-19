@@ -50,6 +50,7 @@ public static class EndpointRegistration
         app.MapLastsecondParityEndpoints();
         app.MapWishlistEndpoints();
         app.MapCustomerSupportEndpoints();
+        app.MapInboundSupportEmailEndpoints();
     }
 
     private static void MapAdminEndpoints(IEndpointRouteBuilder app)

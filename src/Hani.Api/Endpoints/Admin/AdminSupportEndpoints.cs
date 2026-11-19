@@ -46,12 +46,18 @@ public static class AdminSupportEndpoints
             .WithTags("Internal.Admin.Support")
             .WithName("Internal.UploadAdminSupportAttachment")
             .RequireAuthorization("Admin")
+            .RequireRateLimiting("support-attachments")
             .DisableAntiforgery()
             .Produces<SupportAttachmentDto>(StatusCodes.Status201Created);
 
         app.MapGet("/internal/v1/admin/support/attachments/{id:guid}", DownloadAttachmentAsync)
             .WithTags("Internal.Admin.Support")
             .WithName("Internal.DownloadAdminSupportAttachment")
+            .RequireAuthorization("Admin");
+
+        app.MapGet("/internal/v1/admin/support/attachments/{id:guid}/thumbnail", DownloadThumbnailAsync)
+            .WithTags("Internal.Admin.Support")
+            .WithName("Internal.DownloadAdminSupportThumbnail")
             .RequireAuthorization("Admin");
 
         app.MapPost("/internal/v1/admin/support/tickets/{id:guid}/update", UpdateAsync)
@@ -393,6 +399,26 @@ public static class AdminSupportEndpoints
                 attachment.ContentType,
                 attachment.FileName,
                 enableRangeProcessing: true);
+    }
+
+    private static async Task<IResult> DownloadThumbnailAsync(
+        Guid id,
+        HttpContext context,
+        IAdminSupportService support,
+        CancellationToken cancellationToken)
+    {
+        var attachment = await support.DownloadThumbnailAsync(
+            id,
+            cancellationToken);
+        return attachment is null
+            ? context.ToProblem(Error.NotFound(
+                "HANI-SUPPORT-4313",
+                "Support attachment thumbnail was not found."))
+            : Results.File(
+                attachment.Content,
+                attachment.ContentType,
+                attachment.FileName,
+                enableRangeProcessing: false);
     }
 
     private static async Task<IResult> UpdateAsync(

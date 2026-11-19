@@ -151,7 +151,7 @@ public sealed class VisaApplication : AggregateRoot<Guid>
         var id = ids.NewId();
         var application = new VisaApplication(
             id,
-            $"VSA-{id.ToString("N")[..12].ToUpperInvariant()}",
+            $"VSA-{id.ToString("N")[^12..].ToUpperInvariant()}",
             visaCountryId,
             visaTypeId,
             applicantName.Trim(),

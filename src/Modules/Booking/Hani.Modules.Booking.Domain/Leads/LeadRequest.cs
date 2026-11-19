@@ -266,7 +266,7 @@ public sealed class LeadRequest : AggregateRoot<Guid>
         var id = ids.NewId();
         return new LeadRequest(
             id,
-            $"LEAD-{id.ToString("N")[..12].ToUpperInvariant()}",
+            $"LEAD-{id.ToString("N")[^12..].ToUpperInvariant()}",
             serviceType,
             string.IsNullOrWhiteSpace(destination) ? null : destination.Trim(),
             startDate,

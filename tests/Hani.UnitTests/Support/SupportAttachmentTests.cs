@@ -42,3 +42,31 @@ public sealed class SupportAttachmentTests
                 Guid.CreateVersion7()));
     }
 }
+
+public sealed class SupportTicketNumberTests
+{
+    [Fact]
+    public void Rapidly_Created_Tickets_Should_Not_Share_Numbers()
+    {
+        var first = SupportTicket.Create(
+            TestIds.Generator,
+            null,
+            "Customer",
+            "customer@example.com",
+            null,
+            "First",
+            "Booking",
+            "First message");
+        var second = SupportTicket.Create(
+            TestIds.Generator,
+            null,
+            "Customer",
+            "customer@example.com",
+            null,
+            "Second",
+            "Booking",
+            "Second message");
+
+        first.TicketNumber.ShouldNotBe(second.TicketNumber);
+    }
+}

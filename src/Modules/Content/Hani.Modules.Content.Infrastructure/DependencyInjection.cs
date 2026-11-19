@@ -35,13 +35,31 @@ public static class DependencyInjection
         if (string.Equals(mode, "Http", StringComparison.OrdinalIgnoreCase))
         {
             services.AddScoped<ICustomerSupportService, CustomerSupportService>();
+        services.AddScoped<IInboundSupportEmailService, InboundSupportEmailService>();
         services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
+        if (configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
+        {
+            services.AddSingleton<ISupportAttachmentScanner, ClamAvSupportAttachmentScanner>();
+        }
+        else
+        {
+            services.AddSingleton<ISupportAttachmentScanner, NullSupportAttachmentScanner>();
+        }
         services.AddScoped<INotificationSender, HttpNotificationSender>();
         }
         else
         {
             services.AddScoped<ICustomerSupportService, CustomerSupportService>();
+        services.AddScoped<IInboundSupportEmailService, InboundSupportEmailService>();
         services.AddSingleton<ISupportAttachmentStorage, LocalSupportAttachmentStorage>();
+        if (configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
+        {
+            services.AddSingleton<ISupportAttachmentScanner, ClamAvSupportAttachmentScanner>();
+        }
+        else
+        {
+            services.AddSingleton<ISupportAttachmentScanner, NullSupportAttachmentScanner>();
+        }
         services.AddScoped<INotificationSender, LoggingNotificationSender>();
         }
 

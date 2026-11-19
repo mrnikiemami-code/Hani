@@ -1437,7 +1437,13 @@
     "attachments": "پیوست‌ها",
     "attachmentHint": "JPEG، PNG، WebP، PDF یا TXT تا ۱۰ مگابایت.",
     "attachmentTooLarge": "حجم هر پیوست حداکثر ۱۰ مگابایت است.",
-    "attachmentError": "آپلود پیوست انجام نشد."
+    "attachmentError": "آپلود پیوست انجام نشد.",
+    "customerLastRead": "آخرین مشاهده مشتری",
+    "notReadYet": "هنوز باز نشده",
+    "quickReply": "پاسخ آماده",
+    "quickReplyChecking": "از صبر شما ممنونیم. در حال بررسی هستیم و به‌زودی اطلاع می‌دهیم.",
+    "quickReplyMoreInfo": "برای ادامه به اطلاعات بیشتری نیاز داریم. لطفاً جزئیات درخواستی را ارسال کنید.",
+    "quickReplyResolved": "درخواست شما حل شد. از تماس با پشتیبانی هانی سپاسگزاریم."
   },
   "adminNotifications": {
     "title": "اعلان‌ها",
@@ -1826,6 +1832,8 @@
     "attachments": "پیوست‌ها",
     "attachmentHint": "JPEG، PNG، WebP، PDF یا TXT تا ۱۰ مگابایت.",
     "attachmentTooLarge": "حجم هر پیوست حداکثر ۱۰ مگابایت است.",
-    "attachmentError": "آپلود پیوست انجام نشد."
+    "attachmentError": "آپلود پیوست انجام نشد.",
+    "supportLastRead": "آخرین مشاهده پشتیبانی",
+    "notReadYet": "هنوز باز نشده"
   }
 }

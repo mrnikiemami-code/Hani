@@ -1437,7 +1437,13 @@
     "attachments": "Attachments",
     "attachmentHint": "JPEG, PNG, WebP, PDF, or TXT up to 10 MB.",
     "attachmentTooLarge": "Each attachment must be at most 10 MB.",
-    "attachmentError": "The attachment could not be uploaded."
+    "attachmentError": "The attachment could not be uploaded.",
+    "customerLastRead": "Customer last read",
+    "notReadYet": "Not opened yet",
+    "quickReply": "Quick reply template",
+    "quickReplyChecking": "Thank you. We are checking this now and will update you shortly.",
+    "quickReplyMoreInfo": "We need a little more information to continue. Please reply with the requested details.",
+    "quickReplyResolved": "Your request has been resolved. Thank you for contacting Hani support."
   },
   "adminNotifications": {
     "title": "Notifications",
@@ -1826,6 +1832,8 @@
     "attachments": "Attachments",
     "attachmentHint": "JPEG, PNG, WebP, PDF, or TXT up to 10 MB.",
     "attachmentTooLarge": "Each attachment must be at most 10 MB.",
-    "attachmentError": "The attachment could not be uploaded."
+    "attachmentError": "The attachment could not be uploaded.",
+    "supportLastRead": "Support last read",
+    "notReadYet": "Not opened yet"
   }
 }

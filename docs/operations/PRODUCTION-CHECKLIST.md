@@ -63,3 +63,12 @@ single-node defaults (`ProductionConfigurationGuard`).
   database stores only metadata.
 - Do not expose the attachment root through `wwwroot`, a static file server, or
   a public CDN. Downloads are authenticated API streams only.
+
+## Support attachment scanning
+
+- `Support:Attachments:ClamAvEnabled` must be true in Production.
+- `Support:Attachments:ClamAvHost` and `ClamAvPort` must point at a reachable
+  ClamAV service.
+- If inbound email is enabled, `Support:InboundEmail:Secret` must be a unique
+  production secret; the provider must sign
+  `timestamp + "." + rawBody` with HMAC-SHA256.

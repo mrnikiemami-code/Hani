@@ -130,6 +130,25 @@ public static class ProductionConfigurationGuard
             errors.Add("Storage:RootPath is required in Production.");
         }
 
+        if (!configuration.GetValue<bool>("Support:Attachments:ClamAvEnabled"))
+        {
+            errors.Add("Support:Attachments:ClamAvEnabled must be true in Production.");
+        }
+
+        if (string.IsNullOrWhiteSpace(configuration["Support:Attachments:RootPath"]))
+        {
+            errors.Add("Support:Attachments:RootPath is required in Production.");
+        }
+
+        if (configuration.GetValue<bool>("Support:InboundEmail:Enabled"))
+        {
+            var inboundSecret = configuration["Support:InboundEmail:Secret"] ?? string.Empty;
+            if (inboundSecret.Length < 24 || LooksLikeDevelopmentSecret(inboundSecret))
+            {
+                errors.Add("Support:InboundEmail:Secret must be a unique production secret.");
+            }
+        }
+
         if (errors.Count > 0)
         {
             throw new InvalidOperationException(

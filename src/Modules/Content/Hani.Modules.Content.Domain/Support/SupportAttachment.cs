@@ -2,6 +2,14 @@ using Hani.BuildingBlocks.Domain;
 
 namespace Hani.Modules.Content.Domain.Support;
 
+/// <summary>Security scan state for a support attachment.</summary>
+public enum SupportAttachmentScanState
+{
+    Unscanned = 0,
+    Clean = 1,
+    Infected = 2
+}
+
 /// <summary>
 /// Private attachment uploaded for a support ticket. Attachments are linked to
 /// a message after the message is created and are never public URLs.
@@ -57,6 +65,16 @@ public sealed class SupportAttachment : Entity<Guid>
     /// <summary>Upload time.</summary>
     public DateTimeOffset CreatedAt { get; private set; }
 
+    /// <summary>Antivirus scan state.</summary>
+    public SupportAttachmentScanState ScanState { get; private set; } =
+        SupportAttachmentScanState.Unscanned;
+
+    /// <summary>Last scan time, when a scanner was available.</summary>
+    public DateTimeOffset? ScannedAt { get; private set; }
+
+    /// <summary>Private storage key for the generated image thumbnail.</summary>
+    public string? ThumbnailStorageKey { get; private set; }
+
     /// <summary>Creates a pending attachment.</summary>
     public static SupportAttachment Create(
         IIdGenerator ids,
@@ -97,6 +115,31 @@ public sealed class SupportAttachment : Entity<Guid>
             storageKey.Trim(),
             uploadedBy,
             now ?? DateTimeOffset.UtcNow);
+    }
+
+    /// <summary>Records a clean antivirus result.</summary>
+    public void MarkScanClean(DateTimeOffset? now = null)
+    {
+        ScanState = SupportAttachmentScanState.Clean;
+        ScannedAt = now ?? DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Records an infected antivirus result.</summary>
+    public void MarkScanInfected(DateTimeOffset? now = null)
+    {
+        ScanState = SupportAttachmentScanState.Infected;
+        ScannedAt = now ?? DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Stores the generated thumbnail key.</summary>
+    public void SetThumbnail(string storageKey)
+    {
+        if (string.IsNullOrWhiteSpace(storageKey))
+        {
+            throw new ArgumentException("A thumbnail storage key is required.", nameof(storageKey));
+        }
+
+        ThumbnailStorageKey = storageKey.Trim();
     }
 
     /// <summary>Links the pending attachment to a created message once.</summary>

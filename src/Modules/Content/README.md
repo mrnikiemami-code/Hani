@@ -168,3 +168,18 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 - Outbox payloads for support notifications include a `deepLink` to the
   customer or admin ticket route.
 - Migration: `AddSupportAttachmentsAndReadState`.
+
+## Support security and inbound email (2026-11-19)
+
+- Uploads are scanned through the `ISupportAttachmentScanner` port. When
+  `Support:Attachments:ClamAvEnabled=true`, a ClamAV INSTREAM adapter rejects
+  infected files before metadata is persisted. Production startup requires the
+  scanner to be enabled.
+- Image attachments receive a private 320px WebP thumbnail; thumbnails are
+  downloaded through authenticated endpoints and are never public URLs.
+- Upload endpoints are limited to 10 files per minute per user/IP.
+- `POST /internal/v1/support/inbound-email` accepts an HMAC-signed provider
+  payload. A subject containing `SUP-XXXXXXXX` appends to that ticket; otherwise
+  a new `Email` category ticket is created.
+- Support ticket numbers now use the random suffix of the UUID to avoid
+  rapid-creation collisions.

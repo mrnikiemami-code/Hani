@@ -92,6 +92,17 @@ paths:
       responses:
         '200': { description: Private file stream }
         '404': { description: Attachment not found or not visible to the customer }
+  /support/attachments/{id}/thumbnail:
+    get:
+      tags: [Marketplace.Support]
+      summary: Download the private WebP thumbnail for an owned image attachment
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: WebP thumbnail }
+        '404': { description: Thumbnail not available or not visible }
   /support/disputes:
     get:
       tags: [Marketplace.Support]

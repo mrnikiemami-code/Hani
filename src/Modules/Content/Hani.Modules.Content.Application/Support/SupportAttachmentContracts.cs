@@ -8,6 +8,7 @@ public sealed record SupportAttachmentDto(
     string FileName,
     string ContentType,
     long SizeBytes,
+    bool HasThumbnail,
     DateTimeOffset CreatedAt);
 
 /// <summary>Private attachment stream returned by a download handler.</summary>
@@ -30,4 +31,19 @@ public interface ISupportAttachmentStorage
 
     /// <summary>Deletes a stored file.</summary>
     Task DeleteAsync(string key, CancellationToken cancellationToken);
+}
+
+/// <summary>Antivirus scan outcome for a support attachment.</summary>
+public sealed record SupportAttachmentScanResult(
+    bool ScannerAvailable,
+    bool IsClean,
+    string? ThreatName);
+
+/// <summary>Antivirus scanner used before a support attachment is linked.</summary>
+public interface ISupportAttachmentScanner
+{
+    /// <summary>Scans a file stream and returns the antivirus outcome.</summary>
+    Task<SupportAttachmentScanResult> ScanAsync(
+        Stream content,
+        CancellationToken cancellationToken);
 }

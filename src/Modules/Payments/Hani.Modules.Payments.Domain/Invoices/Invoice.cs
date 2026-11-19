@@ -113,7 +113,7 @@ public sealed class Invoice : AggregateRoot<Guid>
         var id = ids.NewId();
         return new Invoice(
             id,
-            $"INV-{id.ToString("N")[..12].ToUpperInvariant()}",
+            $"INV-{id.ToString("N")[^12..].ToUpperInvariant()}",
             orderId,
             issuer,
             sellerOfRecord,

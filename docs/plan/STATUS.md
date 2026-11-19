@@ -636,3 +636,6 @@
 - Batch 7 support notifications: admin replies and dispute status changes notify the customer; customer replies and disputes notify the assigned admin. Responsive FA/EN/AR portal verified on desktop, tablet, and mobile.
 - Batch 8 support attachments: private attachment storage with 10 MB and type limits, pending-to-message linking, customer/admin upload and authenticated download, and internal-note attachment isolation.
 - Batch 8 messaging parity: customer and admin unread counters driven by read timestamps, unread badges in both ticket lists, attachment links in threads, and deepLink fields in support notification payloads. Responsive FA/EN/AR UI verified.
+- Batch 9 attachment security: ClamAV INSTREAM scanner port, infected-upload rejection, production scan requirement, 10/minute upload rate limiting, and private 320px WebP thumbnails.
+- Batch 9 support latency/UX: customer and support last-read receipts, 20-second visible-tab thread refresh, and admin quick-reply templates.
+- Batch 9 inbound email: HMAC-signed email webhook appends to a ticket referenced by `SUP-` number or creates a new Email-category ticket; ticket numbers now use UUID random suffixes to prevent rapid-creation collisions.

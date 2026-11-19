@@ -169,7 +169,7 @@ public sealed class HotelInquiry : AggregateRoot<Guid>
         var id = ids.NewId();
         return new HotelInquiry(
             id,
-            $"HTL-{id.ToString("N")[..12].ToUpperInvariant()}",
+            $"HTL-{id.ToString("N")[^12..].ToUpperInvariant()}",
             hotelId,
             checkIn,
             checkOut,

@@ -32,6 +32,7 @@ export type SupportAttachment = {
   fileName: string;
   contentType: string;
   sizeBytes: number;
+  hasThumbnail: boolean;
   createdAt: string;
 };
 
@@ -61,6 +62,7 @@ export type SupportTicketDetail = {
   updatedAt: string;
   lastMessageAt: string;
   unreadCount: number;
+  customerLastReadAt: string | null;
   messages: SupportMessage[];
   slaDueAt: string;
   firstResponseAt: string | null;

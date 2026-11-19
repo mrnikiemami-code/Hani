@@ -27,6 +27,7 @@ export type CustomerSupportAttachment = {
   fileName: string;
   contentType: string;
   sizeBytes: number;
+  hasThumbnail: boolean;
   createdAt: string;
 };
 
@@ -65,6 +66,7 @@ export type CustomerSupportTicketDetail = {
   updatedAt: string;
   lastMessageAt: string;
   unreadCount: number;
+  supportLastReadAt: string | null;
   messages: CustomerSupportMessage[];
   disputes: CustomerSupportDispute[];
 };

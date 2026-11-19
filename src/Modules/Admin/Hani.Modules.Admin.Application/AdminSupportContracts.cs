@@ -55,6 +55,7 @@ public sealed record AdminSupportTicketDetailDto(
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
     DateTimeOffset LastMessageAt,
+    DateTimeOffset? CustomerLastReadAt,
     IReadOnlyList<AdminSupportMessageDto> Messages,
     int UnreadCount,
     string? AssignedToName,
@@ -225,6 +226,11 @@ public interface IAdminSupportService
 
     /// <summary>Downloads any support attachment for an administrator.</summary>
     Task<SupportAttachmentDownloadDto?> DownloadAttachmentAsync(
+        Guid attachmentId,
+        CancellationToken cancellationToken);
+
+    /// <summary>Downloads the generated thumbnail for any attachment.</summary>
+    Task<SupportAttachmentDownloadDto?> DownloadThumbnailAsync(
         Guid attachmentId,
         CancellationToken cancellationToken);
 }

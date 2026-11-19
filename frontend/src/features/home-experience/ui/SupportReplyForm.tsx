@@ -73,6 +73,21 @@ export function SupportReplyForm({ id }: { id: string }) {
         <h2 className="h5 mb-0">{t("replyTitle")}</h2>
       </div>
       <div className="card-body">
+        <select
+          className="form-select mb-3"
+          value=""
+          onChange={(event) => {
+            if (event.target.value) {
+              setBody(t(event.target.value));
+            }
+          }}
+          aria-label={t("quickReply")}
+        >
+          <option value="">{t("quickReply")}</option>
+          <option value="quickReplyChecking">{t("quickReplyChecking")}</option>
+          <option value="quickReplyMoreInfo">{t("quickReplyMoreInfo")}</option>
+          <option value="quickReplyResolved">{t("quickReplyResolved")}</option>
+        </select>
         <textarea
           className="form-control mb-3"
           rows={4}

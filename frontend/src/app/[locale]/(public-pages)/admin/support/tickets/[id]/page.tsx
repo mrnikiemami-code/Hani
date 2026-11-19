@@ -12,6 +12,7 @@ import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 import { SupportReplyForm } from "@/features/home-experience/ui/SupportReplyForm";
 import { SupportTicketControls } from "@/features/home-experience/ui/SupportTicketControls";
 import { SupportDisputePanel } from "@/features/home-experience/ui/SupportDisputePanel";
+import { SupportAutoRefresh } from "@/components/hani/SupportAutoRefresh";
 
 export async function generateMetadata({
   params
@@ -93,6 +94,7 @@ export default async function AdminSupportTicketPage({
       activeSection="support"
       activeChild="tickets"
     >
+      <SupportAutoRefresh />
       <div className="card border-0 shadow-sm mb-4">
         <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
           <div>
@@ -141,6 +143,15 @@ export default async function AdminSupportTicketPage({
                   : t("notResponded")
               ],
               [
+                t("customerLastRead"),
+                ticket.customerLastReadAt
+                  ? formatIsoInstant(ticket.customerLastReadAt, locale, {
+                      dateStyle: "medium",
+                      timeStyle: "short"
+                    })
+                  : t("notReadYet")
+              ],
+              [
                 t("createdAt"),
                 formatIsoInstant(ticket.createdAt, locale, {
                   dateStyle: "medium",
@@ -187,15 +198,26 @@ export default async function AdminSupportTicketPage({
               {message.attachments.length > 0 && (
                 <div className="d-flex flex-wrap gap-2 mt-2">
                   {message.attachments.map((attachment) => (
-                    <a
-                      key={attachment.id}
-                      href={`/api/admin/support/attachments/${attachment.id}`}
-                      className="btn btn-sm btn-light"
-                      download
-                    >
-                      <i className="isax isax-document-download me-1" />
-                      {attachment.fileName}
-                    </a>
+                    <div key={attachment.id} className="d-flex align-items-center gap-2">
+                      {attachment.hasThumbnail &&
+                        attachment.contentType.startsWith("image/") && (
+                          <img
+                            src={`/api/admin/support/attachments/${attachment.id}/thumbnail`}
+                            alt={attachment.fileName}
+                            width={56}
+                            height={56}
+                            className="rounded object-fit-cover"
+                          />
+                        )}
+                      <a
+                        href={`/api/admin/support/attachments/${attachment.id}`}
+                        className="btn btn-sm btn-light"
+                        download
+                      >
+                        <i className="isax isax-document-download me-1" />
+                        {attachment.fileName}
+                      </a>
+                    </div>
                   ))}
                 </div>
               )}

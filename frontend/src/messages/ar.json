@@ -1437,7 +1437,13 @@
     "attachments": "المرفقات",
     "attachmentHint": "JPEG أو PNG أو WebP أو PDF أو TXT حتى 10 ميغابايت.",
     "attachmentTooLarge": "يجب ألا يتجاوز حجم كل مرفق 10 ميغابايت.",
-    "attachmentError": "تعذر رفع المرفق."
+    "attachmentError": "تعذر رفع المرفق.",
+    "customerLastRead": "آخر مشاهدة العميل",
+    "notReadYet": "لم تُفتح بعد",
+    "quickReply": "قالب رد سريع",
+    "quickReplyChecking": "شكراً لك. نحن نتحقق من ذلك الآن وسنحدّثك قريباً.",
+    "quickReplyMoreInfo": "نحتاج إلى مزيد من المعلومات للمتابعة. يرجى إرسال التفاصيل المطلوبة.",
+    "quickReplyResolved": "تم حل طلبك. شكراً لتواصلك مع دعم هاني."
   },
   "adminNotifications": {
     "title": "الإشعارات",
@@ -1826,6 +1832,8 @@
     "attachments": "المرفقات",
     "attachmentHint": "JPEG أو PNG أو WebP أو PDF أو TXT حتى 10 ميغابايت.",
     "attachmentTooLarge": "يجب ألا يتجاوز حجم كل مرفق 10 ميغابايت.",
-    "attachmentError": "تعذر رفع المرفق."
+    "attachmentError": "تعذر رفع المرفق.",
+    "supportLastRead": "آخر مشاهدة الدعم",
+    "notReadYet": "لم تُفتح بعد"
   }
 }

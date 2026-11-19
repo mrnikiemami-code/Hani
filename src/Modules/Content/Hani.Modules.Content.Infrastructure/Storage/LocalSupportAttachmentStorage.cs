@@ -8,6 +8,18 @@ public sealed class SupportAttachmentOptions
 {
     /// <summary>Private root directory. It must not be served publicly.</summary>
     public string RootPath { get; set; } = "support-attachments";
+
+    /// <summary>Enables ClamAV scanning before an attachment is linked.</summary>
+    public bool ClamAvEnabled { get; set; }
+
+    /// <summary>ClamAV host.</summary>
+    public string ClamAvHost { get; set; } = "localhost";
+
+    /// <summary>ClamAV INSTREAM port.</summary>
+    public int ClamAvPort { get; set; } = 3310;
+
+    /// <summary>ClamAV scan timeout in seconds.</summary>
+    public int ClamAvTimeoutSeconds { get; set; } = 15;
 }
 
 internal sealed class LocalSupportAttachmentStorage(

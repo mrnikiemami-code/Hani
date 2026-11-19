@@ -4,7 +4,9 @@ using Hani.Modules.Admin.Application;
 using Hani.Modules.Content.Application.Support;
 using Hani.Modules.Content.Domain.Growth;
 using Hani.Modules.Content.Domain.Support;
+using Hani.Modules.Content.Infrastructure.Storage;
 using Hani.Modules.Content.Infrastructure.Support;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hani.Modules.Admin.Infrastructure;
@@ -483,6 +485,21 @@ internal sealed partial class AdminService : IAdminSupportService
                 storageKey,
                 stream,
                 cancellationToken);
+            await using var scanStream = await supportAttachments.OpenReadAsync(
+                storageKey,
+                cancellationToken);
+            var scan = await supportAttachmentScanner.ScanAsync(
+                scanStream,
+                cancellationToken);
+            if (scan.ScannerAvailable && !scan.IsClean)
+            {
+                await supportAttachments.DeleteAsync(storageKey, cancellationToken);
+                return Result<SupportAttachmentDto>.Failure(
+                    Error.Validation(
+                        "HANI-SUPPORT-4312",
+                        "Attachment was rejected by the security scanner."));
+            }
+
             var attachment = SupportAttachment.Create(
                 ids,
                 ticketId,
@@ -491,6 +508,39 @@ internal sealed partial class AdminService : IAdminSupportService
                 sizeBytes,
                 storageKey,
                 actorUserId);
+            if (scan.ScannerAvailable)
+            {
+                attachment.MarkScanClean();
+            }
+
+            if (normalizedType.StartsWith("image/", StringComparison.Ordinal))
+            {
+                try
+                {
+                    await using var imageStream = await supportAttachments.OpenReadAsync(
+                        storageKey,
+                        cancellationToken);
+                    var thumbnail = await SupportAttachmentThumbnails.CreateAsync(
+                        imageStream,
+                        cancellationToken);
+                    if (thumbnail is not null)
+                    {
+                        var thumbnailKey = $"{storageKey}.thumb.webp";
+                        await supportAttachments.SaveAsync(
+                            thumbnailKey,
+                            new MemoryStream(thumbnail),
+                            cancellationToken);
+                        attachment.SetThumbnail(thumbnailKey);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    logger.LogWarning(
+                        exception,
+                        "Support attachment thumbnail generation failed.");
+                }
+            }
+
             content.SupportAttachments.Add(attachment);
             await content.SaveChangesAsync(cancellationToken);
             return Result<SupportAttachmentDto>.Success(ToAttachmentDto(attachment));
@@ -506,6 +556,27 @@ internal sealed partial class AdminService : IAdminSupportService
             await supportAttachments.DeleteAsync(storageKey, cancellationToken);
             throw;
         }
+    }
+
+    public async Task<SupportAttachmentDownloadDto?> DownloadThumbnailAsync(
+        Guid attachmentId,
+        CancellationToken cancellationToken)
+    {
+        var attachment = await content.SupportAttachments
+            .AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == attachmentId, cancellationToken);
+        if (attachment?.ThumbnailStorageKey is null)
+        {
+            return null;
+        }
+
+        var stream = await supportAttachments.OpenReadAsync(
+            attachment.ThumbnailStorageKey,
+            cancellationToken);
+        return new SupportAttachmentDownloadDto(
+            $"{Path.GetFileNameWithoutExtension(attachment.FileName)}-thumb.webp",
+            "image/webp",
+            stream);
     }
 
     public async Task<SupportAttachmentDownloadDto?> DownloadAttachmentAsync(
@@ -668,6 +739,7 @@ internal sealed partial class AdminService : IAdminSupportService
                 item.FileName,
                 item.ContentType,
                 item.SizeBytes,
+                item.ThumbnailStorageKey != null,
                 item.CreatedAt))
             .ToArrayAsync(cancellationToken);
 
@@ -680,6 +752,7 @@ internal sealed partial class AdminService : IAdminSupportService
             attachment.FileName,
             attachment.ContentType,
             attachment.SizeBytes,
+            attachment.ThumbnailStorageKey is not null,
             attachment.CreatedAt);
 
     private static AdminSupportTicketDetailDto ToSupportDetail(
@@ -705,6 +778,7 @@ internal sealed partial class AdminService : IAdminSupportService
             ticket.CreatedAt,
             ticket.UpdatedAt,
             ticket.LastMessageAt,
+            ticket.CustomerLastReadAt,
             ticket.Messages
                 .OrderBy(message => message.CreatedAt)
                 .Select(message => new AdminSupportMessageDto(

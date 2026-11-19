@@ -5,14 +5,18 @@ using Hani.Modules.Content.Application.Support;
 using Hani.Modules.Content.Domain.Growth;
 using Hani.Modules.Content.Domain.Support;
 using Hani.Modules.Content.Infrastructure.Persistence;
+using Hani.Modules.Content.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Hani.Modules.Content.Infrastructure.Support;
 
 internal sealed class CustomerSupportService(
     ContentDbContext dbContext,
     IIdGenerator ids,
-    ISupportAttachmentStorage attachmentStorage) : ICustomerSupportService
+    ISupportAttachmentStorage attachmentStorage,
+    ISupportAttachmentScanner attachmentScanner,
+    ILogger<CustomerSupportService> logger) : ICustomerSupportService
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
@@ -323,6 +327,21 @@ internal sealed class CustomerSupportService(
                 storageKey,
                 content,
                 cancellationToken);
+            await using var scanStream = await attachmentStorage.OpenReadAsync(
+                storageKey,
+                cancellationToken);
+            var scan = await attachmentScanner.ScanAsync(
+                scanStream,
+                cancellationToken);
+            if (scan.ScannerAvailable && !scan.IsClean)
+            {
+                await attachmentStorage.DeleteAsync(storageKey, cancellationToken);
+                return Result<SupportAttachmentDto>.Failure(
+                    Error.Validation(
+                        "HANI-SUPPORT-4312",
+                        "Attachment was rejected by the security scanner."));
+            }
+
             var attachment = SupportAttachment.Create(
                 ids,
                 ticketId,
@@ -331,6 +350,39 @@ internal sealed class CustomerSupportService(
                 sizeBytes,
                 storageKey,
                 userId);
+            if (scan.ScannerAvailable)
+            {
+                attachment.MarkScanClean();
+            }
+
+            if (normalizedType.StartsWith("image/", StringComparison.Ordinal))
+            {
+                try
+                {
+                    await using var imageStream = await attachmentStorage.OpenReadAsync(
+                        storageKey,
+                        cancellationToken);
+                    var thumbnail = await SupportAttachmentThumbnails.CreateAsync(
+                        imageStream,
+                        cancellationToken);
+                    if (thumbnail is not null)
+                    {
+                        var thumbnailKey = $"{storageKey}.thumb.webp";
+                        await attachmentStorage.SaveAsync(
+                            thumbnailKey,
+                            new MemoryStream(thumbnail),
+                            cancellationToken);
+                        attachment.SetThumbnail(thumbnailKey);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    logger.LogWarning(
+                        exception,
+                        "Support attachment thumbnail generation failed.");
+                }
+            }
+
             dbContext.SupportAttachments.Add(attachment);
             await dbContext.SaveChangesAsync(cancellationToken);
             return Result<SupportAttachmentDto>.Success(ToAttachmentDto(attachment));
@@ -348,6 +400,35 @@ internal sealed class CustomerSupportService(
         }
     }
 
+    public async Task<SupportAttachmentDownloadDto?> DownloadThumbnailAsync(
+        Guid userId,
+        Guid attachmentId,
+        CancellationToken cancellationToken)
+    {
+        var attachment = await dbContext.SupportAttachments
+            .AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == attachmentId, cancellationToken);
+        if (attachment is null ||
+            attachment.ThumbnailStorageKey is null ||
+            attachment.MessageId is not { } messageId)
+        {
+            return null;
+        }
+
+        if (!await CanDownloadAsync(userId, attachment, messageId, cancellationToken))
+        {
+            return null;
+        }
+
+        var stream = await attachmentStorage.OpenReadAsync(
+            attachment.ThumbnailStorageKey,
+            cancellationToken);
+        return new SupportAttachmentDownloadDto(
+            $"{Path.GetFileNameWithoutExtension(attachment.FileName)}-thumb.webp",
+            "image/webp",
+            stream);
+    }
+
     public async Task<SupportAttachmentDownloadDto?> DownloadAttachmentAsync(
         Guid userId,
         Guid attachmentId,
@@ -361,22 +442,7 @@ internal sealed class CustomerSupportService(
             return null;
         }
 
-        var ownsTicket = await dbContext.SupportTickets
-            .AsNoTracking()
-            .AnyAsync(
-                item => item.Id == attachment.TicketId && item.UserId == userId,
-                cancellationToken);
-        if (!ownsTicket)
-        {
-            return null;
-        }
-
-        var message = await dbContext.SupportTickets
-            .AsNoTracking()
-            .Where(item => item.Id == attachment.TicketId)
-            .SelectMany(item => item.Messages)
-            .FirstOrDefaultAsync(item => item.Id == messageId, cancellationToken);
-        if (message is null || message.IsInternal)
+        if (!await CanDownloadAsync(userId, attachment, messageId, cancellationToken))
         {
             return null;
         }
@@ -426,6 +492,30 @@ internal sealed class CustomerSupportService(
             .ToArray();
     }
 
+    private async Task<bool> CanDownloadAsync(
+        Guid userId,
+        SupportAttachment attachment,
+        Guid messageId,
+        CancellationToken cancellationToken)
+    {
+        var ownsTicket = await dbContext.SupportTickets
+            .AsNoTracking()
+            .AnyAsync(
+                item => item.Id == attachment.TicketId && item.UserId == userId,
+                cancellationToken);
+        if (!ownsTicket)
+        {
+            return false;
+        }
+
+        var message = await dbContext.SupportTickets
+            .AsNoTracking()
+            .Where(item => item.Id == attachment.TicketId)
+            .SelectMany(item => item.Messages)
+            .FirstOrDefaultAsync(item => item.Id == messageId, cancellationToken);
+        return message is { IsInternal: false };
+    }
+
     private async Task<IReadOnlyList<SupportAttachmentDto>> LoadAttachmentsAsync(
         Guid ticketId,
         CancellationToken cancellationToken)
@@ -440,6 +530,7 @@ internal sealed class CustomerSupportService(
                 item.FileName,
                 item.ContentType,
                 item.SizeBytes,
+                item.ThumbnailStorageKey != null,
                 item.CreatedAt))
             .ToArrayAsync(cancellationToken);
 
@@ -452,6 +543,7 @@ internal sealed class CustomerSupportService(
             attachment.FileName,
             attachment.ContentType,
             attachment.SizeBytes,
+            attachment.ThumbnailStorageKey is not null,
             attachment.CreatedAt);
 
     private void AddNotification(Guid? userId, string templateKey, object payload)
@@ -484,6 +576,7 @@ internal sealed class CustomerSupportService(
             ticket.UpdatedAt,
             ticket.LastMessageAt,
             0,
+            ticket.AdminLastReadAt,
             ticket.Messages
                 .Where(message => !message.IsInternal)
                 .OrderBy(message => message.CreatedAt)

@@ -43,6 +43,20 @@ public static class HealthRateLimitingRegistration
                         AutoReplenishment = true
                     });
             });
+            options.AddPolicy("support-attachments", context =>
+            {
+                var key = context.User.FindFirst("user_id")?.Value
+                    ?? context.Connection.RemoteIpAddress?.ToString()
+                    ?? "unknown";
+                return RateLimitPartition.GetFixedWindowLimiter(key, _ =>
+                    new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 10,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    });
+            });
         });
 
         return services;

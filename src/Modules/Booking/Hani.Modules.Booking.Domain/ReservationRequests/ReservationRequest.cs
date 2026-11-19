@@ -218,7 +218,7 @@ public sealed class ReservationRequest : AggregateRoot<Guid>
 
         return new ReservationRequest(
             id,
-            $"RSV-{id.ToString("N")[..12].ToUpperInvariant()}",
+            $"RSV-{id.ToString("N")[^12..].ToUpperInvariant()}",
             quoteId,
             agencyOfferId,
             agencyId,

@@ -78,6 +78,11 @@ internal sealed class SupportAttachmentConfiguration : IEntityTypeConfiguration<
             .HasMaxLength(500).IsRequired();
         builder.Property(item => item.UploadedBy).HasColumnName("uploaded_by").IsRequired();
         builder.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
+        builder.Property(item => item.ScanState).HasColumnName("scan_state")
+            .HasConversion<string>().HasMaxLength(20).IsRequired();
+        builder.Property(item => item.ScannedAt).HasColumnName("scanned_at");
+        builder.Property(item => item.ThumbnailStorageKey).HasColumnName("thumbnail_storage_key")
+            .HasMaxLength(500);
         builder.HasIndex(item => item.TicketId)
             .HasDatabaseName("ix_support_attachments_ticket");
         builder.HasIndex(item => item.MessageId)

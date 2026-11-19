@@ -10,6 +10,7 @@ using Hani.Modules.Payments.Infrastructure.Persistence;
 using Hani.Modules.Settlement.Infrastructure.Persistence;
 using Hani.Modules.Supply.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Hani.Modules.Admin.Infrastructure;
 
@@ -27,6 +28,8 @@ internal sealed partial class AdminService(
     IdentityDbContext identity,
     ContentDbContext content,
     ISupportAttachmentStorage supportAttachments,
+    ISupportAttachmentScanner supportAttachmentScanner,
+    ILogger<AdminService> logger,
     IIdGenerator ids,
     ILanguageCatalog languages,
     ISender sender) : IAdminReportService, IAdminUserService, IHotelFacetService, IAdminMarketingService, IAdminNotificationService, IAdminFinanceService, IAdminFinanceSettingsService, IAdminBookingService, IAdminHomeSettingsService, IAdminSupportService, IContentEntryService, IAdminCatalogService, IAdminGovernanceService, IAdminChannelService, IAdminSupplierService, IAdminRoleService, IAdminPlatformSettingsService, IAdminTourService, IAdminFlightService, IAdminVisaService;

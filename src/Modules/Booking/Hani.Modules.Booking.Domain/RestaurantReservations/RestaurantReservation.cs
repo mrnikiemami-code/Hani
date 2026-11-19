@@ -153,7 +153,7 @@ public sealed class RestaurantReservation : AggregateRoot<Guid>
         var id = ids.NewId();
         return new RestaurantReservation(
             id,
-            $"RST-{id.ToString("N")[..12].ToUpperInvariant()}",
+            $"RST-{id.ToString("N")[^12..].ToUpperInvariant()}",
             placeId,
             reservationDate,
             reservationTime,

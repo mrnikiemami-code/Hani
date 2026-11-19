@@ -142,7 +142,7 @@ public sealed class SupportTicket : AggregateRoot<Guid>
         var createdAt = now ?? DateTimeOffset.UtcNow;
         var ticket = new SupportTicket(
             id,
-            $"SUP-{id:N}"[..12].ToUpperInvariant(),
+            $"SUP-{id.ToString("N")[^12..].ToUpperInvariant()}",
             userId,
             contactName.Trim(),
             contactEmail.Trim().ToLowerInvariant(),

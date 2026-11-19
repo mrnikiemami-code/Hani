@@ -31,11 +31,15 @@ public static class CustomerSupportEndpoints
 
         group.MapPost("/tickets/{id:guid}/attachments", UploadAttachmentAsync)
             .WithName("Marketplace.UploadMySupportAttachment")
+            .RequireRateLimiting("support-attachments")
             .DisableAntiforgery()
             .Produces<SupportAttachmentDto>(StatusCodes.Status201Created);
 
         group.MapGet("/attachments/{id:guid}", DownloadAttachmentAsync)
             .WithName("Marketplace.DownloadMySupportAttachment");
+
+        group.MapGet("/attachments/{id:guid}/thumbnail", DownloadThumbnailAsync)
+            .WithName("Marketplace.DownloadMySupportThumbnail");
 
         group.MapGet("/disputes", ListDisputesAsync)
             .WithName("Marketplace.ListMySupportDisputes")
@@ -168,6 +172,32 @@ public static class CustomerSupportEndpoints
                 attachment.ContentType,
                 attachment.FileName,
                 enableRangeProcessing: true);
+    }
+
+    private static async Task<IResult> DownloadThumbnailAsync(
+        Guid id,
+        HttpContext context,
+        ICustomerSupportService support,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(context, out var userId))
+        {
+            return Unauthorized(context);
+        }
+
+        var attachment = await support.DownloadThumbnailAsync(
+            userId,
+            id,
+            cancellationToken);
+        return attachment is null
+            ? context.ToProblem(Error.NotFound(
+                "HANI-SUPPORT-4313",
+                "Support attachment thumbnail was not found."))
+            : Results.File(
+                attachment.Content,
+                attachment.ContentType,
+                attachment.FileName,
+                enableRangeProcessing: false);
     }
 
     private static async Task<IResult> ListDisputesAsync(
