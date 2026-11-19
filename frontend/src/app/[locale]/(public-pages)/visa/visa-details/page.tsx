@@ -1,8 +1,17 @@
-import { getPageMetadata } from "@/config/metadata";
-import VisaDetailsClient from "./visaDetailsClient";
+import { redirect } from "next/navigation";
 
-export const generateMetadata = () => getPageMetadata("Visa Details");
-
-export default function VisaDetailsPage() {
-  return <VisaDetailsClient />;
+export default async function LegacyVisaDetailsPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ slug?: string }>;
+}) {
+  const { locale } = await params;
+  const { slug } = await searchParams;
+  redirect(
+    slug
+      ? `/${locale}/visa/${encodeURIComponent(slug)}`
+      : `/${locale}/visa`
+  );
 }

@@ -180,6 +180,15 @@ public sealed class HardeningEndpointsTests(PostgresFixture fixture)
         result.Items.Single().ProductId.ShouldBe(productId);
         result.Items.Single().Title.ShouldBe(productTitle);
         result.Items.Single().OfferCount.ShouldBe(1);
+
+        var bySlug = await client.GetAsync(
+            $"/market/v1/products/by-slug/{productSlug}");
+        var bySlugBody = await bySlug.Content.ReadAsStringAsync();
+        bySlug.StatusCode.ShouldBe(HttpStatusCode.OK, bySlugBody);
+        using var bySlugJson = System.Text.Json.JsonDocument.Parse(bySlugBody);
+        bySlugJson.RootElement.GetProperty("slug").GetString().ShouldBe(productSlug);
+        bySlugJson.RootElement.GetProperty("translations")[0]
+            .GetProperty("title").GetString().ShouldBe(productTitle);
     }
 
     private sealed record SearchResponse(

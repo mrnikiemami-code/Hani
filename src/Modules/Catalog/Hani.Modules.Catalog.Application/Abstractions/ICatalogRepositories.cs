@@ -22,6 +22,9 @@ public interface ITourProductRepository
     /// </summary>
     Task<TourProduct?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
+    /// <summary>Returns a product by slug with translations and itinerary, or <c>null</c>.</summary>
+    Task<TourProduct?> GetBySlugAsync(string slug, CancellationToken cancellationToken);
+
     /// <summary>
     /// Persists pending changes.
     /// </summary>

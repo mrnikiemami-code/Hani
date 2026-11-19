@@ -48,7 +48,7 @@ export function HaniScopeTourSection({
             <div className="col-lg-3 col-md-6" key={tour.productId}>
               <div className="recommended-list-item wow fadeInUp">
                 <div className="recommended-img">
-                  <Link href={`/tour/tour-details?slug=${encodeURIComponent(tour.slug)}`}>
+                  <Link href={`/tours/${encodeURIComponent(tour.slug)}`}>
                     <ImageWithBasePath
                       src={
                         tour.coverImageUrl ??
@@ -85,7 +85,7 @@ export function HaniScopeTourSection({
                     </span>
                   </div>
                   <div className="mb-1 home-eight-title text-dark">
-                    <Link href={`/tour/tour-details?slug=${encodeURIComponent(tour.slug)}`}>
+                    <Link href={`/tours/${encodeURIComponent(tour.slug)}`}>
                       {tour.title}
                     </Link>
                   </div>

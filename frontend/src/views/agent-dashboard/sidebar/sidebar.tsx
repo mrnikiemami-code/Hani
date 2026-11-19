@@ -10,6 +10,30 @@ const Sidebar = () => {
     const routes = all_routes
     const location = { pathname: usePathname() ?? "" };
         const [subdroptoggle, setsubdroptoggle] = useState<boolean[]>([false, false]);
+    const [agency, setAgency] = useState<{
+        name: string;
+        managerName: string | null;
+        status: string;
+    } | null>(null);
+
+    useEffect(() => {
+        let active = true;
+        fetch("/api/agency/me", { cache: "no-store" })
+            .then((response) => response.ok ? response.json() : null)
+            .then((data) => {
+                if (active && data) {
+                    setAgency({
+                        name: data.name ?? "",
+                        managerName: data.managerName ?? null,
+                        status: data.status ?? ""
+                    });
+                }
+            })
+            .catch(() => undefined);
+        return () => { active = false; };
+    }, []);
+
+    const displayName = agency?.managerName || agency?.name || "Agent";
 
     const handleToggle = (index: number) => {
         setsubdroptoggle((prev) =>
@@ -45,8 +69,10 @@ const Sidebar = () => {
                             <i className="isax isax-edit-2 fs-14" />
                         </Link>
                     </div>
-                    <h6 className="fs-16">Chris Foxy</h6>
-                    <p className="fs-14 mb-2">Member Since 10 May 2025</p>
+                    <h6 className="fs-16">{displayName}</h6>
+                    <p className="fs-14 mb-2">
+                        {agency?.status ?? ""}
+                    </p>
                     <div className="d-flex align-items-center justify-content-center notify-item">
                         <Link
                             href={routes.agentNotification}

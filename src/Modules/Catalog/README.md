@@ -47,6 +47,7 @@
 | POST | `/internal/v1/products` |
 | POST | `/internal/v1/products/{id}/publish` |
 | GET | `/market/v1/products/{id}` |
+| GET | `/market/v1/products/by-slug/{slug}` |
 | POST | `/internal/v1/hotels` |
 | GET | `/market/v1/hotels` |
 | GET | `/market/v1/hotels/nearby` |

@@ -27,7 +27,7 @@ export function HaniRecommendedVisas() {
             <div className="col-lg-3 col-md-6" key={visa.countryId}>
               <div className="recommended-list-item wow fadeInUp">
                 <div className="recommended-img">
-                  <Link href={`/visa/visa-details?slug=${encodeURIComponent(visa.slug)}`}>
+                  <Link href={`/visa/${encodeURIComponent(visa.slug)}`}>
                     <ImageWithBasePath
                       src={
                         visa.coverImageUrl ??
@@ -50,7 +50,7 @@ export function HaniRecommendedVisas() {
                 </div>
                 <div className="recommended-content">
                   <div className="mb-1 home-eight-title text-dark">
-                    <Link href={`/visa/visa-details?slug=${encodeURIComponent(visa.slug)}`}>
+                    <Link href={`/visa/${encodeURIComponent(visa.slug)}`}>
                       {visa.name}
                     </Link>
                   </div>

@@ -370,3 +370,18 @@
 | H91-OPS-09 | Batch 11: SignalR scale-out | ? Done | Redis backplane, production requirement, two-instance cross-node delivery test |
 | H91-OPS-10 | Batch 11: race-safe provider dedup | ? Done | unique filtered index plus duplicate-key recovery |
 | H91-OPS-11 | Batch 11: provider/scan smoke | ? Done | ClamAV protocol rejection test, HTTP email provider delivery smoke, multi-instance runbook |
+
+## Batch 12 ? Storefront truthfulness + agency identity
+
+| ID | Task | Status | GAP | DoD |
+|---|---|---|---|---|
+| B12-01 | Tour product by slug public read | Done | GAP-01 | endpoint + integration assertion |
+| B12-02 | Real tour detail page | Done | GAP-01 | localized content/itinerary/offers |
+| B12-03 | Real visa detail page | Done | GAP-15/21 | types/prices/documents/steps/FAQ |
+| B12-04 | Real visa application + confirmation | Done | GAP-15/21 | API submit + confirmation by id |
+| B12-05 | Canonical detail links | Done | GAP-01/15 | listing/home links use `/{tours,visa}/{slug}` |
+| B12-06 | Agency identity from session | Done | GAP-26 | `/api/agency/me` sidebar profile |
+| B12-07 | Flight storefront real search | Next | GAP-16 | replace demo flights with `SearchFlights` |
+| B12-08 | Admin product edit screens | Next | GAP-15/16 | edit/publish tour, visa, flight |
+| B12-09 | Visa document uploads + tracking | Next | GAP-15/21 | upload + customer tracking |
+| B12-10 | RFQ/offer queue | Next | GAP-05/06/19 | offer/contract/deposit/final payment |

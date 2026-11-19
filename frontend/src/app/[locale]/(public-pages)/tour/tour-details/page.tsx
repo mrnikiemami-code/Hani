@@ -1,8 +1,17 @@
-import { getPageMetadata } from "@/config/metadata";
-import TourDetailsClient from "./tourDetailsClient";
+import { redirect } from "next/navigation";
 
-export const generateMetadata = () => getPageMetadata("Tour Details");
-
-export default function TourDetailsPage() {
-  return <TourDetailsClient />;
+export default async function LegacyTourDetailsPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ slug?: string }>;
+}) {
+  const { locale } = await params;
+  const { slug } = await searchParams;
+  redirect(
+    slug
+      ? `/${locale}/tours/${encodeURIComponent(slug)}`
+      : `/${locale}/tours`
+  );
 }

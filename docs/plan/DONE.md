@@ -335,3 +335,15 @@
 | `9b41476` | Batch 9 support security: ClamAV scan port, 10/min upload limit, private WebP thumbnails, read receipts, quick replies/auto-refresh, HMAC inbound email-to-ticket, collision-safe ticket numbers |
 | `3e9a3d3` | Batch 10 real-time support: SignalR ticket groups/events, cookie-authenticated hub, CORS, inbound email dedup, pending attachment retention, optional ClamAV compose profile |
 | `cea1f8e` | Batch 11 provider parity: SignalR Redis backplane with cross-instance test, unique provider message dedup, ClamAV protocol rejection test, HTTP email provider delivery smoke, support load test |
+
+## Batch 12 ? Storefront truthfulness + agency identity (2026-11-19)
+
+| # | Item | Artifact | Evidence |
+|---|---|---|---|
+| D-B12-01 | Tour lookup by slug | `GetTourProductBySlugQuery` + `/market/v1/products/by-slug/{slug}` | integration assertion |
+| D-B12-02 | Real tour detail | `frontend/src/app/[locale]/(public-pages)/tours/[slug]/page.tsx` | FA/EN browser check |
+| D-B12-03 | Real visa detail | `frontend/src/app/[locale]/(public-pages)/visa/[slug]/page.tsx` | turkey page browser check |
+| D-B12-04 | Real visa application | `features/visa/ui/VisaApplicationForm.tsx` + `submit-visa-application.ts` | VSA application created + confirmation |
+| D-B12-05 | Canonical detail links | tour/visa grid + home components | code review |
+| D-B12-06 | Agency identity | `views/agent-dashboard/sidebar/sidebar.tsx` + `/api/agency/me` | build + code review |
+| D-B12-07 | Gap report | `docs/reports/lastsecond-hani-gap-analysis-2026-11-19.md` | audit record |

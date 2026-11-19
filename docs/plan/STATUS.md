@@ -643,3 +643,26 @@
 - Batch 10 provider operations: inbound email deduplication by `ProviderMessageId`, pending upload retention purge, credential CORS policy, and an optional ClamAV compose profile.
 - Batch 11 SignalR scale-out: Redis backplane configuration and production guard; cross-instance delivery verified with two API instances and a client connected to the second instance.
 - Batch 11 provider hardening: unique filtered `provider_message_id` index with duplicate-key recovery, HTTP email provider smoke including idempotency headers/auth, and ClamAV protocol rejection tested against a local INSTREAM test daemon.
+
+---
+
+## Batch 12 ? Storefront truthfulness + agency identity (2026-11-19)
+
+> Benchmark: Lastsecond visa request, flight metasearch, foreign tour, domestic
+> tour. Report: `docs/reports/lastsecond-hani-gap-analysis-2026-11-19.md`.
+
+| Item | Status | GAP |
+|---|---|---|
+| Public tour lookup by slug (`GET /market/v1/products/by-slug/{slug}`) | Done | GAP-01 |
+| Real `/tours/{slug}` detail page (content, itinerary, offers, checkout CTA) | Done | GAP-01 |
+| Real `/visa/{slug}` detail page (types, prices, documents, steps, FAQ) | Done | GAP-15/21 |
+| Real visa application form + confirmation (`POST /market/v1/visa-applications`) | Done | GAP-15/21 |
+| Canonical storefront detail links from tour/visa listings and home sections | Done | GAP-01/15 |
+| Agency sidebar identity from authenticated profile (`/api/agency/me`) | Done | GAP-26 |
+| Flight storefront still template demo data | Next (P0) | GAP-16 |
+| Admin tour/visa/flight edit screens | Next (P0) | GAP-15/16 |
+| RFQ/offer queue equivalent to Lastsecond six-step request | Next (P1) | GAP-05/06/19 |
+
+**Verification:** backend build, frontend build, tour-by-slug integration
+assertion, real visa application POST + confirmation page, agency profile
+endpoint. Open P0 items remain documented in the gap report.

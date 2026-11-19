@@ -423,7 +423,7 @@ const TourGrid = ({
                                             <div className="col-xxl-4 col-md-6 d-flex" key={tour.productId}>
                                                 <div className="place-item common-grid-slider mb-4 flex-fill">
                                                     <div className="place-img">
-                                                        <Link href={`${routes.tourDetails}?slug=${encodeURIComponent(tour.slug)}`}>
+                                                        <Link href={`/tours/${encodeURIComponent(tour.slug)}`}>
                                                             <ImageWithBasePath
                                                                 src={image}
                                                                 className="img-fluid"
@@ -463,7 +463,7 @@ const TourGrid = ({
                                                             </div>
                                                         </div>
                                                         <h3 className="h5 mb-1 text-truncate">
-                                                            <Link href={`${routes.tourDetails}?slug=${encodeURIComponent(tour.slug)}`}>
+                                                            <Link href={`/tours/${encodeURIComponent(tour.slug)}`}>
                                                                 {tour.title}
                                                             </Link>
                                                         </h3>

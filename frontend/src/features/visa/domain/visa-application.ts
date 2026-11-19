@@ -1,0 +1,20 @@
+export type VisaApplication = {
+  applicationId: string;
+  applicationNumber: string;
+  visaCountryId: string;
+  visaTypeId: string;
+  applicantName: string;
+  passportNo: string;
+  nationality: string;
+  dateOfBirth: string | null;
+  travelDate: string | null;
+  contactEmail: string;
+  contactPhone: string;
+  notes: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string | null;
+  rejectionReason: string | null;
+  documents: string[];
+  passengerCount: number;
+};

@@ -18,6 +18,13 @@ internal sealed class TourProductRepository(CatalogDbContext dbContext) : ITourP
         => dbContext.TourProducts
             .FirstOrDefaultAsync(product => product.Id == id, cancellationToken);
 
+    public Task<TourProduct?> GetBySlugAsync(string slug, CancellationToken cancellationToken)
+        => dbContext.TourProducts
+            .FirstOrDefaultAsync(
+                product => product.Slug == slug &&
+                    product.Status == TourProductStatus.Published,
+                cancellationToken);
+
     public Task SaveChangesAsync(CancellationToken cancellationToken)
         => dbContext.SaveChangesAsync(cancellationToken);
 }

@@ -191,7 +191,7 @@ const VisaGrid = ({
               <div className="row justify-content-center">
                 {visas.map((visa, index) => {
                   const image = `assets/img/visa/visa-0${(index % 6) + 1}.jpg`;
-                  const detailHref = `${routes.visaDetails}?slug=${encodeURIComponent(visa.slug)}`;
+                  const detailHref = `/visa/${encodeURIComponent(visa.slug)}`;
 
                   return (
                     <div className="col-xxl-4 col-md-6 d-flex" key={visa.countryId}>

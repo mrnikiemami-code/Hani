@@ -168,6 +168,11 @@ public static class CatalogEndpoints
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
+        market.MapGet("/by-slug/{slug}", GetProductBySlugAsync)
+            .WithName("Marketplace.GetTourProductBySlug")
+            .Produces<TourProductDto>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
         market.MapGet("/{productId:guid}", GetProductAsync)
             .WithName("Marketplace.GetTourProduct")
             .Produces<TourProductDto>()
@@ -787,6 +792,21 @@ public static class CatalogEndpoints
     {
         var result = await sender.Send(new PublishTourProductCommand(productId), cancellationToken);
         return result.IsSuccess ? Results.Ok() : context.ToProblem(result.Error!);
+    }
+
+    /// <summary>
+    /// Returns one published tour product by slug, or 404.
+    /// </summary>
+    private static async Task<IResult> GetProductBySlugAsync(
+        string slug,
+        HttpContext context,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetTourProductBySlugQuery(slug),
+            cancellationToken);
+        return result.IsSuccess ? Results.Ok(result.Value) : context.ToProblem(result.Error!);
     }
 
     /// <summary>
