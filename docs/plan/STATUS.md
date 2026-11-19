@@ -627,3 +627,7 @@
 - Admin Batch 5 support SLA: priority-based first-response targets (Urgent 2h, High 8h, Normal 24h, Low 72h), SLA due time, first-response time, and Met/AtRisk/Breached/Pending states on list and detail views.
 - Admin Batch 5 assignment and disputes: real admin assignee selector, ticket-dispute aggregate and migration, dispute list/create/status workflow with audit, and ticket dispute panel.
 - Admin Batch 5 support quality: first-response and resolution averages, SLA breakdown, category distribution, and assignee open/total load report. Responsive FA/EN/AR UI verified across desktop, tablet, and mobile.
+- Batch 6 production configuration: startup guard rejects development JWT/OTP secrets, exposed OTP codes, Mock PSP, development database credentials, wildcard hosts, Memory cache, InMemory messaging, disabled outbox, non-HTTPS public URLs, and missing storage/provider configuration.
+- Batch 6 health and security: `/health/live`, `/health`, and `/health/ready` return JSON with Postgres, storage, payment configuration, and Redis readiness; internal/auth responses are `no-store`; CORP and cross-domain policy headers were added.
+- Batch 6 providers: generic HTTPS PSP checkout/refund/HMAC-webhook adapter selected by `Payments:Provider`; notification delivery supports Log/HTTP modes with a named HttpClient, idempotency headers, timeouts, and outbox retry.
+- Batch 6 operations: checksummed backup and validated restore scripts, production checklist, DR runbook updates, and a k6 readiness/search load smoke.

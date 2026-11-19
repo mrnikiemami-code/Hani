@@ -5,6 +5,12 @@ namespace Hani.Modules.Content.Application.Notifications;
 /// </summary>
 public sealed class NotificationProviderOptions
 {
+    /// <summary>Delivery mode: <c>Log</c> or <c>Http</c>.</summary>
+    public string Mode { get; set; } = "Log";
+
+    /// <summary>Allows explicit log-only delivery in a production host.</summary>
+    public bool AllowLogInProduction { get; set; }
+
     /// <summary>Optional email provider endpoint.</summary>
     public string? EmailEndpoint { get; set; }
 

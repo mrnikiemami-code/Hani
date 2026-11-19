@@ -39,6 +39,11 @@ public sealed class HardeningEndpointsTests(PostgresFixture fixture)
         var response = await client.GetAsync("/health/ready");
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Content.Headers.ContentType!.MediaType.ShouldBe("application/json");
+        var body = await response.Content.ReadAsStringAsync();
+        body.ShouldContain("\"postgres\"");
+        body.ShouldContain("\"storage\"");
+        body.ShouldContain("\"payments\"");
         response.Headers.GetValues("X-Content-Type-Options").Single().ShouldBe("nosniff");
         response.Headers.GetValues("X-Frame-Options").Single().ShouldBe("DENY");
         response.Headers.GetValues("Content-Security-Policy").Single()

@@ -16,7 +16,18 @@ internal sealed class SecurityHeadersMiddleware(RequestDelegate next)
         headers["Referrer-Policy"] = "no-referrer";
         headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
         headers["Cross-Origin-Opener-Policy"] = "same-origin";
+        headers["Cross-Origin-Resource-Policy"] = "same-site";
+        headers["X-Permitted-Cross-Domain-Policies"] = "none";
         headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'";
+
+        var path = context.Request.Path.Value ?? string.Empty;
+        if (path.StartsWith("/internal/", StringComparison.OrdinalIgnoreCase) ||
+            path.Contains("/auth/", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/admin", StringComparison.OrdinalIgnoreCase))
+        {
+            headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+            headers["Pragma"] = "no-cache";
+        }
 
         await next(context);
     }

@@ -9,6 +9,7 @@ public static class HaniApiBuilderExtensions
     /// </summary>
     public static WebApplicationBuilder AddHaniApi(this WebApplicationBuilder builder)
     {
+        ProductionConfigurationGuard.Validate(builder.Configuration, builder.Environment);
         builder.AddHaniLogging();
         builder.Services.AddHaniJson();
         builder.Services.AddHaniPersistence(builder.Configuration);

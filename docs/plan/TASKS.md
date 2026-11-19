@@ -351,3 +351,8 @@
 | H91-ADMIN-23 | Batch 5: support SLA and assignment | ? Done | priority SLA targets/states, first-response metadata, real admin assignee selector |
 | H91-ADMIN-24 | Batch 5: dispute workflow | ? Done | dispute aggregate, create/list/status endpoints, ticket panel, disputes list, audit |
 | H91-ADMIN-25 | Batch 5: support quality reports | ? Done | first-response/resolution averages, SLA breakdown, category and assignee load |
+| H91-OPS-01 | Batch 6: production configuration guard | ? Done | fail-fast for dev secrets, Mock PSP, memory cache, InMemory messaging, wildcard hosts |
+| H91-OPS-02 | Batch 6: health and security hardening | ? Done | JSON health, storage/payment/Redis readiness, no-store internal responses, CORP headers |
+| H91-OPS-03 | Batch 6: provider adapters | ? Done | HTTP PSP checkout/refund/webhook adapter, notification mode and idempotent HTTP delivery |
+| H91-OPS-04 | Batch 6: backup and release runbook | ? Done | checksummed backup/restore scripts, production checklist, DR updates |
+| H91-OPS-05 | Batch 6: load/readiness smoke | ? Done | k6 readiness + search scenario with thresholds |

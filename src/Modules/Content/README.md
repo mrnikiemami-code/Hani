@@ -133,3 +133,13 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 - Admin routes: `/admin/support/tickets`, `/admin/support/disputes`, and
   `/admin/support/reports`.
 - Migration: `AddSupportDisputes`.
+
+## Notification delivery modes
+
+- `Notifications:Mode=Log` logs deliveries and is the local/test default.
+- `Notifications:Mode=Http` uses the HTTP email/SMS provider with a named
+  `notifications` HttpClient, bearer authentication, request timeouts, and
+  `Idempotency-Key`/`X-Hani-Channel`/`X-Hani-Template` headers.
+- Failed provider responses throw so the outbox retries with exponential
+  backoff (5 attempts). Production startup requires `Mode=Http` unless
+  `AllowLogInProduction` is explicitly set.

@@ -34,4 +34,19 @@ public sealed class PaymentOptions
     /// HMAC secret used to verify webhook signatures.
     /// </summary>
     public string WebhookSecret { get; set; } = string.Empty;
+
+    /// <summary>Base HTTPS URL for the real provider adapter.</summary>
+    public string BaseUrl { get; set; } = string.Empty;
+
+    /// <summary>Provider API key or bearer token.</summary>
+    public string ApiKey { get; set; } = string.Empty;
+
+    /// <summary>Relative checkout initiation path.</summary>
+    public string InitiatePath { get; set; } = "/payments";
+
+    /// <summary>Relative refund path.</summary>
+    public string RefundPath { get; set; } = "/refunds";
+
+    /// <summary>Allowed webhook clock skew in minutes.</summary>
+    public int WebhookToleranceMinutes { get; set; } = 5;
 }

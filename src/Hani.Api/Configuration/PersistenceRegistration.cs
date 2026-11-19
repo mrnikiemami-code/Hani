@@ -39,11 +39,11 @@ public static class PersistenceRegistration
 
         services.AddSupplyInfrastructure();
         services.AddCatalogInfrastructure();
-        services.AddContentInfrastructure();
+        services.AddContentInfrastructure(configuration);
         services.AddIdentityInfrastructure();
         services.AddMarketplaceInfrastructure();
         services.AddBookingInfrastructure();
-        services.AddPaymentsInfrastructure();
+        services.AddPaymentsInfrastructure(configuration);
         services.AddSettlementInfrastructure();
         services.AddAdminInfrastructure();
         return services;

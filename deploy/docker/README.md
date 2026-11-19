@@ -29,3 +29,18 @@ docker compose -f deploy/docker/docker-compose.yml down
 ```powershell
 docker compose -f deploy/docker/docker-compose.yml down -v
 ```
+
+## Production differences
+
+The local compose file is not a production manifest. Production requires:
+
+- managed PostgreSQL with PITR and verified restore drills;
+- Redis for cache and rate-limit coordination;
+- RabbitMQ or PostgreSQL transport with the outbox enabled;
+- HTTPS termination, explicit `AllowedHosts`, and secret-manager injection;
+- a non-Mock payment provider with a configured webhook secret;
+- an HTTP email/SMS provider or an explicit log-only waiver;
+- `/health/ready` monitored by the orchestrator.
+
+The API fails fast when these production requirements are missing. See
+`docs/operations/PRODUCTION-CHECKLIST.md`.

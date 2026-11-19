@@ -39,14 +39,19 @@ public static class HaniApiPipelineExtensions
 
     private static void MapHealthEndpoints(WebApplication app)
     {
-        app.MapHealthChecks("/health");
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = HealthResponseWriter.WriteAsync
+        });
         app.MapHealthChecks("/health/live", new HealthCheckOptions
         {
-            Predicate = _ => false
+            Predicate = _ => false,
+            ResponseWriter = HealthResponseWriter.WriteAsync
         });
         app.MapHealthChecks("/health/ready", new HealthCheckOptions
         {
-            Predicate = check => check.Tags.Contains("ready")
+            Predicate = check => check.Tags.Contains("ready"),
+            ResponseWriter = HealthResponseWriter.WriteAsync
         });
     }
 

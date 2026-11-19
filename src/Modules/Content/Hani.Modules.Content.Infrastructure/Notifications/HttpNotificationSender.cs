@@ -10,10 +10,9 @@ namespace Hani.Modules.Content.Infrastructure.Notifications;
 
 internal sealed class HttpNotificationSender(
     IOptions<NotificationProviderOptions> options,
+    IHttpClientFactory httpClientFactory,
     ILogger<HttpNotificationSender> logger) : INotificationSender
 {
-    private static readonly HttpClient Client = new();
-
     public async Task SendAsync(Notification notification, CancellationToken cancellationToken)
     {
         var settings = options.Value;
@@ -46,6 +45,15 @@ internal sealed class HttpNotificationSender(
                 notification.Payload
             })
         };
+        request.Headers.TryAddWithoutValidation(
+            "Idempotency-Key",
+            notification.Id.ToString("N"));
+        request.Headers.TryAddWithoutValidation(
+            "X-Hani-Channel",
+            notification.Channel.ToString());
+        request.Headers.TryAddWithoutValidation(
+            "X-Hani-Template",
+            notification.TemplateKey);
 
         if (!string.IsNullOrWhiteSpace(settings.ApiKey))
         {
@@ -58,7 +66,18 @@ internal sealed class HttpNotificationSender(
             cancellationToken,
             timeout.Token);
 
-        using var response = await Client.SendAsync(request, linked.Token);
-        response.EnsureSuccessStatusCode();
+        var client = httpClientFactory.CreateClient("notifications");
+        using var response = await client.SendAsync(request, linked.Token);
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync(linked.Token);
+            logger.LogWarning(
+                "Notification {NotificationId} provider returned {StatusCode}: {Body}",
+                notification.Id,
+                (int)response.StatusCode,
+                body.Length > 500 ? body[..500] : body);
+            throw new HttpRequestException(
+                $"Notification provider returned {(int)response.StatusCode}.");
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System.Threading.RateLimiting;
+using Hani.BuildingBlocks.Infrastructure.Caching;
 
 namespace Hani.Api.Configuration;
 
@@ -10,8 +11,19 @@ public static class HealthRateLimitingRegistration
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddHealthChecks()
-            .AddCheck<PostgresHealthCheck>("postgres", tags: ["ready"]);
+        var health = services.AddHealthChecks()
+            .AddCheck<PostgresHealthCheck>("postgres", tags: ["ready"])
+            .AddCheck<StorageHealthCheck>("storage", tags: ["ready"])
+            .AddCheck<PaymentProviderHealthCheck>("payments", tags: ["ready"]);
+        var cacheOptions = configuration.GetSection("Cache").Get<CacheOptions>() ??
+            new CacheOptions();
+        if (string.Equals(
+                cacheOptions.Provider,
+                "redis",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            health.AddCheck<RedisHealthCheck>("redis", tags: ["ready"]);
+        }
 
         var rateLimiting = configuration
             .GetSection("RateLimiting")

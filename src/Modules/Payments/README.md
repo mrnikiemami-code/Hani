@@ -73,3 +73,14 @@ Order (Booking, PendingPayment)
   "WebhookSecret": "hani-dev-webhook-secret"
 }
 ```
+
+## Provider adapters and production hardening
+
+- `MockPaymentGateway` is selected only when `Payments:Provider=Mock`.
+- Any other provider selects `HttpPaymentGateway`, a generic HTTPS adapter for
+  checkout initiation, refunds, and HMAC-signed webhooks.
+- The generic adapter requires `BaseUrl`, `ApiKey`, `PspAccountRef`, and
+  `WebhookSecret`. It rejects payloads older than
+  `WebhookToleranceMinutes` and uses constant-time signature comparison.
+- Production startup fails when the Mock provider, a development webhook
+  secret, or missing PSP credentials are still configured.

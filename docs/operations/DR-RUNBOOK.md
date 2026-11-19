@@ -62,3 +62,24 @@ Gate 8 drill result (2026-11-14):
 - Keep schema-per-module migrations independent; restore all seven schemas.
 - Verify the outbox/inbox tables are present after restore.
 - Rotate PSP and channel webhook secrets after a suspected data exposure.
+
+## Scripted backup and restore
+
+Use the scripts so every dump has a checksum and every restore is validated:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/backup-db.ps1
+powershell -ExecutionPolicy Bypass -File scripts/restore-db.ps1 `
+  -BackupFile .\backups\hani-YYYYMMDDHHMMSS.dump
+```
+
+`restore-db.ps1` restores into a new `hani_restore_<timestamp>` database by
+default. Restoring over `hani` requires `-AllowProductionDatabase` and an
+incident record. The script validates that application tables were restored and
+prints the table count.
+
+## Production readiness
+
+See `docs/operations/PRODUCTION-CHECKLIST.md`. A Production host refuses to start
+when development secrets, Mock payments, Memory cache, InMemory messaging, or a
+wildcard `AllowedHosts` are still configured.
