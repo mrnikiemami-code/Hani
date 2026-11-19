@@ -22,8 +22,29 @@ export type HomeSectionSetting = {
   imageUrl?: string;
 };
 
+export type HomeSectionRule = {
+  algorithm: "manual" | "rating" | "advertising" | "newest" | "custom";
+  limit: number;
+  source: "auto" | "manual" | "collection";
+  selectedIds: string[];
+};
+
+export type HomeMenuItem = {
+  id: string;
+  label: string;
+  href: string;
+  children: HomeMenuItem[];
+};
+
 export type HomePageSettings = {
   heroImageUrl: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroCtaLabel?: string;
+  heroCtaHref?: string;
+  heroOverlay?: number;
+  menu?: HomeMenuItem[];
+  sectionRules?: Partial<Record<HomeSectionId, HomeSectionRule>>;
   sections: HomeSectionSetting[];
 };
 
@@ -77,6 +98,13 @@ export function normalizeHomePageSettings(
 
   return {
     heroImageUrl: input?.heroImageUrl ?? "",
+    heroTitle: input?.heroTitle ?? "",
+    heroSubtitle: input?.heroSubtitle ?? "",
+    heroCtaLabel: input?.heroCtaLabel ?? "",
+    heroCtaHref: input?.heroCtaHref ?? "",
+    heroOverlay: input?.heroOverlay ?? 30,
+    menu: input?.menu ?? [],
+    sectionRules: input?.sectionRules ?? {},
     sections
   };
 }

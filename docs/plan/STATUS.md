@@ -777,3 +777,16 @@ Verification: backend build, frontend build, admin save/publish smoke test in FA
 - Known home sections continue to use their existing data components.
 - Full per-section content overrides, banner placement, and global chrome
   migration remain.
+
+### Admin homepage manager redesign (2026-11-20)
+
+- `/admin/home` is now a dedicated homepage manager instead of a raw settings table.
+- Header menu editor with top-level items and submenus.
+- Hero manager with 1920?900 requirement, gallery picker, title/subtitle/CTA/overlay.
+- Section list for popular tours, latest domestic/foreign tours, popular visas,
+  origin cities, travelogues, and magazine with per-section rules:
+  newest, rating, sponsored, manual selection, or custom rule.
+- Manual selection uses real home-feed items with thumbnails.
+- Banners/content blocks link to the page composition builder.
+- Home settings JSON persists menu, hero fields, and section rules.
+- Public header/menu and public rule-based rendering remain to be connected.

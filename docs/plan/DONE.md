@@ -404,3 +404,7 @@
 
 | D-PC-06 | Generic composition section renderer | `CompositionSection` |
 | D-PC-07 | Composed hero title | `homeServiceOne` + composition prop |
+
+| D-PC-08 | Admin homepage manager | `AdminHomeManager`, `/admin/home` |
+| D-PC-09 | Menu/hero/section-rule persistence | `HomePageSettings` extended |
+| D-PC-10 | Gallery picker and size guidance | media picker modal |

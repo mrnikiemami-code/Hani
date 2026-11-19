@@ -5,7 +5,9 @@ import {
   normalizeHomePageSettings,
   type HomePageSettingsResponse
 } from "@/features/home-experience/domain/home-page-settings";
-import { HomeSettingsEditor } from "@/features/home-experience/ui/HomeSettingsEditor";
+import { AdminHomeManager } from "@/features/home-experience/ui/AdminHomeManager";
+import { getHomeFeed } from "@/features/home-experience/infrastructure/home-api";
+import type { MediaListResponse } from "@/features/home-experience/domain/media";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 
 export async function generateMetadata({
@@ -29,9 +31,15 @@ export default async function AdminHomePage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminHome" });
-  const result = await sessionGet<HomePageSettingsResponse>(
-    `/internal/v1/home-settings?key=default&locale=${encodeURIComponent(locale)}`
-  );
+  const [result, media, feed] = await Promise.all([
+    sessionGet<HomePageSettingsResponse>(
+      `/internal/v1/home-settings?key=default&locale=${encodeURIComponent(locale)}`
+    ),
+    sessionGet<MediaListResponse>(
+      "/internal/v1/content-media?page=1&pageSize=100"
+    ),
+    getHomeFeed(locale)
+  ]);
 
   if (result.status === 401 || result.status === 403) {
     return (
@@ -63,7 +71,12 @@ export default async function AdminHomePage({
         activeSection="content"
         activeChild="homepage"
     >
-      <HomeSettingsEditor locale={locale} initialSettings={settings} />
+      <AdminHomeManager
+        locale={locale}
+        initialSettings={settings}
+        mediaAssets={media.data?.items ?? []}
+        feed={feed}
+      />
     </AdminPageShell>
   );
 }

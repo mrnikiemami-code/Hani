@@ -463,3 +463,10 @@
 | PC-10 | Composed hero title | Done | published home hero title |
 | PC-11 | Full home section content adapters | Next | titles/subtitles/CTAs per known section |
 | PC-12 | Banner placement UI | Next | page/slot/locale/device |
+
+| PC-13 | Admin homepage manager redesign | Done | menu/hero/sections UI |
+| PC-14 | Section display rules | Done | newest/rating/ad/manual/custom |
+| PC-15 | Gallery picker for hero | Done | media library, 1920?900 spec |
+| PC-16 | Connect public header menu | Next | render saved menu |
+| PC-17 | Apply section rules in public home | Next | algorithm and manual ids |
+| PC-18 | Banner/content extras on admin home | Next | inline banner builder |
