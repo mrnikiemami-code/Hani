@@ -119,6 +119,7 @@ export default async function HomePage({
         homeFeed={homeFeed}
         tourScope={tourScope}
         homeSettings={homeSettings}
+        composition={composition?.data ?? null}
       />
     </>
   );

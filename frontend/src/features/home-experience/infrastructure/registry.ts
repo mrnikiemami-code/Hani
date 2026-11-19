@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import type { HomeExperienceId } from "../domain/home-experience";
 import type { HomePageSettings } from "../domain/home-page-settings";
+import type { PageCompositionData } from "../domain/page-composition";
 
 export type HomeExperienceScope = "Domestic" | "Foreign";
 
@@ -8,6 +9,7 @@ export type HomeExperienceModule = {
   default: ComponentType<{
     tourScope?: HomeExperienceScope;
     homeSettings?: HomePageSettings;
+    composition?: PageCompositionData | null;
   }>;
 };
 

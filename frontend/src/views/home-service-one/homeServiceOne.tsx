@@ -30,6 +30,7 @@ import {
   type HomePageSettings,
   type HomeSectionId
 } from "@/features/home-experience/domain/home-page-settings";
+import type { PageCompositionData } from "@/features/home-experience/domain/page-composition";
 type Mode = "flight" | "hotel" | "cruise" | "tour" | "bus" | "activity" | "visa" | "guide";
 
 type BookingState = {
@@ -81,10 +82,12 @@ type BookingState = {
 };
 const HomeServiceOne = ({
   tourScope,
-  homeSettings = DEFAULT_HOME_PAGE_SETTINGS
+  homeSettings = DEFAULT_HOME_PAGE_SETTINGS,
+  composition
 }: {
   tourScope?: "Domestic" | "Foreign";
   homeSettings?: HomePageSettings;
+  composition?: PageCompositionData | null;
 }) => {
   const t = useTranslations("home");
   const [showModal, setShowModal] = useState(false);
@@ -282,7 +285,9 @@ const guidePassenger =
         }
       >
         <div className="container">
-          <h1 className="animate-text">{t("heroTitle")}</h1>
+          <h1 className="animate-text">
+            {composition?.hero.title || t("heroTitle")}
+          </h1>
           <div
             className="animate-button"
           >

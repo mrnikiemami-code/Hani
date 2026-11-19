@@ -769,3 +769,11 @@ slice.
 | Preview links and revision restore | Next (Phase 6) |
 
 Verification: backend build, frontend build, admin save/publish smoke test in FA.
+
+### Page Composition Phase 2 progress
+
+- Generic composed section renderer added.
+- Composed hero title and new generic sections render on home.
+- Known home sections continue to use their existing data components.
+- Full per-section content overrides, banner placement, and global chrome
+  migration remain.

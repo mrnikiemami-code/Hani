@@ -1,6 +1,6 @@
 # Hani Page Composition & Banner Platform
 
-> Status: planned, not implemented.
+> Status: Phase 1 foundation implemented; Phase 2 started.
 > Related gaps: GAP-12 (content), GAP-27 (admin panels), GAP-28 (SEO),
 > GAP-30 (ads), GAP-32 (media), GAP-34 (analytics).
 
@@ -321,3 +321,22 @@ Start with Phase 0 + Phase 1, then complete home in Phase 2:
    composition.
 5. Add media picker, preview, publish, and cache invalidation.
 6. Verify FA/EN/AR and Lighthouse/SEO.
+
+## Implementation status (2026-11-20)
+
+- Phase 1 foundation is implemented:
+  - draft/published page composition storage
+  - public/admin page composition endpoints
+  - admin `/admin/content/pages` list and `/admin/content/pages/[pageKey]`
+  - hero, sections, media picker, SEO, save draft, publish
+  - published `home` composition feeds hero fallback image and known section
+    order/visibility
+- Phase 2 has started:
+  - generic composed section renderer (`CompositionSection`)
+  - composed hero title
+  - generic sections appended after known home sections
+- Still pending:
+  - full section content adapters for all home sections
+  - banner placement UI
+  - global chrome/static/listing/detail page migration
+  - preview links, revisions, cache-tag invalidation

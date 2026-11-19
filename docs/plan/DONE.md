@@ -401,3 +401,6 @@
 | D-PC-03 | Admin pages list | `/admin/content/pages` |
 | D-PC-04 | Page builder shell | `/admin/content/pages/[pageKey]` |
 | D-PC-05 | Home composition integration | `page.tsx` published composition fallback |
+
+| D-PC-06 | Generic composition section renderer | `CompositionSection` |
+| D-PC-07 | Composed hero title | `homeServiceOne` + composition prop |

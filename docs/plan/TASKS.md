@@ -458,3 +458,8 @@
 | PC-06 | Home composition fallback | Done | published home sections/hero |
 | PC-07 | Generic section renderer | Next | render all section types |
 | PC-08 | Banner placement UI | Next | page/slot/locale/device |
+
+| PC-09 | Generic composed section renderer | Partial | rich text/banner/CTA/image sections |
+| PC-10 | Composed hero title | Done | published home hero title |
+| PC-11 | Full home section content adapters | Next | titles/subtitles/CTAs per known section |
+| PC-12 | Banner placement UI | Next | page/slot/locale/device |
