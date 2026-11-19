@@ -331,3 +331,4 @@
 | `be2e60e` | Batch 5 support: priority SLA states, real assignee selection, dispute aggregate/workflow/UI, support quality report, migration, responsive FA/EN/AR UI |
 | `32e9348` | Batch 6 hardening: production config guard, JSON readiness checks, generic HTTPS PSP adapter, notification HTTP mode/idempotency, security headers, backup/restore scripts, production checklist, k6 readiness load |
 | `ed29210` | Batch 7 customer support portal: owner-scoped ticket list/detail/reply, customer disputes, support notifications, sidebar/nav, responsive FA/EN/AR UI |
+| `bbeb89c` | Batch 8 support attachments: private upload/download, 10 MB/type limits, message linking, internal-note isolation, unread counters, deep-link notifications, responsive FA/EN/AR UI |
