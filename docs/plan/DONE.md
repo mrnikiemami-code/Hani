@@ -332,3 +332,4 @@
 | `32e9348` | Batch 6 hardening: production config guard, JSON readiness checks, generic HTTPS PSP adapter, notification HTTP mode/idempotency, security headers, backup/restore scripts, production checklist, k6 readiness load |
 | `ed29210` | Batch 7 customer support portal: owner-scoped ticket list/detail/reply, customer disputes, support notifications, sidebar/nav, responsive FA/EN/AR UI |
 | `bbeb89c` | Batch 8 support attachments: private upload/download, 10 MB/type limits, message linking, internal-note isolation, unread counters, deep-link notifications, responsive FA/EN/AR UI |
+| `9b41476` | Batch 9 support security: ClamAV scan port, 10/min upload limit, private WebP thumbnails, read receipts, quick replies/auto-refresh, HMAC inbound email-to-ticket, collision-safe ticket numbers |
