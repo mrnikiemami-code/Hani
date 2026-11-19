@@ -328,3 +328,4 @@
 | `556bbbb` | Batch 3 booking workflow: reservation confirm/reject with audit, real cancellation reason, order contact update, contract/voucher pages, order history and refunds, responsive FA/EN/AR UI |
 | `4074499` | Fix: admin order detail exposes current order contact while the issued contract snapshot stays immutable |
 | `ea53d64` | Batch 4 finance: persisted bank/currency/tax/settlement settings, reconciliation runs, CSV exports with report.export, approval history filters, daily revenue/order BI trends, responsive FA/EN/AR UI |
+| `be2e60e` | Batch 5 support: priority SLA states, real assignee selection, dispute aggregate/workflow/UI, support quality report, migration, responsive FA/EN/AR UI |
