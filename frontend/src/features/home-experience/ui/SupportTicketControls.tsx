@@ -11,12 +11,14 @@ export function SupportTicketControls({
   id,
   status,
   priority,
-  assignedTo
+  assignedTo,
+  assignees
 }: {
   id: string;
   status: string;
   priority: string;
   assignedTo: string | null;
+  assignees: { id: string; label: string }[];
 }) {
   const t = useTranslations("adminSupport");
   const messages = useMessageBox();
@@ -88,14 +90,19 @@ export function SupportTicketControls({
         <label className="form-label fs-12 mb-1" htmlFor="support-next-assignee">
           {t("assignedTo")}
         </label>
-        <input
+        <select
           id="support-next-assignee"
-          className="form-control form-control-sm"
-          dir="ltr"
+          className="form-select form-select-sm"
           value={nextAssignedTo}
           onChange={(event) => setNextAssignedTo(event.target.value)}
-          placeholder={t("assigneePlaceholder")}
-        />
+        >
+          <option value="">{t("unassigned")}</option>
+          {assignees.map((assignee) => (
+            <option key={assignee.id} value={assignee.id}>
+              {assignee.label}
+            </option>
+          ))}
+        </select>
       </div>
       <button
         type="button"

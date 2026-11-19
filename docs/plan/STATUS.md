@@ -624,3 +624,6 @@
 - Admin Batch 4 finance settings: DB-backed bank accounts, active currencies with decimals/rounding/FX metadata, tax/duty rules with effective dates, and settlement policy; updates are audited with before/after JSON.
 - Admin Batch 4 reconciliation and exports: reconciliation runs derive expected amount from successful payment intents and compare it to provider actual amount; CSV exports cover payments, refunds, invoices, reconciliations, commissions, payouts, ledger, and tax with `report.export` permission.
 - Admin Batch 4 workflow/BI: approval history filters (Pending/Approved/Rejected/All), finance export proxy, and daily revenue/order trend BI tables. Responsive FA/EN/AR UI verified across desktop, tablet, and mobile.
+- Admin Batch 5 support SLA: priority-based first-response targets (Urgent 2h, High 8h, Normal 24h, Low 72h), SLA due time, first-response time, and Met/AtRisk/Breached/Pending states on list and detail views.
+- Admin Batch 5 assignment and disputes: real admin assignee selector, ticket-dispute aggregate and migration, dispute list/create/status workflow with audit, and ticket dispute panel.
+- Admin Batch 5 support quality: first-response and resolution averages, SLA breakdown, category distribution, and assignee open/total load report. Responsive FA/EN/AR UI verified across desktop, tablet, and mobile.

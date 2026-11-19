@@ -46,6 +46,30 @@ public static class AdminSupportEndpoints
             .WithName("Internal.UpdateAdminSupportTicket")
             .RequireAuthorization("Admin")
             .Produces<AdminSupportTicketDetailDto>();
+
+        app.MapGet("/internal/v1/admin/support/disputes", ListDisputesAsync)
+            .WithTags("Internal.Admin.Support")
+            .WithName("Internal.ListAdminSupportDisputes")
+            .RequireAuthorization("Admin")
+            .Produces<AdminSupportDisputePageDto>();
+
+        app.MapPost("/internal/v1/admin/support/tickets/{id:guid}/disputes", CreateDisputeAsync)
+            .WithTags("Internal.Admin.Support")
+            .WithName("Internal.CreateAdminSupportDispute")
+            .RequireAuthorization("Admin")
+            .Produces<AdminSupportDisputeDto>(StatusCodes.Status201Created);
+
+        app.MapPost("/internal/v1/admin/support/disputes/{id:guid}/status", UpdateDisputeStatusAsync)
+            .WithTags("Internal.Admin.Support")
+            .WithName("Internal.UpdateAdminSupportDisputeStatus")
+            .RequireAuthorization("Admin")
+            .Produces<AdminSupportDisputeDto>();
+
+        app.MapGet("/internal/v1/admin/support/report", GetReportAsync)
+            .WithTags("Internal.Admin.Support")
+            .WithName("Internal.GetAdminSupportReport")
+            .RequireAuthorization("Admin")
+            .Produces<AdminSupportReportDto>();
         return app;
     }
 
@@ -193,6 +217,108 @@ public static class AdminSupportEndpoints
         return Results.Ok(ticket);
     }
 
+    private static async Task<IResult> ListDisputesAsync(
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        [FromQuery] string? status,
+        [FromQuery] string? type,
+        [FromQuery] Guid? ticketId,
+        IAdminSupportService support,
+        CancellationToken cancellationToken)
+        => Results.Ok(await support.ListDisputesAsync(
+            page,
+            pageSize,
+            status,
+            type,
+            ticketId,
+            cancellationToken));
+
+    private static async Task<IResult> CreateDisputeAsync(
+        Guid id,
+        AdminSupportDisputeRequest request,
+        HttpContext context,
+        IAdminSupportService support,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        if (!AdminActorContextFactory.TryCreate(context, out var actor))
+        {
+            return context.ToProblem(Error.Unauthorized(
+                "HANI-SUPPORT-4203",
+                "An authenticated administrator is required."));
+        }
+
+        var result = await support.CreateDisputeAsync(
+            id,
+            new AdminSupportDisputeInput(
+                request.OrderId,
+                request.Type,
+                request.Amount,
+                request.Currency,
+                request.Description,
+                request.EvidenceUrl),
+            actor.UserId,
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "support.dispute.opened",
+            "SupportDispute",
+            result.Value!.Id.ToString(),
+            "Support dispute opened from the admin panel",
+            after: result.Value,
+            cancellationToken: cancellationToken);
+        return Results.Created(
+            $"/internal/v1/admin/support/disputes/{result.Value.Id}",
+            result.Value);
+    }
+
+    private static async Task<IResult> UpdateDisputeStatusAsync(
+        Guid id,
+        AdminSupportDisputeStatusRequest request,
+        HttpContext context,
+        IAdminSupportService support,
+        IAdminAuditWriter audit,
+        CancellationToken cancellationToken)
+    {
+        if (!AdminActorContextFactory.TryCreate(context, out var actor))
+        {
+            return context.ToProblem(Error.Unauthorized(
+                "HANI-SUPPORT-4203",
+                "An authenticated administrator is required."));
+        }
+
+        var result = await support.UpdateDisputeStatusAsync(
+            id,
+            new AdminSupportDisputeStatusInput(request.Status, request.Resolution),
+            actor.UserId,
+            cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return context.ToProblem(result.Error!);
+        }
+
+        await audit.RecordAsync(
+            context,
+            "support.dispute.status_changed",
+            "SupportDispute",
+            id.ToString(),
+            "Support dispute status changed from the admin panel",
+            after: new { request.Status, request.Resolution },
+            cancellationToken: cancellationToken);
+        return Results.Ok(result.Value);
+    }
+
+    private static async Task<IResult> GetReportAsync(
+        [FromQuery] int days,
+        IAdminSupportService support,
+        CancellationToken cancellationToken)
+        => Results.Ok(await support.GetReportAsync(days, cancellationToken));
+
     private static async Task<IResult> UpdateAsync(
         Guid id,
         AdminSupportUpdateRequest request,
@@ -259,3 +385,17 @@ public sealed record AdminSupportUpdateRequest(
     string Status,
     string Priority,
     Guid? AssignedTo);
+
+/// <summary>Admin support dispute request.</summary>
+public sealed record AdminSupportDisputeRequest(
+    Guid? OrderId,
+    string Type,
+    decimal? Amount,
+    string? Currency,
+    string Description,
+    string? EvidenceUrl);
+
+/// <summary>Admin support dispute status request.</summary>
+public sealed record AdminSupportDisputeStatusRequest(
+    string Status,
+    string? Resolution);

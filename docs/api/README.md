@@ -72,3 +72,9 @@
   settings; reconciliation runs; and CSV exports under `/internal/v1/admin`.
 - Finance exports require the `report.export` permission. Downloads are UTF-8
   CSV with an explicit currency and ISO dates.
+
+## Internal Admin Support
+
+- `internal-admin-support-api-v1.openapi.yaml`: support ticket threads, SLA
+  metadata, assignment, disputes, and the support quality report under
+  `/internal/v1/admin/support`.

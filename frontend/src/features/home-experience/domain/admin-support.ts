@@ -8,9 +8,13 @@ export type SupportTicketRow = {
   priority: string;
   status: string;
   assignedTo: string | null;
+  assignedToName: string | null;
   messageCount: number;
   createdAt: string;
   lastMessageAt: string;
+  slaDueAt: string;
+  firstResponseAt: string | null;
+  slaState: string;
 };
 
 export type SupportTicketPage = {
@@ -40,10 +44,81 @@ export type SupportTicketDetail = {
   priority: string;
   status: string;
   assignedTo: string | null;
+  assignedToName: string | null;
   createdAt: string;
   updatedAt: string;
   lastMessageAt: string;
   messages: SupportMessage[];
+  slaDueAt: string;
+  firstResponseAt: string | null;
+  slaState: string;
+};
+
+export type SupportDispute = {
+  id: string;
+  ticketId: string;
+  ticketNumber: string;
+  orderId: string | null;
+  type: string;
+  status: string;
+  amount: number | null;
+  currency: string | null;
+  description: string;
+  evidenceUrl: string | null;
+  resolution: string | null;
+  openedBy: string;
+  openedAt: string;
+  resolvedBy: string | null;
+  resolvedAt: string | null;
+};
+
+export type SupportDisputePage = {
+  items: SupportDispute[];
+  page: number;
+  pageSize: number;
+  total: number;
+};
+
+export type SupportDisputeInput = {
+  orderId?: string | null;
+  type: string;
+  amount?: number | null;
+  currency?: string | null;
+  description: string;
+  evidenceUrl?: string | null;
+};
+
+export type SupportSlaBreakdown = {
+  state: string;
+  count: number;
+};
+
+export type SupportCategoryReport = {
+  category: string;
+  count: number;
+};
+
+export type SupportAssigneeReport = {
+  assignedTo: string | null;
+  assignee: string;
+  openCount: number;
+  totalCount: number;
+};
+
+export type SupportReport = {
+  periodDays: number;
+  from: string;
+  to: string;
+  totalTickets: number;
+  openTickets: number;
+  resolvedTickets: number;
+  breachedTickets: number;
+  atRiskTickets: number;
+  averageFirstResponseHours: number;
+  averageResolutionHours: number;
+  slaBreakdown: SupportSlaBreakdown[];
+  byCategory: SupportCategoryReport[];
+  byAssignee: SupportAssigneeReport[];
 };
 
 export type SupportTicketCreateInput = {

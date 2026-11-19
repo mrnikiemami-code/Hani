@@ -1,3 +1,5 @@
+using Hani.BuildingBlocks.Application;
+
 namespace Hani.Modules.Admin.Application;
 
 /// <summary>Admin support ticket list row.</summary>
@@ -13,7 +15,11 @@ public sealed record AdminSupportTicketRowDto(
     Guid? AssignedTo,
     int MessageCount,
     DateTimeOffset CreatedAt,
-    DateTimeOffset LastMessageAt);
+    DateTimeOffset LastMessageAt,
+    string? AssignedToName,
+    DateTimeOffset SlaDueAt,
+    DateTimeOffset? FirstResponseAt,
+    string SlaState);
 
 /// <summary>Paged support tickets.</summary>
 public sealed record AdminSupportTicketPageDto(
@@ -46,7 +52,11 @@ public sealed record AdminSupportTicketDetailDto(
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
     DateTimeOffset LastMessageAt,
-    IReadOnlyList<AdminSupportMessageDto> Messages);
+    IReadOnlyList<AdminSupportMessageDto> Messages,
+    string? AssignedToName,
+    DateTimeOffset SlaDueAt,
+    DateTimeOffset? FirstResponseAt,
+    string SlaState);
 
 /// <summary>Created support ticket.</summary>
 public sealed record SupportTicketCreatedDto(Guid Id, string TicketNumber);
@@ -61,6 +71,76 @@ public sealed record AdminSupportTicketInput(
     string Category,
     string Message,
     string Priority);
+
+
+
+/// <summary>Support dispute row.</summary>
+public sealed record AdminSupportDisputeDto(
+    Guid Id,
+    Guid TicketId,
+    string TicketNumber,
+    Guid? OrderId,
+    string Type,
+    string Status,
+    decimal? Amount,
+    string? Currency,
+    string Description,
+    string? EvidenceUrl,
+    string? Resolution,
+    Guid OpenedBy,
+    DateTimeOffset OpenedAt,
+    Guid? ResolvedBy,
+    DateTimeOffset? ResolvedAt);
+
+/// <summary>Paged support disputes.</summary>
+public sealed record AdminSupportDisputePageDto(
+    IReadOnlyList<AdminSupportDisputeDto> Items,
+    int Page,
+    int PageSize,
+    int Total);
+
+/// <summary>Support dispute creation input.</summary>
+public sealed record AdminSupportDisputeInput(
+    Guid? OrderId,
+    string Type,
+    decimal? Amount,
+    string? Currency,
+    string Description,
+    string? EvidenceUrl);
+
+/// <summary>Support dispute status transition input.</summary>
+public sealed record AdminSupportDisputeStatusInput(
+    string Status,
+    string? Resolution);
+
+/// <summary>SLA count by state.</summary>
+public sealed record AdminSupportSlaBreakdownDto(string State, int Count);
+
+/// <summary>Ticket count by category.</summary>
+public sealed record AdminSupportCategoryReportDto(string Category, int Count);
+
+/// <summary>Ticket load by assignee.</summary>
+public sealed record AdminSupportAssigneeReportDto(
+    Guid? AssignedTo,
+    string Assignee,
+    int OpenCount,
+    int TotalCount);
+
+/// <summary>Support quality report.</summary>
+public sealed record AdminSupportReportDto(
+    int PeriodDays,
+    DateTimeOffset From,
+    DateTimeOffset To,
+    int TotalTickets,
+    int OpenTickets,
+    int ResolvedTickets,
+    int BreachedTickets,
+    int AtRiskTickets,
+    double AverageFirstResponseHours,
+    double AverageResolutionHours,
+    IReadOnlyList<AdminSupportSlaBreakdownDto> SlaBreakdown,
+    IReadOnlyList<AdminSupportCategoryReportDto> ByCategory,
+    IReadOnlyList<AdminSupportAssigneeReportDto> ByAssignee);
 
 /// <summary>Admin support ticket service.</summary>
 public interface IAdminSupportService
@@ -98,5 +178,33 @@ public interface IAdminSupportService
         string status,
         string priority,
         Guid? assignedTo,
+        CancellationToken cancellationToken);
+
+    /// <summary>Lists disputes with optional status, type, and ticket filters.</summary>
+    Task<AdminSupportDisputePageDto> ListDisputesAsync(
+        int page,
+        int pageSize,
+        string? status,
+        string? type,
+        Guid? ticketId,
+        CancellationToken cancellationToken);
+
+    /// <summary>Opens a dispute from a support ticket.</summary>
+    Task<Result<AdminSupportDisputeDto>> CreateDisputeAsync(
+        Guid ticketId,
+        AdminSupportDisputeInput input,
+        Guid actorUserId,
+        CancellationToken cancellationToken);
+
+    /// <summary>Moves a dispute through its lifecycle.</summary>
+    Task<Result<AdminSupportDisputeDto>> UpdateDisputeStatusAsync(
+        Guid id,
+        AdminSupportDisputeStatusInput input,
+        Guid actorUserId,
+        CancellationToken cancellationToken);
+
+    /// <summary>Returns support quality, SLA, category, and assignee metrics.</summary>
+    Task<AdminSupportReportDto> GetReportAsync(
+        int days,
         CancellationToken cancellationToken);
 }

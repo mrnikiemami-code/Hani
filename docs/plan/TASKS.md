@@ -348,3 +348,6 @@
 | H91-ADMIN-20 | Batch 4: finance settings | ? Done | bank accounts, currencies/FX, tax rules, settlement policy persisted with audit |
 | H91-ADMIN-21 | Batch 4: reconciliation/exports | ? Done | expected-vs-actual reconciliation runs, CSV exports with report.export permission, approval history |
 | H91-ADMIN-22 | Batch 4: advanced BI trend | ? Done | daily revenue and order trend tables; cohort/visit funnel remains blocked by traffic data |
+| H91-ADMIN-23 | Batch 5: support SLA and assignment | ? Done | priority SLA targets/states, first-response metadata, real admin assignee selector |
+| H91-ADMIN-24 | Batch 5: dispute workflow | ? Done | dispute aggregate, create/list/status endpoints, ticket panel, disputes list, audit |
+| H91-ADMIN-25 | Batch 5: support quality reports | ? Done | first-response/resolution averages, SLA breakdown, category and assignee load |

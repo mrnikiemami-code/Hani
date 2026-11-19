@@ -1,7 +1,10 @@
 "use server";
 
 import { cookies } from "next/headers";
-import type { SupportTicketCreateInput } from "../domain/admin-support";
+import type {
+  SupportDisputeInput,
+  SupportTicketCreateInput
+} from "../domain/admin-support";
 
 const apiBase =
   process.env.API_BASE_URL ??
@@ -66,5 +69,23 @@ export async function updateSupportTicket(
     status,
     priority,
     assignedTo
+  });
+}
+
+export async function createSupportDispute(
+  ticketId: string,
+  input: SupportDisputeInput
+): Promise<{ ok: boolean }> {
+  return post(`/internal/v1/admin/support/tickets/${ticketId}/disputes`, input);
+}
+
+export async function updateSupportDisputeStatus(
+  id: string,
+  status: string,
+  resolution: string | null
+): Promise<{ ok: boolean }> {
+  return post(`/internal/v1/admin/support/disputes/${id}/status`, {
+    status,
+    resolution
   });
 }

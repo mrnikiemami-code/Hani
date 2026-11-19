@@ -115,3 +115,21 @@ Content یک bounded context مستقل از Catalog/Booking است: محتوا 
 - Admin routes: `/admin/support/tickets`, `/admin/notifications`,
   `/admin/reports`, `/admin/marketing/ads`.
 - Migration: `AddSupportTickets`.
+
+## Support SLA and disputes (2026-11-19)
+
+- First-response SLA is derived from ticket priority: Urgent 2h, High 8h,
+  Normal 24h, Low 72h. The admin read model returns `SlaDueAt`,
+  `FirstResponseAt`, and a `SlaState` of `Met`, `AtRisk`, `Breached`, or
+  `Pending`.
+- `SupportDispute` persists refund, cancellation, service-quality, pricing,
+  no-show, and other disputes in `content.support_disputes`, optionally tied
+  to an order and amount.
+- Disputes move through `Open`, `Investigating`, `AwaitingCustomer`, then a
+  terminal `Resolved` or `Rejected` state. Terminal states require a
+  resolution and cannot be changed again.
+- Admin endpoints: ticket list/detail/thread/update, dispute list/create/status,
+  and `/internal/v1/admin/support/report`.
+- Admin routes: `/admin/support/tickets`, `/admin/support/disputes`, and
+  `/admin/support/reports`.
+- Migration: `AddSupportDisputes`.

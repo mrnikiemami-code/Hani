@@ -192,6 +192,8 @@ export default async function AdminSupportTicketsPage({
                 <th className="d-none d-lg-table-cell">{t("category")}</th>
                 <th>{t("priority")}</th>
                 <th>{t("status")}</th>
+                <th>{t("sla")}</th>
+                <th className="d-none d-lg-table-cell">{t("assignedTo")}</th>
                 <th className="d-none d-md-table-cell">{t("lastMessage")}</th>
                 <th className="text-end">{t("actions")}</th>
               </tr>
@@ -217,6 +219,30 @@ export default async function AdminSupportTicketsPage({
                   <td className="d-none d-lg-table-cell">{ticket.category}</td>
                   <td>{ticket.priority}</td>
                   <td>{ticket.status}</td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        ticket.slaState === "Breached"
+                          ? "badge-danger"
+                          : ticket.slaState === "AtRisk"
+                            ? "badge-warning"
+                            : ticket.slaState === "Met"
+                              ? "badge-success"
+                              : "badge-info"
+                      }`}
+                    >
+                      {t(`sla${ticket.slaState}`)}
+                    </span>
+                    <span className="d-block fs-11 text-gray-6 text-nowrap">
+                      {formatIsoInstant(ticket.slaDueAt, locale, {
+                        dateStyle: "short",
+                        timeStyle: "short"
+                      })}
+                    </span>
+                  </td>
+                  <td className="d-none d-lg-table-cell">
+                    {ticket.assignedToName ?? t("unassigned")}
+                  </td>
                   <td className="d-none d-md-table-cell">
                     {formatIsoInstant(ticket.lastMessageAt, locale, {
                       dateStyle: "medium",
@@ -235,7 +261,7 @@ export default async function AdminSupportTicketsPage({
               ))}
               {data.items.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="text-center text-gray-6 py-4">
+                  <td colSpan={10} className="text-center text-gray-6 py-4">
                     {t("empty")}
                   </td>
                 </tr>

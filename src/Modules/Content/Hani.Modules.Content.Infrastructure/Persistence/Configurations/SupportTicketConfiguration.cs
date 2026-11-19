@@ -57,3 +57,36 @@ internal sealed class SupportTicketConfiguration : IEntityTypeConfiguration<Supp
         });
     }
 }
+
+internal sealed class SupportDisputeConfiguration : IEntityTypeConfiguration<SupportDispute>
+{
+    public void Configure(EntityTypeBuilder<SupportDispute> builder)
+    {
+        builder.ToTable("support_disputes");
+        builder.HasKey(item => item.Id);
+        builder.Property(item => item.Id).HasColumnName("id");
+        builder.Property(item => item.TicketId).HasColumnName("ticket_id").IsRequired();
+        builder.Property(item => item.OrderId).HasColumnName("order_id");
+        builder.Property(item => item.Type).HasColumnName("type")
+            .HasConversion<string>().HasMaxLength(32).IsRequired();
+        builder.Property(item => item.Status).HasColumnName("status")
+            .HasConversion<string>().HasMaxLength(32).IsRequired();
+        builder.Property(item => item.Amount).HasColumnName("amount").HasPrecision(18, 2);
+        builder.Property(item => item.Currency).HasColumnName("currency").HasMaxLength(3);
+        builder.Property(item => item.Description).HasColumnName("description")
+            .HasColumnType("text").IsRequired();
+        builder.Property(item => item.EvidenceUrl).HasColumnName("evidence_url").HasMaxLength(1000);
+        builder.Property(item => item.Resolution).HasColumnName("resolution")
+            .HasColumnType("text");
+        builder.Property(item => item.OpenedBy).HasColumnName("opened_by").IsRequired();
+        builder.Property(item => item.OpenedAt).HasColumnName("opened_at").IsRequired();
+        builder.Property(item => item.ResolvedBy).HasColumnName("resolved_by");
+        builder.Property(item => item.ResolvedAt).HasColumnName("resolved_at");
+        builder.HasIndex(item => item.TicketId)
+            .HasDatabaseName("ix_support_disputes_ticket");
+        builder.HasIndex(item => new { item.Status, item.Type })
+            .HasDatabaseName("ix_support_disputes_status_type");
+        builder.HasIndex(item => item.OrderId)
+            .HasDatabaseName("ix_support_disputes_order");
+    }
+}

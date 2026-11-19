@@ -4,10 +4,14 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { sessionGet } from "@/lib/hani/server-api";
 import { formatIsoInstant } from "@/lib/hani/calendar";
-import type { SupportTicketDetail } from "@/features/home-experience/domain/admin-support";
+import type {
+  SupportDisputePage,
+  SupportTicketDetail
+} from "@/features/home-experience/domain/admin-support";
 import { AdminPageShell } from "@/features/home-experience/ui/AdminPageShell";
 import { SupportReplyForm } from "@/features/home-experience/ui/SupportReplyForm";
 import { SupportTicketControls } from "@/features/home-experience/ui/SupportTicketControls";
+import { SupportDisputePanel } from "@/features/home-experience/ui/SupportDisputePanel";
 
 export async function generateMetadata({
   params
@@ -28,9 +32,25 @@ export default async function AdminSupportTicketPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "adminSupport" });
   const tHome = await getTranslations({ locale, namespace: "adminHome" });
-  const result = await sessionGet<SupportTicketDetail>(
-    `/internal/v1/admin/support/tickets/${id}`
-  );
+  const [result, disputesResult, usersResult] = await Promise.all([
+    sessionGet<SupportTicketDetail>(
+      `/internal/v1/admin/support/tickets/${id}`
+    ),
+    sessionGet<SupportDisputePage>(
+      `/internal/v1/admin/support/disputes?ticketId=${id}&page=1&pageSize=100`
+    ),
+    sessionGet<{
+      items: {
+        id: string;
+        mobile: string;
+        username: string;
+        firstName: string;
+        lastName: string;
+        role: string;
+        status: string;
+      }[];
+    }>("/internal/v1/admin/users?page=1&pageSize=100")
+  ]);
 
   if (result.status === 401 || result.status === 403) {
     return (
@@ -53,6 +73,16 @@ export default async function AdminSupportTicketPage({
 
   if (result.status === 404 || !result.data) notFound();
   const ticket = result.data;
+  const disputes = disputesResult.data?.items ?? [];
+  const assignees = (usersResult.data?.items ?? [])
+    .filter((user) => user.role !== "Customer" && user.status === "Active")
+    .map((user) => ({
+      id: user.id,
+      label:
+        [user.firstName, user.lastName].filter(Boolean).join(" ") ||
+        user.username ||
+        user.mobile
+    }));
 
   return (
     <AdminPageShell
@@ -80,6 +110,7 @@ export default async function AdminSupportTicketPage({
               status={ticket.status}
               priority={ticket.priority}
               assignedTo={ticket.assignedTo}
+              assignees={assignees}
             />
           </div>
         </div>
@@ -91,6 +122,24 @@ export default async function AdminSupportTicketPage({
               [t("contactPhone"), ticket.contactPhone ?? "—"],
               [t("status"), ticket.status],
               [t("priority"), ticket.priority],
+              [t("assignedTo"), ticket.assignedToName ?? t("unassigned")],
+              [t("sla"), t(`sla${ticket.slaState}`)],
+              [
+                t("slaDueAt"),
+                formatIsoInstant(ticket.slaDueAt, locale, {
+                  dateStyle: "medium",
+                  timeStyle: "short"
+                })
+              ],
+              [
+                t("firstResponseAt"),
+                ticket.firstResponseAt
+                  ? formatIsoInstant(ticket.firstResponseAt, locale, {
+                      dateStyle: "medium",
+                      timeStyle: "short"
+                    })
+                  : t("notResponded")
+              ],
               [
                 t("createdAt"),
                 formatIsoInstant(ticket.createdAt, locale, {
@@ -139,6 +188,8 @@ export default async function AdminSupportTicketPage({
           ))}
         </div>
       </div>
+
+      <SupportDisputePanel ticketId={ticket.id} disputes={disputes} />
 
       <SupportReplyForm id={ticket.id} />
     </AdminPageShell>

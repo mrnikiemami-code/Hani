@@ -57,3 +57,14 @@ Every update is audited with before/after JSON.
 Exports are available for payments, refunds, invoices, reconciliations,
 commissions, payouts, ledger, and tax. The export endpoints require the
 `report.export` permission in addition to `finance.view`.
+
+## Support administration
+
+`IAdminSupportService` composes ticket reads, replies/internal notes, status,
+priority, real assignee selection, SLA evaluation, dispute workflow, and
+support quality reporting. SLA targets are derived from priority in
+`AdminSupportSlaPolicy`: Urgent 2h, High 8h, Normal 24h, Low 72h.
+
+Disputes are separate aggregates in the Content module. Creating or closing a
+dispute is audited by the API layer. The support report returns first-response
+and resolution averages, SLA counts, category distribution, and assignee load.

@@ -173,9 +173,14 @@ const ADMIN_NAV: AdminNavItem[] = [
         permission: "support.view"
       },
       {
+        href: "/admin/support/disputes",
         labelKey: "disputes",
-        permission: "support.view",
-        enabled: false
+        permission: "support.view"
+      },
+      {
+        href: "/admin/support/reports",
+        labelKey: "reports",
+        permission: "support.view"
       }
     ]
   },

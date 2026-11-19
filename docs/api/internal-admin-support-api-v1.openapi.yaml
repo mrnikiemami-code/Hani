@@ -1,0 +1,117 @@
+openapi: 3.1.0
+info:
+  title: Hani Internal Admin Support API - Draft v1
+  version: 1.0.0
+  description: Support tickets, SLA, disputes, and quality reporting.
+servers:
+  - url: https://api.hani.ir/internal/v1
+    description: Production
+  - url: http://localhost:5099/internal/v1
+    description: Local
+tags:
+  - name: Admin.Support
+paths:
+  /admin/support/tickets:
+    get:
+      tags: [Admin.Support]
+      summary: List support tickets with SLA and assignee metadata
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string, enum: [Open, InProgress, WaitingCustomer, Resolved, Closed] } }
+        - { name: priority, in: query, schema: { type: string, enum: [Low, Normal, High, Urgent] } }
+      responses:
+        '200': { description: Paged tickets }
+    post:
+      tags: [Admin.Support]
+      summary: Create a support ticket
+      responses:
+        '201': { description: Created ticket }
+  /admin/support/tickets/{id}:
+    get:
+      tags: [Admin.Support]
+      summary: Ticket detail with thread, SLA, and assignee
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Ticket detail }
+        '404': { description: Not found }
+  /admin/support/tickets/{id}/messages:
+    post:
+      tags: [Admin.Support]
+      summary: Add a public reply or internal note
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated ticket }
+  /admin/support/tickets/{id}/update:
+    post:
+      tags: [Admin.Support]
+      summary: Update status, priority, and assignee
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Updated ticket }
+  /admin/support/disputes:
+    get:
+      tags: [Admin.Support]
+      summary: List support disputes
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: status, in: query, schema: { type: string, enum: [Open, Investigating, AwaitingCustomer, Resolved, Rejected] } }
+        - { name: type, in: query, schema: { type: string, enum: [Refund, Cancellation, ServiceQuality, Pricing, NoShow, Other] } }
+        - { name: ticketId, in: query, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Paged disputes }
+  /admin/support/tickets/{id}/disputes:
+    post:
+      tags: [Admin.Support]
+      summary: Open a dispute from a ticket
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, description]
+              properties:
+                orderId: { type: string, format: uuid, nullable: true }
+                type: { type: string, enum: [Refund, Cancellation, ServiceQuality, Pricing, NoShow, Other] }
+                amount: { type: number, nullable: true, minimum: 0 }
+                currency: { type: string, nullable: true, minLength: 3, maxLength: 3 }
+                description: { type: string }
+                evidenceUrl: { type: string, nullable: true }
+      responses:
+        '201': { description: Dispute created }
+        '400': { description: Validation problem }
+  /admin/support/disputes/{id}/status:
+    post:
+      tags: [Admin.Support]
+      summary: Move a dispute through its lifecycle
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [Open, Investigating, AwaitingCustomer, Resolved, Rejected] }
+                resolution: { type: string, nullable: true }
+      responses:
+        '200': { description: Updated dispute }
+        '400': { description: Resolution required for terminal states }
+  /admin/support/report:
+    get:
+      tags: [Admin.Support]
+      summary: Support quality report
+      parameters:
+        - { name: days, in: query, schema: { type: integer, minimum: 1, maximum: 3650, default: 30 } }
+      responses:
+        '200': { description: SLA, first-response, resolution, category, and assignee metrics }
