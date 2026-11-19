@@ -36,12 +36,18 @@
      not take down the API.
    - `ProductionConfigurationGuard` now requires `RateLimiting:Provider=Redis`.
    - Verified with a 3-request window: the fourth request returned HTTP 429.
-2. **Frontend security headers**
-   - Added CSP, HSTS in production, `X-Frame-Options`, `X-Content-Type-Options`,
+2. **Frontend security headers and nonce CSP**
+   - Added HSTS in production, `X-Frame-Options`, `X-Content-Type-Options`,
      `Referrer-Policy`, `Permissions-Policy`, COOP, CORP, and
      `X-Permitted-Cross-Domain-Policies` through `next.config.ts`.
+   - Sensitive routes (`/admin`, `/agent`, `/user`, `/checkout`, auth, and visa
+     application/confirmation) receive a per-request nonce CSP from
+     `src/proxy.ts`. Next.js attaches the nonce to framework and page scripts.
+   - Public static pages keep `'unsafe-inline'` for Next hydration; they also
+     get `script-src-attr 'none'` so inline event handlers are blocked.
    - `poweredByHeader` is disabled.
-   - Verified on a production `next start` response.
+   - Verified on a production `next start` response: the admin page CSP and
+     rendered script tags share the same nonce.
 3. **Security regression tests**
    - Expanded the API security-header integration test.
    - Added an internal/auth cache-control test.
@@ -57,7 +63,7 @@
 | S-02 | Medium | Rate limiting was process-local. | Fixed with Redis limiter + production guard. |
 | S-03 | Medium | WAF/TLS termination outside the repo. | Platform/CDN responsibility; documented. |
 | S-04 | Medium | Invoice PDF input. | Server-owned fields only; no user HTML. |
-| S-05 | Low | Frontend had no CSP. | Fixed in `next.config.ts`. |
+| S-05 | Low | Frontend had no CSP. | Fixed with nonce CSP on sensitive routes and baseline CSP elsewhere. |
 
 No unmitigated High finding remains in application code. Production still must
 provide real secrets and platform-level WAF/TLS.

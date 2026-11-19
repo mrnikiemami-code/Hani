@@ -30,7 +30,7 @@
 | S-02 | Medium | Rate limiting is per process; multi-node deployments need a shared limiter. | Mitigated in Batch 12S by `RateLimiting:Provider=Redis` and a production guard. |
 | S-03 | Medium | No WAF/TLS termination in this repository. | Platform/CDN responsibility; documented in the deployment runbook. |
 | S-04 | Medium | Invoice PDF output is generated from server-owned invoice fields. | No user-supplied HTML or script is rendered; keep it that way. |
-| S-05 | Low | CSP is API-oriented (`default-src 'none'`); the frontend needs its own CSP. | Mitigated in Batch 12S by `frontend/next.config.ts`. |
+| S-05 | Low | CSP is API-oriented (`default-src 'none'`); the frontend needs its own CSP. | Mitigated in Batch 12S: nonce CSP on sensitive routes via `frontend/src/proxy.ts`, baseline CSP elsewhere. |
 
 No unmitigated High finding remains in the application code. S-01 is a
 deployment gate, not a code gap: production must supply secrets through the
@@ -50,7 +50,7 @@ drift, verifies formatting, and scans for vulnerable packages.
 - S-02 is mitigated: `RateLimiting:Provider=Redis` uses a shared atomic
   fixed-window limiter; production requires Redis. Redis errors fall back to a
   process-local limiter.
-- S-05 is mitigated: the frontend now sends CSP, HSTS (production),
+- S-05 is mitigated: sensitive routes receive a per-request nonce CSP (Next.js attaches the nonce to scripts); public static pages receive a baseline CSP. HSTS (production),
   X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy,
   COOP, CORP, and X-Permitted-Cross-Domain-Policies from `next.config.ts`.
 - New report: `docs/reports/security-observability-review-2026-11-19.md`.

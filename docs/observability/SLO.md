@@ -62,5 +62,7 @@ without failures.
   Redis is a `/health/ready` dependency when configured.
 - Rate-limit rejections remain HTTP 429 and are visible through the standard
   HTTP server metrics/status attributes.
-- The Next.js frontend emits CSP and browser hardening headers in production.
+- The Next.js frontend emits browser hardening headers in production; sensitive
+  routes use a per-request nonce CSP, while public static pages use a baseline
+  CSP.
 - Review evidence: `docs/reports/security-observability-review-2026-11-19.md`.
