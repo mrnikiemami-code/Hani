@@ -513,7 +513,8 @@
     "tourFallback": "Tour",
     "placement": "Page placement",
     "placementEnd": "End of page",
-    "placementAfter": "After"
+    "placementAfter": "After",
+    "fieldTitle": "Title"
   },
   "adminMedia": {
     "title": "Media library",

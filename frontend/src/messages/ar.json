@@ -513,7 +513,8 @@
     "tourFallback": "جولة",
     "placement": "الموقع في الصفحة",
     "placementEnd": "نهاية الصفحة",
-    "placementAfter": "بعد"
+    "placementAfter": "بعد",
+    "fieldTitle": "العنوان"
   },
   "adminMedia": {
     "title": "مكتبة الوسائط",

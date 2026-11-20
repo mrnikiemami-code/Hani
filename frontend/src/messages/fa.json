@@ -513,7 +513,8 @@
     "tourFallback": "تور",
     "placement": "موقعیت در صفحه",
     "placementEnd": "انتهای صفحه",
-    "placementAfter": "بعد از"
+    "placementAfter": "بعد از",
+    "fieldTitle": "عنوان"
   },
   "adminMedia": {
     "title": "کتابخانه رسانه",
